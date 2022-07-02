@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TextAppearance.Buckwheat.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="fontFamily">@font/manrope_extra_bold</item>
+        <item name="android:textSize">80sp</item>
+    </style>
+    <style name="TextAppearance.Buckwheat.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="fontFamily">@font/manrope_extra_bold</item>
+    </style>
+    <style name="TextAppearance.Buckwheat.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/manrope_extra_bold</item>
+    </style>
+    <style name="TextAppearance.Buckwheat.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/manrope_bold</item>
+    </style>
+</resources>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">buckwheat 16:73</string>
+    <string name="action_settings">Settings</string>
+    <!-- Main -->
+    <string name="budget_for_today">Бюджет на сегодня</string>
+    <string name="budget_plan">план</string>
+    <string name="budget_delta">+ остаток с предыдущих дней</string>
+</resources>
