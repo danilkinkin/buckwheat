@@ -4,23 +4,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingBottom="0dp"
+    app:layout_constraintHeight_default="spread">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/value"
-        style="@style/TextAppearance.Buckwheat.DisplaySmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:text="4356 ₽" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/label"
-        style="@style/TextAppearance.Material3.LabelLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/value"
-        tools:text="@tools:sample/lorem" />
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/value"
+            style="@style/TextAppearance.Buckwheat.DisplaySmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="4356 ₽" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/label"
+            style="@style/TextAppearance.Material3.LabelLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            tools:text="@tools:sample/lorem" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="24dp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
