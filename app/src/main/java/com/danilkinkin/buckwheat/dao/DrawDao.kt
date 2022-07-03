@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -9,7 +10,7 @@ import com.danilkinkin.buckwheat.entities.Draw
 @Dao
 interface DrawDao {
     @Query("SELECT * FROM draw")
-    fun getAll(): List<Draw>
+    fun getAll(): LiveData<List<Draw>>
 
     @Insert
     fun insertAll(vararg draw: Draw)

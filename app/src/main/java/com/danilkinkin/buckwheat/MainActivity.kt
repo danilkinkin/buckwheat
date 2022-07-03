@@ -1,35 +1,28 @@
 package com.danilkinkin.buckwheat
 
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.Menu
+import android.view.MenuItem
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.LinearLayout
+import android.view.WindowInsetsController
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.*
-import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.FragmentTransaction
-import com.danilkinkin.buckwheat.utils.toSP
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.danilkinkin.buckwheat.adapters.DrawsAdapter
+import com.danilkinkin.buckwheat.adapters.KeyboardAdapter
+import com.danilkinkin.buckwheat.decorators.KeyboardDecorator
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
-import java.util.*
-import kotlin.math.floor
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var model: DrawsViewModel
-
-    private val keyboardContainer: FragmentContainerView by lazy {
-        findViewById(R.id.keyboard_container)
-    }
-
-    private var budgetFragment: TextWithLabelFragment? = null
-    private var drawFragment: TextWithLabelFragment? = null
-    private var restBudgetFragment: TextWithLabelFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         val model: DrawsViewModel by viewModels()
 
         this.model = model
+
         build()
         observe()
     }
@@ -85,95 +79,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun animate (view: View?, property: String, from: Float?, to: Float, duration: Long = 0): ObjectAnimator {
-        val animator = (if (from === null) {
-            ObjectAnimator
-                .ofFloat(view, property, to)
-        } else {
-            ObjectAnimator
-                .ofFloat(view, property, from, to)
-        })
-
-        animator.apply {
-            this.duration = duration
-            start()
-        }
-
-        return animator!!
-    }
-
     private fun observe() {
-        model.stage.observeForever { stage ->
-            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-
-            when (stage) {
-                DrawsViewModel.Stage.IDLE, null -> {
-
-                }
-                DrawsViewModel.Stage.CREATING_DRAW -> {
-                    drawFragment = TextWithLabelFragment()
-                    drawFragment!!.onCreated {
-                        drawFragment!!.setValue("${model.drawValue} ₽")
-                        drawFragment!!.setLabel("Draw")
-                        drawFragment!!.getLabelView().textSize = 10.toSP().toFloat()
-                        drawFragment!!.getValueView().textSize = 46.toSP().toFloat()
-                    }
-
-                    restBudgetFragment = TextWithLabelFragment()
-                    restBudgetFragment!!.onCreated {
-                        restBudgetFragment!!.setValue("${model.budgetValue - model.drawValue} ₽")
-                        restBudgetFragment!!.setLabel("Rest budget")
-                        restBudgetFragment!!.getLabelView().textSize = 8.toSP().toFloat()
-                        restBudgetFragment!!.getValueView().textSize = 20.toSP().toFloat()
-                    }
-
-                    ft.add(R.id.calculator, drawFragment!!)
-                    ft.add(R.id.calculator, restBudgetFragment!!)
-
-                    ft.commit()
-
-                    ft.runOnCommit {
-                        budgetFragment?.also {
-                            animate(it.getLabelView(), "textSize", 10.toSP().toFloat(), 6.toSP().toFloat())
-                            animate(it.getValueView(), "textSize",  40.toSP().toFloat(), 12.toSP().toFloat())
-                        }
-                    }
-                }
-                DrawsViewModel.Stage.EDIT_DRAW -> {
-                    drawFragment?.also {
-                        it.setValue("${model.drawValue} ₽")
-                        it.setLabel("Draw")
-                    }
-                    restBudgetFragment?.also {
-                        it.setValue("${model.budgetValue - model.drawValue} ₽")
-                        it.setLabel("Rest budget")
-                    }
-                }
-                DrawsViewModel.Stage.COMMITTING_DRAW -> {
-                    ft.remove(budgetFragment!!)
-                    ft.remove(drawFragment!!)
-
-                    ft.commit()
-
-                    ft.runOnCommit {
-                        budgetFragment = restBudgetFragment
-                        drawFragment = null
-                        restBudgetFragment = null
-
-                        budgetFragment?.also {
-                            it.setValue("${model.budgetValue} ₽")
-                            it.setLabel("Budget")
-                            animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
-                            animate(it.getValueView(), "textSize",  20.toSP().toFloat(), 40.toSP().toFloat())
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private fun build() {
-        keyboardContainer.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+        val myLinearLayoutManager = object : LinearLayoutManager(this) {
+            private var isScrollEnabled = true
+
+            fun setScrollEnabled(flag: Boolean) {
+                this.isScrollEnabled = flag
+            }
+
+            override fun canScrollVertically(): Boolean {
+                // Log.d("Main", "isScrollEnabled = $isScrollEnabled")
+                return isScrollEnabled && super.canScrollVertically();
+            }
+        }
+
+        val drawsAdapter = DrawsAdapter()
+        val keyboardAdapter = KeyboardAdapter(supportFragmentManager) { lockScroll ->
+            myLinearLayoutManager.setScrollEnabled(!lockScroll)
+        }
+        val contactAdapter = ConcatAdapter(drawsAdapter, keyboardAdapter)
+
+        val recyclerView: RecyclerView = findViewById(R.id.recycle_view)
+
+        recyclerView.layoutManager = myLinearLayoutManager
+        recyclerView.adapter = contactAdapter
+        recyclerView.addItemDecoration(KeyboardDecorator())
+
+        model.getDraws().observeForever { draws ->
+            drawsAdapter.submitList(draws)
+        }
+
+        /* keyboardContainer.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 keyboardContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
@@ -215,21 +154,9 @@ class MainActivity : AppCompatActivity() {
             Log.d("Main", "$type: $value")
         }
 
-        budgetFragment = TextWithLabelFragment().also {
-            it.setValue("${model.budgetValue} ₽")
-            it.setLabel("Budget")
-
-            it.onCreated { view ->
-                it.getLabelView().textSize = 10.toSP().toFloat()
-                it.getValueView().textSize = 40.toSP().toFloat()
-            }
-        }
-
-        ft.add(R.id.calculator, budgetFragment!!)
-
         ft.replace(R.id.keyboard_container, keyboard)
 
-        ft.commit()
+        ft.commit() */
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -14,7 +14,7 @@ import kotlin.coroutines.CoroutineContext
 class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     enum class Stage { IDLE, CREATING_DRAW, EDIT_DRAW, COMMITTING_DRAW }
 
-    val db = DatabaseModule.getInstance(application)
+    private val db = DatabaseModule.getInstance(application)
 
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
     var budgetValue: Double = 10000.0
@@ -25,11 +25,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    private val draws: MutableLiveData<List<Draw>> by lazy {
-        MutableLiveData<List<Draw>>().also {
-            loadDraws()
-        }
-    }
+    private val draws = db.drawDao().getAll()
 
     fun getDraws(): LiveData<List<Draw>> {
         return draws
@@ -48,19 +44,14 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun commitDraw() {
-        budgetValue -= drawValue
-        drawValue = 0.0
-
         db.drawDao().insertAll(Draw(drawValue, Date()))
 
+        budgetValue -= drawValue
+        drawValue = 0.0
 
         stage.value = Stage.COMMITTING_DRAW
 
 
         stage.value = Stage.IDLE
-    }
-
-    private fun loadDraws() {
-        // Do an asynchronous operation to fetch users.
     }
 }
