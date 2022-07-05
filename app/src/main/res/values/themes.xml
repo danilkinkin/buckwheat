@@ -35,6 +35,8 @@
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.Buckwheat.DisplayLarge</item>
         <item name="textAppearanceTitleLarge">@style/TextAppearance.Buckwheat.TitleLarge</item>
 
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Buckwheat.BottomSheetDialog</item>
+
     </style>
 
     <style name="Theme.Buckwheat" parent="Base.Theme.Buckwheat" />
@@ -52,7 +54,20 @@
         <item name="cornerSizeTopRight">0dp</item>
     </style>
 
+    <style name="ShapeAppearance.Buckwheat.BottomSheetDialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">48dp</item>
+    </style>
+
     <style name="Widget.Buckwheat.EditorCard" parent="@style/Widget.Material3.CardView.Filled">
         <item name="shapeAppearance">@style/ShapeAppearance.Buckwheat.EditorCard</item>
+    </style>
+
+    <style name="ThemeOverlay.Buckwheat.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Theme.Buckwheat.BottomSheetDialog</item>
+    </style>
+
+    <style name="Theme.Buckwheat.BottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="shapeAppearance">@style/ShapeAppearance.Buckwheat.BottomSheetDialog</item>
     </style>
 </resources>

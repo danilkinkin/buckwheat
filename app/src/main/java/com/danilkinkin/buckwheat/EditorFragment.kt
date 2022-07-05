@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
+import com.google.android.material.button.MaterialButton
 
 class EditorFragment() : Fragment() {
     private lateinit var model: DrawsViewModel
@@ -72,6 +73,11 @@ class EditorFragment() : Fragment() {
         ft.add(R.id.calculator, budgetFragment!!)
 
         ft.commit()
+
+        requireView().findViewById<MaterialButton>(R.id.settings_btn).setOnClickListener {
+            val settingsBottomSheet = SettingsBottomSheet()
+            settingsBottomSheet.show(parentFragmentManager, SettingsBottomSheet.TAG)
+        }
     }
 
     private fun observe() {

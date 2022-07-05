@@ -54,6 +54,9 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
         budgetValue -= drawValue
         drawValue = 0.0
+        valueLeftDot = ""
+        valueRightDot = ""
+        useDot = false
 
         stage.value = Stage.COMMITTING_DRAW
 

@@ -18,7 +18,7 @@ class DrawsAdapter() : ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCa
      */
     class DrawViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val valueTextView: MaterialTextView = itemView.findViewById(R.id.value)
-        private val dateTextView: MaterialTextView = itemView.findViewById(R.id.date)
+        private val dateTextView: MaterialTextView = itemView.findViewById(R.id.date_input)
         private var currentDraw: Draw? = null
 
         fun bind(draw: Draw) {

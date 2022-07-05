@@ -21,7 +21,7 @@
         tools:text="4356 ₽" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/date"
+        android:id="@+id/date_input"
         style="@style/TextAppearance.Material3.LabelLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
