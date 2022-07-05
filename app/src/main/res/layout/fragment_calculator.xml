@@ -7,7 +7,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/container_budget_for_today"
-        style="?attr/materialCardViewFilledStyle"
+        style="@style/Widget.Buckwheat.EditorCard"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

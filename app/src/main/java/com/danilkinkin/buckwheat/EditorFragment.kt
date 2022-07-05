@@ -11,7 +11,7 @@ import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 
-class CalculatorFragment : Fragment() {
+class EditorFragment() : Fragment() {
     private lateinit var model: DrawsViewModel
 
     private var budgetFragment: TextWithLabelFragment? = null
@@ -37,8 +37,6 @@ class CalculatorFragment : Fragment() {
 
         build()
         observe()
-
-        build()
     }
 
     fun animate (view: View?, property: String, from: Float?, to: Float, duration: Long = 0): ObjectAnimator {
@@ -58,7 +56,7 @@ class CalculatorFragment : Fragment() {
         return animator!!
     }
 
-    fun build() {
+    private fun build() {
         val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
 
         budgetFragment = TextWithLabelFragment().also {
@@ -72,9 +70,11 @@ class CalculatorFragment : Fragment() {
         }
 
         ft.add(R.id.calculator, budgetFragment!!)
+
+        ft.commit()
     }
 
-    fun observe() {
+    private fun observe() {
         model.stage.observeForever { stage ->
             val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
 
@@ -85,7 +85,11 @@ class CalculatorFragment : Fragment() {
                 DrawsViewModel.Stage.CREATING_DRAW -> {
                     drawFragment = TextWithLabelFragment()
                     drawFragment!!.onCreated {
-                        drawFragment!!.setValue("${model.drawValue} ₽")
+                        if (model.useDot) {
+                            drawFragment!!.setValue("${model.drawValue} ₽")
+                        } else {
+                            drawFragment!!.setValue("${model.drawValue.toInt()} ₽")
+                        }
                         drawFragment!!.setLabel("Draw")
                         drawFragment!!.getLabelView().textSize = 10.toSP().toFloat()
                         drawFragment!!.getValueView().textSize = 46.toSP().toFloat()
@@ -113,7 +117,11 @@ class CalculatorFragment : Fragment() {
                 }
                 DrawsViewModel.Stage.EDIT_DRAW -> {
                     drawFragment?.also {
-                        it.setValue("${model.drawValue} ₽")
+                        if (model.useDot) {
+                            it.setValue("${model.drawValue} ₽")
+                        } else {
+                            it.setValue("${model.drawValue.toInt()} ₽")
+                        }
                         it.setLabel("Draw")
                     }
                     restBudgetFragment?.also {

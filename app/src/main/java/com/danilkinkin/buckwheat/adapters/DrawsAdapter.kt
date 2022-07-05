@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.entities.Draw
 import com.google.android.material.textview.MaterialTextView
+import java.text.SimpleDateFormat
 
 class DrawsAdapter() : ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCallback) {
     /**
@@ -25,7 +25,9 @@ class DrawsAdapter() : ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCa
             currentDraw = draw
 
             valueTextView.text = "${draw.value} ₽"
-            dateTextView.text = "${draw.date.time}"
+
+            val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
+            dateTextView.text = dateFormat.format(draw.date.time).toString()
         }
     }
 

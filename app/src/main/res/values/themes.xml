@@ -44,4 +44,15 @@
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
     </style>
+
+    <style name="ShapeAppearance.Buckwheat.EditorCard" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">48dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+    </style>
+
+    <style name="Widget.Buckwheat.EditorCard" parent="@style/Widget.Material3.CardView.Filled">
+        <item name="shapeAppearance">@style/ShapeAppearance.Buckwheat.EditorCard</item>
+    </style>
 </resources>

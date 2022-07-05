@@ -2,7 +2,6 @@ package com.danilkinkin.buckwheat
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup.MarginLayoutParams
@@ -16,8 +15,8 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.adapters.DrawsAdapter
+import com.danilkinkin.buckwheat.adapters.EditorAdapter
 import com.danilkinkin.buckwheat.adapters.KeyboardAdapter
-import com.danilkinkin.buckwheat.decorators.KeyboardDecorator
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 
 
@@ -83,7 +82,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun build() {
-        val myLinearLayoutManager = object : LinearLayoutManager(this) {
+        val layoutManager = object : LinearLayoutManager(this) {
             private var isScrollEnabled = true
 
             fun setScrollEnabled(flag: Boolean) {
@@ -96,17 +95,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        layoutManager.stackFromEnd = true;
+
         val drawsAdapter = DrawsAdapter()
+        val editorAdapter = EditorAdapter(supportFragmentManager)
         val keyboardAdapter = KeyboardAdapter(supportFragmentManager) { lockScroll ->
-            myLinearLayoutManager.setScrollEnabled(!lockScroll)
+            layoutManager.setScrollEnabled(!lockScroll)
         }
-        val contactAdapter = ConcatAdapter(drawsAdapter, keyboardAdapter)
+        val contactAdapter = ConcatAdapter(drawsAdapter, editorAdapter, keyboardAdapter)
 
         val recyclerView: RecyclerView = findViewById(R.id.recycle_view)
 
-        recyclerView.layoutManager = myLinearLayoutManager
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = contactAdapter
-        recyclerView.addItemDecoration(KeyboardDecorator())
+
+        recyclerView.setOnScrollChangeListener { _, i, i2, i3, i4 ->
+            keyboardAdapter.scrollUpdate(recyclerView)
+        }
 
         model.getDraws().observeForever { draws ->
             drawsAdapter.submitList(draws)

@@ -5,11 +5,16 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.KeyboardFragment
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.utils.toDP
+import java.lang.Integer.min
+import java.lang.Math.max
 
+private var keyboardView: View? = null
 
 class KeyboardAdapter(
     private val fragmentManager: FragmentManager,
@@ -28,6 +33,18 @@ class KeyboardAdapter(
         init {
             // Define click listener for the ViewHolder's View.
             flContainer = view.findViewById(R.id.container)
+
+            keyboardView = view
+
+            val wrapperView = view.findViewById<ConstraintLayout>(R.id.wrapper)
+
+            wrapperView.doOnLayout {
+                val layout = wrapperView.layoutParams
+
+                layout.height = wrapperView.width
+
+                wrapperView.layoutParams = layout
+            }
         }
     }
 
@@ -76,6 +93,18 @@ class KeyboardAdapter(
         attachFragmentToContainer()
 
         super.onViewAttachedToWindow(holder)
+    }
+
+    fun scrollUpdate(parent: RecyclerView) {
+        keyboardView?.let {
+            val containerView = it.findViewById<ConstraintLayout>(R.id.container)
+
+            val layoutContainer = containerView.layoutParams
+
+            layoutContainer.height = min(max(parent.height - it.top, 300.toDP()), containerView.width)
+
+            containerView.layoutParams = layoutContainer
+        }
     }
 
     fun attachFragmentToContainer() {
