@@ -81,9 +81,6 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         useDot = false
 
         stage.value = Stage.COMMITTING_DRAW
-
-
-        stage.value = Stage.IDLE
     }
 
     fun resetDraw() {

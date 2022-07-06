@@ -173,6 +173,8 @@ class EditorFragment() : Fragment() {
                             animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
                             animate(it.getValueView(), "textSize",  20.toSP().toFloat(), 40.toSP().toFloat())
                         }
+
+                        model.resetDraw()
                     }
                 }
             }
