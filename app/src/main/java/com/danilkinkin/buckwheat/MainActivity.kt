@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.adapters.DrawsAdapter
 import com.danilkinkin.buckwheat.adapters.EditorAdapter
 import com.danilkinkin.buckwheat.adapters.KeyboardAdapter
+import com.danilkinkin.buckwheat.adapters.TopAdapter
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 
 
@@ -97,12 +98,13 @@ class MainActivity : AppCompatActivity() {
 
         layoutManager.stackFromEnd = true;
 
+        val topAdapter = TopAdapter()
         val drawsAdapter = DrawsAdapter()
         val editorAdapter = EditorAdapter(supportFragmentManager)
         val keyboardAdapter = KeyboardAdapter(supportFragmentManager) { lockScroll ->
             layoutManager.setScrollEnabled(!lockScroll)
         }
-        val contactAdapter = ConcatAdapter(drawsAdapter, editorAdapter, keyboardAdapter)
+        val contactAdapter = ConcatAdapter(topAdapter, drawsAdapter, editorAdapter, keyboardAdapter)
 
         val recyclerView: RecyclerView = findViewById(R.id.recycle_view)
 
