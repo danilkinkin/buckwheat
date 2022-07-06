@@ -13,7 +13,7 @@ interface DrawDao {
     fun getAll(): LiveData<List<Draw>>
 
     @Insert
-    fun insertAll(vararg draw: Draw)
+    fun insert(vararg draw: Draw)
 
     @Delete
     fun delete(draw: Draw)

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.danilkinkin.buckwheat.di.DatabaseModule
 import com.danilkinkin.buckwheat.entities.Draw
+import com.danilkinkin.buckwheat.entities.Storage
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -17,9 +18,22 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val db = DatabaseModule.getInstance(application)
 
+    private val draws = db.drawDao()
+    private val storage = db.storageDao()
+
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
-    var budgetValue: Double = 10000.0
+    var budgetValue: MutableLiveData<Double> = MutableLiveData(try {
+        storage.get("budget").value.toDouble()
+    } catch (e: Exception) {
+        0.0
+    })
     var drawValue: Double = 0.0
+
+    var toDate: Date = try {
+        Date(storage.get("toDate").value.toLong())
+    } catch (e: Exception) {
+        Date()
+    }
 
     var valueLeftDot: String = ""
     var valueRightDot: String = ""
@@ -29,10 +43,15 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    private val draws = db.drawDao().getAll()
-
     fun getDraws(): LiveData<List<Draw>> {
-        return draws
+        return draws.getAll()
+    }
+
+    fun changeBudget(budget: Double, toDate: Date) {
+        storage.set(Storage("budget", budget.toString()))
+        storage.set(Storage("toDate", toDate.time.toString()))
+
+        budgetValue.value = budget
     }
 
     fun createDraw() {
@@ -50,9 +69,12 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     fun commitDraw() {
         if (stage.value !== Stage.EDIT_DRAW) return
 
-        db.drawDao().insertAll(Draw(drawValue, Date()))
+        draws.insert(Draw(drawValue, Date()))
 
-        budgetValue -= drawValue
+        budgetValue.value = budgetValue.value?.minus(drawValue)
+
+        storage.set(Storage("budget", budgetValue.value.toString()))
+
         drawValue = 0.0
         valueLeftDot = ""
         valueRightDot = ""
@@ -60,6 +82,15 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
         stage.value = Stage.COMMITTING_DRAW
 
+
+        stage.value = Stage.IDLE
+    }
+
+    fun resetDraw() {
+        drawValue = 0.0
+        valueLeftDot = ""
+        valueRightDot = ""
+        useDot = false
 
         stage.value = Stage.IDLE
     }
@@ -80,6 +111,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
                 useDot = true
                 valueRightDot = ""
+                valueLeftDot = if (valueLeftDot === "") { "0" } else { valueLeftDot }
             }
             Action.REMOVE_LAST -> {
                 if (useDot && valueRightDot.length > 1) {
@@ -93,6 +125,12 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     valueLeftDot = ""
                     useDot = false
+                }
+
+                if ("$valueLeftDot.$valueRightDot" == ".") {
+                    resetDraw()
+
+                    return
                 }
             }
         }

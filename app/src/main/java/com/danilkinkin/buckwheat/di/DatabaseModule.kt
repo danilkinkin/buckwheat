@@ -1,19 +1,19 @@
 package com.danilkinkin.buckwheat.di
 
 import android.app.Application
-import androidx.annotation.NonNull
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.danilkinkin.buckwheat.dao.DrawDao
+import com.danilkinkin.buckwheat.dao.StorageDao
 import com.danilkinkin.buckwheat.entities.Draw
+import com.danilkinkin.buckwheat.entities.Storage
 
 
 lateinit var instanceDB: DatabaseModule
 
-@Database(entities = [Draw::class], version = 1)
+@Database(entities = [Draw::class, Storage::class], version = 1)
 @TypeConverters(RoomConverters::class)
 abstract class DatabaseModule : RoomDatabase() {
 
@@ -38,4 +38,6 @@ abstract class DatabaseModule : RoomDatabase() {
     }
 
     abstract fun drawDao(): DrawDao
+
+    abstract fun storageDao(): StorageDao
 }

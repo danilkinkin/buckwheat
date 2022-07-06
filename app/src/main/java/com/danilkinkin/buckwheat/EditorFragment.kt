@@ -61,7 +61,7 @@ class EditorFragment() : Fragment() {
         val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
 
         budgetFragment = TextWithLabelFragment().also {
-            it.setValue("${model.budgetValue} ₽")
+            it.setValue("${model.budgetValue.value} ₽")
             it.setLabel("Budget")
 
             it.onCreated { view ->
@@ -81,12 +81,33 @@ class EditorFragment() : Fragment() {
     }
 
     private fun observe() {
+        model.budgetValue.observeForever { value ->
+            budgetFragment?.also {
+                it.setValue("${value} ₽")
+            }
+        }
+
         model.stage.observeForever { stage ->
             val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
 
             when (stage) {
                 DrawsViewModel.Stage.IDLE, null -> {
+                    if (restBudgetFragment !== null) ft.remove(restBudgetFragment!!)
+                    if (drawFragment !== null) ft.remove(drawFragment!!)
 
+                    ft.commit()
+
+                    ft.runOnCommit {
+                        drawFragment = null
+                        restBudgetFragment = null
+
+                        budgetFragment?.also {
+                            it.setValue("${model.budgetValue.value} ₽")
+                            it.setLabel("Budget")
+                            animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
+                            animate(it.getValueView(), "textSize",  12.toSP().toFloat(), 40.toSP().toFloat())
+                        }
+                    }
                 }
                 DrawsViewModel.Stage.CREATING_DRAW -> {
                     drawFragment = TextWithLabelFragment()
@@ -103,7 +124,7 @@ class EditorFragment() : Fragment() {
 
                     restBudgetFragment = TextWithLabelFragment()
                     restBudgetFragment!!.onCreated {
-                        restBudgetFragment!!.setValue("${model.budgetValue - model.drawValue} ₽")
+                        restBudgetFragment!!.setValue("${model.budgetValue.value?.minus(model.drawValue)} ₽")
                         restBudgetFragment!!.setLabel("Rest budget")
                         restBudgetFragment!!.getLabelView().textSize = 8.toSP().toFloat()
                         restBudgetFragment!!.getValueView().textSize = 20.toSP().toFloat()
@@ -131,7 +152,7 @@ class EditorFragment() : Fragment() {
                         it.setLabel("Draw")
                     }
                     restBudgetFragment?.also {
-                        it.setValue("${model.budgetValue - model.drawValue} ₽")
+                        it.setValue("${model.budgetValue.value?.minus(model.drawValue)} ₽")
                         it.setLabel("Rest budget")
                     }
                 }
@@ -147,7 +168,7 @@ class EditorFragment() : Fragment() {
                         restBudgetFragment = null
 
                         budgetFragment?.also {
-                            it.setValue("${model.budgetValue} ₽")
+                            it.setValue("${model.budgetValue.value} ₽")
                             it.setLabel("Budget")
                             animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
                             animate(it.getValueView(), "textSize",  20.toSP().toFloat(), 40.toSP().toFloat())
