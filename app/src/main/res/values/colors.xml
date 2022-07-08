@@ -57,4 +57,5 @@
     <color name="md_theme_dark_inversePrimary">#964909</color>
     <color name="md_theme_dark_shadow">#000000</color>
     <color name="seed">#c8997d</color>
+    <color name="delete">#D60B2A</color>
 </resources>

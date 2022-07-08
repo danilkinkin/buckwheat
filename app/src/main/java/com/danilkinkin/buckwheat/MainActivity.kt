@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup.MarginLayoutParams
@@ -12,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.adapters.DrawsAdapter
@@ -83,6 +85,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun build() {
+        val recyclerView: RecyclerView = findViewById(R.id.recycle_view)
+
         val layoutManager = object : LinearLayoutManager(this) {
             private var isScrollEnabled = true
 
@@ -96,7 +100,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        layoutManager.stackFromEnd = true;
+        layoutManager.stackFromEnd = true
 
         val topAdapter = TopAdapter()
         val drawsAdapter = DrawsAdapter()
@@ -106,14 +110,20 @@ class MainActivity : AppCompatActivity() {
         }
         val contactAdapter = ConcatAdapter(topAdapter, drawsAdapter, editorAdapter, keyboardAdapter)
 
-        val recyclerView: RecyclerView = findViewById(R.id.recycle_view)
-
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = contactAdapter
 
-        recyclerView.setOnScrollChangeListener { _, i, i2, i3, i4 ->
+        recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
             keyboardAdapter.scrollUpdate(recyclerView)
         }
+
+        val swipeToDeleteCallback = SwipeToDeleteCallback(applicationContext, drawsAdapter) {
+            model.removeDraw(it)
+        }
+
+        val itemTouchhelper = ItemTouchHelper(swipeToDeleteCallback)
+
+        itemTouchhelper.attachToRecyclerView(recyclerView)
 
         model.getDraws().observeForever { draws ->
             drawsAdapter.submitList(draws)

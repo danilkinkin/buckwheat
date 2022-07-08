@@ -92,6 +92,10 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         stage.value = Stage.IDLE
     }
 
+    fun removeDraw(draw: Draw) {
+        draws.delete(draw)
+    }
+
     fun executeAction(action: Action, value: Int? = null) {
         if (stage.value === Stage.IDLE) createDraw()
 

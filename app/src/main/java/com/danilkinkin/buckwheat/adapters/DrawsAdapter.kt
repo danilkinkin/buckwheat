@@ -11,7 +11,7 @@ import com.danilkinkin.buckwheat.entities.Draw
 import com.google.android.material.textview.MaterialTextView
 import java.text.SimpleDateFormat
 
-class DrawsAdapter() : ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCallback) {
+class DrawsAdapter: ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCallback) {
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
@@ -19,7 +19,7 @@ class DrawsAdapter() : ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCa
     class DrawViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val valueTextView: MaterialTextView = itemView.findViewById(R.id.value)
         private val dateTextView: MaterialTextView = itemView.findViewById(R.id.date_input)
-        private var currentDraw: Draw? = null
+        var currentDraw: Draw? = null
 
         fun bind(draw: Draw) {
             currentDraw = draw
