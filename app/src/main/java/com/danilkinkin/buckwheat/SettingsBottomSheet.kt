@@ -60,10 +60,6 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     }
 
     fun build() {
-        requireView().findViewById<MaterialToolbar>(R.id.top_bar).setNavigationOnClickListener {
-            this.dismiss()
-        }
-
         budgetValue = drawsModel.budgetValue.value
         dateToValue = drawsModel.toDate
         budgetInput.setText(budgetValue.toString())

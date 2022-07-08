@@ -48,11 +48,24 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
+    <style name="Widget.Buckwheat.Button.Keyboard.IconOnly" parent="Widget.Material3.Button.TonalButton">
+        <item name="iconPadding">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconSize">32sp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+    </style>
+
     <style name="Widget.Buckwheat.Button.Keyboard.Light" parent="Widget.Material3.Button.TonalButton">
         <item name="android:textSize">40sp</item>
         <item name="android:textAppearance">@style/TextAppearance.Buckwheat.TitleLarge</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
+        <item name="backgroundTint">@android:color/system_accent1_50</item>
     </style>
 
     <style name="ShapeAppearance.Buckwheat.EditorCard" parent="">
@@ -77,5 +90,16 @@
 
     <style name="Theme.Buckwheat.BottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
         <item name="shapeAppearance">@style/ShapeAppearance.Buckwheat.BottomSheetDialog</item>
+    </style>
+
+    <style name="Widget.Buckwheat.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Buckwheat.Toolbar</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Buckwheat.TitleLarge</item>
+        <item name="subtitleTextAppearance">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="ThemeOverlay.Buckwheat.Toolbar" parent="">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 </resources>

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">buckwheat 16:73</string>
+    <string name="app_name">Buckwheat</string>
     <string name="action_settings">Settings</string>
     <!-- Main -->
     <string name="budget_for_today">Бюджет на сегодня</string>

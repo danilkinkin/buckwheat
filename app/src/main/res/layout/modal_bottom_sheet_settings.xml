@@ -9,16 +9,17 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_bar"
-            style="@style/Widget.Material3.Toolbar.OnSurface"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="@string/settings_title" />
+            app:titleCentered="true"
+            app:title="@string/settings_title"
+            style="@style/Widget.Buckwheat.Toolbar"
+            />
 
     </com.google.android.material.appbar.AppBarLayout>
 
