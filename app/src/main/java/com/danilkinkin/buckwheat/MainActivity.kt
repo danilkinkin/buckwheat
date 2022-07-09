@@ -2,7 +2,6 @@ package com.danilkinkin.buckwheat
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup.MarginLayoutParams
@@ -12,14 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.danilkinkin.buckwheat.adapters.DrawsAdapter
 import com.danilkinkin.buckwheat.adapters.EditorAdapter
 import com.danilkinkin.buckwheat.adapters.KeyboardAdapter
 import com.danilkinkin.buckwheat.adapters.TopAdapter
+import com.danilkinkin.buckwheat.decorators.DrawsDividerItemDecoration
+import com.danilkinkin.buckwheat.utils.toDP
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 
 
@@ -99,6 +97,9 @@ class MainActivity : AppCompatActivity() {
                 return isScrollEnabled && super.canScrollVertically();
             }
         }
+
+        val drawsDividerItemDecoration = DrawsDividerItemDecoration(recyclerView.context)
+        recyclerView.addItemDecoration(drawsDividerItemDecoration)
 
         layoutManager.stackFromEnd = true
 

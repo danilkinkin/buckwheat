@@ -6,3 +6,5 @@ import kotlin.math.roundToInt
 fun Int.toDP(): Int = (this * Resources.getSystem().displayMetrics.density).roundToInt()
 
 fun Float.toDP(): Int = (this * Resources.getSystem().displayMetrics.density).roundToInt()
+
+fun Double.toDP(): Int = (this * Resources.getSystem().displayMetrics.density).roundToInt()
