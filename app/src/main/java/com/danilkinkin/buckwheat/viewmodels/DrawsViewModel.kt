@@ -4,13 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.danilkinkin.buckwheat.di.DatabaseModule
 import com.danilkinkin.buckwheat.entities.Draw
 import com.danilkinkin.buckwheat.entities.Storage
-import kotlinx.coroutines.launch
+import com.danilkinkin.buckwheat.utils.countDays
+import com.danilkinkin.buckwheat.utils.isSameDay
 import java.util.*
-import kotlin.coroutines.CoroutineContext
+import kotlin.math.floor
 
 class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     enum class Stage { IDLE, CREATING_DRAW, EDIT_DRAW, COMMITTING_DRAW }
@@ -22,25 +22,44 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     private val storage = db.storageDao()
 
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
-    var budgetValue: MutableLiveData<Double> = MutableLiveData(try {
+    var budgetOfCurrentDay: MutableLiveData<Double> = MutableLiveData(try {
+        storage.get("currentDayBudget").value.toDouble()
+    } catch (e: Exception) {
+        0.0
+    })
+    var wholeBudget: MutableLiveData<Double> = MutableLiveData(try {
         storage.get("budget").value.toDouble()
     } catch (e: Exception) {
         0.0
     })
-    var drawValue: Double = 0.0
+    var currentDraw: Double = 0.0
 
     var toDate: Date = try {
         Date(storage.get("toDate").value.toLong())
     } catch (e: Exception) {
         Date()
     }
+    var lastReCalcBudgetDate: Date? = try {
+        Date(storage.get("lastReCalcBudgetDate").value.toLong())
+    } catch (e: Exception) {
+        null
+    }
+
+    var requireReCalcBudget: MutableLiveData<Boolean> = MutableLiveData(false)
+    var requireSetBudget: MutableLiveData<Boolean> = MutableLiveData(false)
 
     var valueLeftDot: String = ""
     var valueRightDot: String = ""
     var useDot: Boolean = false
 
     init {
+        if (lastReCalcBudgetDate !== null && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)) {
+            requireReCalcBudget.value = true
+        }
 
+        if (lastReCalcBudgetDate === null || toDate.time <= Date().time) {
+            requireSetBudget.value = true
+        }
     }
 
     fun getDraws(): LiveData<List<Draw>> {
@@ -49,19 +68,30 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun changeBudget(budget: Double, toDate: Date) {
         storage.set(Storage("budget", budget.toString()))
-        storage.set(Storage("toDate", toDate.time.toString()))
+        storage.set(Storage("budgetToDate", toDate.time.toString()))
 
-        budgetValue.value = budget
+        reCalcBudget(floor(budget / countDays(toDate)))
+
+        wholeBudget.value = budget
+        this.toDate = toDate
+    }
+
+    fun reCalcBudget(currentDayBudget: Double) {
+        budgetOfCurrentDay.value = currentDayBudget
+        lastReCalcBudgetDate = Date()
+
+        storage.set(Storage("currentDayBudget", currentDayBudget.toString()))
+        storage.set(Storage("lastReCalcBudgetDate", lastReCalcBudgetDate!!.time.toString()))
     }
 
     fun createDraw() {
-        drawValue = 0.0
+        currentDraw = 0.0
 
         stage.value = Stage.CREATING_DRAW
     }
 
     fun editDraw(value: Double) {
-        drawValue = value
+        currentDraw = value
 
         stage.value = Stage.EDIT_DRAW
     }
@@ -69,13 +99,13 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     fun commitDraw() {
         if (stage.value !== Stage.EDIT_DRAW) return
 
-        draws.insert(Draw(drawValue, Date()))
+        draws.insert(Draw(currentDraw, Date()))
 
-        budgetValue.value = budgetValue.value?.minus(drawValue)
+        budgetOfCurrentDay.value = budgetOfCurrentDay.value?.minus(currentDraw)
 
-        storage.set(Storage("budget", budgetValue.value.toString()))
+        storage.set(Storage("budget", budgetOfCurrentDay.value.toString()))
 
-        drawValue = 0.0
+        currentDraw = 0.0
         valueLeftDot = ""
         valueRightDot = ""
         useDot = false
@@ -84,7 +114,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun resetDraw() {
-        drawValue = 0.0
+        currentDraw = 0.0
         valueLeftDot = ""
         valueRightDot = ""
         useDot = false

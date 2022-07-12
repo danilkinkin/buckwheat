@@ -3,21 +3,22 @@ package com.danilkinkin.buckwheat
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.activityViewModels
+import com.danilkinkin.buckwheat.utils.countDays
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textview.MaterialTextView
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.floor
 
 
 class SettingsBottomSheet: BottomSheetDialogFragment() {
@@ -28,8 +29,8 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     private lateinit var model: AppViewModel
     private lateinit var drawsModel: DrawsViewModel
 
-    var budgetValue: Double? = null
-    var dateToValue: Date? = null
+    var budgetValue: Double = 0.0
+    var dateToValue: Date = Date()
 
     val budgetInput: TextInputEditText by lazy {
         requireView().findViewById(R.id.budget_input)
@@ -37,6 +38,10 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
 
     val dateRangeInput: AutoCompleteTextView by lazy {
         requireView().findViewById(R.id.date_input)
+    }
+
+    val totalDescriptionTextView: MaterialTextView by lazy {
+        requireView().findViewById(R.id.total_description)
     }
 
     override fun onCreateView(
@@ -59,8 +64,22 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         build()
     }
 
+    fun reCalcBudget() {
+        val days = countDays(dateToValue)
+
+        val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
+
+        dateRangeInput.setText(dateFormat.format(dateToValue).toString())
+
+        totalDescriptionTextView.text = context!!.getString(
+            R.string.total_description,
+            "${if (days != 0) { floor(budgetValue / days) } else { budgetValue }} ₽",
+            "$days",
+        )
+    }
+
     fun build() {
-        budgetValue = drawsModel.budgetValue.value
+        budgetValue = drawsModel.wholeBudget.value ?: 0.0
         dateToValue = drawsModel.toDate
         budgetInput.setText(budgetValue.toString())
 
@@ -72,19 +91,19 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
                 budgetValue = try {
                     p0.toString().toDouble()
                 } catch (e: Exception) {
-                    budgetInput.setText((0.0).toString())
+                    budgetInput.setText(0.0.toString())
 
                     0.0
                 }
+
+                reCalcBudget()
             }
 
             override fun afterTextChanged(p0: Editable?) {
             }
         })
 
-        val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
-
-        dateRangeInput.setText(dateFormat.format(dateToValue!!).toString())
+        reCalcBudget()
 
         dateRangeInput.setOnClickListener {
             val dataPicker = MaterialDatePicker.Builder
@@ -98,13 +117,9 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
                 .build()
 
             dataPicker.addOnPositiveButtonClickListener {
-                Log.d(TAG, dataPicker.selection.toString())
-
-                val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
-
-                dateRangeInput.setText(dateFormat.format(dataPicker.selection!!.second).toString())
-
                 dateToValue = Date(dataPicker.selection!!.second)
+
+                reCalcBudget()
             }
 
             dataPicker
@@ -112,7 +127,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         }
 
         requireView().findViewById<MaterialButton>(R.id.apply).setOnClickListener {
-            drawsModel.changeBudget(budgetValue!!, dateToValue!!)
+            drawsModel.changeBudget(budgetValue, dateToValue)
 
             dismiss()
         }

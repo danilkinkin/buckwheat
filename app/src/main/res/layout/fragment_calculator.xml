@@ -28,6 +28,17 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/dev_tool_btn"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:icon="@drawable/ic_developer_mode"
+        app:iconSize="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/settings_btn"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/settings_btn"
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_width="wrap_content"

@@ -61,7 +61,7 @@ class EditorFragment() : Fragment() {
         val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
 
         budgetFragment = TextWithLabelFragment().also {
-            it.setValue("${model.budgetValue.value} ₽")
+            it.setValue("${model.budgetOfCurrentDay.value} ₽")
             it.setLabel("Budget")
 
             it.onCreated { view ->
@@ -78,10 +78,15 @@ class EditorFragment() : Fragment() {
             val settingsBottomSheet = SettingsBottomSheet()
             settingsBottomSheet.show(parentFragmentManager, SettingsBottomSheet.TAG)
         }
+
+        requireView().findViewById<MaterialButton>(R.id.dev_tool_btn).setOnClickListener {
+            val newDayBottomSheet = NewDayBottomSheet()
+            newDayBottomSheet.show(parentFragmentManager, NewDayBottomSheet.TAG)
+        }
     }
 
     private fun observe() {
-        model.budgetValue.observeForever { value ->
+        model.budgetOfCurrentDay.observeForever { value ->
             budgetFragment?.also {
                 it.setValue("${value} ₽")
             }
@@ -102,7 +107,7 @@ class EditorFragment() : Fragment() {
                         restBudgetFragment = null
 
                         budgetFragment?.also {
-                            it.setValue("${model.budgetValue.value} ₽")
+                            it.setValue("${model.budgetOfCurrentDay.value} ₽")
                             it.setLabel("Budget")
                             animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
                             animate(it.getValueView(), "textSize",  12.toSP().toFloat(), 40.toSP().toFloat())
@@ -113,9 +118,9 @@ class EditorFragment() : Fragment() {
                     drawFragment = TextWithLabelFragment()
                     drawFragment!!.onCreated {
                         if (model.useDot) {
-                            drawFragment!!.setValue("${model.drawValue} ₽")
+                            drawFragment!!.setValue("${model.currentDraw} ₽")
                         } else {
-                            drawFragment!!.setValue("${model.drawValue.toInt()} ₽")
+                            drawFragment!!.setValue("${model.currentDraw.toInt()} ₽")
                         }
                         drawFragment!!.setLabel("Draw")
                         drawFragment!!.getLabelView().textSize = 10.toSP().toFloat()
@@ -124,7 +129,7 @@ class EditorFragment() : Fragment() {
 
                     restBudgetFragment = TextWithLabelFragment()
                     restBudgetFragment!!.onCreated {
-                        restBudgetFragment!!.setValue("${model.budgetValue.value?.minus(model.drawValue)} ₽")
+                        restBudgetFragment!!.setValue("${model.budgetOfCurrentDay.value?.minus(model.currentDraw)} ₽")
                         restBudgetFragment!!.setLabel("Rest budget")
                         restBudgetFragment!!.getLabelView().textSize = 8.toSP().toFloat()
                         restBudgetFragment!!.getValueView().textSize = 20.toSP().toFloat()
@@ -145,14 +150,14 @@ class EditorFragment() : Fragment() {
                 DrawsViewModel.Stage.EDIT_DRAW -> {
                     drawFragment?.also {
                         if (model.useDot) {
-                            it.setValue("${model.drawValue} ₽")
+                            it.setValue("${model.currentDraw} ₽")
                         } else {
-                            it.setValue("${model.drawValue.toInt()} ₽")
+                            it.setValue("${model.currentDraw.toInt()} ₽")
                         }
                         it.setLabel("Draw")
                     }
                     restBudgetFragment?.also {
-                        it.setValue("${model.budgetValue.value?.minus(model.drawValue)} ₽")
+                        it.setValue("${model.budgetOfCurrentDay.value?.minus(model.currentDraw)} ₽")
                         it.setLabel("Rest budget")
                     }
                 }
@@ -168,7 +173,7 @@ class EditorFragment() : Fragment() {
                         restBudgetFragment = null
 
                         budgetFragment?.also {
-                            it.setValue("${model.budgetValue.value} ₽")
+                            it.setValue("${model.budgetOfCurrentDay.value} ₽")
                             it.setLabel("Budget")
                             animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
                             animate(it.getValueView(), "textSize",  20.toSP().toFloat(), 40.toSP().toFloat())

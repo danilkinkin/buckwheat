@@ -80,6 +80,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observe() {
+        model.requireReCalcBudget.observeForever {
+            if (it) {
+                val newDayBottomSheet = NewDayBottomSheet()
+                newDayBottomSheet.show(supportFragmentManager, NewDayBottomSheet.TAG)
+            }
+        }
+
+        model.requireSetBudget.observeForever {
+            if (it) {
+                val settingsBottomSheet = SettingsBottomSheet()
+                settingsBottomSheet.show(supportFragmentManager, SettingsBottomSheet.TAG)
+            }
+        }
     }
 
     private fun build() {
@@ -129,52 +142,6 @@ class MainActivity : AppCompatActivity() {
         model.getDraws().observeForever { draws ->
             drawsAdapter.submitList(draws)
         }
-
-        /* keyboardContainer.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                keyboardContainer.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                val params = keyboardContainer.layoutParams
-
-                params.height = keyboardContainer.width
-
-                keyboardContainer.layoutParams = params
-            }
-        })
-
-        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-
-        val keyboard = KeyboardFragment()
-
-        keyboard.setCallback { type, value ->
-            when (type) {
-                "number" -> {
-                    if (model.stage.value == DrawsViewModel.Stage.IDLE) model.createDraw()
-
-                    model.editDraw(model.drawValue * 10F + value!!)
-                }
-                "action_eval" -> {
-                    model.commitDraw()
-                }
-                "action_backspace" -> {
-                    model.editDraw(floor(model.drawValue / 10F))
-                }
-                "action_dot" -> {
-                    /* if (useDot) {
-                        return@setCallback
-                    }
-
-                    useDot = true
-                    beforeDot = 0
-                    textField.text = "$afterDot.$beforeDot ₽" */
-                }
-            }
-            Log.d("Main", "$type: $value")
-        }
-
-        ft.replace(R.id.keyboard_container, keyboard)
-
-        ft.commit() */
     }
 
     override fun onSupportNavigateUp(): Boolean {
