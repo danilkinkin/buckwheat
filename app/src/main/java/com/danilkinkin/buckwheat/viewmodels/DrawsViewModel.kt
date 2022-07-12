@@ -35,7 +35,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     var currentDraw: Double = 0.0
 
     var toDate: Date = try {
-        Date(storage.get("toDate").value.toLong())
+        Date(storage.get("budgetToDate").value.toLong())
     } catch (e: Exception) {
         Date()
     }
