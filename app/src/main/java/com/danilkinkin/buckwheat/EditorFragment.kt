@@ -12,7 +12,7 @@ import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.button.MaterialButton
 
-class EditorFragment() : Fragment() {
+class EditorFragment : Fragment() {
     private lateinit var model: DrawsViewModel
 
     private var budgetFragment: TextWithLabelFragment? = null
@@ -62,7 +62,7 @@ class EditorFragment() : Fragment() {
 
         budgetFragment = TextWithLabelFragment().also {
             it.setValue("${model.budgetOfCurrentDay.value} ₽")
-            it.setLabel("Budget")
+            it.setLabel(context!!.getString(R.string.budget_for_today))
 
             it.onCreated { view ->
                 it.getLabelView().textSize = 10.toSP().toFloat()
@@ -108,7 +108,7 @@ class EditorFragment() : Fragment() {
 
                         budgetFragment?.also {
                             it.setValue("${model.budgetOfCurrentDay.value} ₽")
-                            it.setLabel("Budget")
+                            it.setLabel(context!!.getString(R.string.budget_for_today))
                             animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
                             animate(it.getValueView(), "textSize",  12.toSP().toFloat(), 40.toSP().toFloat())
                         }
@@ -122,7 +122,7 @@ class EditorFragment() : Fragment() {
                         } else {
                             drawFragment!!.setValue("${model.currentDraw.toInt()} ₽")
                         }
-                        drawFragment!!.setLabel("Draw")
+                        drawFragment!!.setLabel(context!!.getString(R.string.draw))
                         drawFragment!!.getLabelView().textSize = 10.toSP().toFloat()
                         drawFragment!!.getValueView().textSize = 46.toSP().toFloat()
                     }
@@ -130,7 +130,7 @@ class EditorFragment() : Fragment() {
                     restBudgetFragment = TextWithLabelFragment()
                     restBudgetFragment!!.onCreated {
                         restBudgetFragment!!.setValue("${model.budgetOfCurrentDay.value?.minus(model.currentDraw)} ₽")
-                        restBudgetFragment!!.setLabel("Rest budget")
+                        restBudgetFragment!!.setLabel(context!!.getString(R.string.rest_budget_for_today))
                         restBudgetFragment!!.getLabelView().textSize = 8.toSP().toFloat()
                         restBudgetFragment!!.getValueView().textSize = 20.toSP().toFloat()
                     }
@@ -154,11 +154,11 @@ class EditorFragment() : Fragment() {
                         } else {
                             it.setValue("${model.currentDraw.toInt()} ₽")
                         }
-                        it.setLabel("Draw")
+                        it.setLabel(context!!.getString(R.string.draw))
                     }
                     restBudgetFragment?.also {
                         it.setValue("${model.budgetOfCurrentDay.value?.minus(model.currentDraw)} ₽")
-                        it.setLabel("Rest budget")
+                        it.setLabel(context!!.getString(R.string.rest_budget_for_today))
                     }
                 }
                 DrawsViewModel.Stage.COMMITTING_DRAW -> {
@@ -174,7 +174,7 @@ class EditorFragment() : Fragment() {
 
                         budgetFragment?.also {
                             it.setValue("${model.budgetOfCurrentDay.value} ₽")
-                            it.setLabel("Budget")
+                            it.setLabel(context!!.getString(R.string.budget_for_today))
                             animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
                             animate(it.getValueView(), "textSize",  20.toSP().toFloat(), 40.toSP().toFloat())
                         }
