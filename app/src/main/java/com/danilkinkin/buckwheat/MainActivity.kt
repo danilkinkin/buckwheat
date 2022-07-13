@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
         val topAdapter = TopAdapter()
         val drawsAdapter = DrawsAdapter()
-        val editorAdapter = EditorAdapter(supportFragmentManager)
+        val editorAdapter = EditorAdapter(supportFragmentManager, recyclerView)
         val keyboardAdapter = KeyboardAdapter(supportFragmentManager) { lockScroll ->
             layoutManager.setScrollEnabled(!lockScroll)
         }

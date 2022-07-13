@@ -2,9 +2,12 @@ package com.danilkinkin.buckwheat
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
@@ -39,6 +42,20 @@ class EditorFragment : Fragment() {
 
         this.model = model
         this.appModel = appModel
+
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        val topBarHeight = if (resourceId > 0) {
+            resources.getDimensionPixelSize(resourceId)
+        } else {
+            0
+        }
+
+        val helperView = view.findViewById<View>(R.id.top_bar_offset_helper)
+        val layout = helperView.layoutParams
+
+        layout.height = topBarHeight
+
+        helperView.layoutParams = layout
 
         build()
         observe()

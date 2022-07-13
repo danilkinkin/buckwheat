@@ -11,17 +11,25 @@ import com.danilkinkin.buckwheat.R
 
 class EditorAdapter(
     private val fragmentManager: FragmentManager,
+    private val recyclerView: RecyclerView,
 ) : RecyclerView.Adapter<EditorAdapter.EditorViewHolder>() {
+
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
-    class EditorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class EditorViewHolder(view: View, recyclerView: RecyclerView) : RecyclerView.ViewHolder(view) {
         val flContainer: ConstraintLayout
 
         init {
             // Define click listener for the ViewHolder's View.
             flContainer = view.findViewById(R.id.container)
+
+            val layout = flContainer.layoutParams
+
+            layout.height = recyclerView.height - recyclerView.width
+
+            flContainer.layoutParams = layout
         }
     }
 
@@ -32,7 +40,7 @@ class EditorAdapter(
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.item_editor, viewGroup, false)
 
-        return EditorViewHolder(view)
+        return EditorViewHolder(view, recyclerView)
     }
 
     override fun onViewAttachedToWindow(holder: EditorViewHolder) {

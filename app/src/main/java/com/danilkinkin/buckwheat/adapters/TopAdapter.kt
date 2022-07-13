@@ -12,6 +12,23 @@ class TopAdapter() : RecyclerView.Adapter<TopAdapter.ViewHolder>() {
      * (custom ViewHolder).
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        init {
+            val resourceId = view.resources.getIdentifier("status_bar_height", "dimen", "android")
+            val topBarHeight = if (resourceId > 0) {
+                view.resources.getDimensionPixelSize(resourceId)
+            } else {
+                0
+            }
+
+            val helperView = view.findViewById<View>(R.id.root)
+
+            helperView.setPadding(
+                0,
+                topBarHeight,
+                0,
+                0,
+            )
+        }
 
     }
 
