@@ -12,6 +12,8 @@ import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
+import java.lang.Math.max
+import kotlin.math.abs
 import kotlin.math.floor
 
 class NewDayBottomSheet: BottomSheetDialogFragment() {
@@ -42,6 +44,18 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
         requireView().findViewById(R.id.add_current_day)
     }
 
+    private val debugTextView: MaterialTextView by lazy {
+        requireView().findViewById(R.id.debug)
+    }
+
+    private val splitRestDaysDebugTextView: MaterialTextView by lazy {
+        requireView().findViewById(R.id.spli_rest_days_debug)
+    }
+
+    private val addCurrentDayDebugTextView: MaterialTextView by lazy {
+        requireView().findViewById(R.id.add_current_day_debug)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -64,29 +78,42 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
 
     fun build() {
         val restDays = countDays(drawsModel.toDate)
-        val spentDays = countDays(drawsModel.lastReCalcBudgetDate!!)
+        val spentDays = abs(countDays(drawsModel.lastReCalcBudgetDate!!))
 
         val passBudget = drawsModel.wholeBudget.value!! - drawsModel.budgetOfCurrentDay.value!!
-        val requireDistributeBudget = floor((passBudget / (restDays + spentDays)) * spentDays + drawsModel.budgetOfCurrentDay.value!!)
+        val requireDistributeBudget = floor((drawsModel.restBudget.value!! / (restDays + spentDays - 1)) * (spentDays - 1).coerceAtLeast(
+            0
+        ) + drawsModel.budgetOfCurrentDay.value!!)
 
         Log.d(TAG, "passBudget = $passBudget requireDistributeBudget = $requireDistributeBudget wholeBudget = ${drawsModel.wholeBudget.value!!}")
         Log.d(TAG, "restDays = $restDays spentDays = $spentDays")
 
         val budgetPerDaySplit = floor(drawsModel.wholeBudget.value!! / restDays)
-        val budgetPerDayAdd = floor((drawsModel.wholeBudget.value!! - requireDistributeBudget) / restDays)
+        val budgetPerDayAdd = floor(drawsModel.restBudget.value!! / restDays)
 
         restBudgetOfDayTextView.text = "$requireDistributeBudget ₽"
+
+        debugTextView.text = "Осталось дней = $restDays " +
+                "\nПрошло дней с последнего пересчета = $spentDays " +
+                "\nВесь бюджет = ${drawsModel.wholeBudget.value!!}" +
+                "\nБюджет на сегодня = ${drawsModel.budgetOfCurrentDay.value!!}" +
+                "\nОставшийся бюджет = ${drawsModel.restBudget.value!!}"
 
         splitRestDaysDescriptionTextView.text = context!!.getString(
             R.string.split_rest_days_description,
             "$budgetPerDaySplit ₽",
         )
 
+        splitRestDaysDebugTextView.text = "${drawsModel.wholeBudget.value!!} / $restDays = $budgetPerDaySplit"
+
         addCurrentDayDescriptionTextView.text = context!!.getString(
             R.string.add_current_day_description,
             "${requireDistributeBudget + budgetPerDayAdd} ₽",
             "$budgetPerDayAdd ₽",
         )
+
+        addCurrentDayDebugTextView.text = "${drawsModel.restBudget.value!!} / $restDays = $budgetPerDayAdd " +
+                "\n${requireDistributeBudget} + ${budgetPerDayAdd} = ${requireDistributeBudget + budgetPerDayAdd}"
 
         splitRestDaysCardView.setOnClickListener {
             drawsModel.reCalcBudget(budgetPerDaySplit)

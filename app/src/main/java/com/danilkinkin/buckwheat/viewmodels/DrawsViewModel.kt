@@ -9,7 +9,9 @@ import com.danilkinkin.buckwheat.entities.Draw
 import com.danilkinkin.buckwheat.entities.Storage
 import com.danilkinkin.buckwheat.utils.countDays
 import com.danilkinkin.buckwheat.utils.isSameDay
+import java.lang.Math.max
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.floor
 
 class DrawsViewModel(application: Application) : AndroidViewModel(application) {
@@ -29,6 +31,11 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     })
     var wholeBudget: MutableLiveData<Double> = MutableLiveData(try {
         storage.get("budget").value.toDouble()
+    } catch (e: Exception) {
+        0.0
+    })
+    var restBudget: MutableLiveData<Double> = MutableLiveData(try {
+        storage.get("restBudget").value.toDouble()
     } catch (e: Exception) {
         0.0
     })
@@ -78,9 +85,11 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun reCalcBudget(currentDayBudget: Double) {
         budgetOfCurrentDay.value = currentDayBudget
+        restBudget.value = wholeBudget.value!! - currentDayBudget
         lastReCalcBudgetDate = Date()
 
         storage.set(Storage("currentDayBudget", currentDayBudget.toString()))
+        storage.set(Storage("restBudget", restBudget.value.toString()))
         storage.set(Storage("lastReCalcBudgetDate", lastReCalcBudgetDate!!.time.toString()))
     }
 
@@ -102,8 +111,15 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         draws.insert(Draw(currentDraw, Date()))
 
         budgetOfCurrentDay.value = budgetOfCurrentDay.value?.minus(currentDraw)
+        wholeBudget.value = wholeBudget.value?.minus(currentDraw)
 
-        storage.set(Storage("budget", budgetOfCurrentDay.value.toString()))
+        if (budgetOfCurrentDay.value!! < 0) {
+            restBudget.value = wholeBudget.value!! - budgetOfCurrentDay.value!!.coerceAtLeast(0.0)
+            storage.set(Storage("restBudget", restBudget.value.toString()))
+        }
+
+        storage.set(Storage("currentDayBudget", budgetOfCurrentDay.value.toString()))
+        storage.set(Storage("budget", wholeBudget.value.toString()))
 
         currentDraw = 0.0
         valueLeftDot = ""
