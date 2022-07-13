@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 
 class KeyboardFragment : Fragment() {
     private lateinit var model: DrawsViewModel
+    private lateinit var appModel: AppViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,8 +31,10 @@ class KeyboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val model: DrawsViewModel by activityViewModels()
+        val appModel: AppViewModel by activityViewModels()
 
         this.model = model
+        this.appModel = appModel
 
         build()
     }
@@ -86,6 +91,18 @@ class KeyboardFragment : Fragment() {
         }
 
         root.findViewById<MaterialButton>(R.id.btn_eval).setOnClickListener {
+            if ("${model.valueLeftDot}.${model.valueRightDot}" == "00000000.") {
+                model.resetDraw()
+
+                appModel.setIsDebug(!appModel.isDebug.value!!)
+
+                Snackbar
+                    .make(requireView(), "Debug ${if (appModel.isDebug.value!!) { "ON" } else { "OFF" }}", Snackbar.LENGTH_LONG)
+                    .show()
+
+                return@setOnClickListener
+            }
+
             model.commitDraw()
         }
     }

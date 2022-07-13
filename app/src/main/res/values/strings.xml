@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Buckwheat</string>
     <string name="action_settings">Settings</string>
+
     <!-- Main -->
     <string name="budget_for_today">Бюджет на сегодня</string>
     <string name="rest_budget_for_today">Останется на сегодня</string>

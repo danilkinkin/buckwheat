@@ -9,11 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.utils.toSP
+import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.button.MaterialButton
 
 class EditorFragment : Fragment() {
     private lateinit var model: DrawsViewModel
+    private lateinit var appModel: AppViewModel
 
     private var budgetFragment: TextWithLabelFragment? = null
     private var drawFragment: TextWithLabelFragment? = null
@@ -33,8 +35,10 @@ class EditorFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val model: DrawsViewModel by activityViewModels()
+        val appModel: AppViewModel by activityViewModels()
 
         this.model = model
+        this.appModel = appModel
 
         build()
         observe()
@@ -182,6 +186,14 @@ class EditorFragment : Fragment() {
                         model.resetDraw()
                     }
                 }
+            }
+        }
+
+        appModel.isDebug.observeForever {
+            requireView().findViewById<MaterialButton>(R.id.dev_tool_btn).visibility = if (it) {
+                View.VISIBLE
+            } else {
+                View.GONE
             }
         }
     }

@@ -21,7 +21,7 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
         val TAG = NewDayBottomSheet::class.simpleName
     }
 
-    private lateinit var model: AppViewModel
+    private lateinit var appModel: AppViewModel
     private lateinit var drawsModel: DrawsViewModel
 
     private val restBudgetOfDayTextView: MaterialTextView by lazy {
@@ -67,10 +67,10 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val model: AppViewModel by activityViewModels()
+        val appModel: AppViewModel by activityViewModels()
         val drawsModel: DrawsViewModel by activityViewModels()
 
-        this.model = model
+        this.appModel = appModel
         this.drawsModel = drawsModel
 
         build()
@@ -93,27 +93,33 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
 
         restBudgetOfDayTextView.text = "$requireDistributeBudget ₽"
 
-        debugTextView.text = "Осталось дней = $restDays " +
-                "\nПрошло дней с последнего пересчета = $spentDays " +
-                "\nВесь бюджет = ${drawsModel.wholeBudget.value!!}" +
-                "\nБюджет на сегодня = ${drawsModel.budgetOfCurrentDay.value!!}" +
-                "\nОставшийся бюджет = ${drawsModel.restBudget.value!!}"
+        if (appModel.isDebug.value == true) {
+            debugTextView.visibility = View.VISIBLE
+            debugTextView.text = "Осталось дней = $restDays " +
+                    "\nПрошло дней с последнего пересчета = $spentDays " +
+                    "\nВесь бюджет = ${drawsModel.wholeBudget.value!!}" +
+                    "\nБюджет на сегодня = ${drawsModel.budgetOfCurrentDay.value!!}" +
+                    "\nОставшийся бюджет = ${drawsModel.restBudget.value!!}"
+
+
+            splitRestDaysDebugTextView.visibility = View.VISIBLE
+            splitRestDaysDebugTextView.text = "${drawsModel.wholeBudget.value!!} / $restDays = $budgetPerDaySplit"
+
+            addCurrentDayDebugTextView.visibility = View.VISIBLE
+            addCurrentDayDebugTextView.text = "${drawsModel.restBudget.value!!} / $restDays = $budgetPerDayAdd " +
+                    "\n${requireDistributeBudget} + ${budgetPerDayAdd} = ${requireDistributeBudget + budgetPerDayAdd}"
+        }
 
         splitRestDaysDescriptionTextView.text = context!!.getString(
             R.string.split_rest_days_description,
             "$budgetPerDaySplit ₽",
         )
 
-        splitRestDaysDebugTextView.text = "${drawsModel.wholeBudget.value!!} / $restDays = $budgetPerDaySplit"
-
         addCurrentDayDescriptionTextView.text = context!!.getString(
             R.string.add_current_day_description,
             "${requireDistributeBudget + budgetPerDayAdd} ₽",
             "$budgetPerDayAdd ₽",
         )
-
-        addCurrentDayDebugTextView.text = "${drawsModel.restBudget.value!!} / $restDays = $budgetPerDayAdd " +
-                "\n${requireDistributeBudget} + ${budgetPerDayAdd} = ${requireDistributeBudget + budgetPerDayAdd}"
 
         splitRestDaysCardView.setOnClickListener {
             drawsModel.reCalcBudget(budgetPerDaySplit)

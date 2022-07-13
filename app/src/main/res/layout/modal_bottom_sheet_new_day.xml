@@ -55,7 +55,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:textAppearance="?attr/textAppearanceBodyMedium"
-        android:textColor="?android:attr/textColorSecondary" />
+        android:textColor="?android:attr/textColorSecondary"
+        android:visibility="gone" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/split_rest_days"
@@ -104,7 +105,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -169,7 +171,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
