@@ -5,10 +5,10 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/material_dynamic_neutral95"
     android:clipToPadding="false"
     android:fitsSystemWindows="true"
-    tools:context=".MainActivity"
-    android:background="?attr/colorSurfaceVariant">
+    tools:context=".MainActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_view"

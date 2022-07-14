@@ -1,33 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Buckwheat" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorPrimary">@color/md_theme_light_primary</item>
-        <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
-        <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
-        <item name="colorOnPrimaryContainer">@color/md_theme_light_onPrimaryContainer</item>
-        <item name="colorSecondary">@color/md_theme_light_secondary</item>
-        <item name="colorOnSecondary">@color/md_theme_light_onSecondary</item>
-        <item name="colorSecondaryContainer">@color/md_theme_light_secondaryContainer</item>
-        <item name="colorOnSecondaryContainer">@color/md_theme_light_onSecondaryContainer</item>
-        <item name="colorTertiary">@color/md_theme_light_tertiary</item>
-        <item name="colorOnTertiary">@color/md_theme_light_onTertiary</item>
-        <item name="colorTertiaryContainer">@color/md_theme_light_tertiaryContainer</item>
-        <item name="colorOnTertiaryContainer">@color/md_theme_light_onTertiaryContainer</item>
-        <item name="colorError">@color/md_theme_light_error</item>
-        <item name="colorErrorContainer">@color/md_theme_light_errorContainer</item>
-        <item name="colorOnError">@color/md_theme_light_onError</item>
-        <item name="colorOnErrorContainer">@color/md_theme_light_onErrorContainer</item>
-        <item name="android:colorBackground">@color/md_theme_light_background</item>
-        <item name="colorOnBackground">@color/md_theme_light_onBackground</item>
-        <item name="colorSurface">@color/md_theme_light_surface</item>
-        <item name="colorOnSurface">@color/md_theme_light_onSurface</item>
-        <item name="colorSurfaceVariant">@color/md_theme_light_surfaceVariant</item>
-        <item name="colorOnSurfaceVariant">@color/md_theme_light_onSurfaceVariant</item>
-        <item name="colorOutline">@color/md_theme_light_outline</item>
-        <item name="colorOnSurfaceInverse">@color/md_theme_light_inverseOnSurface</item>
-        <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
-        <item name="colorPrimaryInverse">@color/md_theme_light_primaryInverse</item>
-
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Buckwheat.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Buckwheat.MediumComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Buckwheat.LargeComponent</item>
@@ -36,7 +9,6 @@
         <item name="textAppearanceTitleLarge">@style/TextAppearance.Buckwheat.TitleLarge</item>
 
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Buckwheat.BottomSheetDialog</item>
-
     </style>
 
     <style name="Theme.Buckwheat" parent="Base.Theme.Buckwheat" />
@@ -65,7 +37,7 @@
         <item name="android:textAppearance">@style/TextAppearance.Buckwheat.TitleLarge</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
-        <item name="backgroundTint">@android:color/system_accent1_50</item>
+        <item name="backgroundTint">@color/material_dynamic_neutral95</item>
     </style>
 
     <style name="ShapeAppearance.Buckwheat.EditorCard" parent="">
@@ -82,6 +54,7 @@
 
     <style name="Widget.Buckwheat.EditorCard" parent="@style/Widget.Material3.CardView.Filled">
         <item name="shapeAppearance">@style/ShapeAppearance.Buckwheat.EditorCard</item>
+        <item name="cardBackgroundColor">@color/material_dynamic_neutral95</item>
     </style>
 
     <style name="ThemeOverlay.Buckwheat.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
