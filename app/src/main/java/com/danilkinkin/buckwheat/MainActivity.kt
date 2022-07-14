@@ -17,12 +17,20 @@ import com.danilkinkin.buckwheat.adapters.EditorAdapter
 import com.danilkinkin.buckwheat.adapters.KeyboardAdapter
 import com.danilkinkin.buckwheat.adapters.TopAdapter
 import com.danilkinkin.buckwheat.decorators.DrawsDividerItemDecoration
-import com.danilkinkin.buckwheat.utils.toDP
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var model: DrawsViewModel
+
+    val recyclerView: RecyclerView by lazy {
+        findViewById(R.id.recycle_view)
+    }
+
+    val fabHome: FloatingActionButton by lazy {
+        findViewById(R.id.fab_home_btn)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +104,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun build() {
-        val recyclerView: RecyclerView = findViewById(R.id.recycle_view)
+        var recyclerViewScrollY: Long = 0
 
         val layoutManager = object : LinearLayoutManager(this) {
             private var isScrollEnabled = true
@@ -127,8 +135,16 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = contactAdapter
 
-        recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
+        recyclerView.setOnScrollChangeListener { _, _, _, _, dY: Int ->
             keyboardAdapter.scrollUpdate(recyclerView)
+
+            recyclerViewScrollY += dY
+
+            if (recyclerViewScrollY > recyclerView.width) {
+                fabHome.show()
+            } else {
+                fabHome.hide()
+            }
         }
 
         val swipeToDeleteCallback = SwipeToDeleteCallback(applicationContext, drawsAdapter) {
@@ -141,6 +157,10 @@ class MainActivity : AppCompatActivity() {
 
         model.getDraws().observeForever { draws ->
             drawsAdapter.submitList(draws)
+        }
+
+        fabHome.setOnClickListener {
+            recyclerView.smoothScrollToPosition(contactAdapter.itemCount - 1)
         }
     }
 

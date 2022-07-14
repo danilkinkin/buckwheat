@@ -6,6 +6,7 @@
     <string name="budget_for_today">Бюджет на сегодня</string>
     <string name="rest_budget_for_today">Останется на сегодня</string>
     <string name="draw">Трата</string>
+    <string name="fab_home_desc">Домой</string>
 
     <!-- Settings -->
     <string name="settings_title">Настройки</string>
