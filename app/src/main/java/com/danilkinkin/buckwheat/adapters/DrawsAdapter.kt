@@ -8,14 +8,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.entities.Draw
+import com.danilkinkin.buckwheat.utils.prettyDate
 import com.google.android.material.textview.MaterialTextView
-import java.text.SimpleDateFormat
 
 class DrawsAdapter: ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCallback) {
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     class DrawViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val valueTextView: MaterialTextView = itemView.findViewById(R.id.value)
         private val dateTextView: MaterialTextView = itemView.findViewById(R.id.date_input)
@@ -26,26 +22,18 @@ class DrawsAdapter: ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCallb
 
             valueTextView.text = "${draw.value} ₽"
 
-            val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
-            dateTextView.text = dateFormat.format(draw.date.time).toString()
+            dateTextView.text = prettyDate(draw.date)
         }
     }
 
-    // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): DrawViewHolder {
-
-        // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.item_draw, viewGroup, false)
 
         return DrawViewHolder(view)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: DrawViewHolder, position: Int) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
         val draw = getItem(position)
         viewHolder.bind(draw)
     }
