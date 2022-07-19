@@ -41,9 +41,9 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        val windowInsetsController = ViewCompat.getWindowInsetsController(window.decorView)
+        val windowInsetsController =  WindowCompat.getInsetsController(window, window.decorView)
 
-        windowInsetsController?.isAppearanceLightNavigationBars = true
+        windowInsetsController.isAppearanceLightNavigationBars = true
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root)) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())

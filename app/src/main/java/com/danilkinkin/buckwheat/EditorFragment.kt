@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
+import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
@@ -82,7 +83,7 @@ class EditorFragment : Fragment() {
         val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
 
         budgetFragment = TextWithLabelFragment().also {
-            it.setValue("${model.budgetOfCurrentDay.value} ₽")
+            it.setValue("${prettyCandyCanes(model.budgetOfCurrentDay.value!!)} ₽")
             it.setLabel(context!!.getString(R.string.budget_for_today))
 
             it.onCreated { view ->
@@ -109,7 +110,7 @@ class EditorFragment : Fragment() {
     private fun observe() {
         model.budgetOfCurrentDay.observeForever { value ->
             budgetFragment?.also {
-                it.setValue("${value} ₽")
+                it.setValue("${prettyCandyCanes(value)} ₽")
             }
         }
 
@@ -128,7 +129,7 @@ class EditorFragment : Fragment() {
                         restBudgetFragment = null
 
                         budgetFragment?.also {
-                            it.setValue("${model.budgetOfCurrentDay.value} ₽")
+                            it.setValue("${prettyCandyCanes(model.budgetOfCurrentDay.value!!)} ₽")
                             it.setLabel(context!!.getString(R.string.budget_for_today))
                             animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
                             animate(it.getValueView(), "textSize",  12.toSP().toFloat(), 40.toSP().toFloat())
@@ -138,11 +139,7 @@ class EditorFragment : Fragment() {
                 DrawsViewModel.Stage.CREATING_DRAW -> {
                     drawFragment = TextWithLabelFragment()
                     drawFragment!!.onCreated {
-                        if (model.useDot) {
-                            drawFragment!!.setValue("${model.currentDraw} ₽")
-                        } else {
-                            drawFragment!!.setValue("${model.currentDraw.toInt()} ₽")
-                        }
+                        drawFragment!!.setValue("${prettyCandyCanes(model.currentDraw)} ₽")
                         drawFragment!!.setLabel(context!!.getString(R.string.draw))
                         drawFragment!!.getLabelView().textSize = 10.toSP().toFloat()
                         drawFragment!!.getValueView().textSize = 46.toSP().toFloat()
@@ -150,7 +147,7 @@ class EditorFragment : Fragment() {
 
                     restBudgetFragment = TextWithLabelFragment()
                     restBudgetFragment!!.onCreated {
-                        restBudgetFragment!!.setValue("${model.budgetOfCurrentDay.value?.minus(model.currentDraw)} ₽")
+                        restBudgetFragment!!.setValue("${prettyCandyCanes(model.budgetOfCurrentDay.value?.minus(model.currentDraw)!!)} ₽")
                         restBudgetFragment!!.setLabel(context!!.getString(R.string.rest_budget_for_today))
                         restBudgetFragment!!.getLabelView().textSize = 8.toSP().toFloat()
                         restBudgetFragment!!.getValueView().textSize = 20.toSP().toFloat()
@@ -170,15 +167,11 @@ class EditorFragment : Fragment() {
                 }
                 DrawsViewModel.Stage.EDIT_DRAW -> {
                     drawFragment?.also {
-                        if (model.useDot) {
-                            it.setValue("${model.currentDraw} ₽")
-                        } else {
-                            it.setValue("${model.currentDraw.toInt()} ₽")
-                        }
+                        it.setValue("${prettyCandyCanes(model.currentDraw, model.useDot)} ₽")
                         it.setLabel(context!!.getString(R.string.draw))
                     }
                     restBudgetFragment?.also {
-                        it.setValue("${model.budgetOfCurrentDay.value?.minus(model.currentDraw)} ₽")
+                        it.setValue("${prettyCandyCanes(model.budgetOfCurrentDay.value?.minus(model.currentDraw)!!)} ₽")
                         it.setLabel(context!!.getString(R.string.rest_budget_for_today))
                     }
                 }
@@ -194,7 +187,7 @@ class EditorFragment : Fragment() {
                         restBudgetFragment = null
 
                         budgetFragment?.also {
-                            it.setValue("${model.budgetOfCurrentDay.value} ₽")
+                            it.setValue("${prettyCandyCanes(model.budgetOfCurrentDay.value!!)} ₽")
                             it.setLabel(context!!.getString(R.string.budget_for_today))
                             animate(it.getLabelView(), "textSize", 8.toSP().toFloat(), 10.toSP().toFloat())
                             animate(it.getValueView(), "textSize",  20.toSP().toFloat(), 40.toSP().toFloat())

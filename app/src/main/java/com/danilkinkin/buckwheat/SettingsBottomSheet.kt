@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.utils.countDays
+import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -73,7 +74,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
 
         totalDescriptionTextView.text = context!!.getString(
             R.string.total_description,
-            "${if (days != 0) { floor(budgetValue / days) } else { budgetValue }} ₽",
+            "${prettyCandyCanes(if (days != 0) { floor(budgetValue / days) } else { budgetValue })} ₽",
             "$days",
         )
     }
@@ -81,7 +82,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     fun build() {
         budgetValue = drawsModel.wholeBudget.value ?: 0.0
         dateToValue = drawsModel.toDate
-        budgetInput.setText(budgetValue.toString())
+        budgetInput.setText(prettyCandyCanes(budgetValue))
 
         budgetInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -91,7 +92,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
                 budgetValue = try {
                     p0.toString().toDouble()
                 } catch (e: Exception) {
-                    budgetInput.setText(0.0.toString())
+                    budgetInput.setText(prettyCandyCanes(0.0))
 
                     0.0
                 }

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.entities.Draw
+import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.utils.prettyDate
 import com.google.android.material.textview.MaterialTextView
 
@@ -20,7 +21,7 @@ class DrawsAdapter: ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCallb
         fun bind(draw: Draw) {
             currentDraw = draw
 
-            valueTextView.text = "${draw.value} ₽"
+            valueTextView.text = "${prettyCandyCanes(draw.value)} ₽"
 
             dateTextView.text = prettyDate(draw.date)
         }

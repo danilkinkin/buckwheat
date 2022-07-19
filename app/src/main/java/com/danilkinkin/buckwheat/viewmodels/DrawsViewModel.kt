@@ -164,7 +164,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
             Action.REMOVE_LAST -> {
                 if (useDot && valueRightDot.length > 1) {
                     valueRightDot = valueRightDot.dropLast(1)
-                } else if (valueRightDot.length == 1) {
+                } else if (useDot && valueRightDot.length <= 1) {
                     valueRightDot = ""
                     useDot = false
                 } else if (valueLeftDot.length > 1) {
