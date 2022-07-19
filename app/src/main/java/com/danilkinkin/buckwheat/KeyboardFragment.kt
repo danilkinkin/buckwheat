@@ -1,13 +1,20 @@
 package com.danilkinkin.buckwheat
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.RelativeLayout
+import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.animation.doOnEnd
+import androidx.core.view.doOnLayout
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.danilkinkin.buckwheat.utils.toDP
+import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.button.MaterialButton
@@ -16,6 +23,64 @@ import com.google.android.material.snackbar.Snackbar
 class KeyboardFragment : Fragment() {
     private lateinit var model: DrawsViewModel
     private lateinit var appModel: AppViewModel
+
+    private val root: MotionLayout by lazy {
+        requireView().findViewById(R.id.root)
+    }
+
+    private val n0Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_0)
+    }
+
+    private val n1Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_1)
+    }
+
+    private val n2Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_2)
+    }
+
+    private val n3Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_3)
+    }
+
+    private val n4Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_4)
+    }
+
+    private val n5Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_5)
+    }
+
+    private val n6Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_6)
+    }
+
+    private val n7Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_7)
+    }
+
+    private val n8Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_8)
+    }
+
+    private val n9Btn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_9)
+    }
+
+    private val backspaceBtn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_backspace)
+    }
+
+    private val dotBtn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_dot)
+    }
+
+    private val evalBtn: MaterialButton by lazy {
+        requireView().findViewById(R.id.btn_eval)
+    }
+
+    var listBtns: ArrayList<MaterialButton>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,58 +104,62 @@ class KeyboardFragment : Fragment() {
         build()
     }
 
-    fun build() {
-        val root = requireView().findViewById<ConstraintLayout>(R.id.root)
+    fun anim(progress: Float) {
+        root.progress = 1 - progress
+    }
 
-        root.findViewById<MaterialButton>(R.id.btn_0).setOnClickListener {
+    fun build() {
+        listBtns = arrayListOf(n0Btn, n1Btn, n2Btn, n3Btn, n4Btn, n5Btn, n6Btn, n7Btn, n8Btn, n9Btn, dotBtn)
+
+        n0Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 0)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_1).setOnClickListener {
+        n1Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 1)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_2).setOnClickListener {
+        n2Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 2)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_3).setOnClickListener {
+        n3Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 3)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_4).setOnClickListener {
+        n4Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 4)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_5).setOnClickListener {
+        n5Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 5)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_6).setOnClickListener {
+        n6Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 6)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_7).setOnClickListener {
+        n7Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 7)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_8).setOnClickListener {
+        n8Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 8)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_9).setOnClickListener {
+        n9Btn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 9)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_dot).setOnClickListener {
+        dotBtn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.SET_DOT)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_backspace).setOnClickListener {
+        backspaceBtn.setOnClickListener {
             this.model.executeAction(DrawsViewModel.Action.REMOVE_LAST)
         }
 
-        root.findViewById<MaterialButton>(R.id.btn_eval).setOnClickListener {
+        evalBtn.setOnClickListener {
             if ("${model.valueLeftDot}.${model.valueRightDot}" == "00000000.") {
                 model.resetDraw()
 
@@ -105,5 +174,58 @@ class KeyboardFragment : Fragment() {
 
             model.commitDraw()
         }
+
+        root.addTransitionListener(object : MotionLayout.TransitionListener {
+            override fun onTransitionStarted(
+                motionLayout: MotionLayout?,
+                startId: Int,
+                endId: Int
+            ) {
+
+            }
+
+            override fun onTransitionChange(
+                motionLayout: MotionLayout?,
+                startId: Int,
+                endId: Int,
+                progress: Float
+            ) {
+                val shiftProgress: Float = if (progress < 0.5) {
+                    0F
+                } else {
+                    (progress - 0.5F) * 2F
+                }
+
+                backspaceBtn.iconSize = (36.toDP() - 12.toDP() * shiftProgress).toInt()
+
+                listBtns?.forEach {
+                    it.textSize = 26.toSP() - 12.toSP() * shiftProgress
+                }
+            }
+
+            override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
+                val shiftProgress =  if (currentId == R.id.end) {
+                    1F
+                } else {
+                    0F
+                }
+
+                backspaceBtn.iconSize = (36.toDP() - 12.toDP() * shiftProgress).toInt()
+
+                listBtns?.forEach {
+                    it.textSize = 26.toSP() - 12.toSP() * shiftProgress
+                }
+            }
+
+            override fun onTransitionTrigger(
+                motionLayout: MotionLayout?,
+                triggerId: Int,
+                positive: Boolean,
+                progress: Float
+            ) {
+
+            }
+
+        })
     }
 }

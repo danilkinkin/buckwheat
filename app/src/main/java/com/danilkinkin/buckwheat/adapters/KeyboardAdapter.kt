@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,6 +16,7 @@ import java.lang.Integer.min
 import java.lang.Math.max
 
 private var keyboardView: View? = null
+private var fragmentKeyboard: KeyboardFragment? = null
 
 class KeyboardAdapter(
     private val fragmentManager: FragmentManager,
@@ -32,18 +34,16 @@ class KeyboardAdapter(
 
         init {
             // Define click listener for the ViewHolder's View.
-            flContainer = view.findViewById(R.id.container)
+            flContainer = view.findViewById(R.id.wrapper)
 
             keyboardView = view
 
-            val wrapperView = view.findViewById<ConstraintLayout>(R.id.wrapper)
+            flContainer.doOnLayout {
+                val layout = flContainer.layoutParams
 
-            wrapperView.doOnLayout {
-                val layout = wrapperView.layoutParams
+                layout.height = flContainer.width
 
-                layout.height = wrapperView.width
-
-                wrapperView.layoutParams = layout
+                flContainer.layoutParams = layout
             }
         }
     }
@@ -96,26 +96,24 @@ class KeyboardAdapter(
     }
 
     fun scrollUpdate(parent: RecyclerView) {
-        keyboardView?.let {
-            val containerView = it.findViewById<ConstraintLayout>(R.id.container)
+        val minHeight = 258.toDP()
 
-            val layoutContainer = containerView.layoutParams
+        val value = (parent.height - keyboardView!!.top - minHeight) / (parent.width.toFloat() - minHeight)
 
-            layoutContainer.height = min(max(parent.height - it.top, 300.toDP()), containerView.width)
-
-            containerView.layoutParams = layoutContainer
-        }
+        // fragmentKeyboard?.anim(value.coerceAtLeast(0F))
     }
 
     fun attachFragmentToContainer() {
-        val fragment = if (fragmentManager.fragments.firstOrNull { it is KeyboardFragment } == null)
-            KeyboardFragment()
-        else
+        val fragment = if (fragmentManager.fragments.firstOrNull { it is KeyboardFragment } == null) {
+            fragmentKeyboard = KeyboardFragment()
+
+            fragmentKeyboard
+        } else
             null
 
         if (fragment != null) {
             fragmentManager.beginTransaction()
-                .add(R.id.container, fragment)
+                .add(R.id.wrapper, fragment)
                 .commitNowAllowingStateLoss()
         }
     }

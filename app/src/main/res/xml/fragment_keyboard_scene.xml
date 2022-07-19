@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/start">
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/rule_horiz_1"
+            app:layout_constraintGuide_begin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Constraint
+            android:id="@+id/rule_horiz_2"
+            app:layout_constraintGuide_begin="68dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Constraint
+            android:id="@+id/rule_horiz_3"
+            app:layout_constraintGuide_begin="74dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Constraint
+            android:id="@+id/rule_horiz_4"
+            app:layout_constraintGuide_begin="126dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Constraint
+            android:id="@+id/rule_horiz_5"
+            app:layout_constraintGuide_begin="132dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Constraint
+            android:id="@+id/rule_horiz_6"
+            app:layout_constraintGuide_begin="184dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Constraint
+            android:id="@+id/rule_horiz_7"
+            app:layout_constraintGuide_begin="190dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Constraint
+            android:id="@+id/rule_horiz_8"
+            app:layout_constraintGuide_begin="242dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ConstraintSet>
+
+    <Transition
+        motion:constraintSetStart="@+id/start"
+        motion:constraintSetEnd="@+id/end"
+        app:motionInterpolator="linear">
+    </Transition>
+</MotionScene>
