@@ -8,6 +8,8 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowInsetsController
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -62,6 +64,8 @@ class MainActivity : AppCompatActivity() {
                 WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             )
         }
+
+        window.statusBarColor = ColorUtils.setAlphaComponent(ContextCompat.getColor(this, com.google.android.material.R.color.material_dynamic_neutral95), 230)
 
         val model: DrawsViewModel by viewModels()
 
