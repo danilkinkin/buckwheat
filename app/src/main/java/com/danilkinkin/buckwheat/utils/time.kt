@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.utils
 
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -11,7 +12,15 @@ val yearFormat = SimpleDateFormat("yyyy")
 val dateFormat = SimpleDateFormat("dd MMMM")
 val timeFormat = SimpleDateFormat("HH:mm")
 
-fun countDays(toDate: Date, fromDate: Date = Date()): Int = ceil((toDate.time - fromDate.time) / DAY.toFloat()).toInt()
+fun countDays(toDate: Date, fromDate: Date = Date()): Int {
+    val sign = if (toDate.time - fromDate.time > 0) {
+        1
+    } else {
+        -1
+    }
+
+    return ceil(abs((toDate.time - fromDate.time) / DAY.toFloat())).toInt() * sign
+}
 
 fun isSameDay(timestampA: Long, timestampB: Long): Boolean = floor(timestampA / DAY.toFloat()).toLong() == floor(timestampB / DAY.toFloat()).toLong()
 
