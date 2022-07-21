@@ -10,6 +10,7 @@ import com.danilkinkin.buckwheat.entities.Draw
 import com.danilkinkin.buckwheat.entities.Storage
 import com.danilkinkin.buckwheat.utils.countDays
 import com.danilkinkin.buckwheat.utils.isSameDay
+import com.danilkinkin.buckwheat.utils.roundToDay
 import java.lang.Math.max
 import java.util.*
 import kotlin.math.abs
@@ -25,31 +26,35 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     private val storage = db.storageDao()
 
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
-    var budgetOfCurrentDay: MutableLiveData<Double> = MutableLiveData(try {
-        storage.get("currentDayBudget").value.toDouble()
-    } catch (e: Exception) {
-        0.0
-    })
-    var wholeBudget: MutableLiveData<Double> = MutableLiveData(try {
+
+    var budget: MutableLiveData<Double> = MutableLiveData(try {
         storage.get("budget").value.toDouble()
     } catch (e: Exception) {
         0.0
     })
-    var restBudget: MutableLiveData<Double> = MutableLiveData(try {
-        storage.get("restBudget").value.toDouble()
+    var spent: MutableLiveData<Double> = MutableLiveData(try {
+        storage.get("spent").value.toDouble()
     } catch (e: Exception) {
         0.0
     })
-    var currentDraw: Double = 0.0
-
+    var dailyBudget: MutableLiveData<Double> = MutableLiveData(try {
+        storage.get("dailyBudget").value.toDouble()
+    } catch (e: Exception) {
+        0.0
+    })
+    var spentFromDailyBudget: MutableLiveData<Double> = MutableLiveData(try {
+        storage.get("spentFromDailyBudget").value.toDouble()
+    } catch (e: Exception) {
+        0.0
+    })
 
     var startDate: Date = try {
         Date(storage.get("startDate").value.toLong())
     } catch (e: Exception) {
         Date()
     }
-    var toDate: Date = try {
-        Date(storage.get("budgetToDate").value.toLong())
+    var finishDate: Date = try {
+        Date(storage.get("finishDate").value.toLong())
     } catch (e: Exception) {
         Date()
     }
@@ -58,6 +63,8 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     } catch (e: Exception) {
         null
     }
+
+    var currentDraw: Double = 0.0
 
     var requireReCalcBudget: MutableLiveData<Boolean> = MutableLiveData(false)
     var requireSetBudget: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -71,7 +78,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
             requireReCalcBudget.value = true
         }
 
-        if (lastReCalcBudgetDate === null || toDate.time <= Date().time) {
+        if (lastReCalcBudgetDate === null || finishDate.time <= Date().time) {
             requireSetBudget.value = true
         }
     }
@@ -80,23 +87,43 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         return draws.getAll()
     }
 
-    fun changeBudget(budget: Double, toDate: Date) {
+    fun changeBudget(budget: Double, finishDate: Date) {
         storage.set(Storage("budget", budget.toString()))
-        storage.set(Storage("budgetToDate", toDate.time.toString()))
+        this.budget.value = budget
 
-        reCalcBudget(floor(budget / countDays(toDate)))
+        val startDate = roundToDay(Date())
+        storage.set(Storage("startDate", startDate.time.toString()))
+        this.startDate = startDate
 
-        wholeBudget.value = budget
-        this.toDate = toDate
+        val roundedFinishDate = roundToDay(finishDate)
+        storage.set(Storage("finishDate", roundedFinishDate.time.toString()))
+        this.finishDate = roundedFinishDate
+
+        storage.set(Storage("spent", 0.0.toString()))
+        this.spent.value = 0.0
+
+        storage.set(Storage("dailyBudget", 0.0.toString()))
+        this.dailyBudget.value = 0.0
+
+        storage.set(Storage("spentFromDailyBudget", 0.0.toString()))
+        this.spentFromDailyBudget.value = 0.0
+
+        storage.set(Storage("lastReCalcBudgetDate", roundToDay(startDate).time.toString()))
+        this.lastReCalcBudgetDate = startDate
+
+        draws.deleteAll()
+
+        reCalcDailyBudget(floor(budget / countDays(roundedFinishDate)))
     }
 
-    fun reCalcBudget(currentDayBudget: Double) {
-        budgetOfCurrentDay.value = currentDayBudget
-        restBudget.value = wholeBudget.value!! - currentDayBudget
-        lastReCalcBudgetDate = Date()
+    fun reCalcDailyBudget(dailyBudget: Double) {
+        this.dailyBudget.value = dailyBudget
+        lastReCalcBudgetDate = roundToDay(Date())
+        spent.value = spent.value!! + spentFromDailyBudget.value!!
 
-        storage.set(Storage("currentDayBudget", currentDayBudget.toString()))
-        storage.set(Storage("restBudget", restBudget.value.toString()))
+        storage.set(Storage("spent", spent.value.toString()))
+        storage.set(Storage("dailyBudget", dailyBudget.toString()))
+        storage.set(Storage("spentFromDailyBudget", 0.0.toString()))
         storage.set(Storage("lastReCalcBudgetDate", lastReCalcBudgetDate!!.time.toString()))
     }
 
@@ -117,16 +144,8 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
         draws.insert(Draw(currentDraw, Date()))
 
-        budgetOfCurrentDay.value = budgetOfCurrentDay.value?.minus(currentDraw)
-        wholeBudget.value = wholeBudget.value?.minus(currentDraw)
-
-        if (budgetOfCurrentDay.value!! < 0) {
-            restBudget.value = wholeBudget.value!! - budgetOfCurrentDay.value!!.coerceAtLeast(0.0)
-            storage.set(Storage("restBudget", restBudget.value.toString()))
-        }
-
-        storage.set(Storage("currentDayBudget", budgetOfCurrentDay.value.toString()))
-        storage.set(Storage("budget", wholeBudget.value.toString()))
+        spentFromDailyBudget.value = spentFromDailyBudget.value?.plus(currentDraw)
+        storage.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
 
         currentDraw = 0.0
         valueLeftDot = ""

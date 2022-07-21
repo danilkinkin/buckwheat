@@ -45,3 +45,15 @@ fun prettyDate(date: Date, showTime: Boolean = true, forceShowDate: Boolean = fa
 
     return final
 }
+
+fun roundToDay(date: Date): Date {
+    val calendar = Calendar.getInstance()
+    calendar.time = date
+
+    return Calendar
+        .Builder()
+        .setTimeZone(calendar.timeZone)
+        .setDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        .build()
+        .time
+}

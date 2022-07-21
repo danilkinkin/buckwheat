@@ -17,4 +17,7 @@ interface DrawDao {
 
     @Delete
     fun delete(draw: Draw)
+
+    @Query("DELETE FROM draw")
+    fun deleteAll()
 }

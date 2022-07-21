@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.utils.countDays
+import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -77,58 +78,62 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
     }
 
     fun build() {
-        val restDays = countDays(drawsModel.toDate)
-        val spentDays = abs(countDays(drawsModel.lastReCalcBudgetDate!!))
+        val restDays = countDays(drawsModel.finishDate)
+        val skippedDays = abs(countDays(drawsModel.lastReCalcBudgetDate!!))
 
-        val passBudget = drawsModel.wholeBudget.value!! - drawsModel.budgetOfCurrentDay.value!!
-        val requireDistributeBudget = floor((drawsModel.restBudget.value!! / (restDays + spentDays - 1)) * (spentDays - 1).coerceAtLeast(
-            0
-        ) + drawsModel.budgetOfCurrentDay.value!!)
+        val restBudget = (drawsModel.budget.value!! - drawsModel.spent.value!!) - drawsModel.dailyBudget.value!!
+        val perDayBudget = restBudget / (restDays + skippedDays - 1)
 
-        Log.d(TAG, "passBudget = $passBudget requireDistributeBudget = $requireDistributeBudget wholeBudget = ${drawsModel.wholeBudget.value!!}")
-        Log.d(TAG, "restDays = $restDays spentDays = $spentDays")
+        val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0) + drawsModel.dailyBudget.value!! - drawsModel.spentFromDailyBudget.value!!
 
-        val budgetPerDaySplit = floor(drawsModel.wholeBudget.value!! / restDays)
-        val budgetPerDayAdd = floor(drawsModel.restBudget.value!! / restDays)
+        val budgetPerDaySplit = floor((restBudget + drawsModel.dailyBudget.value!! - drawsModel.spentFromDailyBudget.value!!) / restDays)
+        val budgetPerDayAdd = floor(restBudget / restDays)
+        val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
-        restBudgetOfDayTextView.text = "$requireDistributeBudget ₽"
+        restBudgetOfDayTextView.text = "${prettyCandyCanes(requireDistributeBudget)} ₽"
 
         if (appModel.isDebug.value == true) {
             debugTextView.visibility = View.VISIBLE
             debugTextView.text = "Осталось дней = $restDays " +
-                    "\nПрошло дней с последнего пересчета = $spentDays " +
-                    "\nВесь бюджет = ${drawsModel.wholeBudget.value!!}" +
-                    "\nБюджет на сегодня = ${drawsModel.budgetOfCurrentDay.value!!}" +
-                    "\nОставшийся бюджет = ${drawsModel.restBudget.value!!}"
+                    "\nПрошло дней с последнего пересчета = $skippedDays " +
+                    "\nНачало = ${drawsModel.startDate} " +
+                    "\nПоследний пересчет = ${drawsModel.lastReCalcBudgetDate} " +
+                    "\nКонец = ${drawsModel.finishDate} " +
+                    "\nВесь бюджет = ${drawsModel.budget.value!!}" +
+                    "\nПотрачено из бюджета = ${drawsModel.spent.value!!}" +
+                    "\nБюджет на сегодня = ${drawsModel.dailyBudget.value!!}" +
+                    "\nПотрачено из дневного бюджета = ${drawsModel.spentFromDailyBudget.value!!}" +
+                    "\nОставшийся бюджет = $restBudget" +
+                    "\nОставшийся бюджет на по дням = $perDayBudget"
 
 
             splitRestDaysDebugTextView.visibility = View.VISIBLE
-            splitRestDaysDebugTextView.text = "${drawsModel.wholeBudget.value!!} / $restDays = $budgetPerDaySplit"
+            splitRestDaysDebugTextView.text = "($restBudget + ${drawsModel.dailyBudget.value!!} - ${drawsModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit"
 
             addCurrentDayDebugTextView.visibility = View.VISIBLE
-            addCurrentDayDebugTextView.text = "${drawsModel.restBudget.value!!} / $restDays = $budgetPerDayAdd " +
-                    "\n${requireDistributeBudget} + ${budgetPerDayAdd} = ${requireDistributeBudget + budgetPerDayAdd}"
+            addCurrentDayDebugTextView.text = "$restBudget / $restDays = $budgetPerDayAdd " +
+                    "\n${budgetPerDayAdd} + $requireDistributeBudget = ${budgetPerDayAddDailyBudget}"
         }
 
         splitRestDaysDescriptionTextView.text = context!!.getString(
             R.string.split_rest_days_description,
-            "$budgetPerDaySplit ₽",
+            "${prettyCandyCanes(budgetPerDaySplit)} ₽",
         )
 
         addCurrentDayDescriptionTextView.text = context!!.getString(
             R.string.add_current_day_description,
-            "${requireDistributeBudget + budgetPerDayAdd} ₽",
-            "$budgetPerDayAdd ₽",
+            "${prettyCandyCanes(requireDistributeBudget + budgetPerDayAdd)} ₽",
+            "${prettyCandyCanes(budgetPerDayAdd)} ₽",
         )
 
         splitRestDaysCardView.setOnClickListener {
-            drawsModel.reCalcBudget(budgetPerDaySplit)
+            drawsModel.reCalcDailyBudget(budgetPerDaySplit)
 
             dismiss()
         }
 
         addCurrentDayCardView.setOnClickListener {
-            drawsModel.reCalcBudget(requireDistributeBudget + budgetPerDayAdd)
+            drawsModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
 
             dismiss()
         }

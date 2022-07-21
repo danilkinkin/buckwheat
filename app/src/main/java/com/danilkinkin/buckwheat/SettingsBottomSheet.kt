@@ -80,8 +80,8 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     }
 
     fun build() {
-        budgetValue = drawsModel.wholeBudget.value ?: 0.0
-        dateToValue = drawsModel.toDate
+        budgetValue = drawsModel.budget.value ?: 0.0
+        dateToValue = drawsModel.finishDate
         budgetInput.setText(prettyCandyCanes(budgetValue))
 
         budgetInput.addTextChangedListener(object : TextWatcher {
