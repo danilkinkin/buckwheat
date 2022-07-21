@@ -21,7 +21,7 @@ fun countDays(toDate: Date, fromDate: Date = Date()): Int {
 
 fun isSameDay(timestampA: Long, timestampB: Long): Boolean = floor(timestampA / DAY.toFloat()).toLong() == floor(timestampB / DAY.toFloat()).toLong()
 
-fun prettyDate(date: Date, showTime: Boolean = true): String {
+fun prettyDate(date: Date, showTime: Boolean = true, forceShowDate: Boolean = false): String {
     val currentYear = yearFormat.format(Date().time)
     val currentDate = dateFormat.format(Date().time)
 
@@ -31,7 +31,7 @@ fun prettyDate(date: Date, showTime: Boolean = true): String {
 
     var final = ""
 
-    if (dateStr != currentDate || !showTime) {
+    if (dateStr != currentDate || !showTime || forceShowDate) {
         final += " $dateStr"
     }
 
