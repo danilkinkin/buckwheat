@@ -13,13 +13,10 @@ val dateFormat = SimpleDateFormat("dd MMMM")
 val timeFormat = SimpleDateFormat("HH:mm")
 
 fun countDays(toDate: Date, fromDate: Date = Date()): Int {
-    val sign = if (toDate.time - fromDate.time > 0) {
-        1
-    } else {
-        -1
-    }
+    val daysFrom = ceil(fromDate.time / DAY.toDouble()).toInt()
+    val daysTo = ceil(toDate.time / DAY.toDouble()).toInt()
 
-    return ceil(abs((toDate.time - fromDate.time) / DAY.toFloat())).toInt() * sign
+    return daysTo - daysFrom
 }
 
 fun isSameDay(timestampA: Long, timestampB: Long): Boolean = floor(timestampA / DAY.toFloat()).toLong() == floor(timestampB / DAY.toFloat()).toLong()
