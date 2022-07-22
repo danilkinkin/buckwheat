@@ -78,21 +78,21 @@ class EditorFragment : Fragment() {
 
     private fun setDailyBudget(fragment: TextWithLabelFragment) {
         fragment.also {
-            it.setValue("${prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!!)} ₽")
+            it.setValue(prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!!))
             it.setLabel(context!!.getString(R.string.budget_for_today))
         }
     }
 
     private fun setRestDailyBudget(fragment: TextWithLabelFragment) {
         fragment.also {
-            it.setValue("${prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!! - model.currentDraw)} ₽")
+            it.setValue(prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!! - model.currentDraw))
             it.setLabel(context!!.getString(R.string.rest_budget_for_today))
         }
     }
 
     private fun setDraw(fragment: TextWithLabelFragment) {
         fragment.also {
-            it.setValue("${prettyCandyCanes(model.currentDraw, model.useDot)} ₽")
+            it.setValue(prettyCandyCanes(model.currentDraw, model.useDot))
             it.setLabel(context!!.getString(R.string.draw))
         }
     }
@@ -129,6 +129,10 @@ class EditorFragment : Fragment() {
             budgetFragment?.let { setDailyBudget(it) }
         }
 
+        model.spentFromDailyBudget.observeForever { _ ->
+            budgetFragment?.let { setDailyBudget(it) }
+        }
+
         model.stage.observeForever { stage ->
             val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
 
@@ -153,7 +157,7 @@ class EditorFragment : Fragment() {
                 DrawsViewModel.Stage.CREATING_DRAW -> {
                     drawFragment = TextWithLabelFragment()
                     drawFragment!!.onCreated {
-                        drawFragment!!.setValue("${prettyCandyCanes(model.currentDraw)} ₽")
+                        drawFragment!!.setValue(prettyCandyCanes(model.currentDraw))
                         drawFragment!!.setLabel(context!!.getString(R.string.draw))
                         drawFragment!!.getLabelView().textSize = 10.toSP().toFloat()
                         drawFragment!!.getValueView().textSize = 46.toSP().toFloat()

@@ -90,7 +90,7 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
         val budgetPerDayAdd = floor(restBudget / restDays)
         val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
-        restBudgetOfDayTextView.text = "${prettyCandyCanes(requireDistributeBudget)} ₽"
+        restBudgetOfDayTextView.text = prettyCandyCanes(requireDistributeBudget)
 
         if (appModel.isDebug.value == true) {
             debugTextView.visibility = View.VISIBLE
@@ -117,13 +117,13 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
 
         splitRestDaysDescriptionTextView.text = context!!.getString(
             R.string.split_rest_days_description,
-            "${prettyCandyCanes(budgetPerDaySplit)} ₽",
+            prettyCandyCanes(budgetPerDaySplit),
         )
 
         addCurrentDayDescriptionTextView.text = context!!.getString(
             R.string.add_current_day_description,
-            "${prettyCandyCanes(requireDistributeBudget + budgetPerDayAdd)} ₽",
-            "${prettyCandyCanes(budgetPerDayAdd)} ₽",
+            prettyCandyCanes(requireDistributeBudget + budgetPerDayAdd),
+            prettyCandyCanes(budgetPerDayAdd),
         )
 
         splitRestDaysCardView.setOnClickListener {

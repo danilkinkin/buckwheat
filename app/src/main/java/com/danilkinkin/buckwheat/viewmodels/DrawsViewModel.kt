@@ -66,6 +66,14 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         null
     }
 
+    var currency: Currency? = try {
+        val value = storage.get("currency").value
+
+        if (value.isNotEmpty()) Currency.getInstance(value) else null
+    } catch (e: Exception) {
+        null
+    }
+
     var currentDraw: Double = 0.0
 
     var requireReCalcBudget: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -87,6 +95,11 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getDraws(): LiveData<List<Draw>> {
         return draws.getAll()
+    }
+
+    fun changeCurrency(currency: String?) {
+        storage.set(Storage("currency", currency.toString()))
+        this.currency = if (currency !== null) Currency.getInstance(currency) else null
     }
 
     fun changeBudget(budget: Double, finishDate: Date) {
@@ -115,6 +128,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
         draws.deleteAll()
 
+        resetDraw()
         reCalcDailyBudget(floor(budget / countDays(roundedFinishDate)))
     }
 
@@ -169,6 +183,8 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     fun removeDraw(draw: Draw) {
         draws.delete(draw)
 
+        spentFromDailyBudget.value = spentFromDailyBudget.value!! - draw.value
+
         Snackbar
             .make(MainActivity.getInstance().parentView, R.string.remove_draw, Snackbar.LENGTH_LONG)
             .setAction(
@@ -179,6 +195,8 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
                     .uppercase(Locale.getDefault())
             ) {
                 draws.insert(draw)
+
+                spentFromDailyBudget.value = spentFromDailyBudget.value!! + draw.value
             }
             .show()
     }

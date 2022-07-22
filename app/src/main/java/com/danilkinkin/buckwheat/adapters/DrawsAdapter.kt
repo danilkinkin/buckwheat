@@ -21,7 +21,7 @@ class DrawsAdapter: ListAdapter<Draw, DrawsAdapter.DrawViewHolder>(DrawDiffCallb
         fun bind(draw: Draw) {
             currentDraw = draw
 
-            valueTextView.text = "${prettyCandyCanes(draw.value)} ₽"
+            valueTextView.text = prettyCandyCanes(draw.value)
 
             dateTextView.text = prettyDate(draw.date)
         }

@@ -29,7 +29,7 @@ class TopAdapter(private val model: DrawsViewModel) : RecyclerView.Adapter<TopAd
                 0,
             )
 
-            view.findViewById<MaterialTextView>(R.id.value).text = "${prettyCandyCanes(model.budget.value!!)} ₽"
+            view.findViewById<MaterialTextView>(R.id.value).text = prettyCandyCanes(model.budget.value!!)
             view.findViewById<MaterialTextView>(R.id.date_input).text = prettyDate(
                 model.startDate,
                 showTime = false,

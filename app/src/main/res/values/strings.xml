@@ -16,6 +16,7 @@
     <string name="settings_title">Настройки</string>
     <string name="label_budget">Бюджет</string>
     <string name="label_date_to">До</string>
+    <string name="label_currency">Валюта</string>
     <string name="total">Итого:</string>
     <string name="total_description">%1$s в день \nна %2$s дня</string>
     <string name="apply">Применить</string>

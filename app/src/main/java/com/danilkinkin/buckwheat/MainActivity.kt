@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -25,10 +26,11 @@ import com.danilkinkin.buckwheat.decorators.DrawsDividerItemDecoration
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+
 var instance: MainActivity? = null
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var model: DrawsViewModel
+    lateinit var model: DrawsViewModel
 
     lateinit var parentView: View
 
@@ -173,9 +175,10 @@ class MainActivity : AppCompatActivity() {
 
             recyclerViewScrollY += dY
 
-            if (recyclerViewScrollY > recyclerView.width) {
+            if (recyclerViewScrollY > recyclerView.width && fabHome.isOrWillBeHidden) {
                 fabHome.show()
-            } else {
+            }
+            if (recyclerViewScrollY < recyclerView.width && fabHome.isOrWillBeShown) {
                 fabHome.hide()
             }
         }

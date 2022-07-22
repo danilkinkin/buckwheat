@@ -6,8 +6,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.activityViewModels
+import com.danilkinkin.buckwheat.adapters.CurrencyAdapter
 import com.danilkinkin.buckwheat.utils.countDays
 import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
@@ -32,6 +34,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
 
     var budgetValue: Double = 0.0
     var dateToValue: Date = Date()
+    var currencyValue: String? = null
 
     val budgetInput: TextInputEditText by lazy {
         requireView().findViewById(R.id.budget_input)
@@ -39,6 +42,10 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
 
     val dateRangeInput: AutoCompleteTextView by lazy {
         requireView().findViewById(R.id.date_input)
+    }
+
+    val currencyInput: AutoCompleteTextView by lazy {
+        requireView().findViewById(R.id.currency_input)
     }
 
     val totalDescriptionTextView: MaterialTextView by lazy {
@@ -74,7 +81,10 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
 
         totalDescriptionTextView.text = context!!.getString(
             R.string.total_description,
-            "${prettyCandyCanes(if (days != 0) { floor(budgetValue / days) } else { budgetValue })} ₽",
+            prettyCandyCanes(
+                if (days != 0) { floor(budgetValue / days) } else { budgetValue },
+                currency = if (currencyValue !== null) Currency.getInstance(currencyValue) else null,
+            ),
             "$days",
         )
     }
@@ -82,6 +92,8 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     fun build() {
         budgetValue = drawsModel.budget.value ?: 0.0
         dateToValue = drawsModel.finishDate
+        currencyValue = drawsModel.currency?.currencyCode
+
         budgetInput.setText(prettyCandyCanes(budgetValue))
 
         budgetInput.addTextChangedListener(object : TextWatcher {
@@ -127,7 +139,24 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
                 .show(parentFragmentManager, "dataPicker")
         }
 
+        val adapter = CurrencyAdapter(
+            context!!,
+            Currency.getAvailableCurrencies().toMutableList(),
+        )
+
+        currencyInput.setAdapter(adapter)
+        currencyInput.setOnItemClickListener { parent, _, position, _ ->
+            val currency = adapter.getItem(position)
+
+            currencyInput.setText(currency.displayName)
+            currencyValue = currency.currencyCode
+
+            reCalcBudget()
+        }
+        currencyInput.setText(drawsModel.currency?.displayName)
+
         requireView().findViewById<MaterialButton>(R.id.apply).setOnClickListener {
+            drawsModel.changeCurrency(currencyValue)
             drawsModel.changeBudget(budgetValue, dateToValue)
 
             dismiss()
