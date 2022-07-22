@@ -78,14 +78,14 @@ class EditorFragment : Fragment() {
 
     private fun setDailyBudget(fragment: TextWithLabelFragment) {
         fragment.also {
-            it.setValue("${prettyCandyCanes(model.dailyBudget.value!!)} ₽")
+            it.setValue("${prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!!)} ₽")
             it.setLabel(context!!.getString(R.string.budget_for_today))
         }
     }
 
     private fun setRestDailyBudget(fragment: TextWithLabelFragment) {
         fragment.also {
-            it.setValue("${prettyCandyCanes(model.dailyBudget.value?.minus(model.currentDraw)!!)} ₽")
+            it.setValue("${prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!! - model.currentDraw)} ₽")
             it.setLabel(context!!.getString(R.string.rest_budget_for_today))
         }
     }
