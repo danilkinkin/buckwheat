@@ -1,16 +1,18 @@
 package com.danilkinkin.buckwheat.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.danilkinkin.buckwheat.MainActivity
+import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.di.DatabaseModule
 import com.danilkinkin.buckwheat.entities.Draw
 import com.danilkinkin.buckwheat.entities.Storage
 import com.danilkinkin.buckwheat.utils.countDays
 import com.danilkinkin.buckwheat.utils.isSameDay
 import com.danilkinkin.buckwheat.utils.roundToDay
+import com.google.android.material.snackbar.Snackbar
 import java.lang.Math.max
 import java.util.*
 import kotlin.math.abs
@@ -166,6 +168,19 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun removeDraw(draw: Draw) {
         draws.delete(draw)
+
+        Snackbar
+            .make(MainActivity.getInstance().parentView, R.string.remove_draw, Snackbar.LENGTH_LONG)
+            .setAction(
+                MainActivity
+                    .getInstance()
+                    .applicationContext
+                    .getString(R.string.remove_draw_undo)
+                    .uppercase(Locale.getDefault())
+            ) {
+                draws.insert(draw)
+            }
+            .show()
     }
 
     fun executeAction(action: Action, value: Int? = null) {

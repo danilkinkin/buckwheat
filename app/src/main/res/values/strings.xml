@@ -9,6 +9,8 @@
     <string name="fab_home_desc">Домой</string>
     <string name="new_budget">Бюджет установлен</string>
     <string name="date_start">Дата начала</string>
+    <string name="remove_draw">Трата возвращена в бюджет</string>
+    <string name="remove_draw_undo">Отменить</string>
 
     <!-- Settings -->
     <string name="settings_title">Настройки</string>

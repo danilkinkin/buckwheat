@@ -1,9 +1,12 @@
 package com.danilkinkin.buckwheat
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowInsetsController
 import androidx.activity.viewModels
@@ -22,9 +25,12 @@ import com.danilkinkin.buckwheat.decorators.DrawsDividerItemDecoration
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
+var instance: MainActivity? = null
 
 class MainActivity : AppCompatActivity() {
     private lateinit var model: DrawsViewModel
+
+    lateinit var parentView: View
 
     val recyclerView: RecyclerView by lazy {
         findViewById(R.id.recycle_view)
@@ -32,6 +38,16 @@ class MainActivity : AppCompatActivity() {
 
     val fabHome: FloatingActionButton by lazy {
         findViewById(R.id.fab_home_btn)
+    }
+
+    companion object {
+        fun getInstance(): MainActivity {
+            return instance!!
+        }
+    }
+
+    init {
+        instance = this
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +89,19 @@ class MainActivity : AppCompatActivity() {
 
         build()
         observe()
+    }
+
+    override fun onCreateView(
+        parent: View?,
+        name: String,
+        context: Context,
+        attrs: AttributeSet
+    ): View? {
+        if (parent != null) {
+            parentView = parent
+        }
+
+        return super.onCreateView(parent, name, context, attrs)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

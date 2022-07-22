@@ -112,7 +112,7 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
 
             addCurrentDayDebugTextView.visibility = View.VISIBLE
             addCurrentDayDebugTextView.text = "$restBudget / $restDays = $budgetPerDayAdd " +
-                    "\n${budgetPerDayAdd} + $requireDistributeBudget = ${budgetPerDayAddDailyBudget}"
+                    "\n${budgetPerDayAdd} + $requireDistributeBudget = $budgetPerDayAddDailyBudget"
         }
 
         splitRestDaysDescriptionTextView.text = context!!.getString(
