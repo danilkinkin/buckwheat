@@ -56,6 +56,10 @@
         <item name="cardBackgroundColor">@color/material_dynamic_neutral95</item>
     </style>
 
+    <style name="Widget.Buckwheat.SecondCard" parent="@style/Widget.Material3.CardView.Filled">
+        <item name="cardBackgroundColor">@color/material_dynamic_neutral_variant80</item>
+    </style>
+
     <style name="ThemeOverlay.Buckwheat.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Theme.Buckwheat.BottomSheetDialog</item>
     </style>

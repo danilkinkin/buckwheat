@@ -21,6 +21,11 @@
     <string name="total">Total:</string>
     <string name="total_description">%1$s per day \nfor %2$s days</string>
     <string name="apply">Apply</string>
+    <string name="about">About app</string>
+    <string name="description">Buckwheat - is an app that will help you consciously spend your budget. By making every expense, it will be easier to keep track and understand your financial capabilities and not waste money on nonsense</string>
+    <string name="site">Developer site</string>
+    <string name="report_bug">Report a bug</string>
+    <string name="developer">Developer &amp; designer: @danilkinkin</string>
 
     <!-- NewDay -->
     <string name="new_day_title">Congratulations! You saved</string>
@@ -29,4 +34,7 @@
     <string name="split_rest_days_description">Get %1$s per day</string>
     <string name="add_current_day_title">Leave for Today</string>
     <string name="add_current_day_description">There will be %1$s for today and %2$s for the following days</string>
+
+    <!-- Common -->
+    <string name="copy_in_clipboard">Copied to clipboard</string>
 </resources>

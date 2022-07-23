@@ -1,13 +1,18 @@
 package com.danilkinkin.buckwheat
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.adapters.CurrencyAdapter
 import com.danilkinkin.buckwheat.utils.countDays
@@ -16,6 +21,7 @@ import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
@@ -40,16 +46,24 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         requireView().findViewById(R.id.budget_input)
     }
 
-    val dateRangeInput: AutoCompleteTextView by lazy {
+    private val dateRangeInput: AutoCompleteTextView by lazy {
         requireView().findViewById(R.id.date_input)
     }
 
-    val currencyInput: AutoCompleteTextView by lazy {
+    private val currencyInput: AutoCompleteTextView by lazy {
         requireView().findViewById(R.id.currency_input)
     }
 
-    val totalDescriptionTextView: MaterialTextView by lazy {
+    private val totalDescriptionTextView: MaterialTextView by lazy {
         requireView().findViewById(R.id.total_description)
+    }
+
+    private val openSiteBtn: MaterialCardView by lazy {
+        requireView().findViewById(R.id.site)
+    }
+
+    private val reportBugBtn: MaterialCardView by lazy {
+        requireView().findViewById(R.id.report_bug)
     }
 
     override fun onCreateView(
@@ -154,6 +168,44 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
             reCalcBudget()
         }
         currencyInput.setText(drawsModel.currency?.displayName)
+
+        openSiteBtn.setOnClickListener {
+            val url = "https://danilkinkin.com"
+            val intent = Intent(Intent.ACTION_VIEW)
+
+            intent.data = Uri.parse(url)
+
+            try {
+                startActivity(intent)
+            } catch (e: Exception) {
+                val clipboard = getSystemService(context!!, ClipboardManager::class.java) as ClipboardManager
+
+                clipboard.setPrimaryClip(ClipData.newPlainText( "url", url))
+
+                Toast
+                    .makeText(context, context!!.getString(R.string.copy_in_clipboard), Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+
+        reportBugBtn.setOnClickListener {
+            val url = "https://github.com/danilkinkin/buckweat/issues"
+            val intent = Intent(Intent.ACTION_VIEW)
+
+            intent.data = Uri.parse(url)
+
+            try {
+                startActivity(intent)
+            } catch (e: Exception) {
+                val clipboard = getSystemService(context!!, ClipboardManager::class.java) as ClipboardManager
+
+                clipboard.setPrimaryClip(ClipData.newPlainText( "url", url))
+
+                Toast
+                    .makeText(context, context!!.getString(R.string.copy_in_clipboard), Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
 
         requireView().findViewById<MaterialButton>(R.id.apply).setOnClickListener {
             drawsModel.changeCurrency(currencyValue)
