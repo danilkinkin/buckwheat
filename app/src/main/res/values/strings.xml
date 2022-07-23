@@ -3,29 +3,29 @@
     <string name="action_settings">Settings</string>
 
     <!-- Main -->
-    <string name="budget_for_today">Бюджет на сегодня</string>
-    <string name="rest_budget_for_today">Останется на сегодня</string>
-    <string name="draw">Трата</string>
-    <string name="fab_home_desc">Домой</string>
-    <string name="new_budget">Бюджет установлен</string>
-    <string name="date_start">Дата начала</string>
-    <string name="remove_draw">Трата возвращена в бюджет</string>
-    <string name="remove_draw_undo">Отменить</string>
+    <string name="budget_for_today">Budget for today</string>
+    <string name="rest_budget_for_today">Remains for today</string>
+    <string name="draw">Waste</string>
+    <string name="fab_home_desc">Home</string>
+    <string name="new_budget">Budget set</string>
+    <string name="date_start">Start date</string>
+    <string name="remove_draw">Expenditure returned to budget</string>
+    <string name="remove_draw_undo">Remove</string>
 
     <!-- Settings -->
-    <string name="settings_title">Настройки</string>
-    <string name="label_budget">Бюджет</string>
-    <string name="label_date_to">До</string>
-    <string name="label_currency">Валюта</string>
-    <string name="total">Итого:</string>
-    <string name="total_description">%1$s в день \nна %2$s дня</string>
-    <string name="apply">Применить</string>
+    <string name="settings_title">Settings</string>
+    <string name="label_budget">Budget</string>
+    <string name="label_date_to">To</string>
+    <string name="label_currency">Currency</string>
+    <string name="total">Total:</string>
+    <string name="total_description">%1$s per day \nfor %2$s days</string>
+    <string name="apply">Apply</string>
 
     <!-- NewDay -->
-    <string name="new_day_title">Поздравляем! Вы сэкономили</string>
-    <string name="recalc_budget">Теперь уточните как пересчитать бюджет</string>
-    <string name="split_rest_days_title">Разделить на оставшиеся дни</string>
-    <string name="split_rest_days_description">Получится по %1$s в день</string>
-    <string name="add_current_day_title">Оставить на сегодня</string>
-    <string name="add_current_day_description">Будет %1$s на сегодня и по %2$s в следующие дни</string>
+    <string name="new_day_title">Congratulations! You saved</string>
+    <string name="recalc_budget">Now specify how to recalc the budget</string>
+    <string name="split_rest_days_title">Split by remaining days</string>
+    <string name="split_rest_days_description">Get %1$s per day</string>
+    <string name="add_current_day_title">Leave for Today</string>
+    <string name="add_current_day_description">There will be %1$s for today and %2$s for the following days</string>
 </resources>

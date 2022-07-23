@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Buckwheat</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Main -->
+    <string name="budget_for_today">Бюджет на сегодня</string>
+    <string name="rest_budget_for_today">Останется на сегодня</string>
+    <string name="draw">Трата</string>
+    <string name="fab_home_desc">Домой</string>
+    <string name="new_budget">Бюджет установлен</string>
+    <string name="date_start">Дата начала</string>
+    <string name="remove_draw">Трата возвращена в бюджет</string>
+    <string name="remove_draw_undo">Отменить</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Настройки</string>
+    <string name="label_budget">Бюджет</string>
+    <string name="label_date_to">До</string>
+    <string name="label_currency">Валюта</string>
+    <string name="total">Итого:</string>
+    <string name="total_description">%1$s в день \nна %2$s дня</string>
+    <string name="apply">Применить</string>
+
+    <!-- NewDay -->
+    <string name="new_day_title">Поздравляем! Вы сэкономили</string>
+    <string name="recalc_budget">Теперь уточните как пересчитать бюджет</string>
+    <string name="split_rest_days_title">Разделить на оставшиеся дни</string>
+    <string name="split_rest_days_description">Получится по %1$s в день</string>
+    <string name="add_current_day_title">Оставить на сегодня</string>
+    <string name="add_current_day_description">Будет %1$s на сегодня и по %2$s в следующие дни</string>
+</resources>
