@@ -8,7 +8,8 @@
     <string name="draw">Трата</string>
     <string name="fab_home_desc">Домой</string>
     <string name="new_budget">Бюджет установлен</string>
-    <string name="date_start">Дата начала</string>
+    <string name="label_start_date">Начало</string>
+    <string name="label_finish_date">Конец</string>
     <string name="remove_draw">Трата возвращена в бюджет</string>
     <string name="remove_draw_undo">Отменить</string>
 

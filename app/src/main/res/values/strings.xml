@@ -8,7 +8,8 @@
     <string name="draw">Waste</string>
     <string name="fab_home_desc">Home</string>
     <string name="new_budget">Budget set</string>
-    <string name="date_start">Start date</string>
+    <string name="label_start_date">Start</string>
+    <string name="label_finish_date">Finish</string>
     <string name="remove_draw">Expenditure returned to budget</string>
     <string name="remove_draw_undo">Remove</string>
 
