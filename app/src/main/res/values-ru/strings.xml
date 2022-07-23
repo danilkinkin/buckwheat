@@ -16,8 +16,13 @@
     <!-- Settings -->
     <string name="settings_title">Настройки</string>
     <string name="label_budget">Бюджет</string>
-    <string name="label_date_to">До</string>
-    <string name="label_currency">Валюта</string>
+    <string name="prefix_finish_date">До</string>
+    <string name="prefix_in_currency">В валюте</string>
+    <string name="currency_from_list">Из списка</string>
+    <string name="currency_from_list_selected">Из списка (%1$s)</string>
+    <string name="currency_custom">Своя</string>
+    <string name="currency_custom_selected">Своя (%1$s)</string>
+    <string name="currency_none">Без валюты</string>
     <string name="total">Итого:</string>
     <string name="total_description">%1$s в день \nна %2$s дня</string>
     <string name="apply">Применить</string>
@@ -26,8 +31,11 @@
     <string name="site">Сайт разработчика</string>
     <string name="report_bug">Сообщить об ошибке</string>
     <string name="developer">Разработчик и дизайнер: @danilkinkin</string>
+    <string name="select_currency_title">Выберете валюту</string>
+    <string name="select_currency_hint">Введите вашу валюту</string>
+    <string name="currency_custom_title">Укажите свою валюту</string>
 
-    <!-- NewDay -->
+    <!-- New day -->
     <string name="new_day_title">Поздравляем! Вы сэкономили</string>
     <string name="recalc_budget">Теперь уточните как пересчитать бюджет</string>
     <string name="split_rest_days_title">Разделить на оставшиеся дни</string>
@@ -37,4 +45,7 @@
 
     <!-- Common -->
     <string name="copy_in_clipboard">Скопировано в буфер обмена</string>
+    <string name="search">Поиск</string>
+    <string name="cancel">Отменить</string>
+    <string name="accept">Применить</string>
 </resources>

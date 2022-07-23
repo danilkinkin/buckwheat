@@ -9,13 +9,9 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.di.DatabaseModule
 import com.danilkinkin.buckwheat.entities.Draw
 import com.danilkinkin.buckwheat.entities.Storage
-import com.danilkinkin.buckwheat.utils.countDays
-import com.danilkinkin.buckwheat.utils.isSameDay
-import com.danilkinkin.buckwheat.utils.roundToDay
+import com.danilkinkin.buckwheat.utils.*
 import com.google.android.material.snackbar.Snackbar
-import java.lang.Math.max
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.floor
 
 class DrawsViewModel(application: Application) : AndroidViewModel(application) {
@@ -66,12 +62,10 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         null
     }
 
-    var currency: Currency? = try {
-        val value = storage.get("currency").value
-
-        if (value.isNotEmpty()) Currency.getInstance(value) else null
+    var currency: ExtendCurrency = try {
+        ExtendCurrency.getInstance(storage.get("currency").value)
     } catch (e: Exception) {
-        null
+        ExtendCurrency(value = null, type = CurrencyType.NONE)
     }
 
     var currentDraw: Double = 0.0
@@ -97,9 +91,10 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         return draws.getAll()
     }
 
-    fun changeCurrency(currency: String?) {
-        storage.set(Storage("currency", currency.toString()))
-        this.currency = if (currency !== null) Currency.getInstance(currency) else null
+    fun changeCurrency(currency: ExtendCurrency) {
+        storage.set(Storage("currency", currency.value.toString()))
+
+        this.currency = currency
     }
 
     fun changeBudget(budget: Double, finishDate: Date) {

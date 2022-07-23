@@ -9,7 +9,7 @@ import java.util.*
 
 
 class CurrencyAdapter(context: Context, private val items: MutableList<Currency>)
-    : ArrayAdapter<Currency>(context, android.R.layout.simple_dropdown_item_1line, items), Filterable {
+    : ArrayAdapter<Currency>(context, android.R.layout.simple_list_item_single_choice, items), Filterable {
 
     override fun getCount(): Int = items.size
 
@@ -26,7 +26,7 @@ class CurrencyAdapter(context: Context, private val items: MutableList<Currency>
 
         if (view == null) {
             val inflater = (context as Activity).layoutInflater
-            view = inflater.inflate(android.R.layout.simple_dropdown_item_1line, parent, false)
+            view = inflater.inflate(android.R.layout.simple_list_item_single_choice, parent, false)
         }
 
         try {

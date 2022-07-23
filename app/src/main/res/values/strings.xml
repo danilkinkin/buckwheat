@@ -16,8 +16,13 @@
     <!-- Settings -->
     <string name="settings_title">Settings</string>
     <string name="label_budget">Budget</string>
-    <string name="label_date_to">To</string>
-    <string name="label_currency">Currency</string>
+    <string name="prefix_finish_date">To</string>
+    <string name="prefix_in_currency">In currency</string>
+    <string name="currency_from_list">From the list</string>
+    <string name="currency_from_list_selected">From the list (%1$s)</string>
+    <string name="currency_custom">Custom</string>
+    <string name="currency_custom_selected">Custom (%1$s)</string>
+    <string name="currency_none">No currency</string>
     <string name="total">Total:</string>
     <string name="total_description">%1$s per day \nfor %2$s days</string>
     <string name="apply">Apply</string>
@@ -26,8 +31,11 @@
     <string name="site">Developer site</string>
     <string name="report_bug">Report a bug</string>
     <string name="developer">Developer &amp; designer: @danilkinkin</string>
+    <string name="select_currency_title">Select currency</string>
+    <string name="select_currency_hint">Input your currency</string>
+    <string name="currency_custom_title">Enter your currency</string>
 
-    <!-- NewDay -->
+    <!-- New day -->
     <string name="new_day_title">Congratulations! You saved</string>
     <string name="recalc_budget">Now specify how to recalc the budget</string>
     <string name="split_rest_days_title">Split by remaining days</string>
@@ -37,4 +45,7 @@
 
     <!-- Common -->
     <string name="copy_in_clipboard">Copied to clipboard</string>
+    <string name="search">Search</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
 </resources>
