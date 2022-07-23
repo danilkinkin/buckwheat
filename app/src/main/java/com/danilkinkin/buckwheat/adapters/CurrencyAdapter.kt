@@ -7,9 +7,22 @@ import android.view.ViewGroup
 import android.widget.*
 import java.util.*
 
+fun getCurrencies(): MutableList<Currency> {
+    val currencies = Currency.getAvailableCurrencies().toMutableList()
 
-class CurrencyAdapter(context: Context, private val items: MutableList<Currency>)
-    : ArrayAdapter<Currency>(context, android.R.layout.simple_list_item_single_choice, items), Filterable {
+    currencies.sortBy { it.displayName }
+
+    return currencies
+}
+
+
+class CurrencyAdapter (
+    context: Context,
+    layoutId: Int,
+    private val items: MutableList<Currency>,
+) : ArrayAdapter<Currency>(context, layoutId, items), Filterable {
+
+    constructor(context: Context) : this(context, android.R.layout.simple_list_item_single_choice, getCurrencies())
 
     override fun getCount(): Int = items.size
 
@@ -19,6 +32,10 @@ class CurrencyAdapter(context: Context, private val items: MutableList<Currency>
 
     override fun getItemId(p0: Int): Long {
         return items[p0].numericCode.toLong()
+    }
+
+    fun findItemPosition(code: String): Int {
+        return items.indexOfFirst { it.currencyCode == code }
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

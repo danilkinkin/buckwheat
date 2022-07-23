@@ -189,29 +189,33 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         recalcLabels(currencyValue)
 
         currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).setOnClickListener {
-            val adapter = CurrencyAdapter(
-                context!!,
-                Currency.getAvailableCurrencies().toMutableList(),
-            )
+            val adapter = CurrencyAdapter(context!!)
 
             var alertDialog: AlertDialog? = null
-            var value: String? = currencyValue.value
+            var value: String? = if (currencyValue.type === CurrencyType.FROM_LIST) {
+                currencyValue.value
+            } else {
+                null
+            }
 
             alertDialog = MaterialAlertDialogBuilder(context!!)
                 .setTitle(R.string.select_currency_title)
-                .setSingleChoiceItems(adapter, -1) { parent: DialogInterface?, position: Int ->
+                .setSingleChoiceItems(
+                    adapter,
+                    value?.let { adapter.findItemPosition(value!!) } ?: -1,
+                ) { _: DialogInterface?, position: Int ->
                     val currency = adapter.getItem(position)
 
                     value = currency.currencyCode
 
                     alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
                 }
-                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, which ->
+                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
                     recalcLabels(currencyValue)
 
                     dialog.dismiss()
                 }
-                .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
+                .setPositiveButton(resources.getString(R.string.accept)) { dialog, _ ->
                     currencyValue = ExtendCurrency(value, type = CurrencyType.FROM_LIST)
 
                     recalcLabels(currencyValue)
