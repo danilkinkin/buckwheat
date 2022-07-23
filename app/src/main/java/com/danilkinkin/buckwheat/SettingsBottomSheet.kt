@@ -9,11 +9,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
@@ -57,8 +55,8 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         requireView().findViewById(R.id.currency_toggle_btn)
     }
 
-    private val totalDescriptionTextView: MaterialTextView by lazy {
-        requireView().findViewById(R.id.total_description)
+    private val perDayTextView: MaterialTextView by lazy {
+        requireView().findViewById(R.id.per_day_description)
     }
 
     private val openSiteBtn: MaterialCardView by lazy {
@@ -92,15 +90,18 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     fun reCalcBudget() {
         val days = countDays(dateToValue)
 
-        finishDateBtn.text = prettyDate(dateToValue, showTime = false, forceShowDate = true)
+        finishDateBtn.text = String.format(
+            context!!.resources.getQuantityText(R.plurals.finish_date_dates, days).toString(),
+            prettyDate(dateToValue, showTime = false, forceShowDate = true),
+            days,
+        )
 
-        totalDescriptionTextView.text = context!!.getString(
-            R.string.total_description,
+        perDayTextView.text = context!!.getString(
+            R.string.per_day,
             prettyCandyCanes(
                 if (days != 0) { floor(budgetValue / days) } else { budgetValue },
                 currency = currencyValue,
             ),
-            "$days",
         )
     }
 
