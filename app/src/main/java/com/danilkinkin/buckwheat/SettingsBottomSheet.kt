@@ -111,24 +111,19 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
 
         budgetInput.setText(prettyCandyCanes(budgetValue, currency = ExtendCurrency(type = CurrencyType.NONE)))
 
-        budgetInput.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        budgetInput.addTextChangedListener(CurrencyTextWatcher(
+            budgetInput,
+            currency = ExtendCurrency(type = CurrencyType.NONE),
+        ) {
+            budgetValue = try {
+                it.toDouble()
+            } catch (e: Exception) {
+                budgetInput.setText(prettyCandyCanes(0.0, currency = ExtendCurrency(type = CurrencyType.NONE)))
+
+                0.0
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                budgetValue = try {
-                    p0.toString().toDouble()
-                } catch (e: Exception) {
-                    budgetInput.setText(prettyCandyCanes(0.0, currency = ExtendCurrency(type = CurrencyType.NONE)))
-
-                    0.0
-                }
-
-                reCalcBudget()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
+            reCalcBudget()
         })
 
         reCalcBudget()

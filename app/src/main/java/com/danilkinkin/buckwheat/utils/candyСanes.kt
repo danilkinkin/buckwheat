@@ -1,10 +1,19 @@
 package com.danilkinkin.buckwheat.utils
 
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.widget.EditText
 import com.danilkinkin.buckwheat.MainActivity
+import com.google.android.material.textfield.TextInputEditText
+import java.lang.Integer.min
+import java.lang.ref.WeakReference
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
+import kotlin.math.max
+
 
 val currencyFormat: NumberFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
 val numberFormat: NumberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
@@ -46,4 +55,85 @@ fun prettyCandyCanes(
     if (currency.type === CurrencyType.CUSTOM) formattedValue = "$formattedValue ${currency.value}"
 
     return formattedValue
+}
+
+class CurrencyTextWatcher(
+    editText: TextInputEditText,
+    private val forceShowAfterDot: Boolean = false,
+    private val currency: ExtendCurrency = MainActivity.getInstance().model.currency,
+    private val onChange: (value: String) -> Unit,
+) : TextWatcher {
+    private val editTextWeakReference: WeakReference<TextInputEditText>
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+    override fun afterTextChanged(s: Editable) {
+        val editText: TextInputEditText = editTextWeakReference.get()!!
+        if (editText.text.toString() == "") {
+            return
+        }
+        editText.removeTextChangedListener(this)
+        val parsed = parseCurrencyValue(editText.text.toString(), currency)
+        val formatted = prettyCandyCanes(parsed, forceShowAfterDot, currency)
+        val selectionStart = editText.selectionStart
+        val prevText = editText.text.toString()
+
+        val offset = max(offsetDiff(formatted, prevText) + 1, 0)
+        val newSelection = formatted.length - (prevText.length - selectionStart)
+
+        onChange(parsed.toString())
+
+        editText.setText(formatted)
+        if (offset == selectionStart) {
+            editText.setSelection(min(newSelection - 1, formatted.length))
+        } else {
+            editText.setSelection(min(newSelection, formatted.length))
+        }
+        editText.addTextChangedListener(this)
+    }
+
+    companion object {
+        fun offsetDiff(stringA: String, stringB: String): Int {
+            val minLength = if (stringA.length < stringB.length) {
+                stringA.length
+            } else {
+                stringB.length
+            }
+
+            var diffStartIndex = 0
+
+            for (i in 0 until minLength) {
+                if (stringA[i] == stringB[i]) {
+                    diffStartIndex = i
+                } else {
+                    return diffStartIndex
+                }
+            }
+
+            return -1
+        }
+
+        fun parseCurrencyValue(value: String, currency: ExtendCurrency): Double {
+            try {
+                val replaceRegex = java.lang.String.format(
+                    "[%s,.\\s]",
+                    when (currency.type) {
+                        CurrencyType.CUSTOM -> currency.value
+                        CurrencyType.NONE -> ""
+                        CurrencyType.FROM_LIST -> Currency.getInstance(currency.value).symbol
+                    }
+                )
+                val currencyValue = value.replace(replaceRegex.toRegex(), "")
+
+                return currencyValue.toDouble()
+            } catch (e: java.lang.Exception) {
+                Log.e("MyApp", e.message, e)
+            }
+
+            return 0.0
+        }
+    }
+
+    init {
+        editTextWeakReference = WeakReference(editText)
+    }
 }
