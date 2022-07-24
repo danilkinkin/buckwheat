@@ -10,7 +10,7 @@ import java.util.*
 fun getCurrencies(): MutableList<Currency> {
     val currencies = Currency.getAvailableCurrencies().toMutableList()
 
-    currencies.sortBy { it.displayName }
+    currencies.sortBy { it.displayName.uppercase() }
 
     return currencies
 }
