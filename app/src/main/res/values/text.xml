@@ -20,10 +20,10 @@
         <item name="fontFamily">@font/manrope_bold</item>
     </style>
     <style name="TextAppearance.Buckwheat.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
-        <item name="fontFamily">@font/manrope_regular</item>
+        <item name="fontFamily">@font/manrope_semi_bold</item>
     </style>
     <style name="TextAppearance.Buckwheat.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
-        <item name="fontFamily">@font/manrope_regular</item>
+        <item name="fontFamily">@font/manrope_medium</item>
     </style>
     <style name="TextAppearance.Buckwheat.BodySmall" parent="TextAppearance.Material3.BodySmall">
         <item name="fontFamily">@font/manrope_regular</item>
@@ -32,18 +32,18 @@
         <item name="fontFamily">@font/manrope_regular</item>
     </style>
     <style name="TextAppearance.Buckwheat.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="fontFamily">@font/manrope_regular</item>
+        <item name="fontFamily">@font/manrope_medium</item>
     </style>
     <style name="TextAppearance.Buckwheat.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
         <item name="fontFamily">@font/manrope_regular</item>
     </style>
     <style name="TextAppearance.Buckwheat.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
-        <item name="fontFamily">@font/manrope_regular</item>
+        <item name="fontFamily">@font/manrope_bold</item>
     </style>
     <style name="TextAppearance.Buckwheat.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
-        <item name="fontFamily">@font/manrope_regular</item>
+        <item name="fontFamily">@font/manrope_bold</item>
     </style>
     <style name="TextAppearance.Buckwheat.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
-        <item name="fontFamily">@font/manrope_regular</item>
+        <item name="fontFamily">@font/manrope_bold</item>
     </style>
 </resources>

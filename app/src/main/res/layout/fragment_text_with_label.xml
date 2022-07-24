@@ -27,7 +27,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/label"
-            style="@style/TextAppearance.Material3.LabelLarge"
+            style="@style/TextAppearance.Buckwheat.LabelLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"

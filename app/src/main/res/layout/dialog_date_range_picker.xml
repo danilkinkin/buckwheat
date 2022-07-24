@@ -24,7 +24,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/start_date"
-            style="@style/TextAppearance.Material3.LabelLarge"
+            style="@style/TextAppearance.Buckwheat.LabelLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -41,7 +41,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/finish_date"
-            style="@style/TextAppearance.Material3.LabelLarge"
+            style="@style/TextAppearance.Buckwheat.LabelLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
