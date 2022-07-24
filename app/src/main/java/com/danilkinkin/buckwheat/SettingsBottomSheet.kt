@@ -44,7 +44,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     var dateToValue: Date = Date()
     var currencyValue: ExtendCurrency = ExtendCurrency(value = null, type = CurrencyType.NONE)
 
-    val budgetInput: TextInputEditText by lazy {
+    private val budgetInput: TextInputEditText by lazy {
         requireView().findViewById(R.id.budget_input)
     }
 

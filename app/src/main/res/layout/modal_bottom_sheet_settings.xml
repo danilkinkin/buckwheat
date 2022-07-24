@@ -15,38 +15,51 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_bar"
+            style="@style/Widget.Buckwheat.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleCentered="true"
             app:title="@string/settings_title"
-            style="@style/Widget.Buckwheat.Toolbar"
-            />
+            app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/budget_input_container"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp">
+        android:layout_height="54dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/prefix_edit_budget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/label_budget"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/budget_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none|numberDecimal" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:inputType="none|numberDecimal"
+            android:textAppearance="@style/TextAppearance.Buckwheat.DisplaySmall"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/prefix_edit_budget"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="60,000" />
 
-    </com.google.android.material.textfield.TextInputLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="16dp">
+        android:layout_height="54dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/prefix_edit_finish_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,9 +83,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="54dp">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/prefix_edit_currency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,10 +99,13 @@
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/currency_toggle_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/prefix_edit_currency"
             app:layout_constraintTop_toTopOf="parent"
             app:selectionRequired="true"
@@ -116,17 +132,33 @@
                 android:layout_height="wrap_content"
                 android:text="@string/currency_none" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/per_day_description"
+    <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="@string/per_day" />
+        android:background="?attr/colorOnSurface" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/per_day_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/per_day"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.card.MaterialCardView
         style="@style/Widget.Material3.CardView.Filled"
@@ -149,7 +181,7 @@
 
             <TextView
                 android:id="@+id/textView6"
-                style="@style/TextAppearance.Material3.BodyMedium"
+                style="@style/TextAppearance.Buckwheat.BodyMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -157,7 +189,7 @@
 
             <TextView
                 android:id="@+id/textView7"
-                style="@style/TextAppearance.Material3.BodyMedium"
+                style="@style/TextAppearance.Buckwheat.BodyLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
