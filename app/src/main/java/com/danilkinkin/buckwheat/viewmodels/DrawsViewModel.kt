@@ -181,6 +181,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         draws.delete(draw)
 
         spentFromDailyBudget.value = spentFromDailyBudget.value!! - draw.value
+        storage.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
 
         Snackbar
             .make(MainActivity.getInstance().parentView, R.string.remove_draw, Snackbar.LENGTH_LONG)
@@ -194,6 +195,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
                 draws.insert(draw)
 
                 spentFromDailyBudget.value = spentFromDailyBudget.value!! + draw.value
+                storage.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
             }
             .show()
     }
