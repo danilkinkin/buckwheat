@@ -5,13 +5,13 @@
     <!-- Main -->
     <string name="budget_for_today">Бюджет на сегодня</string>
     <string name="rest_budget_for_today">Останется на сегодня</string>
-    <string name="draw">Трата</string>
+    <string name="spent">Трата</string>
     <string name="fab_home_desc">Домой</string>
     <string name="new_budget">Бюджет установлен</string>
     <string name="label_start_date">Начало</string>
     <string name="label_finish_date">Конец</string>
-    <string name="remove_draw">Трата возвращена в бюджет</string>
-    <string name="remove_draw_undo">Отменить</string>
+    <string name="remove_spent">Трата возвращена в бюджет</string>
+    <string name="remove_spent_undo">Отменить</string>
 
     <!-- Settings -->
     <string name="settings_title">Настройки</string>

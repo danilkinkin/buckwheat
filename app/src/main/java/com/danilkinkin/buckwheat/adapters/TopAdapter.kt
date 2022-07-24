@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.utils.prettyDate
-import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
+import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.google.android.material.textview.MaterialTextView
 
-class TopAdapter(private val model: DrawsViewModel) : RecyclerView.Adapter<TopAdapter.ViewHolder>() {
-    class ViewHolder(view: View, private val model: DrawsViewModel) : RecyclerView.ViewHolder(view) {
+class TopAdapter(private val model: SpentViewModel) : RecyclerView.Adapter<TopAdapter.ViewHolder>() {
+    class ViewHolder(view: View, private val model: SpentViewModel) : RecyclerView.ViewHolder(view) {
         init {
             val resourceId = view.resources.getIdentifier("status_bar_height", "dimen", "android")
             val topBarHeight = if (resourceId > 0) {

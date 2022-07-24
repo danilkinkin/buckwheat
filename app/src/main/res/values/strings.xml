@@ -5,13 +5,13 @@
     <!-- Main -->
     <string name="budget_for_today">Budget for today</string>
     <string name="rest_budget_for_today">Remains for today</string>
-    <string name="draw">Waste</string>
+    <string name="spent">Spending</string>
     <string name="fab_home_desc">Home</string>
     <string name="new_budget">Budget set</string>
     <string name="label_start_date">Start</string>
     <string name="label_finish_date">Finish</string>
-    <string name="remove_draw">Expenditure returned to budget</string>
-    <string name="remove_draw_undo">Remove</string>
+    <string name="remove_spent">Expenditure returned to budget</string>
+    <string name="remove_spent_undo">Remove</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>

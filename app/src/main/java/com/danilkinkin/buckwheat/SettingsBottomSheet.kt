@@ -18,7 +18,7 @@ import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.adapters.CurrencyAdapter
 import com.danilkinkin.buckwheat.utils.*
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
-import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
+import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -30,7 +30,6 @@ import com.google.android.material.textview.MaterialTextView
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
-import kotlin.math.floor
 
 
 class SettingsBottomSheet: BottomSheetDialogFragment() {
@@ -39,7 +38,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     }
 
     private lateinit var model: AppViewModel
-    private lateinit var drawsModel: DrawsViewModel
+    private lateinit var spendsModel: SpentViewModel
 
     var budgetValue: BigDecimal = 0.0.toBigDecimal()
     var dateToValue: Date = Date()
@@ -81,10 +80,10 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val model: AppViewModel by activityViewModels()
-        val drawsModel: DrawsViewModel by activityViewModels()
+        val spendsModel: SpentViewModel by activityViewModels()
 
         this.model = model
-        this.drawsModel = drawsModel
+        this.spendsModel = spendsModel
 
         build()
     }
@@ -108,9 +107,9 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     }
 
     fun build() {
-        budgetValue = drawsModel.budget.value ?: 0.0.toBigDecimal()
-        dateToValue = drawsModel.finishDate
-        currencyValue = drawsModel.currency
+        budgetValue = spendsModel.budget.value ?: 0.0.toBigDecimal()
+        dateToValue = spendsModel.finishDate
+        currencyValue = spendsModel.currency
 
         budgetInput.setText(prettyCandyCanes(budgetValue, currency = ExtendCurrency(type = CurrencyType.NONE)))
 
@@ -313,8 +312,8 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         }
 
         requireView().findViewById<MaterialButton>(R.id.apply).setOnClickListener {
-            drawsModel.changeCurrency(currencyValue)
-            drawsModel.changeBudget(budgetValue, dateToValue)
+            spendsModel.changeCurrency(currencyValue)
+            spendsModel.changeBudget(budgetValue, dateToValue)
 
             dismiss()
         }

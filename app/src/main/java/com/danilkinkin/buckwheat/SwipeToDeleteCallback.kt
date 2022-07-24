@@ -8,9 +8,8 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.danilkinkin.buckwheat.adapters.DrawsAdapter
-import com.danilkinkin.buckwheat.entities.Draw
-import com.google.android.material.snackbar.Snackbar
+import com.danilkinkin.buckwheat.adapters.SpendsAdapter
+import com.danilkinkin.buckwheat.entities.Spent
 
 
 
@@ -24,14 +23,14 @@ class SwipeToDeleteCallback() : ItemTouchHelper.Callback() {
     private var deleteDrawable: Drawable? = null
     private var intrinsicWidth = 0
     private var intrinsicHeight = 0
-    private lateinit var deleteCallback: (draw: Draw) -> Unit
-    private lateinit var drawsAdapter: DrawsAdapter
+    private lateinit var deleteCallback: (spent: Spent) -> Unit
+    private lateinit var spendsAdapter: SpendsAdapter
 
 
-    constructor(context: Context?, drawsAdapter: DrawsAdapter, deleteCallback: (draw: Draw) -> Unit) : this() {
+    constructor(context: Context?, spendsAdapter: SpendsAdapter, deleteCallback: (spent: Spent) -> Unit) : this() {
         mContext = context
         this.deleteCallback = deleteCallback
-        this.drawsAdapter = drawsAdapter
+        this.spendsAdapter = spendsAdapter
         mBackground = ColorDrawable()
         backgroundColor = mContext?.let { ContextCompat.getColor(it, R.color.delete) }!!
         mClearPaint = Paint()
@@ -47,7 +46,7 @@ class SwipeToDeleteCallback() : ItemTouchHelper.Callback() {
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder
     ): Int {
-        return if (viewHolder is DrawsAdapter.DrawViewHolder) {
+        return if (viewHolder is SpendsAdapter.DrawViewHolder) {
             makeMovementFlags(0, ItemTouchHelper.LEFT)
         } else {
             0
@@ -67,8 +66,8 @@ class SwipeToDeleteCallback() : ItemTouchHelper.Callback() {
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        if (viewHolder is DrawsAdapter.DrawViewHolder) {
-            viewHolder.currentDraw?.let { deleteCallback(it) }
+        if (viewHolder is SpendsAdapter.DrawViewHolder) {
+            viewHolder.currentSpent?.let { deleteCallback(it) }
         }
     }
 

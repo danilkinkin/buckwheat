@@ -11,15 +11,15 @@ import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
-import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
+import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.google.android.material.button.MaterialButton
 
 class EditorFragment : Fragment() {
-    private lateinit var model: DrawsViewModel
+    private lateinit var model: SpentViewModel
     private lateinit var appModel: AppViewModel
 
     private var budgetFragment: TextWithLabelFragment? = null
-    private var drawFragment: TextWithLabelFragment? = null
+    private var spentFragment: TextWithLabelFragment? = null
     private var restBudgetFragment: TextWithLabelFragment? = null
 
     override fun onCreateView(
@@ -35,7 +35,7 @@ class EditorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val model: DrawsViewModel by activityViewModels()
+        val model: SpentViewModel by activityViewModels()
         val appModel: AppViewModel by activityViewModels()
 
         this.model = model
@@ -85,15 +85,15 @@ class EditorFragment : Fragment() {
 
     private fun setRestDailyBudget(fragment: TextWithLabelFragment) {
         fragment.also {
-            it.setValue(prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!! - model.currentDraw))
+            it.setValue(prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!! - model.currentSpent))
             it.setLabel(context!!.getString(R.string.rest_budget_for_today))
         }
     }
 
-    private fun setDraw(fragment: TextWithLabelFragment) {
+    private fun setSpent(fragment: TextWithLabelFragment) {
         fragment.also {
-            it.setValue(prettyCandyCanes(model.currentDraw, model.useDot))
-            it.setLabel(context!!.getString(R.string.draw))
+            it.setValue(prettyCandyCanes(model.currentSpent, model.useDot))
+            it.setLabel(context!!.getString(R.string.spent))
         }
     }
 
@@ -137,14 +137,14 @@ class EditorFragment : Fragment() {
             val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
 
             when (stage) {
-                DrawsViewModel.Stage.IDLE, null -> {
+                SpentViewModel.Stage.IDLE, null -> {
                     if (restBudgetFragment !== null) ft.remove(restBudgetFragment!!)
-                    if (drawFragment !== null) ft.remove(drawFragment!!)
+                    if (spentFragment !== null) ft.remove(spentFragment!!)
 
                     ft.commit()
 
                     ft.runOnCommit {
-                        drawFragment = null
+                        spentFragment = null
                         restBudgetFragment = null
 
                         budgetFragment?.also {
@@ -154,13 +154,13 @@ class EditorFragment : Fragment() {
                         }
                     }
                 }
-                DrawsViewModel.Stage.CREATING_DRAW -> {
-                    drawFragment = TextWithLabelFragment()
-                    drawFragment!!.onCreated {
-                        drawFragment!!.setValue(prettyCandyCanes(model.currentDraw))
-                        drawFragment!!.setLabel(context!!.getString(R.string.draw))
-                        drawFragment!!.getLabelView().textSize = 10.toSP().toFloat()
-                        drawFragment!!.getValueView().textSize = 46.toSP().toFloat()
+                SpentViewModel.Stage.CREATING_SPENT -> {
+                    spentFragment = TextWithLabelFragment()
+                    spentFragment!!.onCreated {
+                        spentFragment!!.setValue(prettyCandyCanes(model.currentSpent))
+                        spentFragment!!.setLabel(context!!.getString(R.string.spent))
+                        spentFragment!!.getLabelView().textSize = 10.toSP().toFloat()
+                        spentFragment!!.getValueView().textSize = 46.toSP().toFloat()
                     }
 
                     restBudgetFragment = TextWithLabelFragment()
@@ -170,7 +170,7 @@ class EditorFragment : Fragment() {
                         restBudgetFragment!!.getValueView().textSize = 20.toSP().toFloat()
                     }
 
-                    ft.add(R.id.calculator, drawFragment!!)
+                    ft.add(R.id.calculator, spentFragment!!)
                     ft.add(R.id.calculator, restBudgetFragment!!)
 
                     ft.commit()
@@ -182,23 +182,23 @@ class EditorFragment : Fragment() {
                         }
                     }
                 }
-                DrawsViewModel.Stage.EDIT_DRAW -> {
-                    drawFragment?.also {
-                        setDraw(it)
+                SpentViewModel.Stage.EDIT_SPENT -> {
+                    spentFragment?.also {
+                        setSpent(it)
                     }
                     restBudgetFragment?.also {
                         setRestDailyBudget(it)
                     }
                 }
-                DrawsViewModel.Stage.COMMITTING_DRAW -> {
+                SpentViewModel.Stage.COMMITTING_SPENT -> {
                     ft.remove(budgetFragment!!)
-                    ft.remove(drawFragment!!)
+                    ft.remove(spentFragment!!)
 
                     ft.commit()
 
                     ft.runOnCommit {
                         budgetFragment = restBudgetFragment
-                        drawFragment = null
+                        spentFragment = null
                         restBudgetFragment = null
 
                         budgetFragment?.also {
@@ -207,7 +207,7 @@ class EditorFragment : Fragment() {
                             animate(it.getValueView(), "textSize",  20.toSP().toFloat(), 40.toSP().toFloat())
                         }
 
-                        model.resetDraw()
+                        model.resetSpent()
                     }
                 }
             }

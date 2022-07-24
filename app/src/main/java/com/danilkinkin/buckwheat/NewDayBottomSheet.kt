@@ -1,7 +1,6 @@
 package com.danilkinkin.buckwheat
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +8,12 @@ import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.utils.countDays
 import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
-import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
+import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
-import java.lang.Math.max
 import java.math.RoundingMode
 import kotlin.math.abs
-import kotlin.math.floor
 
 class NewDayBottomSheet: BottomSheetDialogFragment() {
     companion object {
@@ -24,7 +21,7 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
     }
 
     private lateinit var appModel: AppViewModel
-    private lateinit var drawsModel: DrawsViewModel
+    private lateinit var spentModel: SpentViewModel
 
     private val restBudgetOfDayTextView: MaterialTextView by lazy {
         requireView().findViewById(R.id.rest_budget_of_day)
@@ -70,24 +67,24 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val appModel: AppViewModel by activityViewModels()
-        val drawsModel: DrawsViewModel by activityViewModels()
+        val spentModel: SpentViewModel by activityViewModels()
 
         this.appModel = appModel
-        this.drawsModel = drawsModel
+        this.spentModel = spentModel
 
         build()
     }
 
     fun build() {
-        val restDays = countDays(drawsModel.finishDate)
-        val skippedDays = abs(countDays(drawsModel.lastReCalcBudgetDate!!))
+        val restDays = countDays(spentModel.finishDate)
+        val skippedDays = abs(countDays(spentModel.lastReCalcBudgetDate!!))
 
-        val restBudget = (drawsModel.budget.value!! - drawsModel.spent.value!!) - drawsModel.dailyBudget.value!!
+        val restBudget = (spentModel.budget.value!! - spentModel.spent.value!!) - spentModel.dailyBudget.value!!
         val perDayBudget = restBudget / (restDays + skippedDays - 1).toBigDecimal()
 
-        val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0).toBigDecimal() + drawsModel.dailyBudget.value!! - drawsModel.spentFromDailyBudget.value!!
+        val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0).toBigDecimal() + spentModel.dailyBudget.value!! - spentModel.spentFromDailyBudget.value!!
 
-        val budgetPerDaySplit = ((restBudget + drawsModel.dailyBudget.value!! - drawsModel.spentFromDailyBudget.value!!) / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
+        val budgetPerDaySplit = ((restBudget + spentModel.dailyBudget.value!! - spentModel.spentFromDailyBudget.value!!) / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
         val budgetPerDayAdd = (restBudget / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
         val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
@@ -97,19 +94,19 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
             debugTextView.visibility = View.VISIBLE
             debugTextView.text = "Осталось дней = $restDays " +
                     "\nПрошло дней с последнего пересчета = $skippedDays " +
-                    "\nНачало = ${drawsModel.startDate} " +
-                    "\nПоследний пересчет = ${drawsModel.lastReCalcBudgetDate} " +
-                    "\nКонец = ${drawsModel.finishDate} " +
-                    "\nВесь бюджет = ${drawsModel.budget.value!!}" +
-                    "\nПотрачено из бюджета = ${drawsModel.spent.value!!}" +
-                    "\nБюджет на сегодня = ${drawsModel.dailyBudget.value!!}" +
-                    "\nПотрачено из дневного бюджета = ${drawsModel.spentFromDailyBudget.value!!}" +
+                    "\nНачало = ${spentModel.startDate} " +
+                    "\nПоследний пересчет = ${spentModel.lastReCalcBudgetDate} " +
+                    "\nКонец = ${spentModel.finishDate} " +
+                    "\nВесь бюджет = ${spentModel.budget.value!!}" +
+                    "\nПотрачено из бюджета = ${spentModel.spent.value!!}" +
+                    "\nБюджет на сегодня = ${spentModel.dailyBudget.value!!}" +
+                    "\nПотрачено из дневного бюджета = ${spentModel.spentFromDailyBudget.value!!}" +
                     "\nОставшийся бюджет = $restBudget" +
                     "\nОставшийся бюджет на по дням = $perDayBudget"
 
 
             splitRestDaysDebugTextView.visibility = View.VISIBLE
-            splitRestDaysDebugTextView.text = "($restBudget + ${drawsModel.dailyBudget.value!!} - ${drawsModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit"
+            splitRestDaysDebugTextView.text = "($restBudget + ${spentModel.dailyBudget.value!!} - ${spentModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit"
 
             addCurrentDayDebugTextView.visibility = View.VISIBLE
             addCurrentDayDebugTextView.text = "$restBudget / $restDays = $budgetPerDayAdd " +
@@ -128,13 +125,13 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
         )
 
         splitRestDaysCardView.setOnClickListener {
-            drawsModel.reCalcDailyBudget(budgetPerDaySplit)
+            spentModel.reCalcDailyBudget(budgetPerDaySplit)
 
             dismiss()
         }
 
         addCurrentDayCardView.setOnClickListener {
-            drawsModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
+            spentModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
 
             dismiss()
         }

@@ -1,27 +1,21 @@
 package com.danilkinkin.buckwheat
 
-import android.animation.ValueAnimator
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.core.animation.doOnEnd
-import androidx.core.view.doOnLayout
-import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.utils.toDP
 import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
-import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
+import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 
 class KeyboardFragment : Fragment() {
-    private lateinit var model: DrawsViewModel
+    private lateinit var model: SpentViewModel
     private lateinit var appModel: AppViewModel
 
     private val root: MotionLayout by lazy {
@@ -95,7 +89,7 @@ class KeyboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val model: DrawsViewModel by activityViewModels()
+        val model: SpentViewModel by activityViewModels()
         val appModel: AppViewModel by activityViewModels()
 
         this.model = model
@@ -112,56 +106,56 @@ class KeyboardFragment : Fragment() {
         listBtns = arrayListOf(n0Btn, n1Btn, n2Btn, n3Btn, n4Btn, n5Btn, n6Btn, n7Btn, n8Btn, n9Btn, dotBtn)
 
         n0Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 0)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 0)
         }
 
         n1Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 1)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 1)
         }
 
         n2Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 2)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 2)
         }
 
         n3Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 3)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 3)
         }
 
         n4Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 4)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 4)
         }
 
         n5Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 5)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 5)
         }
 
         n6Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 6)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 6)
         }
 
         n7Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 7)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 7)
         }
 
         n8Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 8)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 8)
         }
 
         n9Btn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.PUT_NUMBER, 9)
+            this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 9)
         }
 
         dotBtn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.SET_DOT)
+            this.model.executeAction(SpentViewModel.Action.SET_DOT)
         }
 
         backspaceBtn.setOnClickListener {
-            this.model.executeAction(DrawsViewModel.Action.REMOVE_LAST)
+            this.model.executeAction(SpentViewModel.Action.REMOVE_LAST)
         }
 
         evalBtn.setOnClickListener {
             if ("${model.valueLeftDot}.${model.valueRightDot}" == "00000000.") {
-                model.resetDraw()
+                model.resetSpent()
 
                 appModel.setIsDebug(!appModel.isDebug.value!!)
 
@@ -172,7 +166,7 @@ class KeyboardFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            model.commitDraw()
+            model.commitSpent()
         }
 
         root.addTransitionListener(object : MotionLayout.TransitionListener {

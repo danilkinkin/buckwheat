@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,19 +17,19 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.*
-import com.danilkinkin.buckwheat.adapters.DrawsAdapter
+import com.danilkinkin.buckwheat.adapters.SpendsAdapter
 import com.danilkinkin.buckwheat.adapters.EditorAdapter
 import com.danilkinkin.buckwheat.adapters.KeyboardAdapter
 import com.danilkinkin.buckwheat.adapters.TopAdapter
-import com.danilkinkin.buckwheat.decorators.DrawsDividerItemDecoration
-import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
+import com.danilkinkin.buckwheat.decorators.SpendsDividerItemDecoration
+import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 var instance: MainActivity? = null
 
 class MainActivity : AppCompatActivity() {
-    lateinit var model: DrawsViewModel
+    lateinit var model: SpentViewModel
 
     lateinit var parentView: View
 
@@ -85,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         window.statusBarColor = ColorUtils.setAlphaComponent(ContextCompat.getColor(this, com.google.android.material.R.color.material_dynamic_neutral95), 230)
 
-        val model: DrawsViewModel by viewModels()
+        val model: SpentViewModel by viewModels()
 
         this.model = model
 
@@ -154,18 +153,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val drawsDividerItemDecoration = DrawsDividerItemDecoration(recyclerView.context)
-        recyclerView.addItemDecoration(drawsDividerItemDecoration)
+        val spendsDividerItemDecoration = SpendsDividerItemDecoration(recyclerView.context)
+        recyclerView.addItemDecoration(spendsDividerItemDecoration)
 
         layoutManager.stackFromEnd = true
 
         val topAdapter = TopAdapter(model)
-        val drawsAdapter = DrawsAdapter()
+        val spendsAdapter = SpendsAdapter()
         val editorAdapter = EditorAdapter(supportFragmentManager, recyclerView)
         val keyboardAdapter = KeyboardAdapter(supportFragmentManager) { lockScroll ->
             layoutManager.setScrollEnabled(!lockScroll)
         }
-        val contactAdapter = ConcatAdapter(topAdapter, drawsAdapter, editorAdapter, keyboardAdapter)
+        val contactAdapter = ConcatAdapter(topAdapter, spendsAdapter, editorAdapter, keyboardAdapter)
 
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = contactAdapter
@@ -183,16 +182,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val swipeToDeleteCallback = SwipeToDeleteCallback(applicationContext, drawsAdapter) {
-            model.removeDraw(it)
+        val swipeToDeleteCallback = SwipeToDeleteCallback(applicationContext, spendsAdapter) {
+            model.removeSpent(it)
         }
 
         val itemTouchhelper = ItemTouchHelper(swipeToDeleteCallback)
 
         itemTouchhelper.attachToRecyclerView(recyclerView)
 
-        model.getDraws().observeForever { draws ->
-            drawsAdapter.submitList(draws)
+        model.getSpends().observeForever { spents ->
+            spendsAdapter.submitList(spents)
         }
 
         model.budget.observeForever {
