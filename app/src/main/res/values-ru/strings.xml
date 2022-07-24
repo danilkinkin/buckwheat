@@ -17,6 +17,7 @@
     <string name="settings_title">Настройки</string>
     <string name="label_budget">Бюджет</string>
     <string name="prefix_finish_date">До</string>
+    <string name="select_finish_date_title">Выбрать дату окончанию</string>
     <plurals name="finish_date_dates">
         <item quantity="one">%1$s (%2$s день)</item>
         <item quantity="few">%1$s (%2$s дня)</item>

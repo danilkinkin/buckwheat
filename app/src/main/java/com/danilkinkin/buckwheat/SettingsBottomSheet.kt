@@ -12,6 +12,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
@@ -23,7 +24,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
@@ -88,7 +88,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         build()
     }
 
-    fun reCalcBudget() {
+    private fun reCalcBudget() {
         val days = countDays(dateToValue)
 
         finishDateBtn.text = String.format(
@@ -106,7 +106,39 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         )
     }
 
-    fun build() {
+    private fun recalcLabels(newCurrency: ExtendCurrency) {
+        currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).isChecked = false
+        currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).text = context!!.getString(R.string.currency_from_list)
+
+        currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).isChecked = false
+        currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).text = context!!.getString(R.string.currency_custom)
+
+        currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = false
+
+        when (newCurrency.type) {
+            CurrencyType.FROM_LIST -> {
+                currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).isChecked = true
+                currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).text = context!!.getString(
+                    R.string.currency_from_list_selected,
+                    Currency.getInstance(newCurrency.value).symbol,
+                )
+            }
+            CurrencyType.CUSTOM -> {
+                currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).isChecked = true
+                currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).text = context!!.getString(
+                    R.string.currency_custom_selected,
+                    newCurrency.value,
+                )
+            }
+            CurrencyType.NONE -> {
+                currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = true
+            }
+        }
+
+        reCalcBudget()
+    }
+
+    private fun build() {
         budgetValue = spendsModel.budget.value ?: 0.0.toBigDecimal()
         dateToValue = spendsModel.finishDate
         currencyValue = spendsModel.currency
@@ -128,61 +160,63 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
             reCalcBudget()
         })
 
-        reCalcBudget()
-
         finishDateBtn.setOnClickListener {
-            val dataPicker = MaterialDatePicker.Builder
-                .dateRangePicker()
-                .setSelection(
-                    androidx.core.util.Pair(
-                        MaterialDatePicker.todayInUtcMilliseconds(),
-                        MaterialDatePicker.todayInUtcMilliseconds() + 15 * 24 * 60 * 60 * 1000,
-                    )
+            var alertDialog: AlertDialog? = null
+
+            val view = LayoutInflater.from(context!!).inflate(R.layout.dialog_date_range_picker, null, false)
+
+            val startDate = view.findViewById<MaterialTextView>(R.id.start_date)
+            val finishDate = view.findViewById<MaterialTextView>(R.id.finish_date)
+            val calendar = view.findViewById<CalendarView>(R.id.calendar)
+
+            var finishDateTemp = dateToValue
+
+            fun recalcFinishDate() {
+                val days = countDays(finishDateTemp, spendsModel.startDate)
+
+                finishDate.text = String.format(
+                    context!!.resources.getQuantityText(R.plurals.finish_date_dates, days).toString(),
+                    prettyDate(finishDateTemp, showTime = false, forceShowDate = true),
+                    days,
                 )
-                .build()
-
-            dataPicker.addOnPositiveButtonClickListener {
-                dateToValue = Date(dataPicker.selection!!.second)
-
-                reCalcBudget()
             }
 
-            dataPicker
-                .show(parentFragmentManager, "dataPicker")
-        }
+            startDate.text = prettyDate(spendsModel.startDate, showTime = false, forceShowDate = true)
+            recalcFinishDate()
 
-        fun recalcLabels(newCurrency: ExtendCurrency) {
-            currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).isChecked = false
-            currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).text = context!!.getString(R.string.currency_from_list)
+            calendar.minDate = roundToDay(Date()).time + DAY
+            calendar.date = dateToValue.time
+            calendar.setOnDateChangeListener { calendarView, year, month, dayOfMonth ->
+                finishDateTemp = Calendar
+                    .Builder()
+                    .setTimeZone(TimeZone.getDefault())
+                    .setDate(year, month, dayOfMonth)
+                    .build()
+                    .time
 
-            currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).isChecked = false
-            currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).text = context!!.getString(R.string.currency_custom)
-
-            currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = false
-
-            when (newCurrency.type) {
-                CurrencyType.FROM_LIST -> {
-                    currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).isChecked = true
-                    currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).text = context!!.getString(
-                        R.string.currency_from_list_selected,
-                        Currency.getInstance(newCurrency.value).symbol,
-                    )
-                }
-                CurrencyType.CUSTOM -> {
-                    currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).isChecked = true
-                    currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).text = context!!.getString(
-                        R.string.currency_custom_selected,
-                        newCurrency.value,
-                    )
-                }
-                CurrencyType.NONE -> {
-                    currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = true
-                }
+                recalcFinishDate()
             }
 
-            reCalcBudget()
+            alertDialog = MaterialAlertDialogBuilder(context!!)
+                .setTitle(R.string.select_finish_date_title)
+                .setView(view)
+                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton(resources.getString(R.string.accept)) { dialog, _ ->
+                    dateToValue = finishDateTemp
+
+                    reCalcBudget()
+
+                    dialog.dismiss()
+                }
+                .setOnCancelListener { recalcLabels(currencyValue) }
+                .create()
+
+            alertDialog.show()
         }
 
+        reCalcBudget()
         recalcLabels(currencyValue)
 
         currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).setOnClickListener {
@@ -222,8 +256,8 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
                 .setOnCancelListener { recalcLabels(currencyValue) }
                 .create()
 
-            alertDialog.show()
-            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+            alertDialog!!.show()
+            alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
         }
 
         currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).setOnClickListener {

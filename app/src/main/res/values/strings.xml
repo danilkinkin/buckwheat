@@ -17,6 +17,7 @@
     <string name="settings_title">Settings</string>
     <string name="label_budget">Budget</string>
     <string name="prefix_finish_date">To</string>
+    <string name="select_finish_date_title">Select finish date</string>
     <plurals name="finish_date_dates">
         <item quantity="one">%1$s (%2$s day)</item>
         <item quantity="other">%1$s (%2$s days)</item>
