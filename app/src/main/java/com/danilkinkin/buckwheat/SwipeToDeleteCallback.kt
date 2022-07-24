@@ -11,10 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.adapters.SpendsAdapter
 import com.danilkinkin.buckwheat.entities.Spent
 
-
-
-
-
 class SwipeToDeleteCallback() : ItemTouchHelper.Callback() {
     var mContext: Context? = null
     private var mClearPaint: Paint? = null
@@ -115,5 +111,9 @@ class SwipeToDeleteCallback() : ItemTouchHelper.Callback() {
 
     private fun clearCanvas(c: Canvas, left: Float, top: Float, right: Float, bottom: Float) {
         mClearPaint?.let { c.drawRect(left, top, right, bottom, it) }
+    }
+
+    override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float {
+        return 0.2F
     }
 }
