@@ -83,10 +83,11 @@ class CurrencyTextWatcher(
         onChange(parsed.toString())
 
         editText.setText(formatted)
+
         if (offset == selectionStart) {
-            editText.setSelection(min(newSelection - 1, formatted.length))
+            editText.setSelection(max(min(newSelection - 1, formatted.length), 0))
         } else {
-            editText.setSelection(min(newSelection, formatted.length))
+            editText.setSelection(max(min(newSelection, formatted.length), 0))
         }
         editText.addTextChangedListener(this)
     }
