@@ -11,7 +11,7 @@ import com.danilkinkin.buckwheat.viewmodels.DrawsViewModel
 import com.google.android.material.textview.MaterialTextView
 
 class TopAdapter(private val model: DrawsViewModel) : RecyclerView.Adapter<TopAdapter.ViewHolder>() {
-    class ViewHolder(view: View, model: DrawsViewModel) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View, private val model: DrawsViewModel) : RecyclerView.ViewHolder(view) {
         init {
             val resourceId = view.resources.getIdentifier("status_bar_height", "dimen", "android")
             val topBarHeight = if (resourceId > 0) {
@@ -29,19 +29,22 @@ class TopAdapter(private val model: DrawsViewModel) : RecyclerView.Adapter<TopAd
                 0,
             )
 
-            view.findViewById<MaterialTextView>(R.id.value).text = prettyCandyCanes(model.budget.value!!)
-            view.findViewById<MaterialTextView>(R.id.start_date).text = prettyDate(
+            update()
+        }
+
+        fun update() {
+            itemView.findViewById<MaterialTextView>(R.id.value).text = prettyCandyCanes(model.budget.value!!)
+            itemView.findViewById<MaterialTextView>(R.id.start_date).text = prettyDate(
                 model.startDate,
                 showTime = false,
                 forceShowDate = true,
             )
-            view.findViewById<MaterialTextView>(R.id.finish_date).text = prettyDate(
+            itemView.findViewById<MaterialTextView>(R.id.finish_date).text = prettyDate(
                 model.finishDate,
                 showTime = false,
                 forceShowDate = true,
             )
         }
-
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
@@ -52,7 +55,7 @@ class TopAdapter(private val model: DrawsViewModel) : RecyclerView.Adapter<TopAd
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-
+        viewHolder.update()
     }
 
     override fun getItemCount() = 1

@@ -195,6 +195,10 @@ class MainActivity : AppCompatActivity() {
             drawsAdapter.submitList(draws)
         }
 
+        model.budget.observeForever {
+            topAdapter.notifyDataSetChanged()
+        }
+
         fabHome.setOnClickListener {
             recyclerView.smoothScrollToPosition(contactAdapter.itemCount - 1)
         }
