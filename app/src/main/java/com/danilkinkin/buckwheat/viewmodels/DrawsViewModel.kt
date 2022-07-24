@@ -11,6 +11,8 @@ import com.danilkinkin.buckwheat.entities.Draw
 import com.danilkinkin.buckwheat.entities.Storage
 import com.danilkinkin.buckwheat.utils.*
 import com.google.android.material.snackbar.Snackbar
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 import kotlin.math.floor
 
@@ -25,25 +27,25 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
 
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
 
-    var budget: MutableLiveData<Double> = MutableLiveData(try {
-        storage.get("budget").value.toDouble()
+    var budget: MutableLiveData<BigDecimal> = MutableLiveData(try {
+        storage.get("budget").value.toBigDecimal()
     } catch (e: Exception) {
-        0.0
+        0.0.toBigDecimal()
     })
-    var spent: MutableLiveData<Double> = MutableLiveData(try {
-        storage.get("spent").value.toDouble()
+    var spent: MutableLiveData<BigDecimal> = MutableLiveData(try {
+        storage.get("spent").value.toBigDecimal()
     } catch (e: Exception) {
-        0.0
+        0.0.toBigDecimal()
     })
-    var dailyBudget: MutableLiveData<Double> = MutableLiveData(try {
-        storage.get("dailyBudget").value.toDouble()
+    var dailyBudget: MutableLiveData<BigDecimal> = MutableLiveData(try {
+        storage.get("dailyBudget").value.toBigDecimal()
     } catch (e: Exception) {
-        0.0
+        0.0.toBigDecimal()
     })
-    var spentFromDailyBudget: MutableLiveData<Double> = MutableLiveData(try {
-        storage.get("spentFromDailyBudget").value.toDouble()
+    var spentFromDailyBudget: MutableLiveData<BigDecimal> = MutableLiveData(try {
+        storage.get("spentFromDailyBudget").value.toBigDecimal()
     } catch (e: Exception) {
-        0.0
+        0.0.toBigDecimal()
     })
 
     var startDate: Date = try {
@@ -68,7 +70,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         ExtendCurrency(value = null, type = CurrencyType.NONE)
     }
 
-    var currentDraw: Double = 0.0
+    var currentDraw: BigDecimal = 0.0.toBigDecimal()
 
     var requireReCalcBudget: MutableLiveData<Boolean> = MutableLiveData(false)
     var requireSetBudget: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -97,7 +99,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         this.currency = currency
     }
 
-    fun changeBudget(budget: Double, finishDate: Date) {
+    fun changeBudget(budget: BigDecimal, finishDate: Date) {
         storage.set(Storage("budget", budget.toString()))
         this.budget.value = budget
 
@@ -110,13 +112,13 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         this.finishDate = roundedFinishDate
 
         storage.set(Storage("spent", 0.0.toString()))
-        this.spent.value = 0.0
+        this.spent.value = 0.0.toBigDecimal()
 
         storage.set(Storage("dailyBudget", 0.0.toString()))
-        this.dailyBudget.value = 0.0
+        this.dailyBudget.value = 0.0.toBigDecimal()
 
         storage.set(Storage("spentFromDailyBudget", 0.0.toString()))
-        this.spentFromDailyBudget.value = 0.0
+        this.spentFromDailyBudget.value = 0.0.toBigDecimal()
 
         storage.set(Storage("lastReCalcBudgetDate", roundToDay(startDate).time.toString()))
         this.lastReCalcBudgetDate = startDate
@@ -124,10 +126,10 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         draws.deleteAll()
 
         resetDraw()
-        reCalcDailyBudget(floor(budget / countDays(roundedFinishDate)))
+        reCalcDailyBudget((budget / countDays(roundedFinishDate).toBigDecimal()).setScale(0, RoundingMode.FLOOR))
     }
 
-    fun reCalcDailyBudget(dailyBudget: Double) {
+    fun reCalcDailyBudget(dailyBudget: BigDecimal) {
         this.dailyBudget.value = dailyBudget
         lastReCalcBudgetDate = roundToDay(Date())
         spent.value = spent.value!! + spentFromDailyBudget.value!!
@@ -139,12 +141,12 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createDraw() {
-        currentDraw = 0.0
+        currentDraw = 0.0.toBigDecimal()
 
         stage.value = Stage.CREATING_DRAW
     }
 
-    fun editDraw(value: Double) {
+    fun editDraw(value: BigDecimal) {
         currentDraw = value
 
         stage.value = Stage.EDIT_DRAW
@@ -158,7 +160,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
         spentFromDailyBudget.value = spentFromDailyBudget.value?.plus(currentDraw)
         storage.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
 
-        currentDraw = 0.0
+        currentDraw = 0.0.toBigDecimal()
         valueLeftDot = ""
         valueRightDot = ""
         useDot = false
@@ -167,7 +169,7 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun resetDraw() {
-        currentDraw = 0.0
+        currentDraw = 0.0.toBigDecimal()
         valueLeftDot = ""
         valueRightDot = ""
         useDot = false
@@ -236,6 +238,6 @@ class DrawsViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        editDraw("$valueLeftDot.$valueRightDot".toDouble())
+        editDraw("$valueLeftDot.$valueRightDot".toBigDecimal())
     }
 }

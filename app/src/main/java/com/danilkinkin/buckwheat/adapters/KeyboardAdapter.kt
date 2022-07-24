@@ -95,15 +95,15 @@ class KeyboardAdapter(
         super.onViewAttachedToWindow(holder)
     }
 
-    fun scrollUpdate(parent: RecyclerView) {
+    /* fun scrollUpdate(parent: RecyclerView) {
         val minHeight = 258.toDP()
 
         val value = (parent.height - keyboardView!!.top - minHeight) / (parent.width.toFloat() - minHeight)
 
-        // fragmentKeyboard?.anim(value.coerceAtLeast(0F))
-    }
+        fragmentKeyboard?.anim(value.coerceAtLeast(0F))
+    } */
 
-    fun attachFragmentToContainer() {
+    private fun attachFragmentToContainer() {
         val fragment = if (fragmentManager.fragments.firstOrNull { it is KeyboardFragment } == null) {
             fragmentKeyboard = KeyboardFragment()
 

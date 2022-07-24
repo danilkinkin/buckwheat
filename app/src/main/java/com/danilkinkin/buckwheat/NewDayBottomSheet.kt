@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import java.lang.Math.max
+import java.math.RoundingMode
 import kotlin.math.abs
 import kotlin.math.floor
 
@@ -82,12 +83,12 @@ class NewDayBottomSheet: BottomSheetDialogFragment() {
         val skippedDays = abs(countDays(drawsModel.lastReCalcBudgetDate!!))
 
         val restBudget = (drawsModel.budget.value!! - drawsModel.spent.value!!) - drawsModel.dailyBudget.value!!
-        val perDayBudget = restBudget / (restDays + skippedDays - 1)
+        val perDayBudget = restBudget / (restDays + skippedDays - 1).toBigDecimal()
 
-        val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0) + drawsModel.dailyBudget.value!! - drawsModel.spentFromDailyBudget.value!!
+        val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0).toBigDecimal() + drawsModel.dailyBudget.value!! - drawsModel.spentFromDailyBudget.value!!
 
-        val budgetPerDaySplit = floor((restBudget + drawsModel.dailyBudget.value!! - drawsModel.spentFromDailyBudget.value!!) / restDays)
-        val budgetPerDayAdd = floor(restBudget / restDays)
+        val budgetPerDaySplit = ((restBudget + drawsModel.dailyBudget.value!! - drawsModel.spentFromDailyBudget.value!!) / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
+        val budgetPerDayAdd = (restBudget / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
         val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
         restBudgetOfDayTextView.text = prettyCandyCanes(requireDistributeBudget)

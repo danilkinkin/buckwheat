@@ -171,7 +171,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = contactAdapter
 
         recyclerView.setOnScrollChangeListener { _, _, _, _, dY: Int ->
-            keyboardAdapter.scrollUpdate(recyclerView)
+            // keyboardAdapter.scrollUpdate(recyclerView)
 
             recyclerViewScrollY += dY
 

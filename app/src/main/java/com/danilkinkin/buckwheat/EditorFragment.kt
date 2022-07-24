@@ -103,7 +103,7 @@ class EditorFragment : Fragment() {
         budgetFragment = TextWithLabelFragment().also {
             setDailyBudget(it)
 
-            it.onCreated { view ->
+            it.onCreated { _ ->
                 it.getLabelView().textSize = 10.toSP().toFloat()
                 it.getValueView().textSize = 40.toSP().toFloat()
             }

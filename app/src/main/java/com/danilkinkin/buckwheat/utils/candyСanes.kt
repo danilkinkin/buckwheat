@@ -39,7 +39,7 @@ class ExtendCurrency(val value: String? = null, val type: CurrencyType) {
 fun Double.round(scale: Int): Double = BigDecimal(this).setScale(scale, RoundingMode.HALF_EVEN).toDouble()
 
 fun prettyCandyCanes(
-    double: Double,
+    value: BigDecimal,
     forceShowAfterDot: Boolean = false,
     currency: ExtendCurrency = MainActivity.getInstance().model.currency,
 ): String {
@@ -50,7 +50,7 @@ fun prettyCandyCanes(
 
     if (currency.type === CurrencyType.FROM_LIST) formatter.currency = Currency.getInstance(currency.value)
 
-    var formattedValue = formatter.format(double)
+    var formattedValue = formatter.format(value)
 
     if (currency.type === CurrencyType.CUSTOM) formattedValue = "$formattedValue ${currency.value}"
 
@@ -112,7 +112,7 @@ class CurrencyTextWatcher(
             return -1
         }
 
-        fun parseCurrencyValue(value: String, currency: ExtendCurrency): Double {
+        fun parseCurrencyValue(value: String, currency: ExtendCurrency): BigDecimal {
             try {
                 val replaceRegex = java.lang.String.format(
                     "[%s,.\\s]",
@@ -124,12 +124,12 @@ class CurrencyTextWatcher(
                 )
                 val currencyValue = value.replace(replaceRegex.toRegex(), "")
 
-                return currencyValue.toDouble()
+                return currencyValue.toBigDecimal()
             } catch (e: java.lang.Exception) {
                 Log.e("MyApp", e.message, e)
             }
 
-            return 0.0
+            return 0.0.toBigDecimal()
         }
     }
 

@@ -27,6 +27,8 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textview.MaterialTextView
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 import kotlin.math.floor
 
@@ -39,7 +41,7 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     private lateinit var model: AppViewModel
     private lateinit var drawsModel: DrawsViewModel
 
-    var budgetValue: Double = 0.0
+    var budgetValue: BigDecimal = 0.0.toBigDecimal()
     var dateToValue: Date = Date()
     var currencyValue: ExtendCurrency = ExtendCurrency(value = null, type = CurrencyType.NONE)
 
@@ -99,14 +101,14 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
         perDayTextView.text = context!!.getString(
             R.string.per_day,
             prettyCandyCanes(
-                if (days != 0) { floor(budgetValue / days) } else { budgetValue },
+                if (days != 0) { (budgetValue / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR) } else { budgetValue },
                 currency = currencyValue,
             ),
         )
     }
 
     fun build() {
-        budgetValue = drawsModel.budget.value ?: 0.0
+        budgetValue = drawsModel.budget.value ?: 0.0.toBigDecimal()
         dateToValue = drawsModel.finishDate
         currencyValue = drawsModel.currency
 
@@ -117,11 +119,11 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
             currency = ExtendCurrency(type = CurrencyType.NONE),
         ) {
             budgetValue = try {
-                it.toDouble()
+                it.toBigDecimal()
             } catch (e: Exception) {
-                budgetInput.setText(prettyCandyCanes(0.0, currency = ExtendCurrency(type = CurrencyType.NONE)))
+                budgetInput.setText(prettyCandyCanes(0.0.toBigDecimal(), currency = ExtendCurrency(type = CurrencyType.NONE)))
 
-                0.0
+                0.0.toBigDecimal()
             }
 
             reCalcBudget()
@@ -249,12 +251,12 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
             alertDialog = MaterialAlertDialogBuilder(context!!)
                 .setTitle(R.string.currency_custom_title)
                 .setView(view)
-                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, which ->
+                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
                     recalcLabels(currencyValue)
 
                     dialog.dismiss()
                 }
-                .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
+                .setPositiveButton(resources.getString(R.string.accept)) { dialog, _ ->
                     currencyValue = ExtendCurrency(value = input.text.toString(), type = CurrencyType.CUSTOM)
                     recalcLabels(currencyValue)
                     dialog.dismiss()
