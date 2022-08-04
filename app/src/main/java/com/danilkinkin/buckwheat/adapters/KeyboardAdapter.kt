@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -9,11 +8,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.danilkinkin.buckwheat.KeyboardFragment
+import com.danilkinkin.buckwheat.widgets.keyboard.KeyboardFragment
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.utils.toDP
-import java.lang.Integer.min
-import java.lang.Math.max
 
 private var keyboardView: View? = null
 private var fragmentKeyboard: KeyboardFragment? = null

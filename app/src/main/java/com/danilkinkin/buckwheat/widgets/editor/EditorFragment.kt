@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat
+package com.danilkinkin.buckwheat.widgets.editor
 
 import android.animation.ObjectAnimator
 import android.os.Bundle
@@ -8,6 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
+import com.danilkinkin.buckwheat.NewDayBottomSheet
+import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.SettingsBottomSheet
+import com.danilkinkin.buckwheat.TextWithLabelFragment
 import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel

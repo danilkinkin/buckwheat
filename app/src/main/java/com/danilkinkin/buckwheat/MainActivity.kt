@@ -17,12 +17,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.*
-import com.danilkinkin.buckwheat.adapters.SpendsAdapter
-import com.danilkinkin.buckwheat.adapters.EditorAdapter
-import com.danilkinkin.buckwheat.adapters.KeyboardAdapter
-import com.danilkinkin.buckwheat.adapters.TopAdapter
+import com.danilkinkin.buckwheat.adapters.*
 import com.danilkinkin.buckwheat.decorators.SpendsDividerItemDecoration
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
+import com.danilkinkin.buckwheat.widgets.editor.EditorFragment
+import com.danilkinkin.buckwheat.widgets.keyboard.KeyboardFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -37,9 +36,12 @@ class MainActivity : AppCompatActivity() {
         findViewById(R.id.recycle_view)
     }
 
-    val fabHome: FloatingActionButton by lazy {
+    /* val fabHome: FloatingActionButton by lazy {
         findViewById(R.id.fab_home_btn)
-    }
+    } */
+
+    var fragmentKeyboard: KeyboardFragment? = null
+    var fragmentEditor: EditorFragment? = null
 
     companion object {
         fun getInstance(): MainActivity {
@@ -156,15 +158,15 @@ class MainActivity : AppCompatActivity() {
         val spendsDividerItemDecoration = SpendsDividerItemDecoration(recyclerView.context)
         recyclerView.addItemDecoration(spendsDividerItemDecoration)
 
-        layoutManager.stackFromEnd = true
+        // layoutManager.stackFromEnd = true
 
         val topAdapter = TopAdapter(model)
         val spendsAdapter = SpendsAdapter()
-        val editorAdapter = EditorAdapter(supportFragmentManager, recyclerView)
+        /* val editorAdapter = EditorAdapter(supportFragmentManager, recyclerView)
         val keyboardAdapter = KeyboardAdapter(supportFragmentManager) { lockScroll ->
             layoutManager.setScrollEnabled(!lockScroll)
-        }
-        val contactAdapter = ConcatAdapter(topAdapter, spendsAdapter, editorAdapter, keyboardAdapter)
+        } */
+        val contactAdapter = ConcatAdapter(topAdapter, spendsAdapter /*, editorAdapter, keyboardAdapter */ )
 
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = contactAdapter
@@ -174,12 +176,12 @@ class MainActivity : AppCompatActivity() {
 
             recyclerViewScrollY += dY
 
-            if (recyclerViewScrollY > recyclerView.width && fabHome.isOrWillBeHidden) {
+            /* if (recyclerViewScrollY > recyclerView.width && fabHome.isOrWillBeHidden) {
                 fabHome.show()
             }
             if (recyclerViewScrollY < recyclerView.width && fabHome.isOrWillBeShown) {
                 fabHome.hide()
-            }
+            } */
         }
 
         val swipeToDeleteCallback = SwipeToDeleteCallback(applicationContext, spendsAdapter) {
@@ -198,9 +200,21 @@ class MainActivity : AppCompatActivity() {
             topAdapter.notifyDataSetChanged()
         }
 
-        fabHome.setOnClickListener {
+        /* fabHome.setOnClickListener {
             recyclerView.smoothScrollToPosition(contactAdapter.itemCount - 1)
-        }
+        } */
+
+        /* fragmentKeyboard = KeyboardFragment()
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.keyboard_container, fragmentKeyboard!!)
+            .commitNowAllowingStateLoss()
+
+        fragmentEditor = EditorFragment()
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.editor_container, fragmentEditor!!)
+            .commitNowAllowingStateLoss() */
     }
 
     override fun onSupportNavigateUp(): Boolean {

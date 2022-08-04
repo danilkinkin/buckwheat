@@ -4,7 +4,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
-        
+
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Buckwheat.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Buckwheat.MediumComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Buckwheat.LargeComponent</item>
@@ -26,6 +26,11 @@
         <item name="textAppearanceLabelSmall">@style/TextAppearance.Buckwheat.LabelSmall</item>
 
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Buckwheat.BottomSheetDialog</item>
+    </style>
+
+    <style name="TopSheet_DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_out_from_top</item>
+        <item name="android:windowExitAnimation">@anim/slide_back_to_top</item>
     </style>
 
     <style name="Theme.Buckwheat" parent="Base.Theme.Buckwheat" />

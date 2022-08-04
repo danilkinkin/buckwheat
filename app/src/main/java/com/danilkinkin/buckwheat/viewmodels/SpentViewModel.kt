@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -140,12 +141,14 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun createSpent() {
+        Log.d("Main", "createSpent")
         currentSpent = 0.0.toBigDecimal()
 
         stage.value = Stage.CREATING_SPENT
     }
 
     fun editSpent(value: BigDecimal) {
+        Log.d("Main", "editSpent")
         currentSpent = value
 
         stage.value = Stage.EDIT_SPENT

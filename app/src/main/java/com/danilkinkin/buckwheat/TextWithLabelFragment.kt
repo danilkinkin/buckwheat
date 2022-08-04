@@ -25,7 +25,7 @@ class TextWithLabelFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
         root = inflater.inflate(R.layout.fragment_text_with_label, container, false)

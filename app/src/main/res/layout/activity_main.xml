@@ -1,29 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/material_dynamic_neutral95"
-    android:clipToPadding="false"
-    android:fitsSystemWindows="true"
-    tools:context=".MainActivity">
+    android:id="@+id/root">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/keyboard_container"
+        android:name="com.danilkinkin.buckwheat.widgets.keyboard.KeyboardFragment"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_gravity="bottom"
+        android:padding="16dp"
+        app:layout_behavior=".widgets.keyboard.KeyboardBehavior"
+        app:layout_behavior_dependency="@+id/editor_container"
+        tools:layout="@layout/fragment_keyboard" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="false"
+        app:layout_behavior=".widgets.topsheet.TopSheetBehavior"
+        app:reverseLayout="true"
+        app:stackFromEnd="true">
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_home_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:contentDescription="@string/fab_home_desc"
-        app:srcCompat="@drawable/ic_home" />
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/editor_container"
+        android:name="com.danilkinkin.buckwheat.widgets.editor.EditorFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior=".widgets.editor.EditorBehavior"
+        tools:layout="@layout/fragment_calculator" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
