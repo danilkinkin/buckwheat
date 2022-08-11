@@ -158,7 +158,8 @@ class MainActivity : AppCompatActivity() {
         val spendsDividerItemDecoration = SpendsDividerItemDecoration(recyclerView.context)
         recyclerView.addItemDecoration(spendsDividerItemDecoration)
 
-        // layoutManager.stackFromEnd = true
+        layoutManager.stackFromEnd = true
+        layoutManager.reverseLayout = false
 
         val topAdapter = TopAdapter(model)
         val spendsAdapter = SpendsAdapter()

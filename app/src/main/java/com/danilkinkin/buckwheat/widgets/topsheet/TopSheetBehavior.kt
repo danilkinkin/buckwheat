@@ -164,13 +164,13 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
                 if (state != State.STATE_SETTLING) {
                     val scroll =
                         if (nestedScrollingChildRef != null) nestedScrollingChildRef!!.get() else null
-                    if (scroll != null /* && parent.isPointInChildBounds(scroll, initialX, initialY) */) {
+                    if (scroll != null && parent.isPointInChildBounds(scroll, initialX, initialY)) {
                         activePointerId = event.getPointerId(event.actionIndex)
                         touchingScrollingChild = true
                     }
                 }
-                ignoreEvents = (activePointerId == MotionEvent.INVALID_POINTER_ID)
-                        // && !parent.isPointInChildBounds(child, initialX, initialY))
+                ignoreEvents = ((activePointerId == MotionEvent.INVALID_POINTER_ID)
+                        && !parent.isPointInChildBounds(child, initialX, initialY))
             }
             else -> {}
         }
@@ -220,6 +220,56 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
             }
         }
         return !ignoreEvents
+    }
+
+    fun drag(dy: Int) {
+        this.viewRef?.get()?.let {
+            Log.d(TAG, "drag dy = ${dy} end = ${it.bottom - dy}")
+            if (it.bottom - dy < 0) {
+                ViewCompat.offsetTopAndBottom(it, -it.bottom)
+            } else {
+                ViewCompat.offsetTopAndBottom(it, -dy)
+            }
+
+            setSmartStateInternal(State.STATE_DRAGGING)
+
+            lastNestedScrollDy = dy
+            nestedScrolled = true
+        }
+    }
+
+    fun finishDrag(target: View? =  null) {
+        Log.d(TAG, "finishDrag")
+        this.viewRef?.get()?.let { child ->
+            if (child.top == 0) {
+                setSmartStateInternal(State.STATE_EXPANDED)
+                return
+            }
+            if (
+                (target !== null && (nestedScrollingChildRef == null ||
+                target !== nestedScrollingChildRef!!.get())) ||
+                !nestedScrolled
+            ) {
+                return
+            }
+            val bottom: Int
+            val targetSmartState: State
+            if (lastNestedScrollDy >= 0 && shouldHide(child, yVelocity)) {
+                bottom = 0
+                targetSmartState = State.STATE_HIDDEN
+            } else {
+                bottom = childHeight
+                targetSmartState = State.STATE_EXPANDED
+            }
+            Log.d(TAG, "startSettlingAnimation 1")
+            startSettlingAnimation(
+                child,
+                targetSmartState,
+                bottom - childHeight,
+                false,
+            )
+            nestedScrolled = false
+        }
     }
 
     override fun onStartNestedScroll(
@@ -290,34 +340,7 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
     ) {
         Log.d(TAG, "onStopNestedScroll")
 
-        if (child.top == 0) {
-            setSmartStateInternal(State.STATE_EXPANDED)
-            return
-        }
-        if (
-            nestedScrollingChildRef == null ||
-            target !== nestedScrollingChildRef!!.get() ||
-            !nestedScrolled
-        ) {
-            return
-        }
-        val bottom: Int
-        val targetSmartState: State
-        if (lastNestedScrollDy >= 0 && shouldHide(child, yVelocity)) {
-            bottom = 0
-            targetSmartState = State.STATE_HIDDEN
-        } else {
-            bottom = childHeight
-            targetSmartState = State.STATE_EXPANDED
-        }
-        Log.d(TAG, "startSettlingAnimation 1")
-        startSettlingAnimation(
-            child,
-            targetSmartState,
-            bottom - childHeight,
-            false,
-        )
-        nestedScrolled = false
+        finishDrag(target)
     }
 
     override fun onNestedPreFling(

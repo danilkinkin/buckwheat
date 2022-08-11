@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
+import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.FragmentContainerView
-import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.utils.toDP
+import kotlin.math.max
+import kotlin.math.min
 
 
 class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
@@ -40,15 +42,15 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     constructor() : super()
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
-        return dependency.id == dependencyIdReference
+        return dependency.id == R.id.editor_container
     }
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        val dependency = parent.findViewById<View>(dependencyIdReference!!)
-
         child.updateLayoutParams {
             height = parent.width
         }
+
+        child.findViewById<MotionLayout>(R.id.root).progress = 0.000001F
 
         return super.onLayoutChild(parent, child, layoutDirection)
     }
@@ -58,16 +60,21 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
         child: V,
         dependency: View
     ): Boolean {
-        /* val tY = dependency.getTranslationY()
-        val depHeight = dependency.getHeight()
-        val bottom = dependency.bottom
-        Log.d(TAG, "onDependentViewChanged tY = $tY height = $depHeight bottom = $bottom")
-        child.top = bottom
-        /* child.updateLayoutParams {
-            height = depHeight - bottom
-        } */
+        child.translationY = dependency.translationY
 
-        return true */
+
+        Log.d(TAG, min(
+            1 - ((parent.height - (dependency.bottom + dependency.translationY) - 258.toDP()).toFloat() / (parent.width - 258.toDP())),
+            1F,
+        ).toString())
+
+        child.findViewById<MotionLayout>(R.id.root).progress = max(
+            min(
+                1 - ((parent.height - (dependency.bottom + dependency.translationY) - 258.toDP()).toFloat() / (parent.width - 258.toDP())),
+                0.999999F,
+            ),
+            0.000001F,
+        )
 
         return super.onDependentViewChanged(parent, child, dependency)
     }

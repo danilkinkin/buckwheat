@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.utils.toDP
@@ -20,10 +21,11 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
         val TAG = EditorBehavior::class.simpleName
     }
 
-    private var recyclerView: RecyclerView? = null
+    private var recyclerView: NestedScrollView? = null
     private var isBeingDragged = false
     var initialX = 0
     var initialY = 0
+    var lastY = 0
 
     /**
      * Конструктор для создания экземпляра FancyBehavior через разметку.
@@ -42,7 +44,7 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
             height = parent.height - parent.width
         }
 
-        recyclerView = parent.findViewById(R.id.recycle_view)
+        recyclerView = parent.findViewById(R.id.nested_scroll)
 
         return super.onLayoutChild(parent, child, layoutDirection)
     }
@@ -62,7 +64,6 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
         if (isBeingDragged) {
             Log.d(TAG, "onInterceptTouchEvent action = ${event.actionMasked}")
 
-
             if (
                 event.actionMasked == MotionEvent.ACTION_UP
                 || event.actionMasked == MotionEvent.ACTION_CANCEL
@@ -72,8 +73,6 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
 
             return if (recyclerView !== null) {
                 val topSheetBehavior = ((recyclerView!!.layoutParams as CoordinatorLayout.LayoutParams).behavior as TopSheetBehavior)
-
-                recyclerView!!.onInterceptTouchEvent(event)
 
                 val touchSlop = topSheetBehavior.viewDragHelper!!.touchSlop
 
@@ -89,28 +88,32 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     override fun onTouchEvent(
         parent: CoordinatorLayout, child: V, event: MotionEvent
     ): Boolean {
-        if (
-            (isBeingDragged && event.actionMasked != MotionEvent.ACTION_CANCEL) ||
-            (parent.isPointInChildBounds(child, event.x.toInt(), event.y.toInt()) && event.actionMasked == MotionEvent.ACTION_DOWN)
-        ) {
-            Log.d(TAG, "onTouchEvent action = ${event.actionMasked}")
-
-            return if (recyclerView !== null) {
-                val topSheetBehavior = ((recyclerView!!.layoutParams as CoordinatorLayout.LayoutParams).behavior as TopSheetBehavior)
-
-                recyclerView!!.onTouchEvent(event)
-            } else {
-                false
+        if (parent.isPointInChildBounds(child, event.x.toInt(), event.y.toInt())) {
+            val topSheetBehavior = try {
+                ((recyclerView!!.layoutParams as CoordinatorLayout.LayoutParams).behavior as TopSheetBehavior)
+            } catch (e: Exception) {
+                null
             }
 
-            // return recyclerView?.onTouchEvent(event) ?: false
+            when (event.actionMasked) {
+                MotionEvent.ACTION_MOVE -> {
+
+                    topSheetBehavior?.drag(lastY - event.y.toInt())
+                }
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    topSheetBehavior?.finishDrag()
+                }
+            }
         }
 
-        return false
+        lastY = event.y.toInt()
+
+        return true
     }
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
-        return dependency is RecyclerView
+        return dependency.id == R.id.nested_scroll
     }
 
     override fun onDependentViewChanged(

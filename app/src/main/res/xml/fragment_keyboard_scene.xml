@@ -9,42 +9,42 @@
     <ConstraintSet android:id="@+id/end">
         <Constraint
             android:id="@+id/rule_horiz_1"
-            app:layout_constraintGuide_begin="16dp"
+            app:layout_constraintGuide_begin="0dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Constraint
             android:id="@+id/rule_horiz_2"
-            app:layout_constraintGuide_begin="68dp"
+            app:layout_constraintGuide_begin="52dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Constraint
             android:id="@+id/rule_horiz_3"
-            app:layout_constraintGuide_begin="74dp"
+            app:layout_constraintGuide_begin="58dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Constraint
             android:id="@+id/rule_horiz_4"
-            app:layout_constraintGuide_begin="126dp"
+            app:layout_constraintGuide_begin="110dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Constraint
             android:id="@+id/rule_horiz_5"
-            app:layout_constraintGuide_begin="132dp"
+            app:layout_constraintGuide_begin="116dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Constraint
             android:id="@+id/rule_horiz_6"
-            app:layout_constraintGuide_begin="184dp"
+            app:layout_constraintGuide_begin="168dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Constraint
             android:id="@+id/rule_horiz_7"
-            app:layout_constraintGuide_begin="190dp"
+            app:layout_constraintGuide_begin="174dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Constraint
             android:id="@+id/rule_horiz_8"
-            app:layout_constraintGuide_begin="242dp"
+            app:layout_constraintGuide_begin="226dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </ConstraintSet>

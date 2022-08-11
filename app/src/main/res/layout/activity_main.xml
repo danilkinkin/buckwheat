@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
 
+    android:fitsSystemWindows="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/root">
@@ -20,16 +21,27 @@
         tools:layout="@layout/fragment_keyboard" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle_view"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="false"
-        app:layout_behavior=".widgets.topsheet.TopSheetBehavior"
-        app:reverseLayout="true"
-        app:stackFromEnd="true">
+        app:layout_behavior=".widgets.topsheet.TopSheetBehavior">
 
-    </androidx.recyclerview.widget.RecyclerView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycle_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="false">
+
+            </androidx.recyclerview.widget.RecyclerView>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 
     <androidx.fragment.app.FragmentContainerView
