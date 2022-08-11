@@ -14,6 +14,8 @@ import androidx.customview.view.AbsSavedState
 import androidx.customview.widget.ViewDragHelper
 import java.lang.ref.WeakReference
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
     CoordinatorLayout.Behavior<V>(context, attrs) {
@@ -120,9 +122,11 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
 
         when (state) {
             State.STATE_HIDDEN -> {
+                Log.d(TAG, "offsetTopAndBottom = $childHeight")
                 ViewCompat.offsetTopAndBottom(child, -childHeight)
             }
             State.STATE_EXPANDED, State.STATE_DRAGGING, State.STATE_SETTLING -> {
+                Log.d(TAG, "offsetTopAndBottom = $0")
                 ViewCompat.offsetTopAndBottom(child, 0)
             }
         }
@@ -226,9 +230,11 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
         this.viewRef?.get()?.let {
             Log.d(TAG, "drag dy = ${dy} end = ${it.bottom - dy}")
             if (it.bottom - dy < 0) {
+                Log.d(TAG, "offsetTopAndBottom = ${it.bottom}")
                 ViewCompat.offsetTopAndBottom(it, -it.bottom)
             } else {
-                ViewCompat.offsetTopAndBottom(it, -dy)
+                Log.d(TAG, "offsetTopAndBottom = $dy")
+                ViewCompat.offsetTopAndBottom(it, min(-dy, (it.height - it.bottom)))
             }
 
             setSmartStateInternal(State.STATE_DRAGGING)
@@ -312,6 +318,7 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
             Log.d(TAG, "Upward newBottom = $newBottom childHeight = $childHeight")
             if (!target.canScrollVertically(1)) {
                 consumed[1] = dy
+                Log.d(TAG, "offsetTopAndBottom = $dy")
                 ViewCompat.offsetTopAndBottom(child, -dy)
                 setSmartStateInternal(State.STATE_DRAGGING)
             }
@@ -319,10 +326,12 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
             Log.d(TAG, "Downward newBottom = $newBottom `childHeight` = $childHeight")
             if (newBottom > childHeight) {
                 consumed[1] = currentBottom - childHeight
+                Log.d(TAG, "offsetTopAndBottom = ${consumed[1]}")
                 ViewCompat.offsetTopAndBottom(child, -consumed[1])
                 setSmartStateInternal(State.STATE_EXPANDED)
             } else {
                 consumed[1] = dy
+                Log.d(TAG, "offsetTopAndBottom = $dy")
                 ViewCompat.offsetTopAndBottom(child, -dy)
                 setSmartStateInternal(State.STATE_DRAGGING)
             }
@@ -428,7 +437,7 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
         top: Int,
         settleFromViewDragHelper: Boolean
     ) {
-        Log.d(TAG, "startSettlingAnimation...")
+        Log.d(TAG, "startSettlingAnimation... state = $state top = $top settleFromViewDragHelper = $settleFromViewDragHelper")
         val startedSettling = (viewDragHelper != null && if (settleFromViewDragHelper) {
             viewDragHelper!!.settleCapturedViewAt(
                 child.left,

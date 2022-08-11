@@ -8,9 +8,7 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.utils.toDP
 import com.danilkinkin.buckwheat.widgets.topsheet.TopSheetBehavior
 import kotlin.math.abs
 
@@ -58,6 +56,7 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
         ) {
             initialX = event.x.toInt()
             initialY = event.y.toInt()
+            lastY = event.y.toInt()
             isBeingDragged = true
         }
 
@@ -75,6 +74,8 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
                 val topSheetBehavior = ((recyclerView!!.layoutParams as CoordinatorLayout.LayoutParams).behavior as TopSheetBehavior)
 
                 val touchSlop = topSheetBehavior.viewDragHelper!!.touchSlop
+
+                lastY = event.y.toInt()
 
                 abs(initialY - event.y) > touchSlop || abs(initialX - event.x) > touchSlop
             } else {
@@ -94,6 +95,8 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
             } catch (e: Exception) {
                 null
             }
+
+            Log.d(TAG, "event.y = ${event.y.toInt()}")
 
             when (event.actionMasked) {
                 MotionEvent.ACTION_MOVE -> {

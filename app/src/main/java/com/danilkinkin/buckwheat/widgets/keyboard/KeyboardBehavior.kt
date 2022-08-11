@@ -2,7 +2,6 @@ package com.danilkinkin.buckwheat.widgets.keyboard
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -29,10 +28,7 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
      */
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.BottomCollapseBehavior, 0, 0)
-
         val idReference = a.getResourceId(R.styleable.BottomCollapseBehavior_layout_behavior_dependency, 0)
-
-        Log.d(TAG, "constructor idReference = ${idReference}")
 
         if (idReference != 0) {
             dependencyIdReference = idReference
@@ -61,12 +57,6 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
         dependency: View
     ): Boolean {
         child.translationY = dependency.translationY
-
-
-        Log.d(TAG, min(
-            1 - ((parent.height - (dependency.bottom + dependency.translationY) - 258.toDP()).toFloat() / (parent.width - 258.toDP())),
-            1F,
-        ).toString())
 
         child.findViewById<MotionLayout>(R.id.root).progress = max(
             min(
