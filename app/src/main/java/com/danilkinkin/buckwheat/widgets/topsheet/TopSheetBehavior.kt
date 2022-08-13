@@ -16,7 +16,6 @@ import com.danilkinkin.buckwheat.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.lang.ref.WeakReference
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 
 open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
@@ -32,10 +31,8 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
             STATE_HIDDEN, /** The bottom sheet is hidden.  */
         }
 
-        private const val SIGNIFICANT_VEL_THRESHOLD = 500
         private const val HIDE_THRESHOLD = 0.5f
         private const val HIDE_FRICTION = 0.1f
-        private const val CORNER_ANIMATION_DURATION = 500
     }
 
     private var maximumVelocity = 0f
@@ -129,7 +126,7 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
                 (child.parent as View).findViewById<FloatingActionButton>(R.id.fab_home_btn).hide()
             }
             State.STATE_EXPANDED, State.STATE_DRAGGING, State.STATE_SETTLING -> {
-                Log.d(TAG, "offsetTopAndBottom = $0")
+                Log.d(TAG, "offsetTopAndBottom = 0")
                 ViewCompat.offsetTopAndBottom(child, 0)
                 (child.parent as View).findViewById<FloatingActionButton>(R.id.fab_home_btn).show()
             }
@@ -232,7 +229,7 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
 
     fun drag(dy: Int) {
         this.viewRef?.get()?.let {
-            Log.d(TAG, "drag dy = ${dy} end = ${it.bottom - dy}")
+            Log.d(TAG, "drag dy = $dy end = ${it.bottom - dy}")
             if (it.bottom - dy < 0) {
                 Log.d(TAG, "offsetTopAndBottom = ${it.bottom}")
                 ViewCompat.offsetTopAndBottom(it, -it.bottom)
@@ -279,7 +276,6 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
                 child,
                 targetSmartState,
                 bottom - childHeight,
-                false,
             )
             nestedScrolled = false
         }
@@ -293,7 +289,6 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
                 child,
                 state,
                 -childHeight,
-                false,
             )
             nestedScrolled = false
         }
@@ -415,7 +410,7 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
         }
     }
 
-    fun shouldHide(child: View, yvel: Float): Boolean {
+    private fun shouldHide(child: View, yvel: Float): Boolean {
         if (child.bottom > childHeight) {
             // It should not hide, but collapse.
             return false
@@ -452,21 +447,13 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
             return velocityTracker!!.getYVelocity(activePointerId)
         }
 
-    fun startSettlingAnimation(
+    private fun startSettlingAnimation(
         child: View,
         state: State,
         top: Int,
-        settleFromViewDragHelper: Boolean
     ) {
-        Log.d(TAG, "startSettlingAnimation... state = $state top = $top settleFromViewDragHelper = $settleFromViewDragHelper")
-        val startedSettling = (viewDragHelper != null && if (settleFromViewDragHelper) {
-            viewDragHelper!!.settleCapturedViewAt(
-                child.left,
-                top
-            )
-        } else {
-            viewDragHelper!!.smoothSlideViewTo(child, child.left, top)
-        })
+        Log.d(TAG, "startSettlingAnimation... state = $state top = $top")
+        val startedSettling = viewDragHelper!!.smoothSlideViewTo(child, child.left, top)
 
         if (startedSettling) {
             setSmartStateInternal(State.STATE_SETTLING)
@@ -538,6 +525,7 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
         var isPosted = false
 
         override fun run() {
+            Log.d(TAG, "targetSmartState = $targetSmartState")
             if (viewDragHelper != null && viewDragHelper!!.continueSettling(true)) {
                 ViewCompat.postOnAnimation(view, this)
             } else {
