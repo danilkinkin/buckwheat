@@ -12,6 +12,8 @@ import androidx.core.math.MathUtils
 import androidx.core.view.ViewCompat
 import androidx.customview.view.AbsSavedState
 import androidx.customview.widget.ViewDragHelper
+import com.danilkinkin.buckwheat.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.lang.ref.WeakReference
 import kotlin.math.abs
 import kotlin.math.max
@@ -124,10 +126,12 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
             State.STATE_HIDDEN -> {
                 Log.d(TAG, "offsetTopAndBottom = $childHeight")
                 ViewCompat.offsetTopAndBottom(child, -childHeight)
+                (child.parent as View).findViewById<FloatingActionButton>(R.id.fab_home_btn).hide()
             }
             State.STATE_EXPANDED, State.STATE_DRAGGING, State.STATE_SETTLING -> {
                 Log.d(TAG, "offsetTopAndBottom = $0")
                 ViewCompat.offsetTopAndBottom(child, 0)
+                (child.parent as View).findViewById<FloatingActionButton>(R.id.fab_home_btn).show()
             }
         }
 
@@ -263,15 +267,32 @@ open class TopSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) :
             if (lastNestedScrollDy >= 0 && shouldHide(child, yVelocity)) {
                 bottom = 0
                 targetSmartState = State.STATE_HIDDEN
+                (child.parent as View).findViewById<FloatingActionButton>(R.id.fab_home_btn).hide()
             } else {
                 bottom = childHeight
                 targetSmartState = State.STATE_EXPANDED
+                (child.parent as View).findViewById<FloatingActionButton>(R.id.fab_home_btn).show()
             }
             Log.d(TAG, "startSettlingAnimation 1")
+
             startSettlingAnimation(
                 child,
                 targetSmartState,
                 bottom - childHeight,
+                false,
+            )
+            nestedScrolled = false
+        }
+    }
+
+    fun setSmartState(state: State) {
+        this.viewRef?.get()?.let { child ->
+            setSmartStateInternal(state)
+
+            startSettlingAnimation(
+                child,
+                state,
+                -childHeight,
                 false,
             )
             nestedScrolled = false

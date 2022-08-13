@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,6 +11,7 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowInsetsController
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
@@ -20,10 +20,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.*
 import com.danilkinkin.buckwheat.adapters.*
 import com.danilkinkin.buckwheat.decorators.SpendsDividerItemDecoration
-import com.danilkinkin.buckwheat.entities.Spent
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
-import com.danilkinkin.buckwheat.widgets.editor.EditorFragment
-import com.danilkinkin.buckwheat.widgets.keyboard.KeyboardFragment
+import com.danilkinkin.buckwheat.widgets.topsheet.TopSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -38,12 +36,9 @@ class MainActivity : AppCompatActivity() {
         findViewById(R.id.recycle_view)
     }
 
-    /* val fabHome: FloatingActionButton by lazy {
+    private val fabHome: FloatingActionButton by lazy {
         findViewById(R.id.fab_home_btn)
-    } */
-
-    var fragmentKeyboard: KeyboardFragment? = null
-    var fragmentEditor: EditorFragment? = null
+    }
 
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
@@ -154,7 +149,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun canScrollVertically(): Boolean {
-                // Log.d("Main", "isScrollEnabled = $isScrollEnabled")
                 return isScrollEnabled && super.canScrollVertically();
             }
         }
@@ -166,10 +160,6 @@ class MainActivity : AppCompatActivity() {
 
         val topAdapter = TopAdapter(model)
         val spendsAdapter = SpendsAdapter()
-        /* val editorAdapter = EditorAdapter(supportFragmentManager, recyclerView)
-        val keyboardAdapter = KeyboardAdapter(supportFragmentManager) { lockScroll ->
-            layoutManager.setScrollEnabled(!lockScroll)
-        } */
         val contactAdapter = ConcatAdapter(topAdapter, spendsAdapter /*, editorAdapter, keyboardAdapter */ )
 
         recyclerView.layoutManager = layoutManager
@@ -203,21 +193,17 @@ class MainActivity : AppCompatActivity() {
             topAdapter.notifyDataSetChanged()
         }
 
-        /* fabHome.setOnClickListener {
+        fabHome.setOnClickListener {
             recyclerView.smoothScrollToPosition(contactAdapter.itemCount - 1)
-        } */
 
-        /* fragmentKeyboard = KeyboardFragment()
+            val topSheetBehavior = try {
+                ((recyclerView.layoutParams as CoordinatorLayout.LayoutParams).behavior as TopSheetBehavior)
+            } catch (e: Exception) {
+                null
+            }
 
-        supportFragmentManager.beginTransaction()
-            .add(R.id.keyboard_container, fragmentKeyboard!!)
-            .commitNowAllowingStateLoss()
-
-        fragmentEditor = EditorFragment()
-
-        supportFragmentManager.beginTransaction()
-            .add(R.id.editor_container, fragmentEditor!!)
-            .commitNowAllowingStateLoss() */
+            topSheetBehavior?.setSmartState(TopSheetBehavior.Companion.State.STATE_HIDDEN)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

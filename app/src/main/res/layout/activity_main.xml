@@ -37,4 +37,13 @@
         android:layout_height="wrap_content"
         app:layout_behavior=".widgets.editor.EditorBehavior"
         tools:layout="@layout/fragment_calculator" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_home_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:contentDescription="@string/fab_home_desc"
+        app:srcCompat="@drawable/ic_home" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
