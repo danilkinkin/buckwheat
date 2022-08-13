@@ -8,6 +8,7 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.widgets.topsheet.TopSheetBehavior
 import kotlin.math.abs
@@ -19,7 +20,7 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
         val TAG = EditorBehavior::class.simpleName
     }
 
-    private var recyclerView: NestedScrollView? = null
+    private var recyclerView: RecyclerView? = null
     private var isBeingDragged = false
     var initialX = 0
     var initialY = 0
@@ -42,7 +43,7 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
             height = parent.height - parent.width
         }
 
-        recyclerView = parent.findViewById(R.id.nested_scroll)
+        recyclerView = parent.findViewById(R.id.recycle_view)
 
         return super.onLayoutChild(parent, child, layoutDirection)
     }
@@ -116,7 +117,7 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     }
 
     override fun layoutDependsOn(parent: CoordinatorLayout, child: V, dependency: View): Boolean {
-        return dependency.id == R.id.nested_scroll
+        return dependency.id == R.id.recycle_view
     }
 
     override fun onDependentViewChanged(

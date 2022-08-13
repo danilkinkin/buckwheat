@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -19,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.*
 import com.danilkinkin.buckwheat.adapters.*
 import com.danilkinkin.buckwheat.decorators.SpendsDividerItemDecoration
+import com.danilkinkin.buckwheat.entities.Spent
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.danilkinkin.buckwheat.widgets.editor.EditorFragment
 import com.danilkinkin.buckwheat.widgets.keyboard.KeyboardFragment
@@ -44,6 +46,8 @@ class MainActivity : AppCompatActivity() {
     var fragmentEditor: EditorFragment? = null
 
     companion object {
+        val TAG: String = MainActivity::class.java.simpleName
+
         fun getInstance(): MainActivity {
             return instance!!
         }
@@ -140,7 +144,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun build() {
-        var recyclerViewScrollY: Long = 0
+        var isChangeBecauseRemove = false
 
         val layoutManager = object : LinearLayoutManager(this) {
             private var isScrollEnabled = true
@@ -159,7 +163,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.addItemDecoration(spendsDividerItemDecoration)
 
         layoutManager.stackFromEnd = true
-        layoutManager.reverseLayout = false
 
         val topAdapter = TopAdapter(model)
         val spendsAdapter = SpendsAdapter()
@@ -171,27 +174,26 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = contactAdapter
-
-        recyclerView.setOnScrollChangeListener { _, _, _, _, dY: Int ->
-            // keyboardAdapter.scrollUpdate(recyclerView)
-
-            recyclerViewScrollY += dY
-
-            /* if (recyclerViewScrollY > recyclerView.width && fabHome.isOrWillBeHidden) {
-                fabHome.show()
-            }
-            if (recyclerViewScrollY < recyclerView.width && fabHome.isOrWillBeShown) {
-                fabHome.hide()
-            } */
-        }
+        recyclerView.scrollToPosition(spendsAdapter.itemCount - 1)
 
         val swipeToDeleteCallback = SwipeToDeleteCallback(applicationContext, spendsAdapter) {
+            isChangeBecauseRemove = true
             model.removeSpent(it)
         }
 
         val itemTouchhelper = ItemTouchHelper(swipeToDeleteCallback)
 
         itemTouchhelper.attachToRecyclerView(recyclerView)
+
+        spendsAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (isChangeBecauseRemove) {
+                    isChangeBecauseRemove = false
+                } else {
+                    layoutManager.scrollToPosition(spendsAdapter.itemCount)
+                }
+            }
+        });
 
         model.getSpends().observeForever { spents ->
             spendsAdapter.submitList(spents)
