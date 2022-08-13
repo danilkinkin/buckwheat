@@ -86,8 +86,8 @@
         <item name="bottomSheetStyle">@style/Theme.Buckwheat.BottomSheetDialog</item>
     </style>
 
-    <style name="Theme.Buckwheat.BottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
-        <item name="shapeAppearance">@style/ShapeAppearance.Buckwheat.BottomSheetDialog</item>
+    <style name="Theme.Buckwheat.BottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet_background</item>
     </style>
 
     <style name="Widget.Buckwheat.Toolbar" parent="Widget.Material3.Toolbar">
