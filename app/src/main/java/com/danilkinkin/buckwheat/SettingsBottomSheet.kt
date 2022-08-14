@@ -9,9 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.CalendarView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
@@ -20,6 +18,7 @@ import com.danilkinkin.buckwheat.adapters.CurrencyAdapter
 import com.danilkinkin.buckwheat.utils.*
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
@@ -79,8 +78,32 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val behavior = BottomSheetBehavior.from(view.parent as View)
+
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    dialog!!.window!!.insetsController?.setSystemBarsAppearance(
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    )
+                } else {
+                    dialog!!.window!!.insetsController?.setSystemBarsAppearance(
+                        0,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    )
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+
+        })
+
         val model: AppViewModel by activityViewModels()
         val spendsModel: SpentViewModel by activityViewModels()
+
 
         this.model = model
         this.spendsModel = spendsModel
