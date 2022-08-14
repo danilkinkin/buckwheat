@@ -69,6 +69,8 @@ class NewDayBottomSheet: BottomSheetFragment() {
         val appModel: AppViewModel by activityViewModels()
         val spentModel: SpentViewModel by activityViewModels()
 
+        isCancelable = false
+
         this.appModel = appModel
         this.spentModel = spentModel
 
