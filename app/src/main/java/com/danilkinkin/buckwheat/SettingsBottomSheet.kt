@@ -12,12 +12,15 @@ import android.text.TextWatcher
 import android.view.*
 import android.widget.CalendarView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.adapters.CurrencyAdapter
 import com.danilkinkin.buckwheat.utils.*
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
@@ -82,16 +85,25 @@ class SettingsBottomSheet: BottomSheetDialogFragment() {
 
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED && bottomSheet.top <= 0) {
                     dialog!!.window!!.insetsController?.setSystemBarsAppearance(
                         WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                         WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
                     )
+
+                    view.findViewById<AppBarLayout>(R.id.app_bar).background = ContextCompat.getColor(context!!, com.google.android.material.R.color.material_dynamic_neutral95).toDrawable()
+
+                    dialog!!.window!!.statusBarColor = ContextCompat.getColor(context!!, com.google.android.material.R.color.material_dynamic_neutral95)
+
                 } else {
                     dialog!!.window!!.insetsController?.setSystemBarsAppearance(
                         0,
                         WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
                     )
+
+                    view.findViewById<AppBarLayout>(R.id.app_bar).background = ContextCompat.getColor(context!!, android.R.color.transparent).toDrawable()
+
+                    dialog!!.window!!.statusBarColor = ContextCompat.getColor(context!!, android.R.color.transparent)
                 }
             }
 
