@@ -9,13 +9,13 @@ import com.danilkinkin.buckwheat.utils.countDays
 import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.danilkinkin.buckwheat.widgets.bottomsheet.BottomSheetFragment
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textview.MaterialTextView
 import java.math.RoundingMode
 import kotlin.math.abs
 
-class NewDayBottomSheet: BottomSheetDialogFragment() {
+class NewDayBottomSheet: BottomSheetFragment() {
     companion object {
         val TAG = NewDayBottomSheet::class.simpleName
     }
