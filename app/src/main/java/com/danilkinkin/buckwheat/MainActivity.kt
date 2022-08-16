@@ -4,22 +4,20 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.AttributeSet
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.WindowInsetsController
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.*
 import com.danilkinkin.buckwheat.adapters.*
 import com.danilkinkin.buckwheat.decorators.SpendsDividerItemDecoration
+import com.danilkinkin.buckwheat.utils.getNavigationBarHeight
 import com.danilkinkin.buckwheat.utils.getThemeColor
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.danilkinkin.buckwheat.widgets.topsheet.TopSheetBehavior
@@ -201,6 +199,10 @@ class MainActivity : AppCompatActivity() {
         model.budget.observeForever {
             topAdapter.notifyDataSetChanged()
         }
+
+        val params = (fabHome.layoutParams as MarginLayoutParams)
+
+        params.bottomMargin = params.bottomMargin + getNavigationBarHeight(parentView)
 
         fabHome.setOnClickListener {
             recyclerView.smoothScrollToPosition(contactAdapter.itemCount - 1)

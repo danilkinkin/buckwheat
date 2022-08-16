@@ -2,11 +2,13 @@ package com.danilkinkin.buckwheat.widgets.keyboard
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.updateLayoutParams
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.utils.getNavigationBarHeight
 import com.danilkinkin.buckwheat.utils.toDP
 import kotlin.math.max
 import kotlin.math.min
@@ -19,6 +21,7 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     }
 
     private var dependencyIdReference: Int? = null
+    private var navigationBarHeight: Int? = null
 
     /**
      * Конструктор для создания экземпляра FancyBehavior через разметку.
@@ -48,6 +51,15 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
 
         child.findViewById<MotionLayout>(R.id.root)?.progress = 0.000001F
 
+        navigationBarHeight = getNavigationBarHeight(child)
+
+        child.setPadding(
+            child.paddingLeft,
+            child.paddingTop,
+            child.paddingRight,
+            navigationBarHeight!!,
+        )
+
         return super.onLayoutChild(parent, child, layoutDirection)
     }
 
@@ -58,9 +70,11 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     ): Boolean {
         child.translationY = dependency.translationY
 
+        val height = 226.toDP() + child.paddingTop + child.paddingBottom
+
         child.findViewById<MotionLayout>(R.id.root)?.progress = max(
             min(
-                1 - ((parent.height - (dependency.bottom + dependency.translationY) - 258.toDP()).toFloat() / (parent.width - 258.toDP())),
+                1 - ((parent.height - (dependency.bottom + dependency.translationY) - height) / (parent.width - height)),
                 0.999999F,
             ),
             0.000001F,

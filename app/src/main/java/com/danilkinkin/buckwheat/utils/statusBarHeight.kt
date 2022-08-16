@@ -12,3 +12,12 @@ fun getStatusBarHeight(view: View): Int {
     }
 }
 
+fun getNavigationBarHeight(view: View): Int {
+    val resourceId = view.resources.getIdentifier("navigation_bar_height", "dimen", "android")
+
+    return if (resourceId > 0) {
+        view.resources.getDimensionPixelSize(resourceId)
+    } else {
+        0
+    }
+}

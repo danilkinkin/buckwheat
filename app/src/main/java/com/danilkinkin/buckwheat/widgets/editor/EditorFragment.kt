@@ -25,6 +25,8 @@ class EditorFragment : Fragment() {
     private var budgetFragment: TextWithLabelFragment? = null
     private var spentFragment: TextWithLabelFragment? = null
     private var restBudgetFragment: TextWithLabelFragment? = null
+    private var settingsBottomSheet: SettingsBottomSheet? = null
+    private var newDayBottomSheet: NewDayBottomSheet? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -118,13 +120,19 @@ class EditorFragment : Fragment() {
         ft.commit()
 
         requireView().findViewById<MaterialButton>(R.id.settings_btn).setOnClickListener {
-            val settingsBottomSheet = SettingsBottomSheet()
-            settingsBottomSheet.show(parentFragmentManager, SettingsBottomSheet.TAG)
+            settingsBottomSheet = settingsBottomSheet ?: SettingsBottomSheet()
+
+            if (!settingsBottomSheet!!.isVisible) {
+                settingsBottomSheet!!.show(parentFragmentManager, SettingsBottomSheet.TAG)
+            }
         }
 
         requireView().findViewById<MaterialButton>(R.id.dev_tool_btn).setOnClickListener {
-            val newDayBottomSheet = NewDayBottomSheet()
-            newDayBottomSheet.show(parentFragmentManager, NewDayBottomSheet.TAG)
+            newDayBottomSheet = newDayBottomSheet ?: NewDayBottomSheet()
+
+            if (!newDayBottomSheet!!.isVisible) {
+                newDayBottomSheet!!.show(parentFragmentManager, NewDayBottomSheet.TAG)
+            }
         }
     }
 

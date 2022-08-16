@@ -2,9 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
-
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/root">
@@ -26,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="false"
-        app:layout_behavior=".widgets.topsheet.TopSheetBehavior"></androidx.recyclerview.widget.RecyclerView>
+        app:layout_behavior=".widgets.topsheet.TopSheetBehavior" />
 
 
     <androidx.fragment.app.FragmentContainerView
