@@ -23,6 +23,7 @@
             style="@style/TextAppearance.Buckwheat.DisplaySmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimaryContainer"
             tools:text="4356 ₽" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -30,6 +31,7 @@
             style="@style/TextAppearance.Buckwheat.LabelLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnPrimaryContainer"
             android:visibility="visible"
             tools:text="@tools:sample/lorem" />
 

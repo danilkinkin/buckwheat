@@ -46,7 +46,7 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
             height = parent.width
         }
 
-        child.findViewById<MotionLayout>(R.id.root).progress = 0.000001F
+        child.findViewById<MotionLayout>(R.id.root)?.progress = 0.000001F
 
         return super.onLayoutChild(parent, child, layoutDirection)
     }
@@ -58,7 +58,7 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     ): Boolean {
         child.translationY = dependency.translationY
 
-        child.findViewById<MotionLayout>(R.id.root).progress = max(
+        child.findViewById<MotionLayout>(R.id.root)?.progress = max(
             min(
                 1 - ((parent.height - (dependency.bottom + dependency.translationY) - 258.toDP()).toFloat() / (parent.width - 258.toDP())),
                 0.999999F,

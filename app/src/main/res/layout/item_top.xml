@@ -5,7 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/material_dynamic_neutral95">
+    android:background="?attr/colorPrimaryContainer">
 
     <TextView
         android:id="@+id/textView"
@@ -33,6 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:textColor="?attr/colorOnPrimaryContainer"
         tools:text="4353250000000000000000 ₽" />
 
     <com.google.android.material.textview.MaterialTextView

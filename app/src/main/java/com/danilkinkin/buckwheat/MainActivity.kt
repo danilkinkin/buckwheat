@@ -20,8 +20,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.*
 import com.danilkinkin.buckwheat.adapters.*
 import com.danilkinkin.buckwheat.decorators.SpendsDividerItemDecoration
+import com.danilkinkin.buckwheat.utils.getThemeColor
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.danilkinkin.buckwheat.widgets.topsheet.TopSheetBehavior
+import com.google.android.material.color.DynamicColors
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
@@ -59,6 +61,10 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            DynamicColors.applyToActivitiesIfAvailable(application)
+        }
+
         val windowInsetsController =  WindowCompat.getInsetsController(window, window.decorView)
 
         windowInsetsController.isAppearanceLightNavigationBars = true
@@ -83,7 +89,10 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        window.statusBarColor = ColorUtils.setAlphaComponent(ContextCompat.getColor(this, com.google.android.material.R.color.material_dynamic_neutral95), 230)
+        window.statusBarColor = ColorUtils.setAlphaComponent(
+            getThemeColor(this, com.google.android.material.R.attr.colorPrimaryContainer),
+            255,
+        )
 
         val model: SpentViewModel by viewModels()
 

@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.widgets.bottomsheet
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
@@ -21,10 +22,12 @@ open class BottomSheetFragment: BottomSheetDialogFragment() {
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED && bottomSheet.top < topBarHeight) {
-                    dialog!!.window!!.insetsController?.setSystemBarsAppearance(
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        dialog!!.window!!.insetsController?.setSystemBarsAppearance(
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        )
+                    }
 
                     view.findViewById<AppBarLayout>(R.id.app_bar).background = ContextCompat.getColor(
                         context!!,
@@ -37,10 +40,12 @@ open class BottomSheetFragment: BottomSheetDialogFragment() {
                     )
 
                 } else {
-                    dialog!!.window!!.insetsController?.setSystemBarsAppearance(
-                        0,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        dialog!!.window!!.insetsController?.setSystemBarsAppearance(
+                            0,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        )
+                    }
 
                     view.findViewById<AppBarLayout>(R.id.app_bar).background = ContextCompat.getColor(
                         context!!,
