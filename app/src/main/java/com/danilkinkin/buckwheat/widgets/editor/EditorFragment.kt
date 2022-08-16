@@ -12,6 +12,7 @@ import com.danilkinkin.buckwheat.NewDayBottomSheet
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.SettingsBottomSheet
 import com.danilkinkin.buckwheat.TextWithLabelFragment
+import com.danilkinkin.buckwheat.utils.getStatusBarHeight
 import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
@@ -47,17 +48,10 @@ class EditorFragment : Fragment() {
         this.model = model
         this.appModel = appModel
 
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        val topBarHeight = if (resourceId > 0) {
-            resources.getDimensionPixelSize(resourceId)
-        } else {
-            0
-        }
-
         val helperView = view.findViewById<View>(R.id.top_bar_offset_helper)
         val layout = helperView.layoutParams
 
-        layout.height = topBarHeight
+        layout.height = getStatusBarHeight(view)
 
         helperView.layoutParams = layout
 
@@ -65,7 +59,13 @@ class EditorFragment : Fragment() {
         observe()
     }
 
-    fun animate (view: View?, property: String, from: Float?, to: Float, duration: Long = 0): ObjectAnimator {
+    private fun animate (
+        view: View?,
+        property: String,
+        from: Float?,
+        to: Float,
+        duration: Long = 0,
+    ): ObjectAnimator {
         val animator = (if (from === null) {
             ObjectAnimator
                 .ofFloat(view, property, to)
@@ -85,21 +85,21 @@ class EditorFragment : Fragment() {
     private fun setDailyBudget(fragment: TextWithLabelFragment) {
         fragment.also {
             it.setValue(prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!!))
-            it.setLabel(context!!.getString(R.string.budget_for_today))
+            it.setLabel(requireContext().getString(R.string.budget_for_today))
         }
     }
 
     private fun setRestDailyBudget(fragment: TextWithLabelFragment) {
         fragment.also {
             it.setValue(prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!! - model.currentSpent))
-            it.setLabel(context!!.getString(R.string.rest_budget_for_today))
+            it.setLabel(requireContext().getString(R.string.rest_budget_for_today))
         }
     }
 
     private fun setSpent(fragment: TextWithLabelFragment) {
         fragment.also {
             it.setValue(prettyCandyCanes(model.currentSpent, model.useDot))
-            it.setLabel(context!!.getString(R.string.spent))
+            it.setLabel(requireContext().getString(R.string.spent))
         }
     }
 
@@ -170,7 +170,7 @@ class EditorFragment : Fragment() {
                     spentFragment = TextWithLabelFragment()
                     spentFragment!!.onCreated {
                         spentFragment!!.setValue(prettyCandyCanes(model.currentSpent))
-                        spentFragment!!.setLabel(context!!.getString(R.string.spent))
+                        spentFragment!!.setLabel(requireContext().getString(R.string.spent))
                         spentFragment!!.getLabelView().textSize = 10.toSP().toFloat()
                         spentFragment!!.getValueView().textSize = 46.toSP().toFloat()
                     }
