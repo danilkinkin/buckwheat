@@ -13,7 +13,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.*
 import com.danilkinkin.buckwheat.adapters.*
 import com.danilkinkin.buckwheat.decorators.SpendsDividerItemDecoration
@@ -167,7 +166,7 @@ class MainActivity : AppCompatActivity() {
 
         val topAdapter = TopAdapter(model)
         val spendsAdapter = SpendsAdapter()
-        val contactAdapter = ConcatAdapter(topAdapter, spendsAdapter /*, editorAdapter, keyboardAdapter */ )
+        val contactAdapter = ConcatAdapter(topAdapter, spendsAdapter)
 
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = contactAdapter

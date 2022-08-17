@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior=".widgets.editor.EditorBehavior"
-        tools:layout="@layout/fragment_calculator" />
+        tools:layout="@layout/fragment_editor" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_home_btn"

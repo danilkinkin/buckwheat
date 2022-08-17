@@ -36,7 +36,7 @@ class EditorFragment : Fragment() {
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        return inflater.inflate(R.layout.fragment_calculator, container, false)
+        return inflater.inflate(R.layout.fragment_editor, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
