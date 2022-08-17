@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
         window.statusBarColor = ColorUtils.setAlphaComponent(
             getThemeColor(this, com.google.android.material.R.attr.colorPrimaryContainer),
-            255,
+            230,
         )
 
         val model: SpentViewModel by viewModels()
