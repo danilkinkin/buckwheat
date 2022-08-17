@@ -20,7 +20,6 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
         val TAG = KeyboardBehavior::class.simpleName
     }
 
-    private var dependencyIdReference: Int? = null
     private var navigationBarHeight: Int? = null
 
     /**
@@ -29,14 +28,7 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
      * @param context The {@link Context}.
      * @param attrs The {@link AttributeSet}.
      */
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.BottomCollapseBehavior, 0, 0)
-        val idReference = a.getResourceId(R.styleable.BottomCollapseBehavior_layout_behavior_dependency, 0)
-
-        if (idReference != 0) {
-            dependencyIdReference = idReference
-        }
-    }
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     constructor() : super()
 
@@ -48,8 +40,6 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
         child.updateLayoutParams {
             height = parent.width
         }
-
-        child.findViewById<MotionLayout>(R.id.root)?.progress = 0.000001F
 
         navigationBarHeight = getNavigationBarHeight(child)
 
