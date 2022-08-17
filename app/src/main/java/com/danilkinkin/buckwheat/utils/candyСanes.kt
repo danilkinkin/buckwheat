@@ -3,7 +3,6 @@ package com.danilkinkin.buckwheat.utils
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.widget.EditText
 import com.danilkinkin.buckwheat.MainActivity
 import com.google.android.material.textfield.TextInputEditText
 import java.lang.Integer.min
@@ -22,21 +21,30 @@ enum class CurrencyType { FROM_LIST, CUSTOM, NONE }
 class ExtendCurrency(val value: String? = null, val type: CurrencyType) {
     companion object {
         fun getInstance(value: String?): ExtendCurrency {
+
+
             val currency = try {
                 Currency.getInstance(value)
             } catch (e: Exception) {
                 null
             }
 
-            if (currency !== null) return ExtendCurrency(value = value, type = CurrencyType.FROM_LIST)
-            if (value === null || value.isNullOrEmpty()) return ExtendCurrency(value = null, type = CurrencyType.NONE)
+            if (currency !== null) return ExtendCurrency(
+                value = value,
+                type = CurrencyType.FROM_LIST
+            )
+            if (value === null || value.isNullOrEmpty() || value == "null") return ExtendCurrency(
+                value = null,
+                type = CurrencyType.NONE
+            )
 
             return ExtendCurrency(value = value, type = CurrencyType.CUSTOM)
         }
     }
 }
 
-fun Double.round(scale: Int): Double = BigDecimal(this).setScale(scale, RoundingMode.HALF_EVEN).toDouble()
+fun Double.round(scale: Int): Double =
+    BigDecimal(this).setScale(scale, RoundingMode.HALF_EVEN).toDouble()
 
 fun prettyCandyCanes(
     value: BigDecimal,
@@ -48,7 +56,8 @@ fun prettyCandyCanes(
     formatter.maximumFractionDigits = if (forceShowAfterDot) 5 else 2
     formatter.minimumFractionDigits = if (forceShowAfterDot) 1 else 0
 
-    if (currency.type === CurrencyType.FROM_LIST) formatter.currency = Currency.getInstance(currency.value)
+    if (currency.type === CurrencyType.FROM_LIST) formatter.currency =
+        Currency.getInstance(currency.value)
 
     var formattedValue = formatter.format(value)
 

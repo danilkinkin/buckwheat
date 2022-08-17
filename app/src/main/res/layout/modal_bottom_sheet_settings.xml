@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fillViewport="true"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -14,25 +14,46 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/top_bar"
-            style="@style/Widget.Buckwheat.Toolbar"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/settings_title"
-            app:titleCentered="true" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/top_bar"
+                style="@style/Widget.Buckwheat.Toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:title="@string/settings_title"
+                app:titleCentered="true" />
+
+            <View
+                android:id="@+id/drag_helper"
+                android:layout_width="26dp"
+                android:layout_height="4dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/scroll_handler_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="16dp">
+            android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -229,9 +250,9 @@
                                 android:layout_marginTop="16dp"
                                 android:layout_marginEnd="16dp"
                                 android:layout_marginBottom="16dp"
-                                android:textColor="?attr/colorOnTertiaryContainer"
                                 android:text="@string/site"
                                 android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textColor="?attr/colorOnTertiaryContainer"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/site_open_icon"
                                 app:layout_constraintHorizontal_bias="0.0"
@@ -275,9 +296,9 @@
                                 android:layout_marginTop="16dp"
                                 android:layout_marginEnd="16dp"
                                 android:layout_marginBottom="16dp"
-                                android:textColor="?attr/colorOnTertiaryContainer"
                                 android:text="@string/report_bug"
                                 android:textAppearance="?attr/textAppearanceTitleMedium"
+                                android:textColor="?attr/colorOnTertiaryContainer"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/report_bug_icon"
                                 app:layout_constraintHorizontal_bias="0.0"

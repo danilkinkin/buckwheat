@@ -11,8 +11,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.CalendarView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.adapters.CurrencyAdapter
 import com.danilkinkin.buckwheat.utils.*
@@ -40,7 +43,8 @@ class SettingsBottomSheet : BottomSheetFragment() {
 
     private var budgetValue: BigDecimal = 0.0.toBigDecimal()
     private var dateToValue: Date = Date()
-    private var currencyValue: ExtendCurrency = ExtendCurrency(value = null, type = CurrencyType.NONE)
+    private var currencyValue: ExtendCurrency =
+        ExtendCurrency(value = null, type = CurrencyType.NONE)
 
     private val budgetInput: TextInputEditText by lazy {
         requireView().findViewById(R.id.budget_input)
@@ -66,6 +70,14 @@ class SettingsBottomSheet : BottomSheetFragment() {
         requireView().findViewById(R.id.report_bug)
     }
 
+    private val applyBtn: MaterialButton by lazy {
+        requireView().findViewById(R.id.apply)
+    }
+
+    private val dragHelperView: View by lazy {
+        requireView().findViewById(R.id.drag_helper)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -82,6 +94,14 @@ class SettingsBottomSheet : BottomSheetFragment() {
 
         this.model = model
         this.spendsModel = spendsModel
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, windowInsets ->
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            view.findViewById<LinearLayout>(R.id.content).setPadding(0, 0, 0, insets.bottom)
+
+            WindowInsetsCompat.CONSUMED
+        }
 
         build()
     }
@@ -107,6 +127,9 @@ class SettingsBottomSheet : BottomSheetFragment() {
                 currency = currencyValue,
             ),
         )
+
+        applyBtn.isEnabled = days > 0 && budgetValue > BigDecimal(0)
+        isCancelable = spendsModel.lastReCalcBudgetDate !== null
     }
 
     private fun recalcLabels(newCurrency: ExtendCurrency) {
@@ -152,6 +175,12 @@ class SettingsBottomSheet : BottomSheetFragment() {
         budgetValue = spendsModel.budget.value ?: 0.0.toBigDecimal()
         dateToValue = spendsModel.finishDate
         currencyValue = spendsModel.currency
+
+        dragHelperView.visibility = if (spendsModel.lastReCalcBudgetDate !== null) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
 
         budgetInput.setText(
             prettyCandyCanes(
@@ -386,7 +415,7 @@ class SettingsBottomSheet : BottomSheetFragment() {
             }
         }
 
-        requireView().findViewById<MaterialButton>(R.id.apply).setOnClickListener {
+        applyBtn.setOnClickListener {
             spendsModel.changeCurrency(currencyValue)
             spendsModel.changeBudget(budgetValue, dateToValue)
 

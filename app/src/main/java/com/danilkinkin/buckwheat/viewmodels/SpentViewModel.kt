@@ -27,26 +27,34 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
 
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
 
-    var budget: MutableLiveData<BigDecimal> = MutableLiveData(try {
-        storageDao.get("budget").value.toBigDecimal()
-    } catch (e: Exception) {
-        0.0.toBigDecimal()
-    })
-    var spent: MutableLiveData<BigDecimal> = MutableLiveData(try {
-        storageDao.get("spent").value.toBigDecimal()
-    } catch (e: Exception) {
-        0.0.toBigDecimal()
-    })
-    var dailyBudget: MutableLiveData<BigDecimal> = MutableLiveData(try {
-        storageDao.get("dailyBudget").value.toBigDecimal()
-    } catch (e: Exception) {
-        0.0.toBigDecimal()
-    })
-    var spentFromDailyBudget: MutableLiveData<BigDecimal> = MutableLiveData(try {
-        storageDao.get("spentFromDailyBudget").value.toBigDecimal()
-    } catch (e: Exception) {
-        0.0.toBigDecimal()
-    })
+    var budget: MutableLiveData<BigDecimal> = MutableLiveData(
+        try {
+            storageDao.get("budget").value.toBigDecimal()
+        } catch (e: Exception) {
+            0.0.toBigDecimal()
+        }
+    )
+    var spent: MutableLiveData<BigDecimal> = MutableLiveData(
+        try {
+            storageDao.get("spent").value.toBigDecimal()
+        } catch (e: Exception) {
+            0.0.toBigDecimal()
+        }
+    )
+    var dailyBudget: MutableLiveData<BigDecimal> = MutableLiveData(
+        try {
+            storageDao.get("dailyBudget").value.toBigDecimal()
+        } catch (e: Exception) {
+            0.0.toBigDecimal()
+        }
+    )
+    var spentFromDailyBudget: MutableLiveData<BigDecimal> = MutableLiveData(
+        try {
+            storageDao.get("spentFromDailyBudget").value.toBigDecimal()
+        } catch (e: Exception) {
+            0.0.toBigDecimal()
+        }
+    )
 
     var startDate: Date = try {
         Date(storageDao.get("startDate").value.toLong())
@@ -126,7 +134,12 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
         this.spentDao.deleteAll()
 
         resetSpent()
-        reCalcDailyBudget((budget / countDays(roundedFinishDate).toBigDecimal()).setScale(0, RoundingMode.FLOOR))
+        reCalcDailyBudget(
+            (budget / countDays(roundedFinishDate).toBigDecimal()).setScale(
+                0,
+                RoundingMode.FLOOR
+            )
+        )
     }
 
     fun reCalcDailyBudget(dailyBudget: BigDecimal) {
@@ -186,7 +199,11 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
 
         Snackbar
-            .make(MainActivity.getInstance().parentView, R.string.remove_spent, Snackbar.LENGTH_LONG)
+            .make(
+                MainActivity.getInstance().parentView,
+                R.string.remove_spent,
+                Snackbar.LENGTH_LONG
+            )
             .setAction(
                 MainActivity
                     .getInstance()
@@ -197,7 +214,12 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
                 this.spentDao.insert(spent)
 
                 spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
-                storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+                storageDao.set(
+                    Storage(
+                        "spentFromDailyBudget",
+                        spentFromDailyBudget.value.toString()
+                    )
+                )
             }
             .show()
     }
@@ -218,7 +240,11 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
 
                 useDot = true
                 valueRightDot = ""
-                valueLeftDot = if (valueLeftDot === "") { "0" } else { valueLeftDot }
+                valueLeftDot = if (valueLeftDot === "") {
+                    "0"
+                } else {
+                    valueLeftDot
+                }
             }
             Action.REMOVE_LAST -> {
                 if (useDot && valueRightDot.length > 1) {
