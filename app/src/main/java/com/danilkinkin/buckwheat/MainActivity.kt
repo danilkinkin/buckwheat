@@ -207,6 +207,8 @@ class MainActivity : AppCompatActivity() {
         fabHome.setOnClickListener {
             recyclerView.smoothScrollToPosition(contactAdapter.itemCount - 1)
 
+            fabHome.hide()
+
             val topSheetBehavior = try {
                 ((recyclerView.layoutParams as CoordinatorLayout.LayoutParams).behavior as TopSheetBehavior)
             } catch (e: Exception) {
