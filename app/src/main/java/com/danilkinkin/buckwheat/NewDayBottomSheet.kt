@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import com.google.android.material.textview.MaterialTextView
 import java.math.RoundingMode
 import kotlin.math.abs
 
-class NewDayBottomSheet: BottomSheetFragment() {
+class NewDayBottomSheet : BottomSheetFragment() {
     companion object {
         val TAG = NewDayBottomSheet::class.simpleName
     }
@@ -60,6 +61,8 @@ class NewDayBottomSheet: BottomSheetFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        isCancelable = false
+
         return inflater.inflate(R.layout.modal_bottom_sheet_new_day, container, false)
     }
 
@@ -69,24 +72,28 @@ class NewDayBottomSheet: BottomSheetFragment() {
         val appModel: AppViewModel by activityViewModels()
         val spentModel: SpentViewModel by activityViewModels()
 
-        isCancelable = false
-
         this.appModel = appModel
         this.spentModel = spentModel
 
         build()
     }
 
-    fun build() {
+    private fun build() {
         val restDays = countDays(spentModel.finishDate)
         val skippedDays = abs(countDays(spentModel.lastReCalcBudgetDate!!))
 
-        val restBudget = (spentModel.budget.value!! - spentModel.spent.value!!) - spentModel.dailyBudget.value!!
+        val restBudget =
+            (spentModel.budget.value!! - spentModel.spent.value!!) - spentModel.dailyBudget.value!!
         val perDayBudget = restBudget / (restDays + skippedDays - 1).toBigDecimal()
 
-        val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0).toBigDecimal() + spentModel.dailyBudget.value!! - spentModel.spentFromDailyBudget.value!!
+        val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0)
+            .toBigDecimal() + spentModel.dailyBudget.value!! - spentModel.spentFromDailyBudget.value!!
 
-        val budgetPerDaySplit = ((restBudget + spentModel.dailyBudget.value!! - spentModel.spentFromDailyBudget.value!!) / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
+        val budgetPerDaySplit =
+            ((restBudget + spentModel.dailyBudget.value!! - spentModel.spentFromDailyBudget.value!!) / restDays.toBigDecimal()).setScale(
+                0,
+                RoundingMode.FLOOR
+            )
         val budgetPerDayAdd = (restBudget / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
         val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
@@ -108,19 +115,20 @@ class NewDayBottomSheet: BottomSheetFragment() {
 
 
             splitRestDaysDebugTextView.visibility = View.VISIBLE
-            splitRestDaysDebugTextView.text = "($restBudget + ${spentModel.dailyBudget.value!!} - ${spentModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit"
+            splitRestDaysDebugTextView.text =
+                "($restBudget + ${spentModel.dailyBudget.value!!} - ${spentModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit"
 
             addCurrentDayDebugTextView.visibility = View.VISIBLE
             addCurrentDayDebugTextView.text = "$restBudget / $restDays = $budgetPerDayAdd " +
                     "\n${budgetPerDayAdd} + $requireDistributeBudget = $budgetPerDayAddDailyBudget"
         }
 
-        splitRestDaysDescriptionTextView.text = context!!.getString(
+        splitRestDaysDescriptionTextView.text = requireContext().getString(
             R.string.split_rest_days_description,
             prettyCandyCanes(budgetPerDaySplit),
         )
 
-        addCurrentDayDescriptionTextView.text = context!!.getString(
+        addCurrentDayDescriptionTextView.text = requireContext().getString(
             R.string.add_current_day_description,
             prettyCandyCanes(requireDistributeBudget + budgetPerDayAdd),
             prettyCandyCanes(budgetPerDayAdd),

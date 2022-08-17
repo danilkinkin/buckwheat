@@ -30,7 +30,7 @@ import java.math.RoundingMode
 import java.util.*
 
 
-class SettingsBottomSheet: BottomSheetFragment() {
+class SettingsBottomSheet : BottomSheetFragment() {
     companion object {
         val TAG = SettingsBottomSheet::class.simpleName
     }
@@ -38,9 +38,9 @@ class SettingsBottomSheet: BottomSheetFragment() {
     private lateinit var model: AppViewModel
     private lateinit var spendsModel: SpentViewModel
 
-    var budgetValue: BigDecimal = 0.0.toBigDecimal()
-    var dateToValue: Date = Date()
-    var currencyValue: ExtendCurrency = ExtendCurrency(value = null, type = CurrencyType.NONE)
+    private var budgetValue: BigDecimal = 0.0.toBigDecimal()
+    private var dateToValue: Date = Date()
+    private var currencyValue: ExtendCurrency = ExtendCurrency(value = null, type = CurrencyType.NONE)
 
     private val budgetInput: TextInputEditText by lazy {
         requireView().findViewById(R.id.budget_input)
@@ -80,7 +80,6 @@ class SettingsBottomSheet: BottomSheetFragment() {
         val model: AppViewModel by activityViewModels()
         val spendsModel: SpentViewModel by activityViewModels()
 
-
         this.model = model
         this.spendsModel = spendsModel
 
@@ -91,43 +90,55 @@ class SettingsBottomSheet: BottomSheetFragment() {
         val days = countDays(dateToValue)
 
         finishDateBtn.text = String.format(
-            context!!.resources.getQuantityText(R.plurals.finish_date_dates, days).toString(),
+            requireContext().resources.getQuantityText(R.plurals.finish_date_dates, days)
+                .toString(),
             prettyDate(dateToValue, showTime = false, forceShowDate = true),
             days,
         )
 
-        perDayTextView.text = context!!.getString(
+        perDayTextView.text = requireContext().getString(
             R.string.per_day,
             prettyCandyCanes(
-                if (days != 0) { (budgetValue / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR) } else { budgetValue },
+                if (days != 0) {
+                    (budgetValue / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
+                } else {
+                    budgetValue
+                },
                 currency = currencyValue,
             ),
         )
     }
 
     private fun recalcLabels(newCurrency: ExtendCurrency) {
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).isChecked = false
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).text = context!!.getString(R.string.currency_from_list)
+        val fromList = currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list)
+        val custom = currencyToggleBtn.findViewById<MaterialButton>(R.id.custom)
 
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).isChecked = false
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).text = context!!.getString(R.string.currency_custom)
+        fromList.isChecked = false
+        fromList.text =
+            requireContext().getString(R.string.currency_from_list)
+
+        custom.isChecked = false
+        custom.text =
+            requireContext().getString(R.string.currency_custom)
 
         currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = false
 
         when (newCurrency.type) {
             CurrencyType.FROM_LIST -> {
-                currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).isChecked = true
-                currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).text = context!!.getString(
-                    R.string.currency_from_list_selected,
-                    Currency.getInstance(newCurrency.value).symbol,
-                )
+                fromList.isChecked = true
+                fromList.text =
+                    requireContext().getString(
+                        R.string.currency_from_list_selected,
+                        Currency.getInstance(newCurrency.value).symbol,
+                    )
             }
             CurrencyType.CUSTOM -> {
-                currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).isChecked = true
-                currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).text = context!!.getString(
-                    R.string.currency_custom_selected,
-                    newCurrency.value,
-                )
+                custom.isChecked = true
+                custom.text =
+                    requireContext().getString(
+                        R.string.currency_custom_selected,
+                        newCurrency.value,
+                    )
             }
             CurrencyType.NONE -> {
                 currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = true
@@ -142,7 +153,12 @@ class SettingsBottomSheet: BottomSheetFragment() {
         dateToValue = spendsModel.finishDate
         currencyValue = spendsModel.currency
 
-        budgetInput.setText(prettyCandyCanes(budgetValue, currency = ExtendCurrency(type = CurrencyType.NONE)))
+        budgetInput.setText(
+            prettyCandyCanes(
+                budgetValue,
+                currency = ExtendCurrency(type = CurrencyType.NONE)
+            )
+        )
 
         budgetInput.addTextChangedListener(CurrencyTextWatcher(
             budgetInput,
@@ -151,7 +167,12 @@ class SettingsBottomSheet: BottomSheetFragment() {
             budgetValue = try {
                 it.toBigDecimal()
             } catch (e: Exception) {
-                budgetInput.setText(prettyCandyCanes(0.0.toBigDecimal(), currency = ExtendCurrency(type = CurrencyType.NONE)))
+                budgetInput.setText(
+                    prettyCandyCanes(
+                        0.0.toBigDecimal(),
+                        currency = ExtendCurrency(type = CurrencyType.NONE)
+                    )
+                )
 
                 0.0.toBigDecimal()
             }
@@ -162,7 +183,8 @@ class SettingsBottomSheet: BottomSheetFragment() {
         finishDateBtn.setOnClickListener {
             var alertDialog: AlertDialog? = null
 
-            val view = LayoutInflater.from(context!!).inflate(R.layout.dialog_date_range_picker, null, false)
+            val view = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_date_range_picker, null, false)
 
             val startDate = view.findViewById<MaterialTextView>(R.id.start_date)
             val finishDate = view.findViewById<MaterialTextView>(R.id.finish_date)
@@ -174,18 +196,20 @@ class SettingsBottomSheet: BottomSheetFragment() {
                 val days = countDays(finishDateTemp, spendsModel.startDate)
 
                 finishDate.text = String.format(
-                    context!!.resources.getQuantityText(R.plurals.finish_date_dates, days).toString(),
+                    requireContext().resources.getQuantityText(R.plurals.finish_date_dates, days)
+                        .toString(),
                     prettyDate(finishDateTemp, showTime = false, forceShowDate = true),
                     days,
                 )
             }
 
-            startDate.text = prettyDate(spendsModel.startDate, showTime = false, forceShowDate = true)
+            startDate.text =
+                prettyDate(spendsModel.startDate, showTime = false, forceShowDate = true)
             recalcFinishDate()
 
             calendar.minDate = roundToDay(Date()).time + DAY
             calendar.date = dateToValue.time
-            calendar.setOnDateChangeListener { calendarView, year, month, dayOfMonth ->
+            calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
                 finishDateTemp = Calendar
                     .Builder()
                     .setTimeZone(TimeZone.getDefault())
@@ -196,7 +220,7 @@ class SettingsBottomSheet: BottomSheetFragment() {
                 recalcFinishDate()
             }
 
-            alertDialog = MaterialAlertDialogBuilder(context!!)
+            alertDialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.select_finish_date_title)
                 .setView(view)
                 .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
@@ -219,7 +243,7 @@ class SettingsBottomSheet: BottomSheetFragment() {
         recalcLabels(currencyValue)
 
         currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).setOnClickListener {
-            val adapter = CurrencyAdapter(context!!)
+            val adapter = CurrencyAdapter(requireContext())
 
             var alertDialog: AlertDialog? = null
             var value: String? = if (currencyValue.type === CurrencyType.FROM_LIST) {
@@ -228,7 +252,7 @@ class SettingsBottomSheet: BottomSheetFragment() {
                 null
             }
 
-            alertDialog = MaterialAlertDialogBuilder(context!!)
+            alertDialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.select_currency_title)
                 .setSingleChoiceItems(
                     adapter,
@@ -262,7 +286,8 @@ class SettingsBottomSheet: BottomSheetFragment() {
         currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).setOnClickListener {
             var alertDialog: AlertDialog? = null
 
-            val view = LayoutInflater.from(context!!).inflate(R.layout.dialog_custom_currency, null, false)
+            val view = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_custom_currency, null, false)
 
             val input = view.findViewById<TextInputEditText>(R.id.currency_input)
 
@@ -273,14 +298,15 @@ class SettingsBottomSheet: BottomSheetFragment() {
                 }
 
                 override fun onTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = !value.isNullOrEmpty()
+                    alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+                        !value.isNullOrEmpty()
                 }
 
                 override fun afterTextChanged(p0: Editable?) {
                 }
             })
 
-            alertDialog = MaterialAlertDialogBuilder(context!!)
+            alertDialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.currency_custom_title)
                 .setView(view)
                 .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
@@ -289,7 +315,8 @@ class SettingsBottomSheet: BottomSheetFragment() {
                     dialog.dismiss()
                 }
                 .setPositiveButton(resources.getString(R.string.accept)) { dialog, _ ->
-                    currencyValue = ExtendCurrency(value = input.text.toString(), type = CurrencyType.CUSTOM)
+                    currencyValue =
+                        ExtendCurrency(value = input.text.toString(), type = CurrencyType.CUSTOM)
                     recalcLabels(currencyValue)
                     dialog.dismiss()
                 }
@@ -297,7 +324,8 @@ class SettingsBottomSheet: BottomSheetFragment() {
                 .create()
 
             alertDialog!!.show()
-            alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = currencyValue.type === CurrencyType.CUSTOM && !currencyValue.value.isNullOrEmpty()
+            alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+                currencyValue.type === CurrencyType.CUSTOM && !currencyValue.value.isNullOrEmpty()
         }
 
         currencyToggleBtn.findViewById<MaterialButton>(R.id.none).setOnClickListener {
@@ -315,12 +343,19 @@ class SettingsBottomSheet: BottomSheetFragment() {
             try {
                 startActivity(intent)
             } catch (e: Exception) {
-                val clipboard = getSystemService(context!!, ClipboardManager::class.java) as ClipboardManager
+                val clipboard = getSystemService(
+                    requireContext(),
+                    ClipboardManager::class.java
+                ) as ClipboardManager
 
-                clipboard.setPrimaryClip(ClipData.newPlainText( "url", url))
+                clipboard.setPrimaryClip(ClipData.newPlainText("url", url))
 
                 Toast
-                    .makeText(context, context!!.getString(R.string.copy_in_clipboard), Toast.LENGTH_LONG)
+                    .makeText(
+                        context,
+                        requireContext().getString(R.string.copy_in_clipboard),
+                        Toast.LENGTH_LONG
+                    )
                     .show()
             }
         }
@@ -334,12 +369,19 @@ class SettingsBottomSheet: BottomSheetFragment() {
             try {
                 startActivity(intent)
             } catch (e: Exception) {
-                val clipboard = getSystemService(context!!, ClipboardManager::class.java) as ClipboardManager
+                val clipboard = getSystemService(
+                    requireContext(),
+                    ClipboardManager::class.java
+                ) as ClipboardManager
 
-                clipboard.setPrimaryClip(ClipData.newPlainText( "url", url))
+                clipboard.setPrimaryClip(ClipData.newPlainText("url", url))
 
                 Toast
-                    .makeText(context, context!!.getString(R.string.copy_in_clipboard), Toast.LENGTH_LONG)
+                    .makeText(
+                        context,
+                        requireContext().getString(R.string.copy_in_clipboard),
+                        Toast.LENGTH_LONG
+                    )
                     .show()
             }
         }

@@ -120,19 +120,17 @@ class EditorFragment : Fragment() {
         ft.commit()
 
         requireView().findViewById<MaterialButton>(R.id.settings_btn).setOnClickListener {
-            settingsBottomSheet = settingsBottomSheet ?: SettingsBottomSheet()
+            if (settingsBottomSheet?.isVisible == true) return@setOnClickListener
 
-            if (!settingsBottomSheet!!.isVisible) {
-                settingsBottomSheet!!.show(parentFragmentManager, SettingsBottomSheet.TAG)
-            }
+            settingsBottomSheet = SettingsBottomSheet()
+            settingsBottomSheet!!.show(parentFragmentManager, SettingsBottomSheet.TAG)
         }
 
         requireView().findViewById<MaterialButton>(R.id.dev_tool_btn).setOnClickListener {
-            newDayBottomSheet = newDayBottomSheet ?: NewDayBottomSheet()
+            if (newDayBottomSheet?.isVisible == true) return@setOnClickListener
 
-            if (!newDayBottomSheet!!.isVisible) {
-                newDayBottomSheet!!.show(parentFragmentManager, NewDayBottomSheet.TAG)
-            }
+            newDayBottomSheet = NewDayBottomSheet()
+            newDayBottomSheet!!.show(parentFragmentManager, NewDayBottomSheet.TAG)
         }
     }
 
