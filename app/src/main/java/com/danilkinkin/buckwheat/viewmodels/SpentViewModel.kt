@@ -225,7 +225,7 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun executeAction(action: Action, value: Int? = null) {
-        if (stage.value === Stage.IDLE) createSpent()
+        var mutateSpent = true
 
         when (action) {
             Action.PUT_NUMBER -> {
@@ -247,7 +247,9 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
             Action.REMOVE_LAST -> {
-                if (useDot && valueRightDot.length > 1) {
+                if ("$valueLeftDot.$valueRightDot" == ".") {
+                    mutateSpent = false
+                } else if (useDot && valueRightDot.length > 1) {
                     valueRightDot = valueRightDot.dropLast(1)
                 } else if (useDot && valueRightDot.length <= 1) {
                     valueRightDot = ""
@@ -268,6 +270,9 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        editSpent("$valueLeftDot.$valueRightDot".toBigDecimal())
+        if (mutateSpent) {
+            if (stage.value === Stage.IDLE) createSpent()
+            editSpent("$valueLeftDot.$valueRightDot".toBigDecimal())
+        }
     }
 }
