@@ -13,8 +13,8 @@
     <string name="remove_spent">Expenditure returned to budget</string>
     <string name="remove_spent_undo">Remove</string>
 
-    <!-- Settings -->
-    <string name="settings_title">Settings</string>
+    <!-- Wallet -->
+    <string name="wallet_title">Budget</string>
     <string name="label_budget">Budget</string>
     <string name="prefix_finish_date">To</string>
     <string name="select_finish_date_title">Select finish date</string>
@@ -30,14 +30,17 @@
     <string name="currency_none">No currency</string>
     <string name="per_day">Will be %1$s per day</string>
     <string name="apply">Apply</string>
+    <string name="select_currency_title">Select currency</string>
+    <string name="select_currency_hint">Input your currency</string>
+    <string name="currency_custom_title">Enter your currency</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
     <string name="about">About app</string>
     <string name="description">Buckwheat - is an app that will help you consciously spend your budget. By making every expense, it will be easier to keep track and understand your financial capabilities and not waste money on nonsense</string>
     <string name="site">Developer site</string>
     <string name="report_bug">Report a bug</string>
     <string name="developer">Developer &amp; designer: @danilkinkin</string>
-    <string name="select_currency_title">Select currency</string>
-    <string name="select_currency_hint">Input your currency</string>
-    <string name="currency_custom_title">Enter your currency</string>
 
     <!-- New day -->
     <string name="new_day_title">Congratulations! You saved</string>

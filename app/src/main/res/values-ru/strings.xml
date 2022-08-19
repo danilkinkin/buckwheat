@@ -13,8 +13,8 @@
     <string name="remove_spent">Трата возвращена в бюджет</string>
     <string name="remove_spent_undo">Отменить</string>
 
-    <!-- Settings -->
-    <string name="settings_title">Настройки</string>
+    <!-- Wallet -->
+    <string name="wallet_title">Бюджет</string>
     <string name="label_budget">Бюджет</string>
     <string name="prefix_finish_date">До</string>
     <string name="select_finish_date_title">Выбрать дату окончанию</string>
@@ -30,15 +30,18 @@
     <string name="currency_custom_selected">Своя (%1$s)</string>
     <string name="currency_none">Без валюты</string>
     <string name="per_day">Получится %1$s в день</string>
+    <string name="select_currency_title">Выберете валюту</string>
+    <string name="select_currency_hint">Введите вашу валюту</string>
+    <string name="currency_custom_title">Укажите свою валюту</string>
     <string name="apply">Применить</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Настройки</string>
     <string name="about">О приложении</string>
     <string name="description">Buckwheat - это приложение которое поможет осознанно тратить бюджетю. Внося каждую трату, будет легче следить и понимать свои финасовые возможности и не тертить деньги на ерунду</string>
     <string name="site">Сайт разработчика</string>
     <string name="report_bug">Сообщить об ошибке</string>
     <string name="developer">Разработчик и дизайнер: @danilkinkin</string>
-    <string name="select_currency_title">Выберете валюту</string>
-    <string name="select_currency_hint">Введите вашу валюту</string>
-    <string name="currency_custom_title">Укажите свою валюту</string>
 
     <!-- New day -->
     <string name="new_day_title">Поздравляем! Вы сэкономили</string>

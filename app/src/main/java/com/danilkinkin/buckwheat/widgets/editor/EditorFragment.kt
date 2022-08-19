@@ -11,10 +11,7 @@ import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
-import com.danilkinkin.buckwheat.NewDayBottomSheet
-import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.SettingsBottomSheet
-import com.danilkinkin.buckwheat.TextWithLabelFragment
+import com.danilkinkin.buckwheat.*
 import com.danilkinkin.buckwheat.utils.getStatusBarHeight
 import com.danilkinkin.buckwheat.utils.prettyCandyCanes
 import com.danilkinkin.buckwheat.utils.toDP
@@ -33,6 +30,7 @@ class EditorFragment : Fragment() {
     private lateinit var spentFragment: TextWithLabelFragment
     private lateinit var restBudgetFragment: TextWithLabelFragment
     private var settingsBottomSheet: SettingsBottomSheet? = null
+    private var walletBottomSheet: WalletBottomSheet? = null
     private var newDayBottomSheet: NewDayBottomSheet? = null
 
     enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
@@ -148,6 +146,13 @@ class EditorFragment : Fragment() {
 
             settingsBottomSheet = SettingsBottomSheet()
             settingsBottomSheet!!.show(parentFragmentManager, SettingsBottomSheet.TAG)
+        }
+
+        requireView().findViewById<MaterialButton>(R.id.wallet_btn).setOnClickListener {
+            if (walletBottomSheet?.isVisible == true) return@setOnClickListener
+
+            walletBottomSheet = WalletBottomSheet()
+            walletBottomSheet!!.show(parentFragmentManager, WalletBottomSheet.TAG)
         }
 
         requireView().findViewById<MaterialButton>(R.id.dev_tool_btn).setOnClickListener {

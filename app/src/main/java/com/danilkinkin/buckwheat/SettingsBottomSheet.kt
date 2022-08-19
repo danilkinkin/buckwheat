@@ -1,36 +1,21 @@
 package com.danilkinkin.buckwheat
 
-import androidx.appcompat.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.*
-import android.widget.CalendarView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
-import com.danilkinkin.buckwheat.adapters.CurrencyAdapter
-import com.danilkinkin.buckwheat.utils.*
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.danilkinkin.buckwheat.widgets.bottomsheet.BottomSheetFragment
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.button.MaterialButtonToggleGroup
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textview.MaterialTextView
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.util.*
 
 
 class SettingsBottomSheet : BottomSheetFragment() {
@@ -41,41 +26,12 @@ class SettingsBottomSheet : BottomSheetFragment() {
     private lateinit var model: AppViewModel
     private lateinit var spendsModel: SpentViewModel
 
-    private var budgetValue: BigDecimal = 0.0.toBigDecimal()
-    private var dateToValue: Date = Date()
-    private var currencyValue: ExtendCurrency =
-        ExtendCurrency(value = null, type = CurrencyType.NONE)
-
-    private val budgetInput: TextInputEditText by lazy {
-        requireView().findViewById(R.id.budget_input)
-    }
-
-    private val finishDateBtn: MaterialButton by lazy {
-        requireView().findViewById(R.id.edit_finish_date_btn)
-    }
-
-    private val currencyToggleBtn: MaterialButtonToggleGroup by lazy {
-        requireView().findViewById(R.id.currency_toggle_btn)
-    }
-
-    private val perDayTextView: MaterialTextView by lazy {
-        requireView().findViewById(R.id.per_day_description)
-    }
-
     private val openSiteBtn: MaterialCardView by lazy {
         requireView().findViewById(R.id.site)
     }
 
     private val reportBugBtn: MaterialCardView by lazy {
         requireView().findViewById(R.id.report_bug)
-    }
-
-    private val applyBtn: MaterialButton by lazy {
-        requireView().findViewById(R.id.apply)
-    }
-
-    private val dragHelperView: View by lazy {
-        requireView().findViewById(R.id.drag_helper)
     }
 
     override fun onCreateView(
@@ -106,263 +62,7 @@ class SettingsBottomSheet : BottomSheetFragment() {
         build()
     }
 
-    private fun reCalcBudget() {
-        val days = countDays(dateToValue)
-
-        finishDateBtn.text = String.format(
-            requireContext().resources.getQuantityText(R.plurals.finish_date_dates, days)
-                .toString(),
-            prettyDate(dateToValue, showTime = false, forceShowDate = true),
-            days,
-        )
-
-        perDayTextView.text = requireContext().getString(
-            R.string.per_day,
-            prettyCandyCanes(
-                if (days != 0) {
-                    (budgetValue / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
-                } else {
-                    budgetValue
-                },
-                currency = currencyValue,
-            ),
-        )
-
-        applyBtn.isEnabled = days > 0 && budgetValue > BigDecimal(0)
-        isCancelable = spendsModel.lastReCalcBudgetDate !== null
-    }
-
-    private fun recalcLabels(newCurrency: ExtendCurrency) {
-        val fromList = currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list)
-        val custom = currencyToggleBtn.findViewById<MaterialButton>(R.id.custom)
-
-        fromList.isChecked = false
-        fromList.text =
-            requireContext().getString(R.string.currency_from_list)
-
-        custom.isChecked = false
-        custom.text =
-            requireContext().getString(R.string.currency_custom)
-
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = false
-
-        when (newCurrency.type) {
-            CurrencyType.FROM_LIST -> {
-                fromList.isChecked = true
-                fromList.text =
-                    requireContext().getString(
-                        R.string.currency_from_list_selected,
-                        Currency.getInstance(newCurrency.value).symbol,
-                    )
-            }
-            CurrencyType.CUSTOM -> {
-                custom.isChecked = true
-                custom.text =
-                    requireContext().getString(
-                        R.string.currency_custom_selected,
-                        newCurrency.value,
-                    )
-            }
-            CurrencyType.NONE -> {
-                currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = true
-            }
-        }
-
-        reCalcBudget()
-    }
-
     private fun build() {
-        budgetValue = spendsModel.budget.value ?: 0.0.toBigDecimal()
-        dateToValue = spendsModel.finishDate
-        currencyValue = spendsModel.currency
-
-        dragHelperView.visibility = if (spendsModel.lastReCalcBudgetDate !== null) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-
-        budgetInput.setText(
-            prettyCandyCanes(
-                budgetValue,
-                currency = ExtendCurrency(type = CurrencyType.NONE)
-            )
-        )
-
-        budgetInput.addTextChangedListener(CurrencyTextWatcher(
-            budgetInput,
-            currency = ExtendCurrency(type = CurrencyType.NONE),
-        ) {
-            budgetValue = try {
-                it.toBigDecimal()
-            } catch (e: Exception) {
-                budgetInput.setText(
-                    prettyCandyCanes(
-                        0.0.toBigDecimal(),
-                        currency = ExtendCurrency(type = CurrencyType.NONE)
-                    )
-                )
-
-                0.0.toBigDecimal()
-            }
-
-            reCalcBudget()
-        })
-
-        finishDateBtn.setOnClickListener {
-            var alertDialog: AlertDialog? = null
-
-            val view = LayoutInflater.from(requireContext())
-                .inflate(R.layout.dialog_date_range_picker, null, false)
-
-            val startDate = view.findViewById<MaterialTextView>(R.id.start_date)
-            val finishDate = view.findViewById<MaterialTextView>(R.id.finish_date)
-            val calendar = view.findViewById<CalendarView>(R.id.calendar)
-
-            var finishDateTemp = dateToValue
-
-            fun recalcFinishDate() {
-                val days = countDays(finishDateTemp, spendsModel.startDate)
-
-                finishDate.text = String.format(
-                    requireContext().resources.getQuantityText(R.plurals.finish_date_dates, days)
-                        .toString(),
-                    prettyDate(finishDateTemp, showTime = false, forceShowDate = true),
-                    days,
-                )
-            }
-
-            startDate.text =
-                prettyDate(spendsModel.startDate, showTime = false, forceShowDate = true)
-            recalcFinishDate()
-
-            calendar.minDate = roundToDay(Date()).time + DAY
-            calendar.date = dateToValue.time
-            calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
-                finishDateTemp = Calendar
-                    .Builder()
-                    .setTimeZone(TimeZone.getDefault())
-                    .setDate(year, month, dayOfMonth)
-                    .build()
-                    .time
-
-                recalcFinishDate()
-            }
-
-            alertDialog = MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.select_finish_date_title)
-                .setView(view)
-                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setPositiveButton(resources.getString(R.string.accept)) { dialog, _ ->
-                    dateToValue = finishDateTemp
-
-                    reCalcBudget()
-
-                    dialog.dismiss()
-                }
-                .setOnCancelListener { recalcLabels(currencyValue) }
-                .create()
-
-            alertDialog.show()
-        }
-
-        reCalcBudget()
-        recalcLabels(currencyValue)
-
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).setOnClickListener {
-            val adapter = CurrencyAdapter(requireContext())
-
-            var alertDialog: AlertDialog? = null
-            var value: String? = if (currencyValue.type === CurrencyType.FROM_LIST) {
-                currencyValue.value
-            } else {
-                null
-            }
-
-            alertDialog = MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.select_currency_title)
-                .setSingleChoiceItems(
-                    adapter,
-                    value?.let { adapter.findItemPosition(value!!) } ?: -1,
-                ) { _: DialogInterface?, position: Int ->
-                    val currency = adapter.getItem(position)
-
-                    value = currency.currencyCode
-
-                    alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
-                }
-                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                    recalcLabels(currencyValue)
-
-                    dialog.dismiss()
-                }
-                .setPositiveButton(resources.getString(R.string.accept)) { dialog, _ ->
-                    currencyValue = ExtendCurrency(value, type = CurrencyType.FROM_LIST)
-
-                    recalcLabels(currencyValue)
-
-                    dialog.dismiss()
-                }
-                .setOnCancelListener { recalcLabels(currencyValue) }
-                .create()
-
-            alertDialog!!.show()
-            alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
-        }
-
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).setOnClickListener {
-            var alertDialog: AlertDialog? = null
-
-            val view = LayoutInflater.from(requireContext())
-                .inflate(R.layout.dialog_custom_currency, null, false)
-
-            val input = view.findViewById<TextInputEditText>(R.id.currency_input)
-
-            input.setText(if (currencyValue.type === CurrencyType.CUSTOM) currencyValue.value else "")
-
-            input.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                }
-
-                override fun onTextChanged(value: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                        !value.isNullOrEmpty()
-                }
-
-                override fun afterTextChanged(p0: Editable?) {
-                }
-            })
-
-            alertDialog = MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.currency_custom_title)
-                .setView(view)
-                .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
-                    recalcLabels(currencyValue)
-
-                    dialog.dismiss()
-                }
-                .setPositiveButton(resources.getString(R.string.accept)) { dialog, _ ->
-                    currencyValue =
-                        ExtendCurrency(value = input.text.toString(), type = CurrencyType.CUSTOM)
-                    recalcLabels(currencyValue)
-                    dialog.dismiss()
-                }
-                .setOnCancelListener { recalcLabels(currencyValue) }
-                .create()
-
-            alertDialog!!.show()
-            alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
-                currencyValue.type === CurrencyType.CUSTOM && !currencyValue.value.isNullOrEmpty()
-        }
-
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.none).setOnClickListener {
-            currencyValue = ExtendCurrency(value = null, type = CurrencyType.NONE)
-
-            recalcLabels(currencyValue)
-        }
-
         openSiteBtn.setOnClickListener {
             val url = "https://danilkinkin.com"
             val intent = Intent(Intent.ACTION_VIEW)
@@ -413,13 +113,6 @@ class SettingsBottomSheet : BottomSheetFragment() {
                     )
                     .show()
             }
-        }
-
-        applyBtn.setOnClickListener {
-            spendsModel.changeCurrency(currencyValue)
-            spendsModel.changeBudget(budgetValue, dateToValue)
-
-            dismiss()
         }
     }
 }
