@@ -61,11 +61,12 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     ): Boolean {
         child.translationY = dependency.translationY
 
-        val height = 226.toDP() + child.paddingTop + child.paddingBottom
+        val maxHeight = child.height
+        val minHeight = 226.toDP() + child.paddingTop + child.paddingBottom
 
         child.findViewById<MotionLayout>(R.id.root)?.progress = max(
             min(
-                1 - ((parent.height - (dependency.bottom + dependency.translationY) - height) / (parent.width - height)),
+                1 - ((parent.height - (dependency.bottom + dependency.translationY) - minHeight) / (maxHeight - minHeight)),
                 0.999999F,
             ),
             0.000001F,
