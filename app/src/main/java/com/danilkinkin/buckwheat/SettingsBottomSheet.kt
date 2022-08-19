@@ -6,8 +6,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,6 +16,7 @@ import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.danilkinkin.buckwheat.widgets.bottomsheet.BottomSheetFragment
 import com.google.android.material.card.MaterialCardView
+import java.util.*
 
 
 class SettingsBottomSheet : BottomSheetFragment() {
@@ -32,6 +33,10 @@ class SettingsBottomSheet : BottomSheetFragment() {
 
     private val reportBugBtn: MaterialCardView by lazy {
         requireView().findViewById(R.id.report_bug)
+    }
+
+    private val themeSwitcher: RadioGroup by lazy {
+        requireView().findViewById(R.id.theme_switcher)
     }
 
     override fun onCreateView(
@@ -63,6 +68,23 @@ class SettingsBottomSheet : BottomSheetFragment() {
     }
 
     private fun build() {
+        themeSwitcher.setOnCheckedChangeListener { group, checkedId ->
+            val mode = when (checkedId) {
+                R.id.theme_switcher_light -> AppCompatDelegate.MODE_NIGHT_NO
+                R.id.theme_switcher_dark -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+
+            AppCompatDelegate.setDefaultNightMode(mode)
+            MainActivity.getInstance().appSettingsPrefs.edit().putInt("nightMode", mode).apply()
+        }
+
+        themeSwitcher.check(when (AppCompatDelegate.getDefaultNightMode()) {
+            AppCompatDelegate.MODE_NIGHT_NO -> R.id.theme_switcher_light
+            AppCompatDelegate.MODE_NIGHT_YES -> R.id.theme_switcher_dark
+            else -> R.id.theme_switcher_system
+        })
+        
         openSiteBtn.setOnClickListener {
             val url = "https://danilkinkin.com"
             val intent = Intent(Intent.ACTION_VIEW)

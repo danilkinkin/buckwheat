@@ -54,6 +54,8 @@
         <item name="textAppearanceLabelSmall">@style/TextAppearance.Buckwheat.LabelSmall</item>
 
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Buckwheat.BottomSheetDialog</item>
+
+        <item name="radioButtonStyle">@style/ThemeOverlay.Buckwheat.RadioButton</item>
     </style>
 
     <style name="Theme.Buckwheat" parent="Base.Theme.Buckwheat" />
@@ -112,6 +114,17 @@
 
     <style name="Theme.Buckwheat.BottomSheetDialog" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bottom_sheet_background</item>
+    </style>
+
+    <style name="ThemeOverlay.Buckwheat.RadioButton" parent="Widget.Material3.CompoundButton.RadioButton">
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:button">@drawable/radio</item>
+        <item name="android:textAppearance">@style/TextAppearance.Buckwheat.LabelLarge</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:buttonTint">@android:color/transparent</item>
     </style>
 
     <style name="Widget.Buckwheat.Toolbar" parent="Widget.Material3.Toolbar">

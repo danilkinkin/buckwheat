@@ -55,6 +55,72 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp">
+
+                <ImageView
+                    android:id="@+id/theme_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_dark_mode" />
+
+                <TextView
+                    android:id="@+id/currency_label"
+                    style="@style/TextAppearance.Buckwheat.LabelLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/theme_label"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/theme_icon"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RadioGroup
+                android:id="@+id/theme_switcher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:checkedButton="@+id/theme_switcher_system">
+
+                <RadioButton
+                    android:id="@+id/theme_switcher_light"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/theme_light"
+                    style="@style/TextAppearance.Buckwheat.LabelLarge"/>
+                <RadioButton
+                    android:id="@+id/theme_switcher_dark"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/theme_dark"/>
+                <RadioButton
+                    android:id="@+id/theme_switcher_system"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/theme_system"/>
+            </RadioGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider" />
+
             <com.google.android.material.card.MaterialCardView
                 style="@style/Widget.Material3.CardView.Filled"
                 android:layout_width="match_parent"

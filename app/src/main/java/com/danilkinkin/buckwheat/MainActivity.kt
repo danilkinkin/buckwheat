@@ -1,13 +1,16 @@
 package com.danilkinkin.buckwheat
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.AttributeSet
 import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
@@ -39,6 +42,8 @@ class MainActivity : AppCompatActivity() {
         findViewById(R.id.fab_home_btn)
     }
 
+    lateinit var appSettingsPrefs: SharedPreferences
+
     companion object {
         val TAG: String = MainActivity::class.java.simpleName
 
@@ -53,6 +58,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        appSettingsPrefs = getSharedPreferences("AppSettingsPrefs", 0)
+
+        AppCompatDelegate.setDefaultNightMode(appSettingsPrefs.getInt("nightMode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

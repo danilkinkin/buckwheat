@@ -27,5 +27,34 @@
         <item name="colorOnSurfaceInverse">@color/md_theme_dark_inverseOnSurface</item>
         <item name="colorSurfaceInverse">@color/md_theme_dark_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_dark_inversePrimary</item>
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Buckwheat.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Buckwheat.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Buckwheat.LargeComponent</item>
+
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.Buckwheat.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.Buckwheat.DisplayMedium</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.Buckwheat.DisplaySmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.Buckwheat.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.Buckwheat.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Buckwheat.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.Buckwheat.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.Buckwheat.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.Buckwheat.BodySmall</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.Buckwheat.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.Buckwheat.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.Buckwheat.HeadlineSmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Buckwheat.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.Buckwheat.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.Buckwheat.LabelSmall</item>
+
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.Buckwheat.BottomSheetDialog</item>
+
+        <item name="radioButtonStyle">@style/ThemeOverlay.Buckwheat.RadioButton</item>
     </style>
 </resources>
