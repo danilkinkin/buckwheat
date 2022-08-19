@@ -88,9 +88,15 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
     var useDot: Boolean = false
 
     init {
-        if (lastReCalcBudgetDate !== null && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)) {
+        if (
+            lastReCalcBudgetDate !== null
+            && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)
+            && countDays(finishDate) > 0
+        ) {
             requireReCalcBudget.value = true
         }
+
+        Log.d("SpentViewModel", "init")
 
         if (lastReCalcBudgetDate === null || finishDate.time <= Date().time) {
             requireSetBudget.value = true
@@ -132,6 +138,8 @@ class SpentViewModel(application: Application) : AndroidViewModel(application) {
         this.lastReCalcBudgetDate = startDate
 
         this.spentDao.deleteAll()
+        
+        requireSetBudget.value = false
 
         resetSpent()
         reCalcDailyBudget(

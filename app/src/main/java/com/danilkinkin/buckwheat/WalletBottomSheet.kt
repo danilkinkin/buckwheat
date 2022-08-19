@@ -127,7 +127,6 @@ class WalletBottomSheet : BottomSheetFragment() {
         )
 
         applyBtn.isEnabled = days > 0 && budgetValue > BigDecimal(0)
-        isCancelable = spendsModel.lastReCalcBudgetDate !== null
     }
 
     private fun recalcLabels(newCurrency: ExtendCurrency) {
@@ -171,11 +170,12 @@ class WalletBottomSheet : BottomSheetFragment() {
         dateToValue = spendsModel.finishDate
         currencyValue = spendsModel.currency
 
-        dragHelperView.visibility = if (spendsModel.lastReCalcBudgetDate !== null) {
+        dragHelperView.visibility = if (spendsModel.requireSetBudget.value == false) {
             View.VISIBLE
         } else {
             View.GONE
         }
+        isCancelable = spendsModel.requireSetBudget.value == false
 
         budgetInput.setText(
             prettyCandyCanes(

@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.activity.viewModels
@@ -61,7 +62,13 @@ class MainActivity : AppCompatActivity() {
 
         appSettingsPrefs = getSharedPreferences("AppSettingsPrefs", 0)
 
-        AppCompatDelegate.setDefaultNightMode(appSettingsPrefs.getInt("nightMode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
+        val mode = appSettingsPrefs.getInt("nightMode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+
+        if (AppCompatDelegate.getDefaultNightMode() != mode) {
+            AppCompatDelegate.setDefaultNightMode(appSettingsPrefs.getInt("nightMode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
+
+            return
+        }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -71,7 +78,7 @@ class MainActivity : AppCompatActivity() {
             DynamicColors.applyToActivitiesIfAvailable(application)
         }
 
-        val windowInsetsController =  WindowCompat.getInsetsController(window, window.decorView)
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
 
         windowInsetsController.isAppearanceLightNavigationBars = true
 
@@ -145,10 +152,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        model.requireSetBudget.observeForever {
+        model.requireSetBudget.observe(this) {
             if (it) {
-                val settingsBottomSheet = SettingsBottomSheet()
-                settingsBottomSheet.show(supportFragmentManager, SettingsBottomSheet.TAG)
+                val walletBottomSheet = WalletBottomSheet()
+                walletBottomSheet.show(supportFragmentManager, WalletBottomSheet.TAG)
             }
         }
     }
