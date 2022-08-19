@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
@@ -285,7 +286,8 @@ class EditorFragment : Fragment() {
         currAnimator = ValueAnimator.ofFloat(0F, 1F)
 
         currAnimator!!.apply {
-            duration = 300
+            duration = 220
+            interpolator = AccelerateDecelerateInterpolator()
 
             addUpdateListener { valueAnimator ->
                 val animatedValue = valueAnimator.animatedValue as Float
