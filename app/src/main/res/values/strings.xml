@@ -16,13 +16,12 @@
     <!-- Wallet -->
     <string name="wallet_title">Budget</string>
     <string name="label_budget">Budget</string>
-    <string name="prefix_finish_date">To</string>
     <string name="select_finish_date_title">Select finish date</string>
     <plurals name="finish_date_dates">
-        <item quantity="one">%1$s (%2$s day)</item>
-        <item quantity="other">%1$s (%2$s days)</item>
+        <item quantity="one">To %1$s (%2$s day)</item>
+        <item quantity="other">To %1$s (%2$s days)</item>
     </plurals>
-    <string name="prefix_in_currency">In currency</string>
+    <string name="in_currency_label">In currency</string>
     <string name="currency_from_list">From the list</string>
     <string name="currency_from_list_selected">From the list (%1$s)</string>
     <string name="currency_custom">Custom</string>

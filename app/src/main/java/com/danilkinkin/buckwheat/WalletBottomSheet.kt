@@ -7,7 +7,11 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.CalendarView
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
@@ -44,12 +48,20 @@ class WalletBottomSheet : BottomSheetFragment() {
         requireView().findViewById(R.id.budget_input)
     }
 
-    private val finishDateBtn: MaterialButton by lazy {
-        requireView().findViewById(R.id.edit_finish_date_btn)
+    private val finishDateBtn: ConstraintLayout by lazy {
+        requireView().findViewById(R.id.finish_date_edit_btn)
     }
 
-    private val currencyToggleBtn: MaterialButtonToggleGroup by lazy {
-        requireView().findViewById(R.id.currency_toggle_btn)
+    private val currencyFromListBtn: ConstraintLayout by lazy {
+        requireView().findViewById(R.id.currency_from_list_btn)
+    }
+
+    private val currencyCustomBtn: ConstraintLayout by lazy {
+        requireView().findViewById(R.id.currency_custom_btn)
+    }
+
+    private val currencyNoneBtn: ConstraintLayout by lazy {
+        requireView().findViewById(R.id.currency_none_btn)
     }
 
     private val perDayTextView: MaterialTextView by lazy {
@@ -95,7 +107,7 @@ class WalletBottomSheet : BottomSheetFragment() {
     private fun reCalcBudget() {
         val days = countDays(dateToValue)
 
-        finishDateBtn.text = String.format(
+        finishDateBtn.findViewById<TextView>(R.id.finish_date_label).text = String.format(
             requireContext().resources.getQuantityText(R.plurals.finish_date_dates, days)
                 .toString(),
             prettyDate(dateToValue, showTime = false, forceShowDate = true),
@@ -119,38 +131,35 @@ class WalletBottomSheet : BottomSheetFragment() {
     }
 
     private fun recalcLabels(newCurrency: ExtendCurrency) {
-        val fromList = currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list)
-        val custom = currencyToggleBtn.findViewById<MaterialButton>(R.id.custom)
+        val fromListIcon = currencyFromListBtn.findViewById<ImageView>(R.id.currency_from_list_icon)
+        val fromListLabel = currencyFromListBtn.findViewById<TextView>(R.id.currency_from_list_label)
+        val customIcon = currencyCustomBtn.findViewById<ImageView>(R.id.currency_custom_icon)
+        val customLabel = currencyCustomBtn.findViewById<TextView>(R.id.currency_custom_label)
+        val noneIcon = currencyNoneBtn.findViewById<ImageView>(R.id.currency_none_icon)
 
-        fromList.isChecked = false
-        fromList.text =
-            requireContext().getString(R.string.currency_from_list)
-
-        custom.isChecked = false
-        custom.text =
-            requireContext().getString(R.string.currency_custom)
-
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = false
+        fromListIcon.visibility = View.INVISIBLE
+        fromListLabel.text = requireContext().getString(R.string.currency_from_list)
+        customIcon.visibility = View.INVISIBLE
+        customLabel.text = requireContext().getString(R.string.currency_custom)
+        noneIcon.visibility = View.INVISIBLE
 
         when (newCurrency.type) {
             CurrencyType.FROM_LIST -> {
-                fromList.isChecked = true
-                fromList.text =
-                    requireContext().getString(
-                        R.string.currency_from_list_selected,
-                        Currency.getInstance(newCurrency.value).symbol,
-                    )
+                fromListIcon.visibility = View.VISIBLE
+                fromListLabel.text = requireContext().getString(
+                    R.string.currency_from_list_selected,
+                    Currency.getInstance(newCurrency.value).symbol,
+                )
             }
             CurrencyType.CUSTOM -> {
-                custom.isChecked = true
-                custom.text =
-                    requireContext().getString(
-                        R.string.currency_custom_selected,
-                        newCurrency.value,
-                    )
+                customIcon.visibility = View.VISIBLE
+                customLabel.text = requireContext().getString(
+                    R.string.currency_custom_selected,
+                    newCurrency.value,
+                )
             }
             CurrencyType.NONE -> {
-                currencyToggleBtn.findViewById<MaterialButton>(R.id.none).isChecked = true
+                noneIcon.visibility = View.VISIBLE
             }
         }
 
@@ -257,7 +266,7 @@ class WalletBottomSheet : BottomSheetFragment() {
         reCalcBudget()
         recalcLabels(currencyValue)
 
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.from_list).setOnClickListener {
+        currencyFromListBtn.setOnClickListener {
             val adapter = CurrencyAdapter(requireContext())
 
             var alertDialog: AlertDialog? = null
@@ -298,7 +307,7 @@ class WalletBottomSheet : BottomSheetFragment() {
             alertDialog!!.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
         }
 
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.custom).setOnClickListener {
+        currencyCustomBtn.setOnClickListener {
             var alertDialog: AlertDialog? = null
 
             val view = LayoutInflater.from(requireContext())
@@ -343,7 +352,7 @@ class WalletBottomSheet : BottomSheetFragment() {
                 currencyValue.type === CurrencyType.CUSTOM && !currencyValue.value.isNullOrEmpty()
         }
 
-        currencyToggleBtn.findViewById<MaterialButton>(R.id.none).setOnClickListener {
+        currencyNoneBtn.setOnClickListener {
             currencyValue = ExtendCurrency(value = null, type = CurrencyType.NONE)
 
             recalcLabels(currencyValue)

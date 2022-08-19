@@ -16,14 +16,13 @@
     <!-- Wallet -->
     <string name="wallet_title">Бюджет</string>
     <string name="label_budget">Бюджет</string>
-    <string name="prefix_finish_date">До</string>
     <string name="select_finish_date_title">Выбрать дату окончанию</string>
     <plurals name="finish_date_dates">
-        <item quantity="one">%1$s (%2$s день)</item>
-        <item quantity="few">%1$s (%2$s дня)</item>
-        <item quantity="many">%1$s (%2$s дней)</item>
+        <item quantity="one">До %1$s (%2$s день)</item>
+        <item quantity="few">До %1$s (%2$s дня)</item>
+        <item quantity="many">До %1$s (%2$s дней)</item>
     </plurals>
-    <string name="prefix_in_currency">В валюте</string>
+    <string name="in_currency_label">В валюте</string>
     <string name="currency_from_list">Из списка</string>
     <string name="currency_from_list_selected">Из списка (%1$s)</string>
     <string name="currency_custom">Своя</string>
