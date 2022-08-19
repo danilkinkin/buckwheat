@@ -10,6 +10,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.utils.getNavigationBarHeight
+import com.danilkinkin.buckwheat.utils.toDP
 import com.danilkinkin.buckwheat.widgets.topsheet.TopSheetBehavior
 import kotlin.math.abs
 
@@ -38,9 +40,8 @@ class EditorBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     constructor() : super()
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        Log.d(TAG, "onLayoutChild height = ${parent.height}")
         child.updateLayoutParams {
-            height = parent.height - parent.width
+            height = parent.height - (parent.width - 16.toDP() + getNavigationBarHeight(child))
         }
 
         recyclerView = parent.findViewById(R.id.recycle_view)

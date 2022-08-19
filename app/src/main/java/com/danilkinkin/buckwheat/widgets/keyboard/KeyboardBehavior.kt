@@ -37,16 +37,17 @@ class KeyboardBehavior<V: View>: CoordinatorLayout.Behavior<V> {
     }
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        child.updateLayoutParams {
-            height = parent.width
-        }
-
         navigationBarHeight = getNavigationBarHeight(child)
 
+        child.updateLayoutParams {
+            height = parent.width - 16.toDP() + navigationBarHeight!!
+
+        }
+
         child.setPadding(
-            child.paddingLeft,
-            child.paddingTop,
-            child.paddingRight,
+            16.toDP(),
+            16.toDP(),
+            16.toDP(),
             navigationBarHeight!!,
         )
 
