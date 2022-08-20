@@ -2,9 +2,9 @@ package com.danilkinkin.buckwheat
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.AttributeSet
 import android.util.Log
 import android.view.*
@@ -64,10 +64,14 @@ class MainActivity : AppCompatActivity() {
 
         val mode = appSettingsPrefs.getInt("nightMode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
-        if (AppCompatDelegate.getDefaultNightMode() != mode) {
+         if (AppCompatDelegate.getDefaultNightMode() != mode) {
             AppCompatDelegate.setDefaultNightMode(appSettingsPrefs.getInt("nightMode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
+        }
 
-            return
+        val isNightMode = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> true
+            Configuration.UI_MODE_NIGHT_NO -> false
+            else -> false
         }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -97,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.setSystemBarsAppearance(
-                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                if (isNightMode) 0 else WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
                 WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
             )
         }

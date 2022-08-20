@@ -107,5 +107,6 @@
         app:layout_constraintEnd_toStartOf="@+id/finish_date"
         app:layout_constraintStart_toEndOf="@+id/start_date"
         app:layout_constraintTop_toTopOf="@+id/finish_date"
-        app:srcCompat="@drawable/ic_arrow_forward" />
+        app:srcCompat="@drawable/ic_arrow_forward"
+        app:tint="?attr/colorSecondary" />
 </androidx.constraintlayout.widget.ConstraintLayout>

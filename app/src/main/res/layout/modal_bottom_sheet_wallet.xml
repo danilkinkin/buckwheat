@@ -72,7 +72,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_money" />
+                    app:srcCompat="@drawable/ic_money"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:id="@+id/budget_label"
@@ -136,7 +137,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_calendar" />
+                    app:srcCompat="@drawable/ic_calendar"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:id="@+id/finish_date_label"
@@ -173,7 +175,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_currency" />
+                    app:srcCompat="@drawable/ic_currency"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
                     android:id="@+id/currency_label"
