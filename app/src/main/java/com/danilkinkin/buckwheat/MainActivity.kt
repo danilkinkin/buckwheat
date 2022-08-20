@@ -211,11 +211,11 @@ class MainActivity : AppCompatActivity() {
             }
         });
 
-        model.getSpends().observeForever { spents ->
+        model.getSpends().observe(this) { spents ->
             spendsAdapter.submitList(spents)
         }
 
-        model.budget.observeForever {
+        model.budget.observe(this) {
             topAdapter.notifyDataSetChanged()
         }
 

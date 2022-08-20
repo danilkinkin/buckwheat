@@ -311,15 +311,15 @@ class EditorFragment : Fragment() {
     }
 
     private fun observe() {
-        model.dailyBudget.observeForever {
+        model.dailyBudget.observe(viewLifecycleOwner) {
             setDailyBudget(budgetFragment)
         }
 
-        model.spentFromDailyBudget.observeForever {
+        model.spentFromDailyBudget.observe(viewLifecycleOwner) {
             setDailyBudget(budgetFragment)
         }
 
-        model.stage.observeForever { stage ->
+        model.stage.observe(viewLifecycleOwner) { stage ->
             when (stage) {
                 SpentViewModel.Stage.IDLE, null -> {
                     if (currState === AnimState.EDITING) animTo(AnimState.RESET)
@@ -344,7 +344,7 @@ class EditorFragment : Fragment() {
             }
         }
 
-        appModel.isDebug.observeForever {
+        appModel.isDebug.observe(viewLifecycleOwner) {
             requireView().findViewById<MaterialButton>(R.id.dev_tool_btn).visibility = if (it) {
                 View.VISIBLE
             } else {
