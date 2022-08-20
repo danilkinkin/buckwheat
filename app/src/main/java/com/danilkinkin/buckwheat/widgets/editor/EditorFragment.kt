@@ -9,7 +9,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.*
 import com.danilkinkin.buckwheat.utils.getStatusBarHeight
@@ -19,19 +18,51 @@ import com.danilkinkin.buckwheat.utils.toSP
 import com.danilkinkin.buckwheat.viewmodels.AppViewModel
 import com.danilkinkin.buckwheat.viewmodels.SpentViewModel
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.textview.MaterialTextView
 import kotlin.math.max
 import kotlin.math.min
 
 class EditorFragment : Fragment() {
+    companion object {
+        val TAG: String = EditorFragment::class.java.simpleName
+    }
+
     private lateinit var model: SpentViewModel
     private lateinit var appModel: AppViewModel
 
-    private lateinit var budgetFragment: TextWithLabelFragment
-    private lateinit var spentFragment: TextWithLabelFragment
-    private lateinit var restBudgetFragment: TextWithLabelFragment
     private var settingsBottomSheet: SettingsBottomSheet? = null
     private var walletBottomSheet: WalletBottomSheet? = null
     private var newDayBottomSheet: NewDayBottomSheet? = null
+
+    private val budgetView: ConstraintLayout by lazy {
+        requireView().findViewById(R.id.budget)
+    }
+    private val spentView: ConstraintLayout by lazy {
+        requireView().findViewById(R.id.spent)
+    }
+    private val restBudgetView: ConstraintLayout by lazy {
+        requireView().findViewById(R.id.rest_budget)
+    }
+
+    private val budgetValue: MaterialTextView by lazy {
+        requireView().findViewById(R.id.budget_value)
+    }
+    private val spentValue: MaterialTextView by lazy {
+        requireView().findViewById(R.id.spent_value)
+    }
+    private val restBudgetValue: MaterialTextView by lazy {
+        requireView().findViewById(R.id.rest_budget_value)
+    }
+
+    private val budgetLabel: MaterialTextView by lazy {
+        requireView().findViewById(R.id.budget_label)
+    }
+    private val spentLabel: MaterialTextView by lazy {
+        requireView().findViewById(R.id.spent_label)
+    }
+    private val restBudgetLabel: MaterialTextView by lazy {
+        requireView().findViewById(R.id.rest_budget_label)
+    }
 
     enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
 
@@ -68,78 +99,28 @@ class EditorFragment : Fragment() {
         observe()
     }
 
-    private fun setDailyBudget(fragment: TextWithLabelFragment) {
-        fragment.also {
-            it.setValue(prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!!))
-            it.setLabel(requireContext().getString(R.string.budget_for_today))
-        }
-    }
+    private fun calculateValues(
+        budget: Boolean = true,
+        restBudget: Boolean = true,
+        spent: Boolean = true
+    ) {
+        val spentFromDailyBudget = model.spentFromDailyBudget.value!!
+        val dailyBudget = model.dailyBudget.value!!
 
-    private fun setRestDailyBudget(fragment: TextWithLabelFragment) {
-        fragment.also {
-            it.setValue(prettyCandyCanes(model.dailyBudget.value!! - model.spentFromDailyBudget.value!! - model.currentSpent))
-            it.setLabel(requireContext().getString(R.string.rest_budget_for_today))
-        }
-    }
-
-    private fun setSpent(fragment: TextWithLabelFragment) {
-        fragment.also {
-            it.setValue(prettyCandyCanes(model.currentSpent, model.useDot))
-            it.setLabel(requireContext().getString(R.string.spent))
-        }
+        if (budget) budgetValue.text = prettyCandyCanes(dailyBudget - spentFromDailyBudget)
+        if (restBudget) restBudgetValue.text =
+            prettyCandyCanes(dailyBudget - spentFromDailyBudget - model.currentSpent)
+        if (spent) spentValue.text = prettyCandyCanes(model.currentSpent, model.useDot)
     }
 
     private fun build() {
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
+        calculateValues()
 
-        budgetFragment = TextWithLabelFragment().also {
-            setDailyBudget(it)
+        restBudgetView.alpha = 0F
+        spentView.alpha = 0F
+        budgetView.alpha = 0F
 
-            it.onCreated { _ ->
-                val params = it.root.layoutParams as ConstraintLayout.LayoutParams
-                params.leftToLeft = R.id.calculator
-                params.bottomToBottom = R.id.calculator
-                it.root.requestLayout()
-
-                it.root.transitionAlpha = 0F
-            }
-        }
-
-        spentFragment = TextWithLabelFragment().also {
-            setSpent(it)
-
-            it.onCreated { _ ->
-                val params = it.root.layoutParams as ConstraintLayout.LayoutParams
-                params.leftToLeft = R.id.calculator
-                params.bottomToBottom = R.id.calculator
-                it.root.requestLayout()
-
-                it.root.transitionAlpha = 0F
-            }
-        }
-
-        restBudgetFragment = TextWithLabelFragment().also {
-            setRestDailyBudget(it)
-
-            it.onCreated { _ ->
-                val params = it.root.layoutParams as ConstraintLayout.LayoutParams
-                params.leftToLeft = R.id.calculator
-                params.bottomToBottom = R.id.calculator
-                it.root.requestLayout()
-
-                it.root.transitionAlpha = 0F
-            }
-        }
-
-        ft.add(R.id.calculator, budgetFragment)
-        ft.add(R.id.calculator, spentFragment)
-        ft.add(R.id.calculator, restBudgetFragment)
-
-        ft.commit()
-
-        ft.runOnCommit {
-            animTo(AnimState.FIRST_IDLE)
-        }
+        animTo(AnimState.FIRST_IDLE)
 
         requireView().findViewById<MaterialButton>(R.id.settings_btn).setOnClickListener {
             if (settingsBottomSheet?.isVisible == true) return@setOnClickListener
@@ -166,43 +147,31 @@ class EditorFragment : Fragment() {
     private fun animFrame(state: AnimState, progress: Float = 1F) {
         when (state) {
             AnimState.FIRST_IDLE -> {
-                budgetFragment.also {
-                    it.getLabelView().textSize = 10.toSP().toFloat()
-                    it.getValueView().textSize = 40.toSP().toFloat()
-
-                    it.root.translationY = 30.toDP() * (1F - progress)
-                    it.root.transitionAlpha = progress
-                }
+                budgetLabel.textSize = 10.toSP().toFloat()
+                budgetValue.textSize = 40.toSP().toFloat()
+                budgetView.translationY = 30.toDP() * (1F - progress)
+                budgetView.alpha = progress
             }
             AnimState.EDITING -> {
                 var offset = 0F
 
-                restBudgetFragment.also {
-                    it.getLabelView().textSize = 8.toSP().toFloat()
-                    it.getValueView().textSize = 20.toSP().toFloat()
+                restBudgetValue.textSize = 20.toSP().toFloat()
+                restBudgetLabel.textSize = 8.toSP().toFloat()
+                offset += restBudgetView.height
+                restBudgetView.translationY = (offset + spentView.height) * (1F - progress)
+                restBudgetView.alpha = 1F
 
-                    offset += it.root.height
-                    it.root.translationY = (offset + spentFragment.root.height) * (1F - progress)
-                    it.root.transitionAlpha = 1F
-                }
+                spentValue.textSize = 60.toSP().toFloat()
+                spentLabel.textSize = 18.toSP().toFloat()
+                spentView.translationY = (spentView.height + offset) * (1F - progress) - offset
+                spentView.alpha = 1F
 
-                spentFragment.also {
-                    it.getLabelView().textSize = 18.toSP().toFloat()
-                    it.getValueView().textSize = 60.toSP().toFloat()
+                offset += spentView.height
 
-                    it.root.translationY = (it.root.height + offset) * (1F - progress) - offset
-                    it.root.transitionAlpha = 1F
-
-                    offset += it.root.height
-                }
-
-                budgetFragment.also {
-                    it.getLabelView().textSize = 10.toSP().toFloat() - 4.toSP().toFloat() * progress
-                    it.getValueView().textSize = 40.toSP().toFloat() - 28.toSP().toFloat() * progress
-
-                    it.root.translationY = -offset * progress
-                    it.root.transitionAlpha = 1F
-                }
+                budgetValue.textSize = 40.toSP().toFloat() - 28.toSP().toFloat() * progress
+                budgetLabel.textSize = 10.toSP().toFloat() - 4.toSP().toFloat() * progress
+                budgetView.translationY = -offset * progress
+                budgetView.alpha = 1F
             }
             AnimState.COMMIT -> {
                 var offset = 0F
@@ -210,71 +179,48 @@ class EditorFragment : Fragment() {
                 val progressA = min(progress * 2F, 1F)
                 val progressB = max((progress - 0.5F) * 2F, 0F)
 
-                restBudgetFragment.also {
-                    it.getLabelView().textSize = 8.toSP().toFloat() + 2.toSP().toFloat() * progress
-                    it.getValueView().textSize = 20.toSP().toFloat() + 20.toSP().toFloat() * progress
+                restBudgetValue.textSize = 20.toSP().toFloat() + 20.toSP().toFloat() * progress
+                restBudgetLabel.textSize = 8.toSP().toFloat() + 2.toSP().toFloat() * progress
+                offset += restBudgetView.height
+                restBudgetView.alpha = 1F
 
-                    offset += it.root.height
+                spentValue.textSize = 60.toSP().toFloat()
+                spentLabel.textSize = 18.toSP().toFloat()
+                spentView.translationY = -offset - 50.toDP() * progressB
+                spentView.alpha = 1F - progressB
+                offset += spentView.height
 
-                    it.root.transitionAlpha = 1F
-                }
-
-                spentFragment.also {
-                    it.getLabelView().textSize = 18.toSP().toFloat()
-                    it.getValueView().textSize = 60.toSP().toFloat()
-
-                    it.root.translationY = -offset - 50.toDP() * progressB
-                    it.root.transitionAlpha = 1F - progressB
-
-                    offset += it.root.height
-                }
-
-                budgetFragment.also {
-                    it.getLabelView().textSize = 6.toSP().toFloat()
-                    it.getValueView().textSize = 12.toSP().toFloat()
-
-                    it.root.translationY = -offset - 50.toDP() * progressA
-                    it.root.transitionAlpha = 1F - progressA
-                }
+                budgetValue.textSize = 12.toSP().toFloat()
+                budgetLabel.textSize = 6.toSP().toFloat()
+                budgetView.translationY = -offset - 50.toDP() * progressA
+                budgetView.alpha = 1F - progressA
             }
             AnimState.RESET -> {
                 var offset = 0F
 
-                restBudgetFragment.also {
-                    it.getLabelView().textSize = 8.toSP().toFloat()
-                    it.getValueView().textSize = 20.toSP().toFloat()
+                restBudgetValue.textSize = 20.toSP().toFloat()
+                restBudgetLabel.textSize = 8.toSP().toFloat()
+                offset += restBudgetView.height
+                restBudgetView.translationY = (offset + spentView.height) * progress
 
-                    offset += it.root.height
-                    it.root.translationY = (offset + spentFragment.root.height) * progress
-                }
+                spentValue.textSize = 60.toSP().toFloat()
+                spentLabel.textSize = 18.toSP().toFloat()
+                spentView.translationY = (spentView.height + offset) * progress - offset
+                offset += spentView.height
 
-                spentFragment.also {
-                    it.getLabelView().textSize = 18.toSP().toFloat()
-                    it.getValueView().textSize = 60.toSP().toFloat()
-
-                    it.root.translationY = (it.root.height + offset) * progress - offset
-
-                    offset += it.root.height
-                }
-
-                budgetFragment.also {
-                    it.getLabelView().textSize = 6.toSP().toFloat() + 4.toSP().toFloat() * progress
-                    it.getValueView().textSize = 12.toSP().toFloat() + 28.toSP().toFloat() * progress
-
-                    it.root.translationY = -offset * (1F - progress)
-                }
+                budgetValue.textSize = 12.toSP().toFloat() + 28.toSP().toFloat() * progress
+                budgetLabel.textSize = 6.toSP().toFloat() + 4.toSP().toFloat() * progress
+                budgetView.translationY = -offset * (1F - progress)
             }
             AnimState.IDLE -> {
-                budgetFragment.also {
-                    it.getLabelView().textSize = 10.toSP().toFloat()
-                    it.getValueView().textSize = 40.toSP().toFloat()
+                calculateValues(restBudget = false)
 
-                    it.root.translationY = 0F
-                    it.root.transitionAlpha = 1F
-                }
-                restBudgetFragment.also {
-                    it.root.transitionAlpha = 0F
-                }
+                budgetValue.textSize = 40.toSP().toFloat()
+                budgetLabel.textSize = 10.toSP().toFloat()
+                budgetView.translationY = 0F
+                budgetView.alpha = 1F
+
+                restBudgetView.alpha = 0F
             }
         }
     }
@@ -312,11 +258,11 @@ class EditorFragment : Fragment() {
 
     private fun observe() {
         model.dailyBudget.observe(viewLifecycleOwner) {
-            setDailyBudget(budgetFragment)
+            calculateValues()
         }
 
         model.spentFromDailyBudget.observe(viewLifecycleOwner) {
-            setDailyBudget(budgetFragment)
+            calculateValues(budget = currState !== AnimState.EDITING, restBudget = false)
         }
 
         model.stage.observe(viewLifecycleOwner) { stage ->
@@ -325,18 +271,14 @@ class EditorFragment : Fragment() {
                     if (currState === AnimState.EDITING) animTo(AnimState.RESET)
                 }
                 SpentViewModel.Stage.CREATING_SPENT -> {
-                    setSpent(spentFragment)
-                    setRestDailyBudget(restBudgetFragment)
+                    calculateValues(budget = false)
 
                     animTo(AnimState.EDITING)
                 }
                 SpentViewModel.Stage.EDIT_SPENT -> {
-                    setSpent(spentFragment)
-                    setRestDailyBudget(restBudgetFragment)
+                    calculateValues(budget = false)
                 }
                 SpentViewModel.Stage.COMMITTING_SPENT -> {
-                    setDailyBudget(budgetFragment)
-
                     animTo(AnimState.COMMIT)
 
                     model.resetSpent()
