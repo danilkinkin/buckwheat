@@ -23,8 +23,8 @@
         <item quantity="many">До %1$s (%2$s дней)</item>
     </plurals>
     <string name="in_currency_label">В валюте</string>
-    <string name="currency_from_list">Из списка</string>
-    <string name="currency_from_list_selected">Из списка (%1$s)</string>
+    <string name="currency_from_list">Мировая валюта</string>
+    <string name="currency_from_list_selected">Мировая валюта (%1$s)</string>
     <string name="currency_custom">Своя</string>
     <string name="currency_custom_selected">Своя (%1$s)</string>
     <string name="currency_none">Без валюты</string>
@@ -41,7 +41,7 @@
     <string name="theme_dark">Темная</string>
     <string name="theme_system">Системная</string>
     <string name="about">О приложении</string>
-    <string name="description">Buckwheat - это приложение которое поможет осознанно тратить бюджетю. Внося каждую трату, будет легче следить и понимать свои финасовые возможности и не тертить деньги на ерунду</string>
+    <string name="description">Buckwheat - это приложение, которое поможет осознанно тратить бюджет. Внося каждую трату, будет легче следить и понимать свои финансовые возможности и не тратить деньги на ерунду</string>
     <string name="site">Сайт разработчика</string>
     <string name="report_bug">Сообщить об ошибке</string>
     <string name="developer">Разработчик и дизайнер: @danilkinkin</string>

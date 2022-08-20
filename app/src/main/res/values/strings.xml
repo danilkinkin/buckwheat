@@ -22,8 +22,8 @@
         <item quantity="other">To %1$s (%2$s days)</item>
     </plurals>
     <string name="in_currency_label">In currency</string>
-    <string name="currency_from_list">From the list</string>
-    <string name="currency_from_list_selected">From the list (%1$s)</string>
+    <string name="currency_from_list">World currency</string>
+    <string name="currency_from_list_selected">World currency (%1$s)</string>
     <string name="currency_custom">Custom</string>
     <string name="currency_custom_selected">Custom (%1$s)</string>
     <string name="currency_none">No currency</string>
@@ -40,7 +40,7 @@
     <string name="theme_dark">Dark</string>
     <string name="theme_system">System</string>
     <string name="about">About app</string>
-    <string name="description">Buckwheat - is an app that will help you consciously spend your budget. By making every expense, it will be easier to keep track and understand your financial capabilities and not waste money on nonsense</string>
+    <string name="description">Buckwheat is an app that will help you consciously spend your budget. By making every expense, it will be easier to monitor and understand your financial capabilities and not spend money on nonsense</string>
     <string name="site">Developer site</string>
     <string name="report_bug">Report a bug</string>
     <string name="developer">Developer &amp; designer: @danilkinkin</string>
