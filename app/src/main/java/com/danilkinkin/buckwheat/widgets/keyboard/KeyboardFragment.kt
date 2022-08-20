@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.danilkinkin.buckwheat.R
@@ -100,12 +99,20 @@ class KeyboardFragment : Fragment() {
         build()
     }
 
-    fun anim(progress: Float) {
-        root.progress = 1 - progress
-    }
-
     fun build() {
-        listBtns = arrayListOf(n0Btn, n1Btn, n2Btn, n3Btn, n4Btn, n5Btn, n6Btn, n7Btn, n8Btn, n9Btn, dotBtn)
+        listBtns = arrayListOf(
+            n0Btn,
+            n1Btn,
+            n2Btn,
+            n3Btn,
+            n4Btn,
+            n5Btn,
+            n6Btn,
+            n7Btn,
+            n8Btn,
+            n9Btn,
+            dotBtn
+        )
 
         n0Btn.setOnClickListener {
             this.model.executeAction(SpentViewModel.Action.PUT_NUMBER, 0)
@@ -162,7 +169,15 @@ class KeyboardFragment : Fragment() {
                 appModel.setIsDebug(!appModel.isDebug.value!!)
 
                 Snackbar
-                    .make(requireView(), "Debug ${if (appModel.isDebug.value!!) { "ON" } else { "OFF" }}", Snackbar.LENGTH_LONG)
+                    .make(
+                        requireView(), "Debug ${
+                            if (appModel.isDebug.value!!) {
+                                "ON"
+                            } else {
+                                "OFF"
+                            }
+                        }", Snackbar.LENGTH_LONG
+                    )
                     .show()
 
                 return@setOnClickListener
@@ -200,7 +215,7 @@ class KeyboardFragment : Fragment() {
             }
 
             override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-                val shiftProgress =  if (currentId == R.id.end) {
+                val shiftProgress = if (currentId == R.id.end) {
                     1F
                 } else {
                     0F
