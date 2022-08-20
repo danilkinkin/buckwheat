@@ -17,10 +17,16 @@
     <string name="wallet_title">Budget</string>
     <string name="label_budget">Budget</string>
     <string name="select_finish_date_title">Select finish date</string>
-    <plurals name="finish_date_dates">
+    <plurals name="finish_date_label">
         <item quantity="one">To %1$s (%2$s day)</item>
         <item quantity="other">To %1$s (%2$s days)</item>
     </plurals>
+    <plurals name="finish_date">
+        <item quantity="one">%1$s (%2$s day)</item>
+        <item quantity="other">%1$s (%2$s days)</item>
+    </plurals>
+    <string name="start_date_label_with_dots">Start:</string>
+    <string name="finish_date_label_with_dots">Finish:</string>
     <string name="in_currency_label">In currency</string>
     <string name="currency_from_list">World currency</string>
     <string name="currency_from_list_selected">World currency (%1$s)</string>

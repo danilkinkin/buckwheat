@@ -12,10 +12,7 @@
         android:layout_height="wrap_content"
         android:dateTextAppearance="@style/TextAppearance.Buckwheat.BodyMedium"
         android:showWeekNumber="true"
-        android:weekDayTextAppearance="@style/TextAppearance.Buckwheat.LabelMedium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:weekDayTextAppearance="@style/TextAppearance.Buckwheat.LabelMedium" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -23,46 +20,70 @@
 
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/start_date"
+            android:id="@+id/start_date_label"
             style="@style/TextAppearance.Buckwheat.LabelLarge"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
-            android:gravity="start"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/start_date_label_with_dots"
+            android:textAlignment="textEnd"
+            android:textColor="?attr/colorSecondary"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/finish_date_label"
+            app:layout_constraintEnd_toEndOf="@+id/finish_date_label"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/start_date"
+            style="@style/TextAppearance.Buckwheat.LabelLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textAlignment="textStart"
             android:textColor="?attr/colorSecondary"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/arrow"
+            app:layout_constraintStart_toEndOf="@+id/start_date_label"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/date/ddmmyy" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/finish_date"
+            android:id="@+id/finish_date_label"
             style="@style/TextAppearance.Buckwheat.LabelLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="24dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/finish_date_label_with_dots"
             android:textColor="?attr/colorSecondary"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/arrow"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@tools:sample/date/ddmmyy" />
-
-        <ImageView
-            android:id="@+id/arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@+id/finish_date"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/finish_date"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/finish_date"
-            app:srcCompat="@drawable/ic_arrow_forward" />
+            app:layout_constraintTop_toBottomOf="@+id/start_date_label" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/finish_date"
+            style="@style/TextAppearance.Buckwheat.LabelLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="24dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="?attr/colorSecondary"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/finish_date_label"
+            tools:text="@tools:sample/date/ddmmyy[1]" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

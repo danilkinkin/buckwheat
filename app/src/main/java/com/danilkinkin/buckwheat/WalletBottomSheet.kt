@@ -108,7 +108,7 @@ class WalletBottomSheet : BottomSheetFragment() {
         val days = countDays(dateToValue)
 
         finishDateBtn.findViewById<TextView>(R.id.finish_date_label).text = String.format(
-            requireContext().resources.getQuantityText(R.plurals.finish_date_dates, days)
+            requireContext().resources.getQuantityText(R.plurals.finish_date_label, days)
                 .toString(),
             prettyDate(dateToValue, showTime = false, forceShowDate = true),
             days,
@@ -220,7 +220,7 @@ class WalletBottomSheet : BottomSheetFragment() {
                 val days = countDays(finishDateTemp, spendsModel.startDate)
 
                 finishDate.text = String.format(
-                    requireContext().resources.getQuantityText(R.plurals.finish_date_dates, days)
+                    requireContext().resources.getQuantityText(R.plurals.finish_date, days)
                         .toString(),
                     prettyDate(finishDateTemp, showTime = false, forceShowDate = true),
                     days,
