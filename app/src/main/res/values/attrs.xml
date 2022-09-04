@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:whatever="http://schemas.android.com/apk/res-auto"
-    >
-    <declare-styleable name="BottomCollapseBehavior">
-        <attr name="layout_behavior_dependency" format="reference" />
-    </declare-styleable>
-
-
-</resources>
