@@ -11,13 +11,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.Wallet
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -27,6 +30,9 @@ fun BottomSheetWrapper(
     content: @Composable (() -> Unit) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val localDensity = LocalDensity.current
+
+    val statusBarHeight = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
 
     setSystemStyle(
         style = SystemBarState(
@@ -39,15 +45,48 @@ fun BottomSheetWrapper(
         confirmChange = { state.targetValue !== ModalBottomSheetValue.Hidden },
     )
 
+    val statusBarFillProgress = if (statusBarHeight == 0.dp) {
+        0F
+    } else {
+        with(localDensity) { max(
+            statusBarHeight - state.offset.value.roundToInt().toDp(),
+            0.toDp(),
+        ) } / statusBarHeight
+    }
+
     ModalBottomSheetLayout(
         cancelable = cancelable,
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetState = state,
-        sheetShape = MaterialTheme.shapes.extraLarge.copy(bottomStart = CornerSize(0.dp), bottomEnd = CornerSize(0.dp)),
+        sheetShape = MaterialTheme.shapes.extraLarge.copy(
+            bottomStart = CornerSize(0.dp),
+            bottomEnd = CornerSize(0.dp),
+            topStart = CornerSize(28.dp * (1F - statusBarFillProgress)),
+            topEnd = CornerSize(28.dp * (1F - statusBarFillProgress)),
+        ),
         sheetContent = {
-            content {
-                coroutineScope.launch {
-                    state.hide()
+
+            setSystemStyle(
+                style = SystemBarState(
+                    statusBarColor = Color.Transparent,
+                    statusBarDarkIcons = true,
+                    navigationBarDarkIcons = true,
+                    navigationBarColor = Color.Transparent,
+                ),
+                key = statusBarFillProgress,
+                confirmChange = { statusBarFillProgress > 0.5F },
+            )
+
+            Box(
+                modifier = Modifier
+                    .padding(
+                        top = statusBarHeight * statusBarFillProgress
+                    )
+            ) {
+                content {
+                    coroutineScope.launch {
+                        state.hide()
+                    }
                 }
             }
 

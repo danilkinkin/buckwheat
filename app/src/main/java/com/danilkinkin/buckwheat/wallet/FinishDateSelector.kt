@@ -63,7 +63,7 @@ private fun FinishDateSelectorTopAppBar(
     onBackPressed: () -> Unit,
     onApply: () -> Unit,
 ) {
-    Surface(modifier = Modifier.statusBarsPadding()) {
+    Surface() {
         MediumTopAppBar(
             navigationIcon = {
                 IconButton(
