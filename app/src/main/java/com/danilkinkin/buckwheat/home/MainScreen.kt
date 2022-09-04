@@ -29,6 +29,7 @@ import com.danilkinkin.buckwheat.spendsHistory.BudgetInfo
 import com.danilkinkin.buckwheat.spendsHistory.Spent
 import com.danilkinkin.buckwheat.topSheet.TopSheetLayout
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.Wallet
@@ -62,13 +63,20 @@ fun MainScreen(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: App
     val snackBarMessage = stringResource(R.string.remove_spent)
     val snackBarAction = stringResource(R.string.remove_spent_undo)
 
+    val isNightModeM = remember { mutableStateOf(false) }
+
+    isNightModeM.value = isNightMode()
+
     setSystemStyle(
-        style = SystemBarState(
-            statusBarColor = Color.Transparent,
-            statusBarDarkIcons = true,
-            navigationBarDarkIcons = false,
-            navigationBarColor = Color.Transparent,
-        ),
+        style = {
+            SystemBarState(
+                statusBarColor = Color.Transparent,
+                statusBarDarkIcons = !isNightModeM.value,
+                navigationBarDarkIcons = false,
+                navigationBarColor = Color.Transparent,
+            )
+        },
+        key = isNightModeM.value,
     )
 
     LaunchedEffect(Unit) {

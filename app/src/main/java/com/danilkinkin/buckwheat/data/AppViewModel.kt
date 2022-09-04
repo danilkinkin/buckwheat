@@ -23,7 +23,7 @@ class AppViewModel @Inject constructor(
 ) : ViewModel() {
     private val storage = db.storageDao()
 
-    var statusBarStack: MutableList<SystemBarState> = emptyList<SystemBarState>().toMutableList()
+    var statusBarStack: MutableList<() -> SystemBarState> = emptyList<() -> SystemBarState>().toMutableList()
 
     var isDebug: MutableLiveData<Boolean> = MutableLiveData(try {
         storage.get("isDebug").value.toBoolean()

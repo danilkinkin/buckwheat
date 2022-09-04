@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.util
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -9,7 +10,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun setSystemStyle(
-    style: SystemBarState,
+    style: () -> SystemBarState,
     key: Any = Unit,
     confirmChange: () -> Boolean = { true },
     appViewModel: AppViewModel = hiltViewModel(),
@@ -23,15 +24,19 @@ fun setSystemStyle(
             }
         }
 
+        val computeStyle = style()
+
+        Log.d("setSystemStyle", "set statusBarDarkIcons = ${computeStyle.statusBarDarkIcons}")
+
         appViewModel.statusBarStack.add(style)
 
         systemUiController.setStatusBarColor(
-            color = style.statusBarColor,
-            darkIcons = style.statusBarDarkIcons,
+            color = computeStyle.statusBarColor,
+            darkIcons = computeStyle.statusBarDarkIcons,
         )
         systemUiController.setNavigationBarColor(
-            color = style.navigationBarColor,
-            darkIcons = style.navigationBarDarkIcons,
+            color = computeStyle.navigationBarColor,
+            darkIcons = computeStyle.navigationBarDarkIcons,
             navigationBarContrastEnforced = false,
         )
 
@@ -40,16 +45,22 @@ fun setSystemStyle(
             val systemBarState = appViewModel.statusBarStack.lastOrNull()
 
             if (systemBarState !== null) {
+                val computeBackStyle = systemBarState()
+
+                Log.d("setSystemStyle", "dispose statusBarDarkIcons = ${computeBackStyle.statusBarDarkIcons}")
+
                 systemUiController.setStatusBarColor(
-                    color = systemBarState.statusBarColor,
-                    darkIcons = systemBarState.statusBarDarkIcons,
+                    color = computeBackStyle.statusBarColor,
+                    darkIcons = computeBackStyle.statusBarDarkIcons,
                 )
                 systemUiController.setNavigationBarColor(
-                    color = systemBarState.navigationBarColor,
-                    darkIcons = systemBarState.navigationBarDarkIcons,
+                    color = computeBackStyle.navigationBarColor,
+                    darkIcons = computeBackStyle.navigationBarDarkIcons,
                     navigationBarContrastEnforced = false,
                 )
             }
+
+
         }
     }
 }

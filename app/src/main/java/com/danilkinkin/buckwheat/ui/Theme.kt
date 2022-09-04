@@ -27,7 +27,7 @@ private val LightColorScheme = lightColorScheme(
 
 
 @Composable
-private fun isNightMode(): Boolean {
+fun isNightMode(): Boolean {
     val context = LocalContext.current
     val viewModel = remember { ThemeViewModel(context.dataStore) }
     val state = viewModel.state.observeAsState()

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.Wallet
 import kotlinx.coroutines.launch
@@ -35,12 +36,14 @@ fun BottomSheetWrapper(
     val statusBarHeight = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
 
     setSystemStyle(
-        style = SystemBarState(
-            statusBarColor = Color.Transparent,
-            statusBarDarkIcons = false,
-            navigationBarDarkIcons = true,
-            navigationBarColor = Color.Transparent,
-        ),
+        style = {
+            SystemBarState(
+                statusBarColor = Color.Transparent,
+                statusBarDarkIcons = false,
+                navigationBarDarkIcons = true,
+                navigationBarColor = Color.Transparent,
+            )
+        },
         key = state.targetValue,
         confirmChange = { state.targetValue !== ModalBottomSheetValue.Hidden },
     )
@@ -65,14 +68,17 @@ fun BottomSheetWrapper(
             topEnd = CornerSize(28.dp * (1F - statusBarFillProgress)),
         ),
         sheetContent = {
+            val isNightModeNow = isNightMode()
 
             setSystemStyle(
-                style = SystemBarState(
-                    statusBarColor = Color.Transparent,
-                    statusBarDarkIcons = true,
-                    navigationBarDarkIcons = true,
-                    navigationBarColor = Color.Transparent,
-                ),
+                style = {
+                    SystemBarState(
+                        statusBarColor = Color.Transparent,
+                        statusBarDarkIcons = !isNightModeNow,
+                        navigationBarDarkIcons = true,
+                        navigationBarColor = Color.Transparent,
+                    )
+                },
                 key = statusBarFillProgress,
                 confirmChange = { statusBarFillProgress > 0.5F },
             )
