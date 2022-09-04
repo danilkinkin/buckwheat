@@ -289,7 +289,7 @@ fun Editor(
             contentAlignment = Alignment.BottomStart,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 24.dp, end = 24.dp)
+                .padding(start = 36.dp, end = 36.dp)
                 .onGloballyPositioned {
                     if (currState == null) animTo(AnimState.FIRST_IDLE)
                 },
