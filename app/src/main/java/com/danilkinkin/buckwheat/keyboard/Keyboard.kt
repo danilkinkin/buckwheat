@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -20,7 +20,7 @@ val BUTTON_GAP = 4.dp
 @Composable
 fun Keyboard(
     modifier: Modifier = Modifier,
-    spendsViewModel: SpendsViewModel = viewModel(),
+    spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
     Column (
         modifier = modifier

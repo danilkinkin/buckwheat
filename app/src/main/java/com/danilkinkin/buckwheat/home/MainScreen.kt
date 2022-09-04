@@ -14,9 +14,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.Editor
 import com.danilkinkin.buckwheat.keyboard.Keyboard
@@ -34,7 +35,10 @@ import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(spendsViewModel: SpendsViewModel = viewModel()) {
+fun MainScreen(
+    spendsViewModel: SpendsViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
+) {
     var contentHeight by remember { mutableStateOf(0F) }
     var contentWidth by remember { mutableStateOf(0F) }
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -215,7 +219,7 @@ fun MainScreen(spendsViewModel: SpendsViewModel = viewModel()) {
             )
         }
 
-        /* BottomSheetWrapper(
+        BottomSheetWrapper(
             state = recalcBudgetSheetState,
             cancelable = false,
         ) {
@@ -226,7 +230,7 @@ fun MainScreen(spendsViewModel: SpendsViewModel = viewModel()) {
                     }
                 }
             )
-        } */
+        }
     }
 }
 

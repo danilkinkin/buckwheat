@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.animation.doOnEnd
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
@@ -47,8 +47,8 @@ enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
 @Composable
 fun Editor(
     modifier: Modifier = Modifier,
-    spendsViewModel: SpendsViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
+    spendsViewModel: SpendsViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
     onOpenWallet: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
     onReaclcBudget: () -> Unit = {},
