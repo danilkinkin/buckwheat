@@ -9,16 +9,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.editor.Editor
 import com.danilkinkin.buckwheat.keyboard.Keyboard
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
@@ -27,6 +29,7 @@ import com.danilkinkin.buckwheat.spendsHistory.BudgetInfo
 import com.danilkinkin.buckwheat.spendsHistory.Spent
 import com.danilkinkin.buckwheat.topSheet.TopSheetLayout
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.Wallet
 import kotlinx.coroutines.launch
@@ -35,10 +38,7 @@ import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(
-    spendsViewModel: SpendsViewModel = hiltViewModel(),
-    appViewModel: AppViewModel = hiltViewModel(),
-) {
+fun MainScreen(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: AppViewModel = viewModel()) {
     var contentHeight by remember { mutableStateOf(0F) }
     var contentWidth by remember { mutableStateOf(0F) }
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -61,6 +61,15 @@ fun MainScreen(
 
     val snackBarMessage = stringResource(R.string.remove_spent)
     val snackBarAction = stringResource(R.string.remove_spent_undo)
+
+    setSystemStyle(
+        style = SystemBarState(
+            statusBarColor = Color.Transparent,
+            statusBarDarkIcons = true,
+            navigationBarDarkIcons = false,
+            navigationBarColor = Color.Transparent,
+        ),
+    )
 
     LaunchedEffect(Unit) {
         spendsViewModel.lastRemoveSpent.observe(lifecycleOwner.value) {

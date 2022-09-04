@@ -13,9 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.Wallet
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -26,8 +27,17 @@ fun BottomSheetWrapper(
     content: @Composable (() -> Unit) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val systemUiController = rememberSystemUiController()
 
+    setSystemStyle(
+        style = SystemBarState(
+            statusBarColor = Color.Transparent,
+            statusBarDarkIcons = false,
+            navigationBarDarkIcons = true,
+            navigationBarColor = Color.Transparent,
+        ),
+        key = state.targetValue,
+        confirmChange = { state.targetValue !== ModalBottomSheetValue.Hidden },
+    )
 
     ModalBottomSheetLayout(
         cancelable = cancelable,
@@ -35,18 +45,6 @@ fun BottomSheetWrapper(
         sheetState = state,
         sheetShape = MaterialTheme.shapes.extraLarge.copy(bottomStart = CornerSize(0.dp), bottomEnd = CornerSize(0.dp)),
         sheetContent = {
-            SideEffect {
-                systemUiController.setStatusBarColor(
-                    color = Color.Transparent,
-                    darkIcons = true,
-                )
-                systemUiController.setNavigationBarColor(
-                    color = Color.Transparent,
-                    darkIcons = true,
-                    navigationBarContrastEnforced = false,
-                )
-            }
-
             content {
                 coroutineScope.launch {
                     state.hide()
