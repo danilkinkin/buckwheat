@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.home
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import com.danilkinkin.buckwheat.base.ModalBottomSheetValue
@@ -30,6 +31,7 @@ import com.danilkinkin.buckwheat.spendsHistory.Spent
 import com.danilkinkin.buckwheat.topSheet.TopSheetLayout
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.isNightMode
+import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.Wallet
@@ -187,6 +189,19 @@ fun MainScreen(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: App
                 )
             }
         }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+                .background(
+                    combineColors(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        angle = 0.9F,
+                    ).copy(alpha = 0.9F)
+                )
+        )
 
         BottomSheetWrapper(
             state = walletSheetState,
