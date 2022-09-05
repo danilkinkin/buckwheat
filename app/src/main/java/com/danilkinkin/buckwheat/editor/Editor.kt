@@ -94,29 +94,29 @@ fun Editor(
     fun animFrame(state: AnimState, progress: Float = 1F) {
         when (state) {
             AnimState.FIRST_IDLE -> {
-                budgetLabelFontSize = 10.sp
-                budgetValueFontSize = 40.sp
-                budgetOffset = 30 * (1F - progress)
+                budgetValueFontSize = 80.sp
+                budgetLabelFontSize = 20.sp
+                budgetOffset = 60.dp.value * (1F - progress)
                 budgetAlpha = progress
             }
             AnimState.EDITING -> {
                 var offset = 0F
 
-                restBudgetValueFontSize = 20.sp
-                restBudgetLabelFontSize = 8.sp
+                restBudgetValueFontSize = 30.sp
+                restBudgetLabelFontSize = 16.sp
                 offset += restBudgetHeight
                 restBudgetOffset = (offset + spentHeight) * (1F - progress)
                 restBudgetAlpha = 1F
 
-                spentValueFontSize = 60.sp
-                spentLabelFontSize = 18.sp
+                spentValueFontSize = 80.sp
+                spentLabelFontSize = 20.sp
                 spentOffset = (spentHeight + offset) * (1F - progress) - offset
                 spentAlpha = 1F
 
                 offset += spentHeight
 
-                budgetValueFontSize = (40 - 28 * progress).sp
-                budgetLabelFontSize = (10 - 4 * progress).sp
+                budgetValueFontSize = (80 - 60 * progress).sp
+                budgetLabelFontSize = (20 - 10 * progress).sp
                 budgetOffset = -offset * progress
                 budgetAlpha = 1F
             }
@@ -126,44 +126,44 @@ fun Editor(
                 val progressA = min(progress * 2F, 1F)
                 val progressB = max((progress - 0.5F) * 2F, 0F)
 
-                restBudgetValueFontSize = (20 + 20 * progress).sp
-                restBudgetLabelFontSize = (8 + 2 * progress).sp
+                restBudgetValueFontSize = (30 + 50 * progress).sp
+                restBudgetLabelFontSize = (16 + 4 * progress).sp
                 offset += restBudgetHeight
                 restBudgetAlpha = 1F
 
-                spentValueFontSize = 60.sp
-                spentLabelFontSize = 18.sp
+                spentValueFontSize = 80.sp
+                spentLabelFontSize = 20.sp
                 spentOffset = -offset - 50 * progressB
                 spentAlpha = 1F - progressB
                 offset += spentHeight
 
-                budgetValueFontSize = 12.sp
-                budgetLabelFontSize = 6.sp
+                budgetValueFontSize = 20.sp
+                budgetLabelFontSize = 10.sp
                 budgetOffset = -offset - 50 * progressA
                 budgetAlpha = 1F - progressA
             }
             AnimState.RESET -> {
                 var offset = 0F
 
-                restBudgetValueFontSize = 20.sp
-                restBudgetLabelFontSize = 8.sp
+                restBudgetValueFontSize = 30.sp
+                restBudgetLabelFontSize = 16.sp
                 offset += restBudgetHeight
                 restBudgetOffset = (offset + spentHeight) * progress
 
-                spentValueFontSize = 60.sp
-                spentLabelFontSize = 18.sp
+                spentValueFontSize = 80.sp
+                spentLabelFontSize = 20.sp
                 spentOffset = (spentHeight + offset) * progress - offset
                 offset += spentHeight
 
-                budgetValueFontSize = (12 + 28 * progress).sp
-                budgetLabelFontSize = (6 + 4 * progress).sp
+                budgetValueFontSize = (20 + 60 * progress).sp
+                budgetLabelFontSize = (10 + 10 * progress).sp
                 budgetOffset = -offset * (1F - progress)
             }
             AnimState.IDLE -> {
                 calculateValues(restBudget = false)
 
-                budgetValueFontSize = 40.sp
-                budgetLabelFontSize = 10.sp
+                budgetValueFontSize = 80.sp
+                budgetLabelFontSize = 20.sp
                 budgetOffset = 0F
                 budgetAlpha = 1F
 
