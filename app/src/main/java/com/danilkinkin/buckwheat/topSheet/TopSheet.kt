@@ -11,11 +11,14 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -139,7 +142,10 @@ fun TopSheetLayout(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    BoxWithConstraints(modifier) {
+    BoxWithConstraints(
+        modifier = modifier,
+        contentAlignment = Alignment.BottomCenter,
+    ) {
         val fullHeight = constraints.maxHeight.toFloat()
         val halfHeight = halfHeight ?: (fullHeight / 2)
         val sheetHeightState = remember { mutableStateOf<Float?>(null) }
@@ -165,10 +171,19 @@ fun TopSheetLayout(
                     sheetHeightState,
                 )
         ) {
-            Scaffold(backgroundColor = Color.Transparent) { contentPadding ->
-                coroutineScope.launch {
-                    scrollState.scrollToItem(itemsCount)
-                }
+            Box {
+                DisposableEffect(
+                    key1 = itemsCount,
+                    effect = {
+                        if (itemsCount == 0) return@DisposableEffect onDispose {  }
+
+                        coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
+                            scrollState.scrollToItem(itemsCount)
+                        }
+
+                        onDispose {  }
+                    }
+                )
 
                 LazyColumn(
                     state = scrollState,
