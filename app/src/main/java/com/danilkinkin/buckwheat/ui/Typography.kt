@@ -87,7 +87,7 @@ val typography = Typography(
     ),
     labelLarge = TextStyle(
         fontFamily = fontFamily,
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.W800,
         fontSize = 14.sp
     ),
     labelMedium = TextStyle(
@@ -97,7 +97,7 @@ val typography = Typography(
     ),
     labelSmall = TextStyle(
         fontFamily = fontFamily,
-        fontWeight = FontWeight.W400,
+        fontWeight = FontWeight.W600,
         fontSize = 11.sp
     )
 )
