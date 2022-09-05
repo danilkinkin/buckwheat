@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.spendsHistory
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -17,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.contentColorFor
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -54,6 +56,13 @@ fun Spent(
         mapOf(0f to DeleteState.IDLE)
     }
 
+    val surfaceColor = combineColors(
+        MaterialTheme.colorScheme.primaryContainer,
+        MaterialTheme.colorScheme.surfaceVariant,
+        angle = 0.9F,
+    )
+    val contentColor = contentColorFor(surfaceColor)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -89,11 +98,7 @@ fun Spent(
             modifier = modifier
                 .fillMaxWidth()
                 .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) },
-            color = combineColors(
-                MaterialTheme.colorScheme.primaryContainer,
-                MaterialTheme.colorScheme.surfaceVariant,
-                angle = 0.9F,
-            )
+            color = surfaceColor,
         ) {
             Row(
                 modifier = modifier.fillMaxWidth()
@@ -101,6 +106,7 @@ fun Spent(
                 Text(
                     text = prettyCandyCanes(spent.value, currency = currency),
                     style = MaterialTheme.typography.displayMedium,
+                    color = contentColor,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
                 )
                 Spacer(Modifier.weight(1F))
@@ -111,6 +117,7 @@ fun Spent(
                             .padding(horizontal = 24.dp, vertical = 16.dp),
                         text = prettyDate(spent.date),
                         style = MaterialTheme.typography.labelSmall,
+                        color = contentColor,
                     )
                 }
             }
@@ -119,10 +126,21 @@ fun Spent(
 
 }
 
-@Preview
+@Preview(name = "Default")
 @Composable
-fun PreviewSpent() {
-    BuckwheatTheme() {
+private fun PreviewDefault() {
+    BuckwheatTheme {
+        Spent(
+            Spent(value = BigDecimal(12340), date = Date()),
+            ExtendCurrency(type = CurrencyType.NONE)
+        )
+    }
+}
+
+@Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewNightMode() {
+    BuckwheatTheme {
         Spent(
             Spent(value = BigDecimal(12340), date = Date()),
             ExtendCurrency(type = CurrencyType.NONE)
