@@ -38,7 +38,7 @@ fun Editor(
     onOpenSettings: () -> Unit = {},
     onReaclcBudget: () -> Unit = {},
 ) {
-    var currState by remember { mutableStateOf<AnimState?>(null) }
+    var currState = remember { mutableStateOf<AnimState?>(null) }
     var currAnimator by remember { mutableStateOf<ValueAnimator?>(null) }
     val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
 
@@ -173,9 +173,9 @@ fun Editor(
     }
 
     fun animTo(state: AnimState) {
-        if (currState === state) return
+        if (currState.value === state) return
 
-        currState = state
+        currState.value = state
 
         if (currAnimator !== null) {
             currAnimator!!.pause()
@@ -211,13 +211,13 @@ fun Editor(
         }
 
         spendsViewModel.spentFromDailyBudget.observe(lifecycleOwner.value) {
-            calculateValues(budget = currState !== AnimState.EDITING, restBudget = false)
+            calculateValues(budget = currState.value !== AnimState.EDITING, restBudget = false)
         }
 
         spendsViewModel.stage.observe(lifecycleOwner.value) {
             when (it) {
                 SpendsViewModel.Stage.IDLE, null -> {
-                    if (currState === AnimState.EDITING) animTo(AnimState.RESET)
+                    if (currState.value === AnimState.EDITING) animTo(AnimState.RESET)
                 }
                 SpendsViewModel.Stage.CREATING_SPENT -> {
                     calculateValues(budget = false)
@@ -276,7 +276,7 @@ fun Editor(
                 .fillMaxSize()
                 .padding(start = 36.dp, end = 36.dp)
                 .onGloballyPositioned {
-                    if (currState == null) animTo(AnimState.FIRST_IDLE)
+                    if (currState.value === null) animTo(AnimState.FIRST_IDLE)
                 },
         ) {
             EditorRow(

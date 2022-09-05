@@ -143,7 +143,7 @@ fun MainScreen(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: App
             halfHeight = contentHeight - contentWidth,
             itemsCount = spends.value.size + 2,
         ) {
-            item {
+            item("budgetInfo") {
                 BudgetInfo(
                     budget = budget.value ?: BigDecimal(0),
                     startDate = startDate,
@@ -164,7 +164,7 @@ fun MainScreen(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: App
                     Divider()
                 }
             }
-            item {
+            item("editor") {
                 Editor(
                     modifier = Modifier
                         .fillMaxHeight()
