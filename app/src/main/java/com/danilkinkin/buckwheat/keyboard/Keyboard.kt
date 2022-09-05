@@ -5,14 +5,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 val BUTTON_GAP = 4.dp
@@ -21,7 +24,10 @@ val BUTTON_GAP = 4.dp
 fun Keyboard(
     modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     Column (
         modifier = modifier
             .fillMaxSize()
@@ -126,25 +132,25 @@ fun Keyboard(
                     type = KeyboardButtonType.PRIMARY,
                     icon = painterResource(R.drawable.ic_apply),
                     onClick = {
-                        /* if ("${spendsViewModel.valueLeftDot}.${spendsViewModel.valueRightDot}" == "00000000.") {
+                        if ("${spendsViewModel.valueLeftDot}.${spendsViewModel.valueRightDot}" == "00000000.") {
                             spendsViewModel.resetSpent()
 
-                            appModel.setIsDebug(!appModel.isDebug.value!!)
+                            appViewModel.setIsDebug(!appViewModel.isDebug.value!!)
 
-                            Snackbar
-                                .make(
-                                    requireView(), "Debug ${
-                                        if (appModel.isDebug.value!!) {
+                            coroutineScope.launch {
+                                appViewModel.snackbarHostState.showSnackbar(
+                                    "Debug ${
+                                        if (appViewModel.isDebug.value!!) {
                                             "ON"
                                         } else {
                                             "OFF"
                                         }
-                                    }", Snackbar.LENGTH_LONG
+                                    }"
                                 )
-                                .show()
+                            }
 
-                            return@setOnClickListener
-                        } */
+                            return@KeyboardButton
+                        }
 
                         runBlocking {
                             spendsViewModel.commitSpent()

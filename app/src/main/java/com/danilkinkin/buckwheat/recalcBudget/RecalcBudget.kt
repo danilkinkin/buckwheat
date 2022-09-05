@@ -3,6 +3,7 @@ package com.danilkinkin.buckwheat.recalcBudget
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -11,17 +12,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import java.math.RoundingMode
 import kotlin.math.abs
+import androidx.activity.viewModels
 
 @Composable
 fun RecalcBudget(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val isDebug = appViewModel.isDebug.observeAsState(false)
+
     val restDays = countDays(spendsViewModel.finishDate)
     val skippedDays = abs(countDays(spendsViewModel.lastReCalcBudgetDate!!))
 
@@ -65,6 +71,24 @@ fun RecalcBudget(
             text = stringResource(R.string.recalc_budget),
             style = MaterialTheme.typography.bodyLarge,
         )
+        if (isDebug.value) {
+            Spacer(Modifier.height(48.dp))
+            Text(
+                text = "Осталось дней = $restDays " +
+                        "\nПрошло дней с последнего пересчета = $skippedDays " +
+                        "\nНачало = ${spendsViewModel.startDate} " +
+                        "\nПоследний пересчет = ${spendsViewModel.lastReCalcBudgetDate} " +
+                        "\nКонец = ${spendsViewModel.finishDate} " +
+                        "\nВесь бюджет = ${spendsViewModel.budget.value!!}" +
+                        "\nПотрачено из бюджета = ${spendsViewModel.spent.value!!}" +
+                        "\nБюджет на сегодня = ${spendsViewModel.dailyBudget.value!!}" +
+                        "\nПотрачено из дневного бюджета = ${spendsViewModel.spentFromDailyBudget.value!!}" +
+                        "\nОставшийся бюджет = $restBudget" +
+                        "\nОставшийся бюджет на по дням = $perDayBudget",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
         Spacer(Modifier.height(48.dp))
         ButtonWithIcon(
             title = stringResource(R.string.split_rest_days_title),
@@ -75,6 +99,9 @@ fun RecalcBudget(
                     currency = spendsViewModel.currency,
                 ),
             ),
+            secondDescription = if (isDebug.value) {
+                "($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit"
+            } else null,
             onClick = {
                 spendsViewModel.reCalcDailyBudget(budgetPerDaySplit)
 
@@ -95,6 +122,10 @@ fun RecalcBudget(
                     currency = spendsViewModel.currency,
                 ),
             ),
+            secondDescription = if (isDebug.value) {
+                "$restBudget / $restDays = $budgetPerDayAdd " +
+                        "\n${budgetPerDayAdd} + $requireDistributeBudget = $budgetPerDayAddDailyBudget"
+            } else null,
             onClick = {
                 spendsViewModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
 
@@ -109,6 +140,7 @@ fun RecalcBudget(
 fun ButtonWithIcon(
     title: String,
     description: String,
+    secondDescription: String? = null,
     onClick: () -> Unit,
 ){
     Card(
@@ -133,6 +165,13 @@ fun ButtonWithIcon(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                if (secondDescription !== null) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = secondDescription,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
             }
             Icon(
                 modifier = Modifier

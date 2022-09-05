@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.data
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -22,6 +23,9 @@ class AppViewModel @Inject constructor(
     private val db: DatabaseRepository,
 ) : ViewModel() {
     private val storage = db.storageDao()
+
+    var snackbarHostState = SnackbarHostState()
+        private set
 
     var statusBarStack: MutableList<() -> SystemBarState> = emptyList<() -> SystemBarState>().toMutableList()
 

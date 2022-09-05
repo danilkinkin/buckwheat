@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -21,6 +22,7 @@ import androidx.core.animation.doOnEnd
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BigIconButton
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.combineColors
@@ -34,11 +36,14 @@ enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
 fun Editor(
     modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
     onOpenWallet: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
     onReaclcBudget: () -> Unit = {},
 ) {
-    var currState = remember { mutableStateOf<AnimState?>(null) }
+    val isDebug = appViewModel.isDebug.observeAsState(false)
+
+    val currState = remember { mutableStateOf<AnimState?>(null) }
     var currAnimator by remember { mutableStateOf<ValueAnimator?>(null) }
     val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
 
@@ -254,11 +259,13 @@ fun Editor(
                 .padding(start = 24.dp, end = 24.dp)
                 .statusBarsPadding(),
         ) {
-            BigIconButton(
-                icon = painterResource(R.drawable.ic_developer_mode),
-                contentDescription = null,
-                onClick = onReaclcBudget,
-            )
+            if (isDebug.value) {
+                BigIconButton(
+                    icon = painterResource(R.drawable.ic_developer_mode),
+                    contentDescription = null,
+                    onClick = onReaclcBudget,
+                )
+            }
             BigIconButton(
                 icon = painterResource(R.drawable.ic_balance_wallet),
                 contentDescription = null,

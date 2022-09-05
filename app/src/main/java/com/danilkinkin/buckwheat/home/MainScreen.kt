@@ -41,7 +41,10 @@ import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: AppViewModel = viewModel()) {
+fun MainScreen(
+    spendsViewModel: SpendsViewModel = viewModel(),
+    appViewModel: AppViewModel = viewModel(),
+) {
     var contentHeight by remember { mutableStateOf(0F) }
     var contentWidth by remember { mutableStateOf(0F) }
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -51,7 +54,7 @@ fun MainScreen(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: App
     val coroutineScope = rememberCoroutineScope()
     val presetFinishDate = remember { mutableStateOf<Date?>(null) }
     val requestFinishDateCallback = remember { mutableStateOf<((finishDate: Date) -> Unit)?>(null) }
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember { appViewModel.snackbarHostState }
     val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
 
     val localDensity = LocalDensity.current
