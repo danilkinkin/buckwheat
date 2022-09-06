@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
@@ -15,14 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.danilkinkin.buckwheat.base.AutoResizeText
-import com.danilkinkin.buckwheat.base.FontSizeRange
+import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.combineColors
+import java.lang.Integer.MAX_VALUE
 import kotlin.math.min
 
 enum class KeyboardButtonType { DEFAULT, PRIMARY, SECONDARY, TERTIARY }
@@ -35,7 +37,7 @@ fun KeyboardButton(
     icon: Painter? = null,
     onClick: (() -> Unit) = {},
 ) {
-    var minSize by remember { mutableStateOf(0.dp) }
+    var minSize by remember { mutableStateOf(MAX_VALUE.dp) }
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState()
     val radius = animateDpAsState(targetValue = if (isPressed.value) 20.dp else minSize / 2)
@@ -72,15 +74,16 @@ fun KeyboardButton(
             contentAlignment = Alignment.Center
         ) {
             if (text !== null) {
-                AutoResizeText(
+                Text(
                     text = text,
                     color = contentColorFor(color),
-                    fontSizeRange = FontSizeRange(min = 8.sp, max = 90.sp)
+                    fontSize = 54.sp,
                 )
             }
             if (icon !== null) {
                 Icon(
                     painter = icon,
+                    modifier = Modifier.size(34.dp),
                     contentDescription = null,
                 )
             }
@@ -88,13 +91,24 @@ fun KeyboardButton(
     }
 }
 
-@Preview
+@Preview(name = "Text")
 @Composable
-fun KeyboardButtonPreview() {
+private fun PreviewWithText() {
     BuckwheatTheme {
         KeyboardButton(
             type = KeyboardButtonType.DEFAULT,
             text = "4"
+        )
+    }
+}
+
+@Preview(name = "Icon")
+@Composable
+private fun PreviewWithIcon() {
+    BuckwheatTheme {
+        KeyboardButton(
+            type = KeyboardButtonType.DEFAULT,
+            icon = painterResource(R.drawable.ic_backspace)
         )
     }
 }
