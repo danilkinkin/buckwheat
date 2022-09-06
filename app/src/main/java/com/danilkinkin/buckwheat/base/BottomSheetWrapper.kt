@@ -128,9 +128,6 @@ fun BottomSheetWrapper(
     LaunchedEffect(state.currentValue) {
 
     }
-        coroutineScope.launch {
-            state.hide()
-        }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
