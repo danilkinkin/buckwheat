@@ -82,7 +82,7 @@ fun Settings(onClose: () -> Unit = {}) {
             )
             Divider()
             Card(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 shape = MaterialTheme.shapes.extraLarge
             ) {
                 Column(Modifier.padding(16.dp)) {
