@@ -1,13 +1,13 @@
 package com.danilkinkin.buckwheat.wallet
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -19,6 +19,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.base.Divider
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.launch
 import java.util.*
 
 fun getCurrencies(): MutableList<Currency> {
@@ -35,7 +38,20 @@ fun WorldCurrencyChooserContent(
     onSelect: (currency: Currency) -> Unit,
     onClose: () -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val list = remember { getCurrencies() }
     val selectCurrency = remember { mutableStateOf(defaultCurrency) }
+    val scrollState = rememberLazyListState()
+
+    LaunchedEffect(Unit) {
+        if (defaultCurrency == null) return@LaunchedEffect
+
+        coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
+            val index = list.indexOfFirst { it.currencyCode == defaultCurrency.currencyCode }
+
+            scrollState.scrollToItem(index)
+        }
+    }
 
     Card(
         shape = CardDefaults.shape,
@@ -43,19 +59,20 @@ fun WorldCurrencyChooserContent(
             .widthIn(max = 500.dp)
             .padding(36.dp)
     ) {
-        Column() {
+        Column {
             Text(
                 text = stringResource(R.string.select_currency_title),
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(24.dp)
             )
             Divider()
             Box(Modifier.weight(1F)) {
                 LazyColumn(
+                    state = scrollState,
                     verticalArrangement = Arrangement.spacedBy(0.dp),
-                    modifier = Modifier.fillMaxSize()//.heightIn(max = 600.dp)
+                    modifier = Modifier.fillMaxSize(),
                 ) {
-                    getCurrencies().forEach {
+                    list.forEach {
                         itemsCurrency(
                             currency = it,
                             selected = selectCurrency.value?.currencyCode === it.currencyCode,
@@ -139,9 +156,21 @@ fun WorldCurrencyChooser(
     }
 }
 
-@Preview
+@Preview(name = "default")
 @Composable
-fun PreviewWorldCurrencyChooser() {
+private fun PreviewDefault() {
+    BuckwheatTheme {
+        WorldCurrencyChooserContent(
+            defaultCurrency = null,
+            onSelect = { },
+            onClose = { }
+        )
+    }
+}
+
+@Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewNightMode() {
     BuckwheatTheme {
         WorldCurrencyChooserContent(
             defaultCurrency = null,
