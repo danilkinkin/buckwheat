@@ -117,15 +117,20 @@ fun BottomSheetWrapper(
         }
     ) {}
 
-    BackHandler {
-        coroutineScope.launch {
-            state.hide()
+    BackHandler(state.isVisible) {
+        if (cancelable) {
+            coroutineScope.launch {
+                state.hide()
+            }
         }
     }
 
     LaunchedEffect(state.currentValue) {
 
     }
+        coroutineScope.launch {
+            state.hide()
+        }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
