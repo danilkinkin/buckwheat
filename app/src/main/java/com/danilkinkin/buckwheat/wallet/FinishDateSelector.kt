@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.wallet
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
 import androidx.compose.material.icons.Icons
@@ -7,6 +8,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,6 +20,7 @@ import com.danilkinkin.buckwheat.calendar.model.CalendarState
 import com.danilkinkin.buckwheat.calendar.model.selectedDatesFormatted
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.toDate
+import com.danilkinkin.buckwheat.util.toLocalDate
 import java.time.LocalDate
 import java.util.*
 
@@ -30,6 +33,10 @@ fun FinishDateSelector(
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         val calendarState = remember { CalendarState(selectDate) }
+
+        LaunchedEffect(Unit) {
+            if (selectDate !== null) calendarState.setSelectedDay(selectDate.toLocalDate())
+        }
 
         FinishDateSelectorContent(
             calendarState = calendarState,
@@ -47,7 +54,7 @@ private fun FinishDateSelectorContent(
     onBackPressed: () -> Unit,
     onApply: () -> Unit,
 ) {
-    Column() {
+    Column {
         FinishDateSelectorTopAppBar(calendarState, onBackPressed, onApply)
         Calendar(
             calendarState = calendarState,
@@ -63,7 +70,7 @@ private fun FinishDateSelectorTopAppBar(
     onBackPressed: () -> Unit,
     onApply: () -> Unit,
 ) {
-    Surface() {
+    Surface {
         MediumTopAppBar(
             navigationIcon = {
                 IconButton(
@@ -108,9 +115,17 @@ private fun FinishDateSelectorTopAppBar(
 }
 
 
-@Preview(showSystemUi = true)
+@Preview(name = "Default")
 @Composable
-fun PreviewFinishDateSelector(){
+private fun PreviewDefault(){
+    BuckwheatTheme {
+        FinishDateSelector(onBackPressed = {}, onApply = {})
+    }
+}
+
+@Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewNightMode(){
     BuckwheatTheme {
         FinishDateSelector(onBackPressed = {}, onApply = {})
     }
