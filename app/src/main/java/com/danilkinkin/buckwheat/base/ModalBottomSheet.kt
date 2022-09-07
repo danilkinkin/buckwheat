@@ -39,7 +39,8 @@ class ModalBottomSheetState(
     initialValue: ModalBottomSheetValue,
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     internal val isSkipHalfExpanded: Boolean,
-    confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true }
+    confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
+    var render: MutableState<Boolean>,
 ) : SwipeableState<ModalBottomSheetValue>(
     initialValue = initialValue,
     animationSpec = animationSpec,
@@ -54,8 +55,9 @@ class ModalBottomSheetState(
     constructor(
         initialValue: ModalBottomSheetValue,
         animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-        confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true }
-    ) : this(initialValue, animationSpec, isSkipHalfExpanded = false, confirmStateChange)
+        confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
+        render: MutableState<Boolean>,
+    ) : this(initialValue, animationSpec, isSkipHalfExpanded = false, confirmStateChange, render)
 
     init {
         if (isSkipHalfExpanded) {
@@ -66,12 +68,16 @@ class ModalBottomSheetState(
         }
     }
 
-    suspend fun show() {
+    suspend fun realShow() {
         val targetValue = when {
             //hasHalfExpandedState -> ModalBottomSheetValue.HalfExpanded
             else -> ModalBottomSheetValue.Expanded
         }
         animateTo(targetValue = targetValue)
+    }
+
+    suspend fun show() {
+        this.render.value = true
     }
 
     internal suspend fun halfExpand() {
@@ -83,7 +89,9 @@ class ModalBottomSheetState(
 
     internal suspend fun expand() = animateTo(ModalBottomSheetValue.Expanded)
 
-    suspend fun hide() = animateTo(ModalBottomSheetValue.Hidden)
+    suspend fun hide() {
+        animateTo(ModalBottomSheetValue.Hidden)
+    }
 
     internal val nestedScrollConnection = this.PreUpPostDownNestedScrollConnection
 
@@ -91,15 +99,16 @@ class ModalBottomSheetState(
         fun Saver(
             animationSpec: AnimationSpec<Float>,
             skipHalfExpanded: Boolean,
-            confirmStateChange: (ModalBottomSheetValue) -> Boolean
+            confirmStateChange: (ModalBottomSheetValue) -> Boolean,
         ): Saver<ModalBottomSheetState, *> = Saver(
-            save = { it.currentValue },
-            restore = {
+            save = { Pair(it.currentValue, it.render) },
+            restore = { (value, render) ->
                 ModalBottomSheetState(
-                    initialValue = it,
+                    initialValue = value,
                     animationSpec = animationSpec,
                     isSkipHalfExpanded = skipHalfExpanded,
-                    confirmStateChange = confirmStateChange
+                    confirmStateChange = confirmStateChange,
+                    render = render,
                 )
             }
         )
@@ -112,21 +121,27 @@ fun rememberModalBottomSheetState(
     initialValue: ModalBottomSheetValue,
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     skipHalfExpanded: Boolean,
-    confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true }
+    confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
+    render: MutableState<Boolean> = mutableStateOf(initialValue !== ModalBottomSheetValue.Hidden),
 ): ModalBottomSheetState {
     return rememberSaveable(
-        initialValue, animationSpec, skipHalfExpanded, confirmStateChange,
+        initialValue,
+        animationSpec,
+        skipHalfExpanded,
+        confirmStateChange,
+        render,
         saver = ModalBottomSheetState.Saver(
             animationSpec = animationSpec,
             skipHalfExpanded = skipHalfExpanded,
-            confirmStateChange = confirmStateChange
+            confirmStateChange = confirmStateChange,
         )
     ) {
         ModalBottomSheetState(
             initialValue = initialValue,
             animationSpec = animationSpec,
             isSkipHalfExpanded = skipHalfExpanded,
-            confirmStateChange = confirmStateChange
+            confirmStateChange = confirmStateChange,
+            render = render,
         )
     }
 }
@@ -141,7 +156,8 @@ fun rememberModalBottomSheetState(
     initialValue = initialValue,
     animationSpec = animationSpec,
     skipHalfExpanded = true,
-    confirmStateChange = confirmStateChange
+    confirmStateChange = confirmStateChange,
+    render = mutableStateOf(initialValue !== ModalBottomSheetValue.Hidden)
 )
 
 @Composable

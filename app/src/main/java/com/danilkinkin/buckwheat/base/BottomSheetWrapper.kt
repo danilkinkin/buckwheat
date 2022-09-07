@@ -31,6 +31,21 @@ fun BottomSheetWrapper(
     content: @Composable (() -> Unit) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+
+    DisposableEffect(state.render.value) {
+        if (state.render.value) coroutineScope.launch { state.realShow() }
+
+        onDispose {  }
+    }
+
+    DisposableEffect(state.currentValue) {
+        if (state.currentValue === ModalBottomSheetValue.Hidden) state.render.value = false
+
+        onDispose {  }
+    }
+
+    if (!state.render.value) return
+    
     val localDensity = LocalDensity.current
 
     val statusBarHeight = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
