@@ -27,7 +27,7 @@ fun CustomCurrencyEditorContent(
     val selectCurrency = remember { mutableStateOf(defaultCurrency ?: "") }
 
     Card(
-        shape = CardDefaults.shape,
+        shape = MaterialTheme.shapes.extraLarge,
         modifier = Modifier
             .widthIn(max = 500.dp)
             .padding(36.dp)
