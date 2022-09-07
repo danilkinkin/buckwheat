@@ -2,7 +2,9 @@ package com.danilkinkin.buckwheat.editor
 
 import android.animation.ValueAnimator
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -252,76 +254,95 @@ fun Editor(
         ),
         modifier = modifier.fillMaxSize()
     ) {
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp)
-                .statusBarsPadding(),
-        ) {
-            if (isDebug.value) {
+        Box(modifier = modifier.fillMaxSize()) {
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp)
+                    .statusBarsPadding(),
+            ) {
+                if (isDebug.value) {
+                    BigIconButton(
+                        icon = painterResource(R.drawable.ic_developer_mode),
+                        contentDescription = null,
+                        onClick = onReaclcBudget,
+                    )
+                }
                 BigIconButton(
-                    icon = painterResource(R.drawable.ic_developer_mode),
+                    icon = painterResource(R.drawable.ic_balance_wallet),
                     contentDescription = null,
-                    onClick = onReaclcBudget,
+                    onClick = onOpenWallet,
+                )
+                BigIconButton(
+                    icon = painterResource(R.drawable.ic_settings),
+                    contentDescription = null,
+                    onClick = onOpenSettings,
                 )
             }
-            BigIconButton(
-                icon = painterResource(R.drawable.ic_balance_wallet),
-                contentDescription = null,
-                onClick = onOpenWallet,
-            )
-            BigIconButton(
-                icon = painterResource(R.drawable.ic_settings),
-                contentDescription = null,
-                onClick = onOpenSettings,
-            )
-        }
-        Box(
-            contentAlignment = Alignment.BottomStart,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 36.dp, end = 36.dp)
-                .onGloballyPositioned {
-                    if (currState.value === null) animTo(AnimState.FIRST_IDLE)
-                },
-        ) {
-            EditorRow(
-                value = budgetValue,
-                label = stringResource(id = R.string.budget_for_today),
-                fontSizeValue = budgetValueFontSize,
-                fontSizeLabel = budgetLabelFontSize,
+            Box(
+                contentAlignment = Alignment.BottomStart,
                 modifier = Modifier
-                    .offset(y = with(localDensity) { budgetOffset.toDp() })
-                    .alpha(budgetAlpha)
+                    .fillMaxSize()
+                    .padding(start = 36.dp, end = 36.dp)
                     .onGloballyPositioned {
-                        budgetHeight = it.size.height.toFloat()
-                    }
-            )
-            EditorRow(
-                value = spentValue,
-                label = stringResource(id = R.string.spent),
-                fontSizeValue = spentValueFontSize,
-                fontSizeLabel = spentLabelFontSize,
-                modifier = Modifier
-                    .offset(y = with(localDensity) { spentOffset.toDp() })
-                    .alpha(spentAlpha)
-                    .onGloballyPositioned {
-                        spentHeight = it.size.height.toFloat()
+                        if (currState.value === null) animTo(AnimState.FIRST_IDLE)
                     },
-            )
-            EditorRow(
-                value = restBudgetValue,
-                label = stringResource(id = R.string.rest_budget_for_today),
-                fontSizeValue = restBudgetValueFontSize,
-                fontSizeLabel = restBudgetLabelFontSize,
-                modifier = Modifier
-                    .offset(y = with(localDensity) { restBudgetOffset.toDp() })
-                    .alpha(restBudgetAlpha)
-                    .onGloballyPositioned {
-                        restBudgetHeight = it.size.height.toFloat()
-                    },
-            )
+            ) {
+                EditorRow(
+                    value = budgetValue,
+                    label = stringResource(id = R.string.budget_for_today),
+                    fontSizeValue = budgetValueFontSize,
+                    fontSizeLabel = budgetLabelFontSize,
+                    modifier = Modifier
+                        .offset(y = with(localDensity) { budgetOffset.toDp() })
+                        .alpha(budgetAlpha)
+                        .onGloballyPositioned {
+                            budgetHeight = it.size.height.toFloat()
+                        }
+                )
+                EditorRow(
+                    value = spentValue,
+                    label = stringResource(id = R.string.spent),
+                    fontSizeValue = spentValueFontSize,
+                    fontSizeLabel = spentLabelFontSize,
+                    modifier = Modifier
+                        .offset(y = with(localDensity) { spentOffset.toDp() })
+                        .alpha(spentAlpha)
+                        .onGloballyPositioned {
+                            spentHeight = it.size.height.toFloat()
+                        },
+                )
+                EditorRow(
+                    value = restBudgetValue,
+                    label = stringResource(id = R.string.rest_budget_for_today),
+                    fontSizeValue = restBudgetValueFontSize,
+                    fontSizeLabel = restBudgetLabelFontSize,
+                    modifier = Modifier
+                        .offset(y = with(localDensity) { restBudgetOffset.toDp() })
+                        .alpha(restBudgetAlpha)
+                        .onGloballyPositioned {
+                            restBudgetHeight = it.size.height.toFloat()
+                        },
+                )
+            }
+            Box(
+                Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+            ) {
+                Box(
+                    Modifier
+                        .height(4.dp)
+                        .width(50.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = CircleShape
+                        )
+                        .align(Alignment.Center)
+                )
+            }
         }
     }
 }
