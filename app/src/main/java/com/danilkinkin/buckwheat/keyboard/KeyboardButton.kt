@@ -17,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -37,7 +39,9 @@ fun KeyboardButton(
     icon: Painter? = null,
     onClick: (() -> Unit) = {},
 ) {
+    val localDensity = LocalDensity.current
     var minSize by remember { mutableStateOf(MAX_VALUE.dp) }
+    var minSizeFloat by remember { mutableStateOf(MAX_VALUE.toFloat()) }
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState()
     val radius = animateDpAsState(targetValue = if (isPressed.value) 20.dp else minSize / 2)
@@ -58,7 +62,8 @@ fun KeyboardButton(
         modifier = modifier
             .fillMaxSize()
             .onGloballyPositioned {
-                minSize = min(it.size.height, it.size.width).dp
+                minSize = with(localDensity) { min(it.size.height, it.size.width).toDp() }
+                minSizeFloat = with(localDensity) { min(it.size.height, it.size.width).toFloat() }
             }
             .clip(RoundedCornerShape(radius.value))
     ) {
@@ -77,13 +82,14 @@ fun KeyboardButton(
                 Text(
                     text = text,
                     color = contentColorFor(color),
-                    fontSize = 54.sp,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontSize = with(localDensity) { min(minSizeFloat - minSizeFloat / 2, 904F).toSp() },
                 )
             }
             if (icon !== null) {
                 Icon(
                     painter = icon,
-                    modifier = Modifier.size(34.dp),
+                    modifier = Modifier.size(min(minSize - minSize / 2F, 154.dp)),
                     contentDescription = null,
                 )
             }
