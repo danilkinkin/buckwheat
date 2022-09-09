@@ -1,6 +1,6 @@
 package com.danilkinkin.buckwheat.base
 
-import android.util.Log
+
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.roundToInt
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import com.danilkinkin.buckwheat.topSheet.PreUpPostDownNestedScrollConnection
 import com.danilkinkin.buckwheat.topSheet.SwipeableState
 import com.danilkinkin.buckwheat.topSheet.swipeable
@@ -40,12 +39,14 @@ class ModalBottomSheetState(
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     internal val isSkipHalfExpanded: Boolean,
     confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
-    var render: MutableState<Boolean>,
+    render: Boolean,
 ) : SwipeableState<ModalBottomSheetValue>(
     initialValue = initialValue,
     animationSpec = animationSpec,
     confirmStateChange = confirmStateChange
 ) {
+    var render: Boolean by mutableStateOf(render)
+
     val isVisible: Boolean
         get() = currentValue != ModalBottomSheetValue.Hidden
 
@@ -57,7 +58,7 @@ class ModalBottomSheetState(
         animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
         confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
         render: MutableState<Boolean>,
-    ) : this(initialValue, animationSpec, isSkipHalfExpanded = false, confirmStateChange, render)
+    ) : this(initialValue, animationSpec, isSkipHalfExpanded = false, confirmStateChange, render.value)
 
     init {
         if (isSkipHalfExpanded) {
@@ -77,7 +78,7 @@ class ModalBottomSheetState(
     }
 
     suspend fun show() {
-        this.render.value = true
+        this.render = true
     }
 
     internal suspend fun halfExpand() {
@@ -122,7 +123,7 @@ fun rememberModalBottomSheetState(
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     skipHalfExpanded: Boolean,
     confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
-    render: MutableState<Boolean> = mutableStateOf(initialValue !== ModalBottomSheetValue.Hidden),
+    render: Boolean = initialValue !== ModalBottomSheetValue.Hidden,
 ): ModalBottomSheetState {
     return rememberSaveable(
         initialValue,
@@ -157,7 +158,7 @@ fun rememberModalBottomSheetState(
     animationSpec = animationSpec,
     skipHalfExpanded = true,
     confirmStateChange = confirmStateChange,
-    render = mutableStateOf(initialValue !== ModalBottomSheetValue.Hidden)
+    render = initialValue !== ModalBottomSheetValue.Hidden
 )
 
 @Composable
@@ -231,8 +232,6 @@ private fun Modifier.bottomSheetSwipeable(
     cancelable: Boolean = true,
 ): Modifier {
     val sheetHeight = sheetHeightState.value
-
-    Log.d("ModalBottomSheet", "fullHeight = $fullHeight sheetHeight = $sheetHeight")
 
     val modifier = if (sheetHeight != null) {
         val anchors = if (sheetHeight < fullHeight / 2 || sheetState.isSkipHalfExpanded) {

@@ -32,19 +32,19 @@ fun BottomSheetWrapper(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    DisposableEffect(state.render.value) {
-        if (state.render.value) coroutineScope.launch { state.realShow() }
+    DisposableEffect(state.render) {
+        if (state.render) coroutineScope.launch { state.realShow() }
 
         onDispose {  }
     }
 
     DisposableEffect(state.currentValue) {
-        if (state.currentValue === ModalBottomSheetValue.Hidden) state.render.value = false
+        if (state.currentValue === ModalBottomSheetValue.Hidden) state.render = false
 
         onDispose {  }
     }
 
-    if (!state.render.value) return
+    if (!state.render) return
     
     val localDensity = LocalDensity.current
 
