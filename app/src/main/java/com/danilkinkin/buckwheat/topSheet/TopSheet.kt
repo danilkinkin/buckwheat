@@ -34,7 +34,8 @@ class TopSheetState(
     initialValue: TopSheetValue,
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     internal val isSkipHalfExpanded: Boolean,
-    confirmStateChange: (TopSheetValue) -> Boolean = { true }
+    confirmStateChange: (TopSheetValue) -> Boolean = { true },
+    internal val sheetHeightFloat: MutableState<Float>,
 ) : SwipeableState<TopSheetValue>(
     initialValue = initialValue,
     animationSpec = animationSpec,
@@ -43,11 +44,15 @@ class TopSheetState(
     val isExpand: Boolean
         get() = currentValue != TopSheetValue.Expanded
 
+    val sheetHeight: Float
+        get() = this.sheetHeightFloat.value
+
     constructor(
         initialValue: TopSheetValue,
         animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-        confirmStateChange: (TopSheetValue) -> Boolean = { true }
-    ) : this(initialValue, animationSpec, isSkipHalfExpanded = false, confirmStateChange)
+        confirmStateChange: (TopSheetValue) -> Boolean = { true },
+        sheetHeightFloat: MutableState<Float>,
+    ) : this(initialValue, animationSpec, isSkipHalfExpanded = false, confirmStateChange, sheetHeightFloat)
 
     init {
         if (isSkipHalfExpanded) {
@@ -72,13 +77,14 @@ class TopSheetState(
             skipHalfExpanded: Boolean,
             confirmStateChange: (TopSheetValue) -> Boolean
         ): Saver<TopSheetState, *> = Saver(
-            save = { it.currentValue },
-            restore = {
+            save = { Pair(it.currentValue, it.sheetHeightFloat) },
+            restore = { (currentValue, sheetHeightFloat) ->
                 TopSheetState(
-                    initialValue = it,
+                    initialValue = currentValue,
                     animationSpec = animationSpec,
                     isSkipHalfExpanded = skipHalfExpanded,
-                    confirmStateChange = confirmStateChange
+                    confirmStateChange = confirmStateChange,
+                    sheetHeightFloat = sheetHeightFloat,
                 )
             }
         )
@@ -91,7 +97,8 @@ fun rememberTopSheetState(
     initialValue: TopSheetValue,
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     skipHalfExpanded: Boolean,
-    confirmStateChange: (TopSheetValue) -> Boolean = { true }
+    confirmStateChange: (TopSheetValue) -> Boolean = { true },
+    sheetHeightFloat: MutableState<Float>,
 ): TopSheetState {
     return rememberSaveable(
         initialValue, animationSpec, skipHalfExpanded, confirmStateChange,
@@ -105,7 +112,8 @@ fun rememberTopSheetState(
             initialValue = initialValue,
             animationSpec = animationSpec,
             isSkipHalfExpanded = skipHalfExpanded,
-            confirmStateChange = confirmStateChange
+            confirmStateChange = confirmStateChange,
+            sheetHeightFloat = sheetHeightFloat,
         )
     }
 }
@@ -127,7 +135,8 @@ fun rememberTopSheetState(
     initialValue = initialValue,
     animationSpec = animationSpec,
     skipHalfExpanded = false,
-    confirmStateChange = confirmStateChange
+    confirmStateChange = confirmStateChange,
+    sheetHeightFloat = mutableStateOf(0f)
 )
 
 @Composable
@@ -190,6 +199,7 @@ fun TopSheetLayout(
                     content = sheetContent,
                     modifier = Modifier.onGloballyPositioned {
                         sheetHeightState.value = it.size.height.toFloat()
+                        sheetState.sheetHeightFloat.value = it.size.height.toFloat()
                     },
                 )
             }

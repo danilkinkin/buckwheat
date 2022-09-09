@@ -16,6 +16,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
@@ -29,6 +31,9 @@ import com.danilkinkin.buckwheat.settings.Settings
 import com.danilkinkin.buckwheat.spendsHistory.BudgetInfo
 import com.danilkinkin.buckwheat.spendsHistory.Spent
 import com.danilkinkin.buckwheat.topSheet.TopSheetLayout
+import com.danilkinkin.buckwheat.topSheet.TopSheetState
+import com.danilkinkin.buckwheat.topSheet.TopSheetValue
+import com.danilkinkin.buckwheat.topSheet.rememberTopSheetState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.combineColors
@@ -38,6 +43,7 @@ import com.danilkinkin.buckwheat.wallet.Wallet
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.util.*
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +53,7 @@ fun MainScreen(
 ) {
     var contentHeight by remember { mutableStateOf(0F) }
     var contentWidth by remember { mutableStateOf(0F) }
+    val topSheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded)
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val finishDateSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val settingsSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -119,6 +126,10 @@ fun MainScreen(
         }
     }
 
+    val offset = topSheetState.offset.value.roundToInt() + (topSheetState.sheetHeight - contentHeight)
+
+    val scale = (1 - (offset + contentWidth) / contentWidth).coerceIn(0f, 1f).let { if (it.isNaN()) 0f else it }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -135,16 +146,18 @@ fun MainScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(top = with(localDensity) { (contentHeight - contentWidth).toDp() })
+                .offset(y = with(localDensity) { contentWidth.toDp() * (1F - scale) })
         ) {
             Keyboard(
                 modifier = Modifier
-                    .height(with(localDensity) { contentWidth.toDp() })
+                    .height(max(with(localDensity) { contentWidth.toDp() * scale }, 250.dp))
                     .fillMaxWidth()
                     .navigationBarsPadding()
             )
         }
 
         TopSheetLayout(
+            sheetState = topSheetState,
             halfHeight = contentHeight - contentWidth,
             itemsCount = spends.value.size + 2,
         ) {
@@ -196,7 +209,11 @@ fun MainScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(WindowInsets.systemBars.asPaddingValues().calculateTopPadding())
+                .height(
+                    WindowInsets.systemBars
+                        .asPaddingValues()
+                        .calculateTopPadding()
+                )
                 .background(
                     combineColors(
                         MaterialTheme.colorScheme.primaryContainer,
