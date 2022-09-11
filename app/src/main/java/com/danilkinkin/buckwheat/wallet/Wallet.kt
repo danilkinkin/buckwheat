@@ -152,7 +152,7 @@ fun Wallet(
                     } else {
                         budget.value
                     },
-                    currency = spendsViewModel.currency,
+                    currency = currency.value,
                 ),
             ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
