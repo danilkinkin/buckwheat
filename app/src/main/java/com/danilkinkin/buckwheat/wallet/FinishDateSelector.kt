@@ -63,7 +63,6 @@ private fun FinishDateSelectorContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FinishDateSelectorTopAppBar(
     calendarState: CalendarState,
@@ -71,8 +70,8 @@ private fun FinishDateSelectorTopAppBar(
     onApply: () -> Unit,
 ) {
     Surface {
-        MediumTopAppBar(
-            navigationIcon = {
+        Column() {
+            Row(Modifier.fillMaxWidth().padding(8.dp)) {
                 IconButton(
                     onClick = { onBackPressed() }
                 ) {
@@ -81,22 +80,10 @@ private fun FinishDateSelectorTopAppBar(
                         contentDescription = null,
                     )
                 }
-            },
-            title = {
-                Text(
-                    text = if (!calendarState.calendarUiState.value.hasSelectedDates) {
-                        stringResource(R.string.select_finish_date_title)
-                    } else {
-                        selectedDatesFormatted(calendarState)
-                    },
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            },
-            actions = {
+                Spacer(Modifier.weight(1F))
                 Button(
                     onClick = { onApply() },
                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                    modifier = Modifier.padding(end = 8.dp),
                     enabled = calendarState.calendarUiState.value.selectedStartDate !== null,
                 ) {
                     Icon(
@@ -109,8 +96,26 @@ private fun FinishDateSelectorTopAppBar(
                     Text(text = stringResource(R.string.apply))
                 }
             }
-
-        )
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 8.dp,
+                        bottom = 24.dp,
+                    )
+            ) {
+                Text(
+                    text = if (!calendarState.calendarUiState.value.hasSelectedDates) {
+                        stringResource(R.string.select_finish_date_title)
+                    } else {
+                        selectedDatesFormatted(calendarState)
+                    },
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+        }
     }
 }
 

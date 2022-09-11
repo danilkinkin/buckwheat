@@ -6,6 +6,7 @@ import com.danilkinkin.buckwheat.base.Divider
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -20,9 +21,7 @@ import com.danilkinkin.buckwheat.data.ThemeViewModel
 import com.danilkinkin.buckwheat.home.dataStore
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-)
+
 @Composable
 fun Settings(onClose: () -> Unit = {}) {
     val context = LocalContext.current
@@ -43,14 +42,15 @@ fun Settings(onClose: () -> Unit = {}) {
 
     Surface {
         Column(modifier = Modifier.navigationBarsPadding()) {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.settings_title),
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
-            )
+            Box(
+                modifier = Modifier.fillMaxWidth().padding(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.settings_title),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
             Divider()
             TextRow(
                 icon = painterResource(R.drawable.ic_dark_mode),

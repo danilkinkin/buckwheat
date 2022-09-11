@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,14 +50,15 @@ fun Wallet(
     Column(modifier = Modifier.navigationBarsPadding()) {
         val days = countDays(dateToValue.value)
 
-        CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = stringResource(R.string.wallet_title),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
-        )
+        Box(
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.wallet_title),
+                 style = MaterialTheme.typography.titleLarge,
+            )
+       }
         Divider()
         TextRow(
             icon = painterResource(R.drawable.ic_money),
