@@ -9,11 +9,13 @@ import com.danilkinkin.buckwheat.base.rememberModalBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,7 +47,7 @@ import java.math.BigDecimal
 import java.util.*
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
     spendsViewModel: SpendsViewModel = viewModel(),
@@ -130,17 +132,14 @@ fun MainScreen(
 
     val scale = (1 - (offset + contentWidth) / contentWidth).coerceIn(0f, 1f).let { if (it.isNaN()) 0f else it }
 
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
+    Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .onGloballyPositioned {
                 contentWidth = it.size.width.toFloat()
                 contentHeight = it.size.height.toFloat()
             },
-        containerColor = MaterialTheme.colorScheme.background,
     ) {
         Box(
             modifier = Modifier
@@ -284,6 +283,34 @@ fun MainScreen(
                     }
                 }
             )
+        }
+
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .navigationBarsPadding(),
+        ) {
+            SnackbarHost(hostState = snackbarHostState)
+
+            if (scale < 0.5F) {
+                FloatingActionButton(
+                    modifier = Modifier.padding(end = 24.dp, bottom = 24.dp),
+                    onClick = {
+                        coroutineScope.launch {
+                            topSheetState.halfExpand()
+                        }
+                    },
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_home),
+                        contentDescription = null,
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                    )
+
+                }
+            }
         }
     }
 }
