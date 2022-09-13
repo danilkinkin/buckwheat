@@ -13,12 +13,10 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntOffset
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -144,9 +142,10 @@ fun rememberTopSheetState(
 fun TopSheetLayout(
     modifier: Modifier = Modifier,
     sheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded),
-    halfHeight: Float? = null,
+    customHalfHeight: Float? = null,
     scrollState: LazyListState = rememberLazyListState(),
     itemsCount: Int = 1,
+    autoScrollToBottom: Boolean = false,
     sheetContent: LazyListScope.() -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -156,7 +155,7 @@ fun TopSheetLayout(
         contentAlignment = Alignment.BottomCenter,
     ) {
         val fullHeight = constraints.maxHeight.toFloat()
-        val halfHeight = halfHeight ?: (fullHeight / 2)
+        val halfHeight = customHalfHeight ?: (fullHeight / 2)
         val sheetHeightState = remember { mutableStateOf<Float?>(null) }
 
         Box(
@@ -181,18 +180,13 @@ fun TopSheetLayout(
                 )
         ) {
             Box {
-                DisposableEffect(
-                    key1 = itemsCount,
-                    effect = {
-                        if (itemsCount == 0) return@DisposableEffect onDispose {  }
-
-                        coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
-                            scrollState.scrollToItem(itemsCount)
-                        }
-
-                        onDispose {  }
+                DisposableEffect(itemsCount) {
+                    coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
+                        if (autoScrollToBottom) scrollState.scrollToItem(itemsCount)
                     }
-                )
+
+                    onDispose { }
+                }
 
                 LazyColumn(
                     state = scrollState,

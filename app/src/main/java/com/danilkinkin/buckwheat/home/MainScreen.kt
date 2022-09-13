@@ -158,9 +158,11 @@ fun MainScreen(
 
         TopSheetLayout(
             sheetState = topSheetState,
-            halfHeight = contentHeight - contentWidth,
+            customHalfHeight = contentHeight - contentWidth,
             itemsCount = spends.value.size + 2,
+            autoScrollToBottom = scale == 1F,
         ) {
+
             item("budgetInfo") {
                 BudgetInfo(
                     budget = budget.value ?: BigDecimal(0),
