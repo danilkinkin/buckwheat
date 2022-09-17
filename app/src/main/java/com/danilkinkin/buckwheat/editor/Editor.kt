@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +27,7 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.combineColors
+import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import kotlin.math.max
 import kotlin.math.min
@@ -45,9 +45,8 @@ fun Editor(
 ) {
     val isDebug = appViewModel.isDebug.observeAsState(false)
 
-    val currState = remember { mutableStateOf<AnimState?>(null) }
+    var currState by remember { mutableStateOf<AnimState?>(null) }
     var currAnimator by remember { mutableStateOf<ValueAnimator?>(null) }
-    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
 
     val localDensity = LocalDensity.current
 
@@ -180,9 +179,9 @@ fun Editor(
     }
 
     fun animTo(state: AnimState) {
-        if (currState.value === state) return
+        if (currState == state) return
 
-        currState.value = state
+        currState = state
 
         if (currAnimator !== null) {
             currAnimator!!.pause()
@@ -210,35 +209,31 @@ fun Editor(
         }
     }
 
-    LaunchedEffect(Unit) {
+    observeLiveData(spendsViewModel.dailyBudget) {
         calculateValues()
+    }
 
-        spendsViewModel.dailyBudget.observe(lifecycleOwner.value) {
-            calculateValues()
-        }
+    observeLiveData(spendsViewModel.spentFromDailyBudget) {
+        calculateValues(budget = currState !== AnimState.EDITING, restBudget = false)
+    }
 
-        spendsViewModel.spentFromDailyBudget.observe(lifecycleOwner.value) {
-            calculateValues(budget = currState.value !== AnimState.EDITING, restBudget = false)
-        }
+    observeLiveData(spendsViewModel.stage) {
+        when (it) {
+            SpendsViewModel.Stage.IDLE, null -> {
+                if (currState === AnimState.EDITING) animTo(AnimState.RESET)
+            }
+            SpendsViewModel.Stage.CREATING_SPENT -> {
+                calculateValues(budget = false)
 
-        spendsViewModel.stage.observe(lifecycleOwner.value) {
-            when (it) {
-                SpendsViewModel.Stage.IDLE, null -> {
-                    if (currState.value === AnimState.EDITING) animTo(AnimState.RESET)
-                }
-                SpendsViewModel.Stage.CREATING_SPENT -> {
-                    calculateValues(budget = false)
+                animTo(AnimState.EDITING)
+            }
+            SpendsViewModel.Stage.EDIT_SPENT -> {
+                calculateValues(budget = false)
+            }
+            SpendsViewModel.Stage.COMMITTING_SPENT -> {
+                animTo(AnimState.COMMIT)
 
-                    animTo(AnimState.EDITING)
-                }
-                SpendsViewModel.Stage.EDIT_SPENT -> {
-                    calculateValues(budget = false)
-                }
-                SpendsViewModel.Stage.COMMITTING_SPENT -> {
-                    animTo(AnimState.COMMIT)
-
-                    spendsViewModel.resetSpent()
-                }
+                spendsViewModel.resetSpent()
             }
         }
     }
@@ -286,7 +281,7 @@ fun Editor(
                     .fillMaxSize()
                     .padding(start = 36.dp, end = 36.dp)
                     .onGloballyPositioned {
-                        if (currState.value === null) animTo(AnimState.FIRST_IDLE)
+                        if (currState === null) animTo(AnimState.FIRST_IDLE)
                     },
             ) {
                 EditorRow(
