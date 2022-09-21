@@ -16,6 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.colorEditor
+import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
 import java.util.*
@@ -28,16 +30,9 @@ fun BudgetInfo(
     currency: ExtendCurrency,
     modifier: Modifier = Modifier,
 ) {
-    val surfaceColor = combineColors(
-        MaterialTheme.colorScheme.primaryContainer,
-        MaterialTheme.colorScheme.surfaceVariant,
-        angle = 0.9F,
-    )
-    val contentColor = contentColorFor(surfaceColor)
-
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = surfaceColor,
+        color = colorEditor,
     ) {
         Column(
             modifier = modifier
@@ -49,13 +44,13 @@ fun BudgetInfo(
             Text(
                 text = stringResource(R.string.new_budget),
                 style = MaterialTheme.typography.labelLarge,
-                color = contentColor,
+                color = colorOnEditor,
             )
             Spacer(Modifier.height(16.dp))
             Text(
                 text = prettyCandyCanes(budget, currency = currency),
                 style = MaterialTheme.typography.displayLarge,
-                color = contentColor,
+                color = colorOnEditor,
             )
             Spacer(Modifier.height(24.dp))
             Row {
@@ -63,7 +58,7 @@ fun BudgetInfo(
                     Text(
                         text = stringResource(R.string.label_start_date),
                         style = MaterialTheme.typography.labelSmall,
-                        color = contentColor,
+                        color = colorOnEditor,
                     )
                     Text(
                         text = prettyDate(
@@ -72,7 +67,7 @@ fun BudgetInfo(
                             forceShowDate = true,
                         ),
                         style = MaterialTheme.typography.labelMedium,
-                        color = contentColor,
+                        color = colorOnEditor,
                     )
                 }
 
@@ -81,7 +76,7 @@ fun BudgetInfo(
                 Icon(
                     painter = painterResource(R.drawable.ic_arrow_forward),
                     contentDescription = null,
-                    tint = contentColor,
+                    tint = colorOnEditor,
                 )
 
                 Spacer(Modifier.width(16.dp))
@@ -90,7 +85,7 @@ fun BudgetInfo(
                     Text(
                         text = stringResource(R.string.label_finish_date),
                         style = MaterialTheme.typography.labelSmall,
-                        color = contentColor,
+                        color = colorOnEditor,
                     )
                     Text(
                         text = prettyDate(
@@ -99,7 +94,7 @@ fun BudgetInfo(
                             forceShowDate = true,
                         ),
                         style = MaterialTheme.typography.labelMedium,
-                        color = contentColor,
+                        color = colorOnEditor,
                     )
                 }
             }

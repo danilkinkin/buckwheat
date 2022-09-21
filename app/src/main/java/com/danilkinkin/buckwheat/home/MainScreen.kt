@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,8 +36,11 @@ import com.danilkinkin.buckwheat.topSheet.TopSheetState
 import com.danilkinkin.buckwheat.topSheet.TopSheetValue
 import com.danilkinkin.buckwheat.topSheet.rememberTopSheetState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.colorBackground
+import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.combineColors
+import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.Wallet
@@ -64,7 +66,6 @@ fun MainScreen(
     val presetFinishDate = remember { mutableStateOf<Date?>(null) }
     val requestFinishDateCallback = remember { mutableStateOf<((finishDate: Date) -> Unit)?>(null) }
     val snackbarHostState = remember { appViewModel.snackbarHostState }
-    val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
 
     val localDensity = LocalDensity.current
 
@@ -93,37 +94,35 @@ fun MainScreen(
         key = isNightModeM.value,
     )
 
-    LaunchedEffect(Unit) {
-        spendsViewModel.lastRemoveSpent.observe(lifecycleOwner.value) {
-            if (it == null) return@observe
+    observeLiveData(spendsViewModel.lastRemoveSpent) {
+        if (it == null) return@observeLiveData
 
+        coroutineScope.launch {
+            val snackbarResult = snackbarHostState.showSnackbar(
+                message = snackBarMessage,
+                actionLabel = snackBarAction
+            )
+
+            if (snackbarResult == SnackbarResult.ActionPerformed) {
+                spendsViewModel.undoRemoveSpent(it)
+            }
+        }
+    }
+
+    observeLiveData(spendsViewModel.requireReCalcBudget) {
+        Log.d("MainScreen", "requireReCalcBudget = $it")
+        if (it) {
             coroutineScope.launch {
-                val snackbarResult = snackbarHostState.showSnackbar(
-                    message = snackBarMessage,
-                    actionLabel = snackBarAction
-                )
-
-                if (snackbarResult == SnackbarResult.ActionPerformed) {
-                    spendsViewModel.undoRemoveSpent(it)
-                }
+                recalcBudgetSheetState.show()
             }
         }
+    }
 
-        spendsViewModel.requireReCalcBudget.observe(lifecycleOwner.value) {
-            Log.d("MainScreen", "requireReCalcBudget = $it")
-            if (it) {
-                coroutineScope.launch {
-                    recalcBudgetSheetState.show()
-                }
-            }
-        }
-
-        spendsViewModel.requireSetBudget.observe(lifecycleOwner.value) {
-            Log.d("MainScreen", "requireSetBudget = $it")
-            if (it) {
-                coroutineScope.launch {
-                    walletSheetState.show()
-                }
+    observeLiveData(spendsViewModel.requireSetBudget) {
+        Log.d("MainScreen", "requireSetBudget = $it")
+        if (it) {
+            coroutineScope.launch {
+                walletSheetState.show()
             }
         }
     }
@@ -135,7 +134,7 @@ fun MainScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(colorBackground)
             .onGloballyPositioned {
                 contentWidth = it.size.width.toFloat()
                 contentHeight = it.size.height.toFloat()
@@ -215,13 +214,7 @@ fun MainScreen(
                         .asPaddingValues()
                         .calculateTopPadding()
                 )
-                .background(
-                    combineColors(
-                        MaterialTheme.colorScheme.primaryContainer,
-                        MaterialTheme.colorScheme.surfaceVariant,
-                        angle = 0.9F,
-                    ).copy(alpha = 0.9F)
-                )
+                .background(colorEditor.copy(alpha = 0.9F))
         )
 
         BottomSheetWrapper(

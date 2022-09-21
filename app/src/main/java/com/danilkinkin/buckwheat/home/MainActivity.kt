@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             BuckwheatTheme {
+                //Colors()
                 MainScreen()
             }
         }

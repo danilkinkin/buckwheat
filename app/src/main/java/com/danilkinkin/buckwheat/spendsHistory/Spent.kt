@@ -22,6 +22,8 @@ import androidx.compose.material3.contentColorFor
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.colorEditor
+import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
 import java.util.*
@@ -55,13 +57,6 @@ fun Spent(
     } else {
         mapOf(0f to DeleteState.IDLE)
     }
-
-    val surfaceColor = combineColors(
-        MaterialTheme.colorScheme.primaryContainer,
-        MaterialTheme.colorScheme.surfaceVariant,
-        angle = 0.9F,
-    )
-    val contentColor = contentColorFor(surfaceColor)
 
     Box(
         modifier = modifier
@@ -98,7 +93,7 @@ fun Spent(
             modifier = modifier
                 .fillMaxWidth()
                 .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) },
-            color = surfaceColor,
+            color = colorEditor,
         ) {
             Row(
                 modifier = modifier.fillMaxWidth()
@@ -106,7 +101,7 @@ fun Spent(
                 Text(
                     text = prettyCandyCanes(spent.value, currency = currency),
                     style = MaterialTheme.typography.displayMedium,
-                    color = contentColor,
+                    color = colorOnEditor,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
                 )
                 Spacer(Modifier.weight(1F))
@@ -117,7 +112,7 @@ fun Spent(
                             .padding(horizontal = 24.dp, vertical = 16.dp),
                         text = prettyDate(spent.date),
                         style = MaterialTheme.typography.labelSmall,
-                        color = contentColor,
+                        color = colorOnEditor,
                     )
                 }
             }

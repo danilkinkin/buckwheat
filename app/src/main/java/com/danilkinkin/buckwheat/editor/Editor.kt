@@ -26,6 +26,8 @@ import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.colorEditor
+import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
@@ -241,11 +243,8 @@ fun Editor(
     Card(
         shape = RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp),
         colors = CardDefaults.cardColors(
-            containerColor = combineColors(
-                MaterialTheme.colorScheme.primaryContainer,
-                MaterialTheme.colorScheme.surfaceVariant,
-                angle = 0.9F,
-            )
+            containerColor = colorEditor,
+            contentColor = colorOnEditor,
         ),
         modifier = modifier.fillMaxSize()
     ) {

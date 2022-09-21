@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.colorButton
+import com.danilkinkin.buckwheat.ui.colorOnButton
 import com.danilkinkin.buckwheat.util.combineColors
 import java.lang.Integer.MAX_VALUE
 import kotlin.math.min
@@ -47,14 +49,17 @@ fun KeyboardButton(
     val radius = animateDpAsState(targetValue = if (isPressed.value) 20.dp else minSize / 2)
 
     val color = when (type) {
-        KeyboardButtonType.DEFAULT -> combineColors(
-            MaterialTheme.colorScheme.surface,
-            MaterialTheme.colorScheme.surfaceVariant,
-            angle = 0.4F,
-        )
+        KeyboardButtonType.DEFAULT -> colorButton
         KeyboardButtonType.PRIMARY -> MaterialTheme.colorScheme.primaryContainer
         KeyboardButtonType.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer
         KeyboardButtonType.TERTIARY -> MaterialTheme.colorScheme.tertiaryContainer
+    }
+
+    val contentColor = when (type) {
+        KeyboardButtonType.DEFAULT -> colorOnButton
+        KeyboardButtonType.PRIMARY -> contentColorFor(MaterialTheme.colorScheme.primaryContainer)
+        KeyboardButtonType.SECONDARY -> contentColorFor(MaterialTheme.colorScheme.secondaryContainer)
+        KeyboardButtonType.TERTIARY -> contentColorFor(MaterialTheme.colorScheme.tertiaryContainer)
     }
 
     Surface(
@@ -81,7 +86,7 @@ fun KeyboardButton(
             if (text !== null) {
                 Text(
                     text = text,
-                    color = contentColorFor(color),
+                    color = contentColor,
                     style = MaterialTheme.typography.titleLarge,
                     fontSize = with(localDensity) { min(minSizeFloat - minSizeFloat / 2, 904F).toSp() },
                 )
