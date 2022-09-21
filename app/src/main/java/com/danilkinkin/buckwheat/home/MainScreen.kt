@@ -217,6 +217,34 @@ fun MainScreen(
                 .background(colorEditor.copy(alpha = 0.9F))
         )
 
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .navigationBarsPadding(),
+        ) {
+            SnackbarHost(hostState = snackbarHostState)
+
+            if (scale < 0.5F) {
+                FloatingActionButton(
+                    modifier = Modifier.padding(end = 24.dp, bottom = 24.dp),
+                    onClick = {
+                        coroutineScope.launch {
+                            topSheetState.halfExpand()
+                        }
+                    },
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_home),
+                        contentDescription = null,
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                    )
+
+                }
+            }
+        }
+
         BottomSheetWrapper(
             state = walletSheetState,
             cancelable = spendsViewModel.requireSetBudget.value == false,
@@ -276,34 +304,6 @@ fun MainScreen(
                     }
                 }
             )
-        }
-
-        Column(
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .navigationBarsPadding(),
-        ) {
-            SnackbarHost(hostState = snackbarHostState)
-
-            if (scale < 0.5F) {
-                FloatingActionButton(
-                    modifier = Modifier.padding(end = 24.dp, bottom = 24.dp),
-                    onClick = {
-                        coroutineScope.launch {
-                            topSheetState.halfExpand()
-                        }
-                    },
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_home),
-                        contentDescription = null,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
-                    )
-
-                }
-            }
         }
     }
 }
