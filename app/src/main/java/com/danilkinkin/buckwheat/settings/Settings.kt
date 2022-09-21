@@ -2,6 +2,8 @@ package com.danilkinkin.buckwheat.settings
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import com.danilkinkin.buckwheat.base.Divider
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -52,27 +54,29 @@ fun Settings(onClose: () -> Unit = {}) {
                 )
             }
             Divider()
-            TextRow(
-                icon = painterResource(R.drawable.ic_dark_mode),
-                text = stringResource(R.string.theme_label),
-            )
-            CheckedRow(
-                checked = theme == ThemeMode.LIGHT,
-                onValueChange = { switchTheme(ThemeMode.LIGHT) },
-                text = stringResource(R.string.theme_light),
-            )
-            CheckedRow(
-                checked = theme == ThemeMode.NIGHT,
-                onValueChange = { switchTheme(ThemeMode.NIGHT) },
-                text = stringResource(R.string.theme_dark),
-            )
-            CheckedRow(
-                checked = theme == ThemeMode.SYSTEM,
-                onValueChange = { switchTheme(ThemeMode.SYSTEM) },
-                text = stringResource(R.string.theme_system),
-            )
-            Divider()
-            About(Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp))
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                TextRow(
+                    icon = painterResource(R.drawable.ic_dark_mode),
+                    text = stringResource(R.string.theme_label),
+                )
+                CheckedRow(
+                    checked = theme == ThemeMode.LIGHT,
+                    onValueChange = { switchTheme(ThemeMode.LIGHT) },
+                    text = stringResource(R.string.theme_light),
+                )
+                CheckedRow(
+                    checked = theme == ThemeMode.NIGHT,
+                    onValueChange = { switchTheme(ThemeMode.NIGHT) },
+                    text = stringResource(R.string.theme_dark),
+                )
+                CheckedRow(
+                    checked = theme == ThemeMode.SYSTEM,
+                    onValueChange = { switchTheme(ThemeMode.SYSTEM) },
+                    text = stringResource(R.string.theme_system),
+                )
+                Divider()
+                About(Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp))
+            }
         }
     }
 }

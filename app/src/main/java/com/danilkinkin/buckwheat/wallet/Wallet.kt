@@ -1,7 +1,9 @@
 package com.danilkinkin.buckwheat.wallet
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -52,7 +54,9 @@ fun Wallet(
             val days = countDays(dateToValue.value)
 
             Box(
-                modifier = Modifier.fillMaxWidth().padding(24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -61,120 +65,122 @@ fun Wallet(
                 )
            }
             Divider()
-            TextRow(
-                icon = painterResource(R.drawable.ic_money),
-                text = stringResource(R.string.label_budget),
-            )
-            TextField(
-                modifier = Modifier
-                    .padding(start = 56.dp)
-                    .fillMaxWidth(),
-                value = budget.value.toString(),
-                onValueChange = {
-                    try {
-                        budget.value = BigDecimal(it)
-                    } catch (E: Exception) {
-                        budget.value = BigDecimal(0)
-                    }
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent,
-                ),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                textStyle = MaterialTheme.typography.displaySmall,
-                visualTransformation = visualTransformationAsCurrency(
-                    currency = ExtendCurrency(type = CurrencyType.NONE)
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                TextRow(
+                    icon = painterResource(R.drawable.ic_money),
+                    text = stringResource(R.string.label_budget),
                 )
-            )
-            Divider()
-            ButtonRow(
-                icon = painterResource(R.drawable.ic_calendar),
-                text = String.format(
-                    pluralStringResource(R.plurals.finish_date_label, 32),
-                    prettyDate(dateToValue.value, showTime = false, forceShowDate = true),
-                    days,
-                ),
-                onClick = {
-                    coroutineScope.launch {
-                        requestFinishDate(dateToValue.value) {
-                            dateToValue.value = it
+                TextField(
+                    modifier = Modifier
+                        .padding(start = 56.dp)
+                        .fillMaxWidth(),
+                    value = budget.value.toString(),
+                    onValueChange = {
+                        try {
+                            budget.value = BigDecimal(it)
+                        } catch (E: Exception) {
+                            budget.value = BigDecimal(0)
                         }
-                    }
-                },
-            )
-            Divider()
-            TextRow(
-                icon = painterResource(R.drawable.ic_currency),
-                text = stringResource(R.string.in_currency_label),
-            )
-            CheckedRow(
-                checked = currency.value.type === CurrencyType.FROM_LIST,
-                onValueChange = { openCurrencyChooserDialog.value = true },
-                text = if (currency.value.type !== CurrencyType.FROM_LIST) {
-                    stringResource(R.string.currency_from_list)
-                } else {
-                    stringResource(
-                        id = R.string.currency_from_list_selected,
-                        Currency.getInstance(currency.value.value).symbol
-                    )
-                },
-            )
-            CheckedRow(
-                checked = currency.value.type === CurrencyType.CUSTOM,
-                onValueChange = { openCustomCurrencyEditorDialog.value = true },
-                text = if (currency.value.type !== CurrencyType.CUSTOM) {
-                    stringResource(R.string.currency_custom)
-                } else {
-                    stringResource(
-                        id = R.string.currency_custom_selected,
-                        currency.value.value!!
-                    )
-                },
-            )
-            CheckedRow(
-                checked = currency.value.type === CurrencyType.NONE,
-                onValueChange = {
-                    if (it) {
-                        currency.value = ExtendCurrency(type = CurrencyType.NONE)
-                    }
-                },
-                text = stringResource(R.string.currency_none),
-            )
-            Divider()
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = stringResource(
-                    R.string.per_day,
-                    prettyCandyCanes(
-                        if (days != 0) {
-                            (budget.value / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
-                        } else {
-                            budget.value
-                        },
-                        currency = currency.value,
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent,
                     ),
-                ),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(start = 56.dp)
-            )
-            Spacer(Modifier.height(24.dp))
-            Button(
-                onClick = {
-                    spendsViewModel.changeCurrency(currency.value)
-                    spendsViewModel.changeBudget(budget.value, dateToValue.value)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    textStyle = MaterialTheme.typography.displaySmall,
+                    visualTransformation = visualTransformationAsCurrency(
+                        currency = ExtendCurrency(type = CurrencyType.NONE)
+                    )
+                )
+                Divider()
+                ButtonRow(
+                    icon = painterResource(R.drawable.ic_calendar),
+                    text = String.format(
+                        pluralStringResource(R.plurals.finish_date_label, 32),
+                        prettyDate(dateToValue.value, showTime = false, forceShowDate = true),
+                        days,
+                    ),
+                    onClick = {
+                        coroutineScope.launch {
+                            requestFinishDate(dateToValue.value) {
+                                dateToValue.value = it
+                            }
+                        }
+                    },
+                )
+                Divider()
+                TextRow(
+                    icon = painterResource(R.drawable.ic_currency),
+                    text = stringResource(R.string.in_currency_label),
+                )
+                CheckedRow(
+                    checked = currency.value.type === CurrencyType.FROM_LIST,
+                    onValueChange = { openCurrencyChooserDialog.value = true },
+                    text = if (currency.value.type !== CurrencyType.FROM_LIST) {
+                        stringResource(R.string.currency_from_list)
+                    } else {
+                        stringResource(
+                            id = R.string.currency_from_list_selected,
+                            Currency.getInstance(currency.value.value).symbol
+                        )
+                    },
+                )
+                CheckedRow(
+                    checked = currency.value.type === CurrencyType.CUSTOM,
+                    onValueChange = { openCustomCurrencyEditorDialog.value = true },
+                    text = if (currency.value.type !== CurrencyType.CUSTOM) {
+                        stringResource(R.string.currency_custom)
+                    } else {
+                        stringResource(
+                            id = R.string.currency_custom_selected,
+                            currency.value.value!!
+                        )
+                    },
+                )
+                CheckedRow(
+                    checked = currency.value.type === CurrencyType.NONE,
+                    onValueChange = {
+                        if (it) {
+                            currency.value = ExtendCurrency(type = CurrencyType.NONE)
+                        }
+                    },
+                    text = stringResource(R.string.currency_none),
+                )
+                Divider()
+                Spacer(Modifier.height(24.dp))
+                Text(
+                    text = stringResource(
+                        R.string.per_day,
+                        prettyCandyCanes(
+                            if (days != 0) {
+                                (budget.value / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
+                            } else {
+                                budget.value
+                            },
+                            currency = currency.value,
+                        ),
+                    ),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(start = 56.dp)
+                )
+                Spacer(Modifier.height(24.dp))
+                Button(
+                    onClick = {
+                        spendsViewModel.changeCurrency(currency.value)
+                        spendsViewModel.changeBudget(budget.value, dateToValue.value)
 
-                    onClose()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                enabled = countDays(dateToValue.value) > 0 && budget.value > BigDecimal(0)
-            ) {
-                Text(text = stringResource(id = R.string.apply))
+                        onClose()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    enabled = countDays(dateToValue.value) > 0 && budget.value > BigDecimal(0)
+                ) {
+                    Text(text = stringResource(id = R.string.apply))
+                }
             }
         }
     }
