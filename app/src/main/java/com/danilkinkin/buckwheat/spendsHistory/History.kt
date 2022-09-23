@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +23,7 @@ import java.util.*
 fun History(spendsViewModel: SpendsViewModel = viewModel()) {
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    var isFirstRender by remember { mutableStateOf(true) }
 
     val spends = spendsViewModel.getSpends().observeAsState(initial = emptyList())
     val budget = spendsViewModel.budget.observeAsState()
@@ -32,6 +31,10 @@ fun History(spendsViewModel: SpendsViewModel = viewModel()) {
     val finishDate = spendsViewModel.finishDate
 
     DisposableEffect(spends.value.size) {
+        if (!isFirstRender) return@DisposableEffect onDispose {  }
+        
+        if (spends.value.isNotEmpty()) isFirstRender = false
+
         coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
             scrollState.scrollToItem(spends.value.size + 1)
         }
