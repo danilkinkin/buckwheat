@@ -1,23 +1,38 @@
 package com.danilkinkin.buckwheat.topSheet
 
+import android.util.Log
 import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.launch
+import androidx.compose.ui.unit.dp
+import com.danilkinkin.buckwheat.base.ModalBottomSheetDefaults
+import com.danilkinkin.buckwheat.ui.colorEditor
+import com.danilkinkin.buckwheat.ui.colorOnEditor
+import java.lang.Float.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -40,7 +55,7 @@ class TopSheetState(
     confirmStateChange = confirmStateChange
 ) {
     val isExpand: Boolean
-        get() = currentValue != TopSheetValue.Expanded
+        get() = currentValue != TopSheetValue.HalfExpanded
 
     val sheetHeight: Float
         get() = this.sheetHeightFloat.value
@@ -143,12 +158,10 @@ fun TopSheetLayout(
     modifier: Modifier = Modifier,
     sheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded),
     customHalfHeight: Float? = null,
-    scrollState: LazyListState = rememberLazyListState(),
-    itemsCount: Int = 1,
-    autoScrollToBottom: Boolean = false,
-    sheetContent: LazyListScope.() -> Unit,
+    sheetContentHalfExpand: @Composable () -> Unit,
+    sheetContentExpand: @Composable () -> Unit,
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val navigationBarHeight = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
 
     BoxWithConstraints(
         modifier = modifier,
@@ -156,46 +169,80 @@ fun TopSheetLayout(
     ) {
         val fullHeight = constraints.maxHeight.toFloat()
         val halfHeight = customHalfHeight ?: (fullHeight / 2)
-        val sheetHeightState = remember { mutableStateOf<Float?>(null) }
+        val expandHeight = with(LocalDensity.current) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
+        val currOffset = sheetState.offset.value + (fullHeight - halfHeight)
+        val maxOffset = (-(fullHeight - expandHeight) - -(fullHeight - halfHeight))
+        val progress = currOffset / maxOffset
 
-        Box(
-            Modifier
+        Box(Modifier.fillMaxSize()) {
+            Scrim(
+                color = ModalBottomSheetDefaults.scrimColor,
+                onDismiss = { },
+                targetValue = min(progress * 5, 1f),
+            )
+        }
+
+        androidx.compose.material3.Card(
+            shape = RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = colorEditor,
+                contentColor = colorOnEditor,
+            ),
+            modifier = modifier
                 .fillMaxWidth()
+                .height(with(LocalDensity.current) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()).toDp() })
                 .nestedScroll(sheetState.nestedScrollConnection)
-                .offset {
-                    val y = if (sheetState.anchors.isEmpty()) {
-                        // if we don't know our anchors yet, render the sheet as hidden
-                        -fullHeight.roundToInt()
-                    } else {
-                        // if we do know our anchors, respect them
-                        sheetState.offset.value.roundToInt()
-                    }
-                    IntOffset(0, y)
-                }
+                .offset { IntOffset(0, sheetState.offset.value.roundToInt()) }
                 .topSheetSwipeable(
                     sheetState,
                     fullHeight,
                     halfHeight,
-                    sheetHeightState,
+                    expandHeight,
                 )
         ) {
-            Box {
-                DisposableEffect(itemsCount) {
-                    coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
-                        if (autoScrollToBottom) scrollState.scrollToItem(itemsCount)
+            Box(modifier = modifier.fillMaxSize()) {
+                if (progress != 0f) {
+                    Box(Modifier.fillMaxSize().alpha(max(progress * 2f - 1f, 0f))) {
+                        sheetContentExpand()
                     }
-
-                    onDispose { }
                 }
 
-                LazyColumn(
-                    state = scrollState,
-                    content = sheetContent,
-                    modifier = Modifier.onGloballyPositioned {
-                        sheetHeightState.value = it.size.height.toFloat()
-                        sheetState.sheetHeightFloat.value = it.size.height.toFloat()
-                    },
-                )
+                if (progress != 1f) {
+                    Column(
+                        Modifier.fillMaxSize().alpha(max(1f - progress * 2, 0f)),
+                    ) {
+                        Box(Modifier.fillMaxWidth().weight(1F).background(colorEditor))
+                        sheetContentHalfExpand()
+                    }
+                }
+
+                Box(
+                    Modifier
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    colorEditor.copy(alpha = 0f),
+                                    colorEditor.copy(alpha = progress.roundToInt().toFloat()),
+                                ),
+                                startY = 0f,
+                                endY = (6 / 32f) * 100f,
+                            )
+                        )
+                        .padding(bottom = 10.dp, top = 16.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                ) {
+                    Box(
+                        Modifier
+                            .height(4.dp)
+                            .width(50.dp)
+                            .background(
+                                color = MaterialTheme.colorScheme.primary,
+                                shape = CircleShape
+                            )
+                            .align(Alignment.Center)
+                    )
+                }
             }
         }
     }
@@ -207,25 +254,45 @@ private fun Modifier.topSheetSwipeable(
     sheetState: TopSheetState,
     fullHeight: Float,
     halfHeight: Float,
-    sheetHeightState: State<Float?>
+    expandHeight: Float,
 ): Modifier {
-    val sheetHeight = sheetHeightState.value
-
-    val modifier = if (sheetHeight != null) {
-        val anchors = mapOf(
-            -(sheetHeight - halfHeight) to TopSheetValue.HalfExpanded,
-            min(0f, fullHeight - (fullHeight - sheetHeight)) to TopSheetValue.Expanded
-        )
-
-        Modifier.swipeable(
-            state = sheetState,
-            anchors = anchors,
-            orientation = Orientation.Vertical,
-            resistance = null
-        )
-    } else {
-        Modifier
-    }
+    val modifier = Modifier.swipeable(
+        state = sheetState,
+        anchors = mapOf(
+            -(fullHeight - halfHeight) to TopSheetValue.HalfExpanded,
+            -(fullHeight - expandHeight) to TopSheetValue.Expanded
+        ),
+        orientation = Orientation.Vertical,
+        resistance = null
+    )
 
     return this.then(modifier)
+}
+
+@Composable
+fun Scrim(
+    color: Color,
+    onDismiss: () -> Unit,
+    targetValue: Float
+) {
+    if (color.isSpecified) {
+        val dismissModifier = if (targetValue != 0f) {
+            Modifier
+                .pointerInput(onDismiss) { detectTapGestures { onDismiss() } }
+                .semantics(mergeDescendants = true) {
+                    contentDescription = null.toString()
+                    onClick { onDismiss(); true }
+                }
+        } else {
+            Modifier
+        }
+
+        Canvas(
+            Modifier
+                .fillMaxSize()
+                .then(dismissModifier)
+        ) {
+            drawRect(color = color, alpha = targetValue)
+        }
+    }
 }

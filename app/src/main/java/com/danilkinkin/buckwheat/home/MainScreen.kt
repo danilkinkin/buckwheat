@@ -3,6 +3,8 @@ package com.danilkinkin.buckwheat.home
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import com.danilkinkin.buckwheat.base.ModalBottomSheetValue
 import com.danilkinkin.buckwheat.base.rememberModalBottomSheetState
@@ -12,13 +14,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
@@ -39,15 +39,14 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorBackground
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.isNightMode
-import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.Wallet
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.util.*
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -55,8 +54,6 @@ fun MainScreen(
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
 ) {
-    var contentHeight by remember { mutableStateOf(0F) }
-    var contentWidth by remember { mutableStateOf(0F) }
     val topSheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded)
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val finishDateSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -66,6 +63,7 @@ fun MainScreen(
     val presetFinishDate = remember { mutableStateOf<Date?>(null) }
     val requestFinishDateCallback = remember { mutableStateOf<((finishDate: Date) -> Unit)?>(null) }
     val snackbarHostState = remember { appViewModel.snackbarHostState }
+    val scrollState = rememberLazyListState()
 
     val localDensity = LocalDensity.current
 
@@ -127,28 +125,23 @@ fun MainScreen(
         }
     }
 
-    val offset = topSheetState.offset.value.roundToInt() + (topSheetState.sheetHeight - contentHeight)
-
-    val scale = (1 - (offset + contentWidth) / contentWidth).coerceIn(0f, 1f).let { if (it.isNaN()) 0f else it }
-
-    Box(
+    BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorBackground)
-            .onGloballyPositioned {
-                contentWidth = it.size.width.toFloat()
-                contentHeight = it.size.height.toFloat()
-            },
+            .background(colorBackground),
     ) {
+        val contentHeight = constraints.maxHeight.toFloat()
+        val contentWidth = constraints.maxWidth.toFloat()
+        val editorHeight = contentHeight - contentWidth
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = with(localDensity) { (contentHeight - contentWidth).toDp() })
-                .offset(y = with(localDensity) { contentWidth.toDp() * (1F - scale) })
+                .padding(top = with(localDensity) { editorHeight.toDp() })
         ) {
             Keyboard(
                 modifier = Modifier
-                    .height(max(with(localDensity) { contentWidth.toDp() * scale }, 250.dp))
+                    .height(with(localDensity) { contentWidth.toDp() })
                     .fillMaxWidth()
                     .navigationBarsPadding()
             )
@@ -156,37 +149,11 @@ fun MainScreen(
 
         TopSheetLayout(
             sheetState = topSheetState,
-            customHalfHeight = contentHeight - contentWidth,
-            itemsCount = spends.value.size + 2,
-            autoScrollToBottom = scale == 1F,
-        ) {
-
-            item("budgetInfo") {
-                BudgetInfo(
-                    budget = budget.value ?: BigDecimal(0),
-                    startDate = startDate,
-                    finishDate = finishDate,
-                    currency = spendsViewModel.currency,
-                )
-                Divider()
-            }
-            spends.value.forEach {
-                item(it.uid) {
-                    Spent(
-                        spent = it,
-                        currency = spendsViewModel.currency,
-                        onDelete = {
-                            spendsViewModel.removeSpent(it)
-                        }
-                    )
-                    Divider()
-                }
-            }
-            item("editor") {
+            customHalfHeight = editorHeight,
+            sheetContentHalfExpand = {
                 Editor(
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .height(with(localDensity) { (contentHeight - contentWidth).toDp() }),
+                        .height(with(localDensity) { editorHeight.toDp() }),
                     onOpenWallet = {
                         coroutineScope.launch {
                             walletSheetState.show()
@@ -203,6 +170,44 @@ fun MainScreen(
                         }
                     },
                 )
+            }
+        ) {
+            Box {
+                LazyColumn(
+                    state = scrollState,
+                ) {
+                    item {
+                        LaunchedEffect(Unit) {
+                            Log.d("MainScreen", "history size = ${spends.value.size}")
+                            coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
+                                scrollState.scrollToItem(spends.value.size + 1)
+                            }
+                        }
+                    }
+                    item("budgetInfo") {
+                        BudgetInfo(
+                            budget = budget.value ?: BigDecimal(0),
+                            startDate = startDate,
+                            finishDate = finishDate,
+                            currency = spendsViewModel.currency,
+                        )
+                    }
+                    spends.value.forEach {
+                        item(it.uid) {
+                            Divider()
+                            Spent(
+                                spent = it,
+                                currency = spendsViewModel.currency,
+                                onDelete = {
+                                    spendsViewModel.removeSpent(it)
+                                }
+                            )
+                        }
+                    }
+                    item { 
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+                }
             }
         }
 
@@ -226,7 +231,7 @@ fun MainScreen(
         ) {
             SnackbarHost(hostState = snackbarHostState)
 
-            if (scale < 0.5F) {
+            if (false) {
                 FloatingActionButton(
                     modifier = Modifier.padding(end = 24.dp, bottom = 24.dp),
                     onClick = {
