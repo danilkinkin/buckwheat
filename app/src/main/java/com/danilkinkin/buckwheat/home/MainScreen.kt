@@ -30,6 +30,7 @@ import com.danilkinkin.buckwheat.keyboard.Keyboard
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.Settings
 import com.danilkinkin.buckwheat.spendsHistory.BudgetInfo
+import com.danilkinkin.buckwheat.spendsHistory.HistoryDateDivider
 import com.danilkinkin.buckwheat.spendsHistory.Spent
 import com.danilkinkin.buckwheat.topSheet.TopSheetLayout
 import com.danilkinkin.buckwheat.topSheet.TopSheetState
@@ -39,6 +40,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorBackground
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.isNightMode
+import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
@@ -192,9 +194,18 @@ fun MainScreen(
                             currency = spendsViewModel.currency,
                         )
                     }
+
+                    var lastDate: Date? = null
+
                     spends.value.forEach {
+                        if (lastDate === null || !isSameDay(it.date.time, lastDate!!.time)) {
+                            lastDate = it.date
+
+                            item(it.date.time) {
+                                HistoryDateDivider(it.date)
+                            }
+                        }
                         item(it.uid) {
-                            Divider()
                             Spent(
                                 spent = it,
                                 currency = spendsViewModel.currency,
