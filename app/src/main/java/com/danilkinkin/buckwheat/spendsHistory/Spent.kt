@@ -89,6 +89,7 @@ fun Spent(
                     .fillMaxWidth()
                     .height(with(localDensity) { height.value.toDp() })
                     .background(MaterialTheme.colorScheme.errorContainer),
+                contentAlignment = Alignment.CenterEnd,
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_delete_forever),
