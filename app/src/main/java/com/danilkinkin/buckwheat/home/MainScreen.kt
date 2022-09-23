@@ -3,14 +3,11 @@ package com.danilkinkin.buckwheat.home
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import com.danilkinkin.buckwheat.base.ModalBottomSheetValue
 import com.danilkinkin.buckwheat.base.rememberModalBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,9 +26,7 @@ import com.danilkinkin.buckwheat.editor.Editor
 import com.danilkinkin.buckwheat.keyboard.Keyboard
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.Settings
-import com.danilkinkin.buckwheat.spendsHistory.BudgetInfo
-import com.danilkinkin.buckwheat.spendsHistory.HistoryDateDivider
-import com.danilkinkin.buckwheat.spendsHistory.Spent
+import com.danilkinkin.buckwheat.spendsHistory.History
 import com.danilkinkin.buckwheat.topSheet.TopSheetLayout
 import com.danilkinkin.buckwheat.topSheet.TopSheetState
 import com.danilkinkin.buckwheat.topSheet.TopSheetValue
@@ -40,14 +35,11 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorBackground
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.isNightMode
-import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.Wallet
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -65,15 +57,8 @@ fun MainScreen(
     val presetFinishDate = remember { mutableStateOf<Date?>(null) }
     val requestFinishDateCallback = remember { mutableStateOf<((finishDate: Date) -> Unit)?>(null) }
     val snackbarHostState = remember { appViewModel.snackbarHostState }
-    val scrollState = rememberLazyListState()
 
     val localDensity = LocalDensity.current
-
-    val spends = spendsViewModel.getSpends().observeAsState(initial = emptyList())
-    val budget = spendsViewModel.budget.observeAsState()
-    val startDate = spendsViewModel.startDate
-    val finishDate = spendsViewModel.finishDate
-
 
     val snackBarMessage = stringResource(R.string.remove_spent)
     val snackBarAction = stringResource(R.string.remove_spent_undo)
@@ -154,8 +139,7 @@ fun MainScreen(
             customHalfHeight = editorHeight,
             sheetContentHalfExpand = {
                 Editor(
-                    modifier = Modifier
-                        .height(with(localDensity) { editorHeight.toDp() }),
+                    modifier = Modifier.height(with(localDensity) { editorHeight.toDp() }),
                     onOpenWallet = {
                         coroutineScope.launch {
                             walletSheetState.show()
@@ -174,52 +158,7 @@ fun MainScreen(
                 )
             }
         ) {
-            Box {
-                LazyColumn(
-                    state = scrollState,
-                ) {
-                    item {
-                        LaunchedEffect(Unit) {
-                            Log.d("MainScreen", "history size = ${spends.value.size}")
-                            coroutineScope.launch(start = CoroutineStart.UNDISPATCHED) {
-                                scrollState.scrollToItem(spends.value.size + 1)
-                            }
-                        }
-                    }
-                    item("budgetInfo") {
-                        BudgetInfo(
-                            budget = budget.value ?: BigDecimal(0),
-                            startDate = startDate,
-                            finishDate = finishDate,
-                            currency = spendsViewModel.currency,
-                        )
-                    }
-
-                    var lastDate: Date? = null
-
-                    spends.value.forEach {
-                        if (lastDate === null || !isSameDay(it.date.time, lastDate!!.time)) {
-                            lastDate = it.date
-
-                            item(it.date.time) {
-                                HistoryDateDivider(it.date)
-                            }
-                        }
-                        item(it.uid) {
-                            Spent(
-                                spent = it,
-                                currency = spendsViewModel.currency,
-                                onDelete = {
-                                    spendsViewModel.removeSpent(it)
-                                }
-                            )
-                        }
-                    }
-                    item { 
-                        Spacer(modifier = Modifier.height(20.dp))
-                    }
-                }
-            }
+            History()
         }
 
         Box(

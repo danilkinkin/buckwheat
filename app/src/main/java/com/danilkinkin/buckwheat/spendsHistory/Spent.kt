@@ -100,7 +100,7 @@ fun Spent(
             ) {
                 Text(
                     text = prettyCandyCanes(spent.value, currency = currency),
-                    style = MaterialTheme.typography.displayMedium,
+                    style = MaterialTheme.typography.displaySmall,
                     color = colorOnEditor,
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
                 )
