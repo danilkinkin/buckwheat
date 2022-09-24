@@ -1,8 +1,6 @@
 package com.danilkinkin.buckwheat.spendsHistory
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.*
@@ -20,7 +18,10 @@ import java.math.BigDecimal
 import java.util.*
 
 @Composable
-fun History(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: AppViewModel = viewModel()) {
+fun History(
+    spendsViewModel: SpendsViewModel = viewModel(),
+    appViewModel: AppViewModel = viewModel(),
+) {
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     var isFirstRender by remember { mutableStateOf(true) }
@@ -36,10 +37,8 @@ fun History(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: AppVie
         onDispose { appViewModel.lockSwipeable.value = false }
     }
 
-    Box {
-        LazyColumn(
-            state = scrollState,
-        ) {
+    Column(Modifier.fillMaxSize()) {
+        LazyColumn(state = scrollState) {
             item("budgetInfo") {
                 DisposableEffect(spends.value.size) {
                     if (spends.value.isEmpty() || !isFirstRender) return@DisposableEffect onDispose {  }
@@ -80,6 +79,7 @@ fun History(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: AppVie
                     )
                 }
             }
+
             item {
                 Spacer(modifier = Modifier.height(20.dp))
             }
@@ -90,6 +90,10 @@ fun History(spendsViewModel: SpendsViewModel = viewModel(), appViewModel: AppVie
                     onDispose { appViewModel.lockSwipeable.value = true }
                 }
             }
+        }
+
+        if (spends.value.isEmpty()) {
+            NoSpends(Modifier.weight(1f))
         }
     }
 }
