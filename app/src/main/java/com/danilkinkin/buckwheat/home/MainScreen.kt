@@ -36,9 +36,9 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.Wallet
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.concurrent.thread
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -77,10 +77,10 @@ fun MainScreen(
         key = isNightModeM.value,
     )
 
-    observeLiveData(spendsViewModel.lastRemoveSpent) {
-        if (it == null) return@observeLiveData
 
-        coroutineScope.launch {
+
+    LaunchedEffect(Unit) {
+        spendsViewModel.lastRemoveSpent.collectLatest {
             val snackbarResult = snackbarHostState.showSnackbar(
                 message = snackBarMessage,
                 actionLabel = snackBarAction

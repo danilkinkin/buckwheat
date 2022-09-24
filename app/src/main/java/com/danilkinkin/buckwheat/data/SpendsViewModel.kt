@@ -1,18 +1,14 @@
 package com.danilkinkin.buckwheat.data
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.data.entities.Storage
 import com.danilkinkin.buckwheat.di.DatabaseRepository
 import com.danilkinkin.buckwheat.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -31,7 +27,7 @@ class SpendsViewModel @Inject constructor(
     private val storageDao = db.storageDao()
 
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
-    var lastRemoveSpent: MutableLiveData<Spent> = MutableLiveData(null)
+    var lastRemoveSpent: MutableSharedFlow<Spent> = MutableSharedFlow()
 
     var budget: MutableLiveData<BigDecimal> = MutableLiveData(
         try {
@@ -212,32 +208,9 @@ class SpendsViewModel @Inject constructor(
         spentFromDailyBudget.value = spentFromDailyBudget.value!! - spent.value
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
 
-        lastRemoveSpent.value = spent
-
-        /* Snackbar
-            .make(
-                MainActivity.getInstance().parentView,
-                R.string.remove_spent,
-                Snackbar.LENGTH_LONG
-            )
-            .setAction(
-                MainActivity
-                    .getInstance()
-                    .applicationContext
-                    .getString(R.string.remove_spent_undo)
-                    .uppercase(Locale.getDefault())
-            ) {
-                this.spentDao.insert(spent)
-
-                spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
-                storageDao.set(
-                    Storage(
-                        "spentFromDailyBudget",
-                        spentFromDailyBudget.value.toString()
-                    )
-                )
-            }
-            .show() */
+        viewModelScope.launch {
+            lastRemoveSpent.emit(spent)
+        }
     }
 
     fun undoRemoveSpent(spent: Spent) {
