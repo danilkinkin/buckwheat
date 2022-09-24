@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -88,12 +89,12 @@ fun Spent(
                 Modifier
                     .fillMaxWidth()
                     .height(with(localDensity) { height.value.toDp() })
-                    .background(MaterialTheme.colorScheme.errorContainer),
+                    .background(MaterialTheme.colorScheme.error),
                 contentAlignment = Alignment.CenterEnd,
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_delete_forever),
-                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                    tint = MaterialTheme.colorScheme.onError,
                     contentDescription = null,
                     modifier = Modifier
                         .offset(with(LocalDensity.current) {
@@ -106,18 +107,27 @@ fun Spent(
         Surface(
             modifier = modifier
                 .fillMaxWidth()
+                .height(with(localDensity) { height.value.toDp() })
                 .offset { IntOffset(min(swipeableState.offset.value, 0f).roundToInt(), 0) }
-                .padding(vertical = min(size, 4.dp))
+                .padding(vertical = min(size / 4f, 4.dp))
                 .shadow(
                     min(size, 4.dp),
                     RoundedCornerShape(size),
                 ),
             color = colorEditor,
+        ) {}
+
+        Surface(
+            modifier = modifier
+                .fillMaxWidth()
+                .offset { IntOffset(min(swipeableState.offset.value, 0f).roundToInt(), 0) }
+                .padding(vertical = 4.dp)
+                .clip(RoundedCornerShape(16.dp)),
+            color = colorEditor,
         ) {
             Row(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(-min(size - 4.dp, 0.dp))
             ) {
                 Text(
                     text = prettyCandyCanes(spent.value, currency = currency),
