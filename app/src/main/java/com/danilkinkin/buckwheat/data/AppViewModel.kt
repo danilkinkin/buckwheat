@@ -1,6 +1,8 @@
 package com.danilkinkin.buckwheat.data
 
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
@@ -26,6 +28,9 @@ class AppViewModel @Inject constructor(
 
     var snackbarHostState = SnackbarHostState()
         private set
+
+
+    var lockSwipeable: MutableState<Boolean> = mutableStateOf(false)
 
     var statusBarStack: MutableList<() -> SystemBarState> = emptyList<() -> SystemBarState>().toMutableList()
 

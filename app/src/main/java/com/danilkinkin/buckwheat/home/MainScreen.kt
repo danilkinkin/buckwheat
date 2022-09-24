@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
+import com.danilkinkin.buckwheat.base.TopSheetLayout
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
@@ -27,10 +28,6 @@ import com.danilkinkin.buckwheat.keyboard.Keyboard
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.Settings
 import com.danilkinkin.buckwheat.spendsHistory.History
-import com.danilkinkin.buckwheat.topSheet.TopSheetLayout
-import com.danilkinkin.buckwheat.topSheet.TopSheetState
-import com.danilkinkin.buckwheat.topSheet.TopSheetValue
-import com.danilkinkin.buckwheat.topSheet.rememberTopSheetState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorBackground
 import com.danilkinkin.buckwheat.ui.colorEditor
@@ -41,6 +38,7 @@ import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.Wallet
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.concurrent.thread
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -48,7 +46,7 @@ fun MainScreen(
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
 ) {
-    val topSheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded)
+    // val topSheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded)
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val finishDateSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val settingsSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -135,8 +133,9 @@ fun MainScreen(
         }
 
         TopSheetLayout(
-            sheetState = topSheetState,
+            // sheetState = topSheetState,
             customHalfHeight = editorHeight,
+            lockSwipeable = appViewModel.lockSwipeable,
             sheetContentHalfExpand = {
                 Editor(
                     modifier = Modifier.height(with(localDensity) { editorHeight.toDp() }),
@@ -186,7 +185,7 @@ fun MainScreen(
                     modifier = Modifier.padding(end = 24.dp, bottom = 24.dp),
                     onClick = {
                         coroutineScope.launch {
-                            topSheetState.halfExpand()
+                            // topSheetState.halfExpand()
                         }
                     },
                 ) {

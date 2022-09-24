@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.topSheet
+package com.danilkinkin.buckwheat.base
 
 import android.util.Log
 import androidx.compose.animation.core.AnimationSpec
@@ -18,9 +18,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -28,8 +31,8 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.buckwheat.base.ModalBottomSheetDefaults
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import java.lang.Float.max
@@ -42,7 +45,7 @@ enum class TopSheetValue {
     HalfExpanded
 }
 
-@ExperimentalMaterialApi
+/* @ExperimentalMaterialApi
 class TopSheetState(
     initialValue: TopSheetValue,
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
@@ -150,35 +153,89 @@ fun rememberTopSheetState(
     skipHalfExpanded = false,
     confirmStateChange = confirmStateChange,
     sheetHeightFloat = mutableStateOf(0f)
-)
+) */
 
 @Composable
 @ExperimentalMaterialApi
 fun TopSheetLayout(
     modifier: Modifier = Modifier,
-    sheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded),
+    // sheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded),
     customHalfHeight: Float? = null,
+    lockSwipeable: MutableState<Boolean>,
     sheetContentHalfExpand: @Composable () -> Unit,
     sheetContentExpand: @Composable () -> Unit,
 ) {
     val navigationBarHeight = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
 
+    val swipeableState = rememberSwipeableState(TopSheetValue.HalfExpanded)
+    var lock by remember { mutableStateOf(false) }
+    var scroll by remember { mutableStateOf(false) }
+
     BoxWithConstraints(
         modifier = modifier,
-        contentAlignment = Alignment.BottomCenter,
+        contentAlignment = Alignment.TopCenter,
     ) {
         val fullHeight = constraints.maxHeight.toFloat()
         val halfHeight = customHalfHeight ?: (fullHeight / 2)
         val expandHeight = with(LocalDensity.current) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
-        val currOffset = sheetState.offset.value + (fullHeight - halfHeight)
-        val maxOffset = (-(fullHeight - expandHeight) - -(fullHeight - halfHeight))
-        val progress = currOffset / maxOffset
+        val currOffset = swipeableState.offset.value
+        val maxOffset = -(expandHeight - halfHeight)
+        val progress = (1f - (currOffset / maxOffset)).coerceIn(0f, 1f)
+
+        val connection = remember {
+            object : NestedScrollConnection {
+
+                override fun onPreScroll(
+                    available: Offset,
+                    source: NestedScrollSource
+                ): Offset {
+                    val delta = available.y
+
+                    if (!scroll && !lockSwipeable.value) {
+                        lock = false
+                    }
+
+                    scroll = true
+
+                    if (lockSwipeable.value) lock = true
+
+                    return if (lock || lockSwipeable.value) {
+                        super.onPreScroll(available, source)
+                    } else {
+                        swipeableState.performDrag(delta).toOffset()
+                    }
+                }
+
+                override suspend fun onPreFling(available: Velocity): Velocity {
+                    lock = lockSwipeable.value
+                    scroll = false
+
+                    return if (!lockSwipeable.value) {
+                        swipeableState.performFling(available.y)
+                        available
+                    } else {
+                        super.onPreFling(available)
+                    }
+                }
+
+                override suspend fun onPostFling(
+                    consumed: Velocity,
+                    available: Velocity
+                ): Velocity {
+                    scroll = false
+                    swipeableState.performFling(velocity = available.y)
+                    return super.onPostFling(consumed, available)
+                }
+
+                private fun Float.toOffset() = Offset(0f, this)
+            }
+        }
+
 
         Box(Modifier.fillMaxSize()) {
             Scrim(
                 color = ModalBottomSheetDefaults.scrimColor,
-                onDismiss = { },
-                targetValue = min(progress * 5, 1f),
+                targetValue = (progress * 5).coerceIn(0f, 1f),
             )
         }
 
@@ -191,27 +248,46 @@ fun TopSheetLayout(
             modifier = modifier
                 .fillMaxWidth()
                 .height(with(LocalDensity.current) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()).toDp() })
-                .nestedScroll(sheetState.nestedScrollConnection)
-                .offset { IntOffset(0, sheetState.offset.value.roundToInt()) }
-                .topSheetSwipeable(
-                    sheetState,
-                    fullHeight,
-                    halfHeight,
-                    expandHeight,
+                .nestedScroll(connection)
+                .offset {
+                    IntOffset(
+                        x = 0,
+                        y = swipeableState.offset.value
+                            .coerceIn(-(expandHeight - halfHeight), 0f)
+                            .roundToInt(),
+                    )
+                }
+                .swipeable(
+                    state = swipeableState,
+                    orientation = Orientation.Vertical,
+                    anchors = mapOf(
+                        -(expandHeight - halfHeight) to TopSheetValue.HalfExpanded,
+                        0f to TopSheetValue.Expanded
+                    ),
                 )
+
         ) {
             Box(modifier = modifier.fillMaxSize()) {
                 if (progress != 0f) {
-                    Box(Modifier.fillMaxSize().alpha(max(progress * 2f - 1f, 0f))) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .alpha(max(progress * 2f - 1f, 0f))) {
                         sheetContentExpand()
                     }
                 }
 
                 if (progress != 1f) {
                     Column(
-                        Modifier.fillMaxSize().alpha(max(1f - progress * 2, 0f)),
+                        Modifier
+                            .fillMaxSize()
+                            .alpha(max(1f - progress * 2, 0f)),
                     ) {
-                        Box(Modifier.fillMaxWidth().weight(1F).background(colorEditor))
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .weight(1F)
+                                .background(colorEditor))
                         sheetContentHalfExpand()
                     }
                 }
@@ -222,7 +298,11 @@ fun TopSheetLayout(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
                                     colorEditor.copy(alpha = 0f),
-                                    colorEditor.copy(alpha = progress.roundToInt().toFloat()),
+                                    colorEditor.copy(
+                                        alpha = progress
+                                            .roundToInt()
+                                            .toFloat()
+                                    ),
                                 ),
                                 startY = 0f,
                                 endY = (6 / 32f) * 100f,
@@ -248,7 +328,7 @@ fun TopSheetLayout(
     }
 }
 
-@Suppress("ModifierInspectorInfo")
+/* @Suppress("ModifierInspectorInfo")
 @OptIn(ExperimentalMaterialApi::class)
 private fun Modifier.topSheetSwipeable(
     sheetState: TopSheetState,
@@ -267,30 +347,17 @@ private fun Modifier.topSheetSwipeable(
     )
 
     return this.then(modifier)
-}
+} */
 
 @Composable
 fun Scrim(
     color: Color,
-    onDismiss: () -> Unit,
     targetValue: Float
 ) {
     if (color.isSpecified) {
-        val dismissModifier = if (targetValue != 0f) {
-            Modifier
-                .pointerInput(onDismiss) { detectTapGestures { onDismiss() } }
-                .semantics(mergeDescendants = true) {
-                    contentDescription = null.toString()
-                    onClick { onDismiss(); true }
-                }
-        } else {
-            Modifier
-        }
 
         Canvas(
-            Modifier
-                .fillMaxSize()
-                .then(dismissModifier)
+            Modifier.fillMaxSize()
         ) {
             drawRect(color = color, alpha = targetValue)
         }
