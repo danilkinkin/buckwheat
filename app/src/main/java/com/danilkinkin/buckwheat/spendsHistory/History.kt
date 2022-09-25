@@ -30,15 +30,12 @@ fun History(
     val budget = spendsViewModel.budget.observeAsState()
     val startDate = spendsViewModel.startDate
     val finishDate = spendsViewModel.finishDate
-    val key = spendsViewModel.key.observeAsState()
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
 
         onDispose { appViewModel.lockSwipeable.value = false }
     }
-
-    DisposableEffect(key.value) { onDispose { } }
 
     Column(Modifier.fillMaxSize()) {
         LazyColumn(state = scrollState) {
@@ -75,7 +72,7 @@ fun History(
 
                 item(item.uid) {
                     Spent(
-                        spent = item.copy(deleted = spendsViewModel.deletedSpends.contains(item.uid)),
+                        spent = item,
                         currency = spendsViewModel.currency,
                         onDelete = {
                             spendsViewModel.removeSpent(item)

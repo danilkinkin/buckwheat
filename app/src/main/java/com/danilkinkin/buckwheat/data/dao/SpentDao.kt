@@ -9,11 +9,17 @@ interface SpentDao {
     @Query("SELECT * FROM spent")
     fun getAll(): LiveData<List<Spent>>
 
+    @Query("SELECT * FROM spent WHERE uid = :uid")
+    fun getById(uid: Int): Spent
+
     @Insert
     fun insert(vararg spent: Spent)
 
-    @Update
+    @Update(entity = Spent::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(vararg spent: Spent)
+
+    @Query("UPDATE spent SET deleted = :deleted WHERE uid = :uid")
+    fun updateDelete(uid: Int, deleted: Boolean)
 
     @Delete
     fun delete(spent: Spent)
