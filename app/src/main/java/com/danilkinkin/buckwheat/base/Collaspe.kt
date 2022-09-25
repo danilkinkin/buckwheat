@@ -11,6 +11,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun Collapse(
@@ -37,6 +38,8 @@ fun Collapse(
             .collapse(
                 if (maxHeight.value !== null) {
                     with(LocalDensity.current) { (maxHeight.value!! * height).toDp() }
+                } else if (height == 0f) {
+                    0.dp
                 } else {
                     null
                 }

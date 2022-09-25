@@ -6,7 +6,7 @@ import com.danilkinkin.buckwheat.data.entities.Spent
 
 @Dao
 interface SpentDao {
-    @Query("SELECT * FROM spent")
+    @Query("SELECT * FROM spent ORDER BY date ASC")
     fun getAll(): LiveData<List<Spent>>
 
     @Query("SELECT * FROM spent WHERE uid = :uid")
