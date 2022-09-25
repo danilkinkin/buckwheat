@@ -39,6 +39,12 @@ fun History(
         onDispose { appViewModel.lockSwipeable.value = false }
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            spendsViewModel.commitDeletedSpends()
+        }
+    }
+
     Column(Modifier.fillMaxSize()) {
         LazyColumn(state = scrollState) {
             item("budgetInfo") {
@@ -68,7 +74,7 @@ fun History(
                     lastDate = item.date
 
                     item(item.date.time) {
-                        Collapse(show = hasNextSpendsInThisDay(spends, item)) {
+                        Collapse(show = hasNextSpendsInThisDay(spends, item) || !item.deleted) {
                             HistoryDateDivider(item.date)
                         }
                     }
@@ -97,7 +103,7 @@ fun History(
         }
 
 
-        if (spends.isEmpty()) {
+        if (spends.none { !it.deleted }) {
             NoSpends(Modifier.weight(1f))
         }
     }

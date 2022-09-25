@@ -203,7 +203,7 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun removeSpent(spent: Spent) {
-        this.spentDao.updateDelete(spent.uid, true)
+        this.spentDao.markAsDeleted(spent.uid, true)
 
         spentFromDailyBudget.value = spentFromDailyBudget.value!! - spent.value
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
@@ -214,7 +214,7 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun undoRemoveSpent(spent: Spent) {
-        this.spentDao.updateDelete(spent.uid, false)
+        this.spentDao.markAsDeleted(spent.uid, false)
 
         spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
         storageDao.set(
@@ -223,6 +223,10 @@ class SpendsViewModel @Inject constructor(
                 spentFromDailyBudget.value.toString()
             )
         )
+    }
+
+    fun commitDeletedSpends() {
+        this.spentDao.commitDeleted()
     }
 
     fun executeAction(action: Action, value: Int? = null) {

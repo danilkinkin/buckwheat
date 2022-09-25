@@ -19,7 +19,10 @@ interface SpentDao {
     fun update(vararg spent: Spent)
 
     @Query("UPDATE spent SET deleted = :deleted WHERE uid = :uid")
-    fun updateDelete(uid: Int, deleted: Boolean)
+    fun markAsDeleted(uid: Int, deleted: Boolean)
+
+    @Query("DELETE FROM spent WHERE deleted = true")
+    fun commitDeleted()
 
     @Delete
     fun delete(spent: Spent)
