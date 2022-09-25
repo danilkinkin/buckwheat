@@ -1,10 +1,7 @@
 package com.danilkinkin.buckwheat.data.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.danilkinkin.buckwheat.data.entities.Spent
 
 @Dao
@@ -14,6 +11,9 @@ interface SpentDao {
 
     @Insert
     fun insert(vararg spent: Spent)
+
+    @Update
+    fun update(vararg spent: Spent)
 
     @Delete
     fun delete(spent: Spent)

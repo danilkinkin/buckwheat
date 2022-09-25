@@ -13,6 +13,9 @@ data class Spent(
 
     @ColumnInfo(name = "date")
     val date: Date,
+
+    @ColumnInfo(name = "deleted")
+    var deleted: Boolean = false,
 ) {
     @PrimaryKey(autoGenerate = true) var uid: Int = 0
 }

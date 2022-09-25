@@ -26,10 +26,11 @@ fun History(
     val coroutineScope = rememberCoroutineScope()
     var isFirstRender by remember { mutableStateOf(true) }
 
-    val spends = spendsViewModel.getSpends().observeAsState(initial = emptyList())
+    val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
     val budget = spendsViewModel.budget.observeAsState()
     val startDate = spendsViewModel.startDate
     val finishDate = spendsViewModel.finishDate
+    val key = spendsViewModel.key.observeAsState()
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
@@ -37,16 +38,18 @@ fun History(
         onDispose { appViewModel.lockSwipeable.value = false }
     }
 
+    DisposableEffect(key.value) { onDispose { } }
+
     Column(Modifier.fillMaxSize()) {
         LazyColumn(state = scrollState) {
             item("budgetInfo") {
-                DisposableEffect(spends.value.size) {
-                    if (spends.value.isEmpty() || !isFirstRender) return@DisposableEffect onDispose {  }
+                DisposableEffect(spends.size) {
+                    if (spends.isEmpty() || !isFirstRender) return@DisposableEffect onDispose {  }
 
                     isFirstRender = false
 
                     coroutineScope.launch {
-                        scrollState.scrollToItem(spends.value.size + 1)
+                        scrollState.scrollToItem(spends.size + 1)
                     }
 
                     onDispose { }
@@ -61,25 +64,25 @@ fun History(
 
             var lastDate: Date? = null
 
-            spends.value.forEach {
-                if (lastDate === null || !isSameDay(it.date.time, lastDate!!.time)) {
-                    lastDate = it.date
+            spends.sortedBy { it.date }.forEach { item ->
+                if (lastDate === null || !isSameDay(item.date.time, lastDate!!.time)) {
+                    lastDate = item.date
 
-                    item(it.date.time) {
-                        HistoryDateDivider(it.date)
+                    item(item.date.time) {
+                        HistoryDateDivider(item.date)
                     }
                 }
-                item(it.uid) {
+
+                item(item.uid) {
                     Spent(
-                        spent = it,
+                        spent = item.copy(deleted = spendsViewModel.deletedSpends.contains(item.uid)),
                         currency = spendsViewModel.currency,
                         onDelete = {
-                            spendsViewModel.removeSpent(it)
+                            spendsViewModel.removeSpent(item)
                         }
                     )
                 }
             }
-
             item {
                 Spacer(modifier = Modifier.height(20.dp))
             }
@@ -92,10 +95,13 @@ fun History(
             }
         }
 
-        if (spends.value.isEmpty()) {
+
+        if (spends.isEmpty()) {
             NoSpends(Modifier.weight(1f))
         }
     }
+
+
 }
 
 @Preview

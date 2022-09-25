@@ -29,6 +29,10 @@ class SpendsViewModel @Inject constructor(
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
     var lastRemoveSpent: MutableSharedFlow<Spent> = MutableSharedFlow()
 
+    var deletedSpends: MutableSet<Int> = emptySet<Int>().toMutableSet()
+
+    var key: MutableLiveData<Int> = MutableLiveData(0)
+
     var budget: MutableLiveData<BigDecimal> = MutableLiveData(
         try {
             storageDao.get("budget").value.toBigDecimal()
@@ -203,7 +207,10 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun removeSpent(spent: Spent) {
-        this.spentDao.delete(spent)
+        this.spentDao.update(spent.copy(deleted = true))
+
+        deletedSpends.add(spent.uid)
+        key.value = key.value?.plus(1)
 
         spentFromDailyBudget.value = spentFromDailyBudget.value!! - spent.value
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
@@ -214,7 +221,10 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun undoRemoveSpent(spent: Spent) {
-        this.spentDao.insert(spent)
+        this.spentDao.update(spent.copy(deleted = false))
+
+        deletedSpends.remove(spent.uid)
+        key.value = key.value?.plus(1)
 
         spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
         storageDao.set(
