@@ -90,10 +90,10 @@ fun History(
                     )
                 }
             }
-            item {
+            item("spacer") {
                 Spacer(modifier = Modifier.height(20.dp))
             }
-            item {
+            item("endChecker") {
                 DisposableEffect(Unit) {
                     appViewModel.lockSwipeable.value = false
 
