@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -33,7 +34,9 @@ enum class DeleteState { IDLE, DELETE }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun rememberSwipeForDismiss(onDelete: () -> Unit = {}): SwipeableState<DeleteState> = rememberSwipeableState(
+fun rememberSwipeForDismiss(
+    onDelete: () -> Unit = {},
+): SwipeableState<DeleteState> = rememberSwipeableState(
     DeleteState.IDLE,
     confirmStateChange = {
         if (it == DeleteState.DELETE) onDelete()
@@ -101,6 +104,11 @@ fun SwipeForDismiss(
                         .offset(with(LocalDensity.current) {
                             (swipeableState.offset.value / 2).toDp() + 12.dp
                         })
+                        .alpha((
+                            with(LocalDensity.current) {
+                                ((-swipeableState.offset.value - 24.dp.toPx()) / (48.dp.toPx()))
+                            }
+                        ).coerceIn(0f, 1f))
                 )
             }
         }
