@@ -2,44 +2,28 @@ package com.danilkinkin.buckwheat.spendsHistory
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.core.TweenSpec
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.unit.min
-import androidx.compose.ui.zIndex
-import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.Collapse
+import com.danilkinkin.buckwheat.base.DeleteState
+import com.danilkinkin.buckwheat.base.SwipeForDismiss
+import com.danilkinkin.buckwheat.base.rememberSwipeForDismiss
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.launch
-import java.lang.Float.max
-import java.lang.Float.min
 import java.math.BigDecimal
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.roundToInt
 
-enum class DeleteState { IDLE, DELETE }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -50,23 +34,8 @@ fun Spent(
     onDelete: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val swipeableState = rememberSwipeableState(
-        DeleteState.IDLE,
-        confirmStateChange = {
-            if (it == DeleteState.DELETE) onDelete()
-
-            true
-        }
-    )
-    val width = remember { mutableStateOf(0F)}
-    val height = remember { mutableStateOf(0F)}
-
-    val localDensity = LocalDensity.current
-
-    val anchors = if (width.value != 0F) {
-        mapOf(0f to DeleteState.IDLE, -width.value to DeleteState.DELETE)
-    } else {
-        mapOf(0f to DeleteState.IDLE)
+    val swipeableState = rememberSwipeForDismiss {
+        onDelete()
     }
 
     Collapse(
@@ -77,89 +46,30 @@ fun Spent(
             }
         },
     ) {
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .swipeable(
-                    state = swipeableState,
-                    anchors = anchors,
-                    orientation = Orientation.Horizontal,
-                    thresholds = { _, _ -> FractionalThreshold(0.4f) },
-                )
-                .onGloballyPositioned {
-                    width.value = it.size.width.toFloat()
-                    height.value = it.size.height.toFloat()
-                }
-                .zIndex(if (swipeableState.offset.value.roundToInt() < 0f) 1f else 0f)
-            ,
+        SwipeForDismiss(
+            modifier = Modifier.fillMaxWidth(),
+            swipeableState = swipeableState,
+            contentColor = colorEditor,
         ) {
-            val size = with(LocalDensity.current) {
-                if (swipeableState.offset.value > 0f) 0f.toDp()
-                else max(min(16.dp.toPx(), abs(swipeableState.offset.value)), 0f).toDp()
-            }
-
-            if (swipeableState.offset.value < 0f) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(with(localDensity) { height.value.toDp() })
-                        .background(MaterialTheme.colorScheme.error),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_delete_forever),
-                        tint = MaterialTheme.colorScheme.onError,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .offset(with(LocalDensity.current) {
-                                (swipeableState.offset.value / 2).toDp() + 12.dp
-                            })
-                    )
-                }
-            }
-
-            Surface(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(with(localDensity) { height.value.toDp() })
-                    .offset { IntOffset(min(swipeableState.offset.value, 0f).roundToInt(), 0) }
-                    .padding(vertical = min(size / 4f, 4.dp))
-                    .shadow(
-                        min(size, 4.dp),
-                        RoundedCornerShape(size),
-                    ),
-                color = colorEditor,
-            ) {}
-
-            Surface(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .offset { IntOffset(min(swipeableState.offset.value, 0f).roundToInt(), 0) }
-                    .padding(vertical = 4.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                color = colorEditor,
+            Row(
+                modifier = modifier.fillMaxWidth()
             ) {
-                Row(
-                    modifier = modifier
-                        .fillMaxWidth()
-                ) {
+                Text(
+                    text = prettyCandyCanes(spent.value, currency = currency),
+                    style = MaterialTheme.typography.displaySmall,
+                    color = colorOnEditor,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                )
+                Spacer(Modifier.weight(1F))
+                Box(Modifier) {
                     Text(
-                        text = prettyCandyCanes(spent.value, currency = currency),
-                        style = MaterialTheme.typography.displaySmall,
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(horizontal = 24.dp, vertical = 16.dp),
+                        text = prettyDate(spent.date),
+                        style = MaterialTheme.typography.labelSmall,
                         color = colorOnEditor,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
                     )
-                    Spacer(Modifier.weight(1F))
-                    Box(Modifier) {
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .padding(horizontal = 24.dp, vertical = 16.dp),
-                            text = prettyDate(spent.date),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = colorOnEditor,
-                        )
-                    }
                 }
             }
         }
