@@ -194,7 +194,7 @@ fun ModalBottomSheetLayout(
         Surface(
             Modifier
                 .fillMaxWidth()
-                .nestedScroll(sheetState.nestedScrollConnection)
+                .then(if (cancelable) { Modifier.nestedScroll(sheetState.nestedScrollConnection) } else { Modifier })
                 .offset {
                     val y = if (sheetState.anchors.isEmpty()) {
                         // if we don't know our anchors yet, render the sheet as hidden
