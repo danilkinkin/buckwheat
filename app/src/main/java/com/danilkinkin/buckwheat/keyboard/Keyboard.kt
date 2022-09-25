@@ -1,9 +1,6 @@
 package com.danilkinkin.buckwheat.keyboard
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -28,10 +25,15 @@ fun Keyboard(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
+    val navigationBarHeight = androidx.compose.ui.unit.max(
+        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        16.dp,
+    )
+
     Column (
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 0.dp)
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = navigationBarHeight)
     ) {
         Row (modifier = Modifier
             .fillMaxSize()

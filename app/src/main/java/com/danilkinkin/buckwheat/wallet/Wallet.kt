@@ -49,8 +49,13 @@ fun Wallet(
     val openCustomCurrencyEditorDialog = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
+    val navigationBarHeight = androidx.compose.ui.unit.max(
+        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        16.dp,
+    )
+
     Surface {
-        Column(modifier = Modifier.navigationBarsPadding()) {
+        Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             val days = countDays(dateToValue.value)
 
             Box(

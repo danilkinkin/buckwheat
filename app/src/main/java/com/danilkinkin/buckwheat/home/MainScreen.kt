@@ -128,7 +128,6 @@ fun MainScreen(
                 modifier = Modifier
                     .height(with(localDensity) { contentWidth.toDp() })
                     .fillMaxWidth()
-                    .navigationBarsPadding()
             )
         }
 

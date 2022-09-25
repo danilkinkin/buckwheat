@@ -42,8 +42,13 @@ fun Settings(onClose: () -> Unit = {}) {
         viewModel.request()
     }
 
+    val navigationBarHeight = androidx.compose.ui.unit.max(
+        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        16.dp,
+    )
+
     Surface {
-        Column(modifier = Modifier.navigationBarsPadding()) {
+        Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier.fillMaxWidth().padding(24.dp),
                 contentAlignment = Alignment.Center

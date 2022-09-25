@@ -165,7 +165,10 @@ fun TopSheetLayout(
     sheetContentHalfExpand: @Composable () -> Unit,
     sheetContentExpand: @Composable () -> Unit,
 ) {
-    val navigationBarHeight = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
+    val navigationBarHeight = androidx.compose.ui.unit.max(
+        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        16.dp,
+    )
 
     val swipeableState = rememberSwipeableState(TopSheetValue.HalfExpanded)
     var lock by remember { mutableStateOf(false) }
