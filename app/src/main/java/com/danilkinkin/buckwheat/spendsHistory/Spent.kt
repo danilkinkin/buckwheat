@@ -34,9 +34,7 @@ fun Spent(
     onDelete: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val swipeableState = rememberSwipeForDismiss {
-        onDelete()
-    }
+    val swipeableState = rememberSwipeForDismiss()
 
     Collapse(
         show = !spent.deleted,
@@ -50,6 +48,9 @@ fun Spent(
             modifier = Modifier.fillMaxWidth(),
             swipeableState = swipeableState,
             contentColor = colorEditor,
+            onSwiped = {
+                onDelete()
+            }
         ) {
             Row(
                 modifier = modifier.fillMaxWidth()

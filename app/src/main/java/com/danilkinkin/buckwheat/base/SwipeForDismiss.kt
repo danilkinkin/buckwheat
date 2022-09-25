@@ -1,14 +1,14 @@
 package com.danilkinkin.buckwheat.base
 
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -51,6 +51,7 @@ fun SwipeForDismiss(
     modifier: Modifier = Modifier,
     contentColor: Color = MaterialTheme.colorScheme.surface,
     onDelete: () -> Unit = {},
+    onSwiped: () -> Unit = {},
     swipeableState: SwipeableState<DeleteState> = rememberSwipeForDismiss(
         onDelete = { onDelete() }
     ),
@@ -66,13 +67,27 @@ fun SwipeForDismiss(
     } else {
         mapOf(0f to DeleteState.IDLE)
     }
-    
+
+    val isSwiped = swipeableState.offset.value <= -width.value && width.value != 0f
+
+    DisposableEffect(isSwiped) {
+        if (isSwiped) onSwiped()
+
+        onDispose {}
+    }
+
+    val iconAlpha by animateFloatAsState(
+        targetValue = if (isSwiped) 0f else 1f,
+        animationSpec = TweenSpec(),
+    )
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .swipeable(
                 state = swipeableState,
                 anchors = anchors,
+                enabled = !isSwiped && swipeableState.currentValue !== DeleteState.DELETE,
                 orientation = Orientation.Horizontal,
                 thresholds = { _, _ -> FractionalThreshold(0.4f) },
             )
@@ -80,8 +95,7 @@ fun SwipeForDismiss(
                 width.value = it.size.width.toFloat()
                 height.value = it.size.height.toFloat()
             }
-            .zIndex(if (swipeableState.offset.value.roundToInt() < 0f) 1f else 0f)
-        ,
+            .zIndex(if (swipeableState.offset.value.roundToInt() < 0f) 1f else 0f),
     ) {
         val size = with(LocalDensity.current) {
             if (swipeableState.offset.value > 0f) 0f.toDp()
@@ -104,11 +118,11 @@ fun SwipeForDismiss(
                         .offset(with(LocalDensity.current) {
                             (swipeableState.offset.value / 2).toDp() + 12.dp
                         })
-                        .alpha((
-                            with(LocalDensity.current) {
+                        .alpha(
+                            (with(LocalDensity.current) {
                                 ((-swipeableState.offset.value - 24.dp.toPx()) / (48.dp.toPx()))
-                            }
-                        ).coerceIn(0f, 1f))
+                            }).coerceIn(0f, 1f) * iconAlpha
+                        )
                 )
             }
         }
@@ -119,8 +133,8 @@ fun SwipeForDismiss(
                 .height(with(localDensity) { height.value.toDp() })
                 .offset {
                     IntOffset(
-                       x = min(swipeableState.offset.value, 0f).roundToInt(),
-                       y = 0,
+                        x = min(swipeableState.offset.value, 0f).roundToInt(),
+                        y = 0,
                     )
                 }
                 .padding(vertical = min(size / 4f, 4.dp))
@@ -130,7 +144,7 @@ fun SwipeForDismiss(
                 ),
             color = contentColor,
         ) {}
-        
+
         Box(
             modifier = modifier
                 .fillMaxWidth()
