@@ -224,6 +224,8 @@ fun Editor(
             }
             SpendsViewModel.Stage.EDIT_SPENT -> {
                 calculateValues(budget = false)
+
+                animTo(AnimState.EDITING)
             }
             SpendsViewModel.Stage.COMMITTING_SPENT -> {
                 animTo(AnimState.COMMIT)
