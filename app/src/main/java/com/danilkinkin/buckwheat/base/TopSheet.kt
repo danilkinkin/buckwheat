@@ -159,6 +159,7 @@ fun rememberTopSheetState(
 @ExperimentalMaterialApi
 fun TopSheetLayout(
     modifier: Modifier = Modifier,
+    swipeableState: SwipeableState<TopSheetValue> = rememberSwipeableState(TopSheetValue.HalfExpanded),
     // sheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded),
     customHalfHeight: Float? = null,
     lockSwipeable: MutableState<Boolean>,
@@ -170,7 +171,6 @@ fun TopSheetLayout(
         16.dp,
     )
 
-    val swipeableState = rememberSwipeableState(TopSheetValue.HalfExpanded)
     var lock by remember { mutableStateOf(false) }
     var scroll by remember { mutableStateOf(false) }
 

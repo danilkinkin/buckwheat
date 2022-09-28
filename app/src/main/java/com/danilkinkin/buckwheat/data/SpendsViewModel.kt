@@ -105,6 +105,10 @@ class SpendsViewModel @Inject constructor(
         }
     }
 
+    fun getSpendsInCurrentDay(): LiveData<List<Spent>> {
+        return this.spentDao.getLastDay()
+    }
+
     fun getSpends(): LiveData<List<Spent>> {
         return this.spentDao.getAll()
     }

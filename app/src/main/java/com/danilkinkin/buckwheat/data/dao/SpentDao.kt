@@ -3,11 +3,16 @@ package com.danilkinkin.buckwheat.data.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.util.roundToDay
+import java.util.*
 
 @Dao
 interface SpentDao {
     @Query("SELECT * FROM spent ORDER BY date ASC")
     fun getAll(): LiveData<List<Spent>>
+
+    @Query("SELECT * FROM spent WHERE date > :currDate ORDER BY date ASC")
+    fun getLastDay(currDate: Date = roundToDay(Date())): LiveData<List<Spent>>
 
     @Query("SELECT * FROM spent WHERE uid = :uid")
     fun getById(uid: Int): Spent?

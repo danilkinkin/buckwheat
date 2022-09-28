@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
-import com.danilkinkin.buckwheat.base.ModalBottomSheetValue
-import com.danilkinkin.buckwheat.base.rememberModalBottomSheetState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,8 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.BottomSheetWrapper
-import com.danilkinkin.buckwheat.base.TopSheetLayout
+import com.danilkinkin.buckwheat.base.*
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
@@ -46,7 +43,8 @@ fun MainScreen(
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
 ) {
-    // val topSheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded)
+    val topSheetState =
+        androidx.compose.material.rememberSwipeableState(TopSheetValue.HalfExpanded)
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val finishDateSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val settingsSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -132,6 +130,7 @@ fun MainScreen(
         }
 
         TopSheetLayout(
+            swipeableState = topSheetState,
             // sheetState = topSheetState,
             customHalfHeight = editorHeight,
             lockSwipeable = appViewModel.lockSwipeable,
@@ -151,6 +150,11 @@ fun MainScreen(
                     onReaclcBudget = {
                         coroutineScope.launch {
                             recalcBudgetSheetState.show()
+                        }
+                    },
+                    onOpenHistory = {
+                        coroutineScope.launch {
+                            topSheetState.animateTo(TopSheetValue.Expanded)
                         }
                     },
                 )

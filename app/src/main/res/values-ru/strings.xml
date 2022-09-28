@@ -7,6 +7,11 @@
     <string name="rest_budget_for_today">Останется на сегодня</string>
     <string name="spent">Трата</string>
     <string name="fab_home_desc">Домой</string>
+    <plurals name="spends_today">
+        <item quantity="one">%1$s тарта сегодня</item>
+        <item quantity="few">%1$s траты сегодня</item>
+        <item quantity="many">%1$s трат сегодня</item>
+    </plurals>
 
     <!-- History -->
     <string name="new_budget">Бюджет установлен</string>

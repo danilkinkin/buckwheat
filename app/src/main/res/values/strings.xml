@@ -7,6 +7,10 @@
     <string name="rest_budget_for_today">Remains for today</string>
     <string name="spent">Spending</string>
     <string name="fab_home_desc">Home</string>
+    <plurals name="spends_today">
+        <item quantity="one">%1$s spent today</item>
+        <item quantity="other">%1$s spends today</item>
+    </plurals>
 
     <!-- History -->
     <string name="new_budget">Budget set</string>

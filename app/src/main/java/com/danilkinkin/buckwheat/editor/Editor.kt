@@ -2,15 +2,20 @@ package com.danilkinkin.buckwheat.editor
 
 import android.animation.ValueAnimator
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,6 +34,7 @@ import kotlin.math.min
 
 enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Editor(
     modifier: Modifier = Modifier,
@@ -37,8 +43,11 @@ fun Editor(
     onOpenWallet: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
     onReaclcBudget: () -> Unit = {},
+    onOpenHistory: () -> Unit = {},
 ) {
     val isDebug = appViewModel.isDebug.observeAsState(false)
+
+    val spends by spendsViewModel.getSpendsInCurrentDay().observeAsState(initial = emptyList())
 
     var currState by remember { mutableStateOf<AnimState?>(null) }
     var currAnimator by remember { mutableStateOf<ValueAnimator?>(null) }
@@ -239,11 +248,31 @@ fun Editor(
     Box(modifier = modifier.fillMaxSize()) {
         Row(
             horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 24.dp, end = 24.dp)
                 .statusBarsPadding(),
         ) {
+            if (spends.isNotEmpty()) {
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.clickable { onOpenHistory() }
+                ) {
+                    Text(
+                        modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
+                        text = String.format(
+                            pluralStringResource(R.plurals.spends_today, count = spends.size),
+                            spends.size,
+                        ),
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.weight(1f))
+
             if (isDebug.value) {
                 BigIconButton(
                     icon = painterResource(R.drawable.ic_developer_mode),
