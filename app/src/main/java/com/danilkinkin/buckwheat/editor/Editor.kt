@@ -87,8 +87,9 @@ fun Editor(
                 currency = spendsViewModel.currency,
             )
         if (spent) spentValue = prettyCandyCanes(
-            spendsViewModel.currentSpent, spendsViewModel.useDot,
+            spendsViewModel.currentSpent,
             currency = spendsViewModel.currency,
+            spendsViewModel.useDot,
         )
     }
 

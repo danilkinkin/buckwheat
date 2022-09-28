@@ -26,7 +26,6 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -41,7 +40,11 @@ fun Wallet(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
-    val budget = remember { mutableStateOf(spendsViewModel.budget.value!!) }
+    var rawBudget by remember {
+        val converted = tryConvertStringToNumber(spendsViewModel.budget.value!!.toString())
+        mutableStateOf(converted.first + converted.second)
+    }
+    var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate) }
     val currency = remember { mutableStateOf(spendsViewModel.currency) }
 
@@ -77,15 +80,13 @@ fun Wallet(
                 )
                 TextField(
                     modifier = Modifier
-                        .padding(start = 56.dp)
-                        .fillMaxWidth(),
-                    value = budget.value.toString(),
+                        .padding(start = 56.dp),
+                    value = rawBudget,
                     onValueChange = {
-                        try {
-                            budget.value = BigDecimal(it)
-                        } catch (E: Exception) {
-                            budget.value = BigDecimal(0)
-                        }
+                        val converted = tryConvertStringToNumber(it)
+
+                        rawBudget = converted.first + converted.second
+                        budget = (converted.first + converted.second + converted.third).toBigDecimal()
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.Transparent,
@@ -97,7 +98,8 @@ fun Wallet(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     textStyle = MaterialTheme.typography.displaySmall,
                     visualTransformation = visualTransformationAsCurrency(
-                        currency = ExtendCurrency(type = CurrencyType.NONE)
+                        currency = ExtendCurrency(type = CurrencyType.NONE),
+                        hintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
                     )
                 )
                 Divider()
@@ -161,11 +163,11 @@ fun Wallet(
                         R.string.per_day,
                         prettyCandyCanes(
                             if (days != 0) {
-                                (budget.value / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
+                                (budget / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
                             } else {
-                                budget.value
+                                budget
                             },
-                            currency = currency.value,
+                            currency.value,
                         ),
                     ),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -175,14 +177,14 @@ fun Wallet(
                 Button(
                     onClick = {
                         spendsViewModel.changeCurrency(currency.value)
-                        spendsViewModel.changeBudget(budget.value, dateToValue.value)
+                        spendsViewModel.changeBudget(budget, dateToValue.value)
 
                         onClose()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    enabled = countDays(dateToValue.value) > 0 && budget.value > BigDecimal(0)
+                    enabled = countDays(dateToValue.value) > 0 && budget > BigDecimal(0)
                 ) {
                     Text(text = stringResource(id = R.string.apply))
                 }

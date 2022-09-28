@@ -46,13 +46,15 @@ fun Double.round(scale: Int): Double =
 
 fun prettyCandyCanes(
     value: BigDecimal,
-    forceShowAfterDot: Boolean = false,
     currency: ExtendCurrency,
+    forceShowAfterDot: Boolean = false,
+    maximumFractionDigits: Int = if (forceShowAfterDot) 5 else 2,
+    minimumFractionDigits: Int = if (forceShowAfterDot) 1 else 0,
 ): String {
     val formatter = if (currency.type === CurrencyType.FROM_LIST) currencyFormat else numberFormat
 
-    formatter.maximumFractionDigits = if (forceShowAfterDot) 5 else 2
-    formatter.minimumFractionDigits = if (forceShowAfterDot) 1 else 0
+    formatter.maximumFractionDigits = maximumFractionDigits
+    formatter.minimumFractionDigits = minimumFractionDigits
 
     if (currency.type === CurrencyType.FROM_LIST) formatter.currency =
         Currency.getInstance(currency.value)
