@@ -13,7 +13,7 @@
     <string name="label_start_date">Start</string>
     <string name="label_finish_date">Finish</string>
     <string name="remove_spent">Expenditure returned to budget</string>
-    <string name="remove_spent_undo">Remove</string>
+    <string name="remove_spent_undo">Undo</string>
     <string name="no_spends">No spending yet</string>
 
     <!-- Wallet -->
