@@ -10,7 +10,7 @@ interface SpentDao {
     fun getAll(): LiveData<List<Spent>>
 
     @Query("SELECT * FROM spent WHERE uid = :uid")
-    fun getById(uid: Int): Spent
+    fun getById(uid: Int): Spent?
 
     @Insert
     fun insert(vararg spent: Spent)

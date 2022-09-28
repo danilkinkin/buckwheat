@@ -214,7 +214,12 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun undoRemoveSpent(spent: Spent) {
-        this.spentDao.markAsDeleted(spent.uid, false)
+        if (this.spentDao.getById(spent.uid) !== null) {
+            this.spentDao.markAsDeleted(spent.uid, false)
+        } else {
+            this.spentDao.insert(spent.copy(deleted = false))
+        }
+
 
         spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
         storageDao.set(
