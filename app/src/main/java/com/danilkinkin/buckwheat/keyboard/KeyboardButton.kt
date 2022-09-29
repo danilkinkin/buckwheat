@@ -1,8 +1,9 @@
 package com.danilkinkin.buckwheat.keyboard
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -22,17 +23,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
-import androidx.compose.ui.unit.sp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorButton
 import com.danilkinkin.buckwheat.ui.colorOnButton
-import com.danilkinkin.buckwheat.util.combineColors
 import java.lang.Integer.MAX_VALUE
 import kotlin.math.min
 
 enum class KeyboardButtonType { DEFAULT, PRIMARY, SECONDARY, TERTIARY }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun KeyboardButton(
     modifier: Modifier = Modifier,
@@ -40,6 +40,7 @@ fun KeyboardButton(
     text: String? = null,
     icon: Painter? = null,
     onClick: (() -> Unit) = {},
+    onLongClick: (() -> Unit) = {},
 ) {
     val localDensity = LocalDensity.current
     var minSize by remember { mutableStateOf(MAX_VALUE.dp) }
@@ -77,10 +78,12 @@ fun KeyboardButton(
                 .background(color = color)
                 .fillMaxSize()
                 .clip(RoundedCornerShape(radius.value))
-                .clickable(
+                .combinedClickable(
                     interactionSource = interactionSource,
-                    indication = rememberRipple()
-                ) { onClick.invoke() },
+                    indication = rememberRipple(),
+                    onClick = { onClick.invoke() },
+                    onLongClick = { onLongClick.invoke() },
+                ),
             contentAlignment = Alignment.Center
         ) {
             if (text !== null) {

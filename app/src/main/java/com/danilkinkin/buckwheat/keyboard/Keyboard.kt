@@ -58,7 +58,10 @@ fun Keyboard(
                 icon = painterResource(R.drawable.ic_backspace),
                 onClick = {
                     spendsViewModel.executeAction(SpendsViewModel.Action.REMOVE_LAST)
-                }
+                },
+                onLongClick = {
+                    spendsViewModel.resetSpent()
+                },
             )
         }
         Row (modifier = Modifier
