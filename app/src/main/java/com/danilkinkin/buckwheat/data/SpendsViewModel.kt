@@ -84,6 +84,7 @@ class SpendsViewModel @Inject constructor(
 
     var requireReCalcBudget: MutableLiveData<Boolean> = MutableLiveData(false)
     var requireSetBudget: MutableLiveData<Boolean> = MutableLiveData(false)
+    var finishPeriod: MutableLiveData<Boolean> = MutableLiveData(false)
 
     var valueLeftDot: String = ""
     var valueRightDot: String = ""
@@ -100,8 +101,12 @@ class SpendsViewModel @Inject constructor(
 
         Log.d("SpentViewModel", "init")
 
-        if (lastReCalcBudgetDate === null || finishDate.time <= Date().time) {
+        if (lastReCalcBudgetDate === null) {
             requireSetBudget.value = true
+        }
+
+        if (lastReCalcBudgetDate !== null && finishDate.time <= Date().time) {
+            finishPeriod.value = true
         }
     }
 

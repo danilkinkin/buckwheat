@@ -69,6 +69,16 @@
     <string name="add_current_day_title">Оставить на сегодня</string>
     <string name="add_current_day_description">Будет %1$s на сегодня и по %2$s в следующие дни</string>
 
+    <!-- Finish period -->
+    <string name="finish_period_title">Период закончился</string>
+    <string name="period_summary_title">Вот краткие итоги</string>
+    <string name="new_period_title">Настроить новый бюджет</string>
+    <string name="whole_budget">Весь бюджет</string>
+    <string name="rest_budget">Осталось</string>
+    <string name="min_spent">Минимальная трата</string>
+    <string name="max_spent">Максимальная трата</string>
+    <string name="count_spends">Всего трат</string>
+
     <!-- Common -->
     <string name="copy_in_clipboard">Скопировано в буфер обмена</string>
     <string name="search">Поиск</string>

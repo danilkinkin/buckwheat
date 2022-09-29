@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +21,9 @@ import com.danilkinkin.buckwheat.base.*
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
+import com.danilkinkin.buckwheat.editor.DebugMenu
 import com.danilkinkin.buckwheat.editor.Editor
+import com.danilkinkin.buckwheat.finishPeriod.FinishPeriod
 import com.danilkinkin.buckwheat.keyboard.Keyboard
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.Settings
@@ -43,12 +46,15 @@ fun MainScreen(
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
 ) {
+    val isDebug = appViewModel.isDebug.observeAsState(false)
     val topSheetState =
         androidx.compose.material.rememberSwipeableState(TopSheetValue.HalfExpanded)
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val finishDateSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val settingsSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val finishPeriodSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val recalcBudgetSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val debugMenuSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
     val presetFinishDate = remember { mutableStateOf<Date?>(null) }
     val requestFinishDateCallback = remember { mutableStateOf<((finishDate: Date) -> Unit)?>(null) }
@@ -108,6 +114,15 @@ fun MainScreen(
         }
     }
 
+    observeLiveData(spendsViewModel.finishPeriod) {
+        Log.d("MainScreen", "finishPeriod = $it")
+        if (it) {
+            coroutineScope.launch {
+                finishPeriodSheetState.show()
+            }
+        }
+    }
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -147,9 +162,9 @@ fun MainScreen(
                             settingsSheetState.show()
                         }
                     },
-                    onReaclcBudget = {
+                    onDebugMenu = {
                         coroutineScope.launch {
-                            recalcBudgetSheetState.show()
+                            debugMenuSheetState.show()
                         }
                     },
                     onOpenHistory = {
@@ -261,6 +276,46 @@ fun MainScreen(
                     }
                 }
             )
+        }
+
+        BottomSheetWrapper(
+            state = finishPeriodSheetState,
+            cancelable = false,
+        ) {
+            FinishPeriod(
+                onCreateNewPeriod = {
+                    coroutineScope.launch {
+                        walletSheetState.show()
+                    }
+                },
+                onClose = {
+                    coroutineScope.launch {
+                        finishPeriodSheetState.hide()
+                    }
+                },
+            )
+        }
+
+        if (isDebug.value) {
+            BottomSheetWrapper(state = debugMenuSheetState) {
+                DebugMenu(
+                    onPeriodSummary = {
+                        coroutineScope.launch {
+                            finishPeriodSheetState.show()
+                        }
+                    },
+                    onDailySummary = {
+                        coroutineScope.launch {
+                            recalcBudgetSheetState.show()
+                        }
+                    },
+                    onClose = {
+                        coroutineScope.launch {
+                            debugMenuSheetState.hide()
+                        }
+                    },
+                )
+            }
         }
     }
 }

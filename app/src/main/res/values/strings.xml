@@ -66,6 +66,16 @@
     <string name="add_current_day_title">Leave for Today</string>
     <string name="add_current_day_description">There will be %1$s for today and %2$s for the following days</string>
 
+    <!-- Finish period -->
+    <string name="finish_period_title">Period ended</string>
+    <string name="period_summary_title">Here are the summary</string>
+    <string name="new_period_title">Set up a new budget</string>
+    <string name="whole_budget">Whole budget</string>
+    <string name="rest_budget">Left</string>
+    <string name="min_spent">Minimum spend</string>
+    <string name="max_spent">Maximum spending</string>
+    <string name="count_spends">Total spending</string>
+
     <!-- Common -->
     <string name="copy_in_clipboard">Copied to clipboard</string>
     <string name="search">Search</string>

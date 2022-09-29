@@ -43,7 +43,7 @@ fun Editor(
     appViewModel: AppViewModel = hiltViewModel(),
     onOpenWallet: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
-    onReaclcBudget: () -> Unit = {},
+    onDebugMenu: () -> Unit = {},
     onOpenHistory: () -> Unit = {},
 ) {
     val isDebug = appViewModel.isDebug.observeAsState(false)
@@ -278,7 +278,7 @@ fun Editor(
                 BigIconButton(
                     icon = painterResource(R.drawable.ic_developer_mode),
                     contentDescription = null,
-                    onClick = onReaclcBudget,
+                    onClick = onDebugMenu,
                 )
             }
             BigIconButton(
