@@ -219,7 +219,8 @@ fun MainScreen(
 
         BottomSheetWrapper(
             state = walletSheetState,
-            cancelable = spendsViewModel.requireSetBudget.value == false,
+            cancelable = spendsViewModel.requireSetBudget.value == false
+                    && spendsViewModel.finishPeriod.value == false,
         ) {
             Wallet(
                 forceChange = (
