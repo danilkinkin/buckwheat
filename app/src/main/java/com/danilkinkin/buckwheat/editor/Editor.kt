@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -47,7 +48,7 @@ fun Editor(
 ) {
     val isDebug = appViewModel.isDebug.observeAsState(false)
 
-    val spends by spendsViewModel.getSpendsInCurrentDay().observeAsState(initial = emptyList())
+    val lastDaySpends by spendsViewModel.getCountLastDaySpends().observeAsState(0)
 
     var currState by remember { mutableStateOf<AnimState?>(null) }
     var currAnimator by remember { mutableStateOf<ValueAnimator?>(null) }
@@ -254,18 +255,18 @@ fun Editor(
                 .padding(start = 24.dp, end = 24.dp)
                 .statusBarsPadding(),
         ) {
-            if (spends.isNotEmpty()) {
+            if (lastDaySpends != 0) {
                 Surface(
                     shape = CircleShape,
                     color = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.clickable { onOpenHistory() }
+                    modifier = Modifier.clip(CircleShape).clickable { onOpenHistory() }
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
                         text = String.format(
-                            pluralStringResource(R.plurals.spends_today, count = spends.size),
-                            spends.size,
+                            pluralStringResource(R.plurals.spends_today, count = lastDaySpends),
+                            lastDaySpends,
                         ),
                     )
                 }

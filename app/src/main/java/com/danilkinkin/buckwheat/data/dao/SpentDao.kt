@@ -11,8 +11,8 @@ interface SpentDao {
     @Query("SELECT * FROM spent ORDER BY date ASC")
     fun getAll(): LiveData<List<Spent>>
 
-    @Query("SELECT * FROM spent WHERE date > :currDate ORDER BY date ASC")
-    fun getLastDay(currDate: Date = roundToDay(Date())): LiveData<List<Spent>>
+    @Query("SELECT COUNT(*) FROM spent WHERE date > :currDate AND deleted = false ORDER BY date ASC")
+    fun getCountLastDaySpends(currDate: Date = roundToDay(Date())): LiveData<Int>
 
     @Query("SELECT * FROM spent WHERE uid = :uid")
     fun getById(uid: Int): Spent?
