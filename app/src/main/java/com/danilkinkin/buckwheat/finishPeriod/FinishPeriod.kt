@@ -31,125 +31,126 @@ fun FinishPeriod(
     val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!)
     val minSpent = spends.minByOrNull { it.value }
     val maxSpent = spends.maxByOrNull { it.value }
-
-
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 24.dp)
-            .navigationBarsPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(Modifier.height(24.dp))
-        Text(
-            text = stringResource(R.string.finish_period_title),
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Spacer(Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.period_summary_title),
-            style = MaterialTheme.typography.titleMedium,
-        )
-        Spacer(Modifier.height(24.dp))
-        Column(Modifier.fillMaxWidth()) {
-            ValueWithLabel(
-                value = prettyCandyCanes(
-                    wholeBudget,
-                    currency = spendsViewModel.currency,
-                ),
-                label = stringResource(R.string.whole_budget),
+    
+    Surface {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .navigationBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(Modifier.height(24.dp))
+            Text(
+                text = stringResource(R.string.finish_period_title),
+                style = MaterialTheme.typography.titleLarge,
             )
-            Row {
-                ValueWithLabel(
-                    value = prettyDate(
-                        spendsViewModel.startDate,
-                        showTime = false,
-                        forceShowDate = true,
-                    ),
-                    label = stringResource(R.string.label_start_date),
-                    fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                )
-                Spacer(Modifier.width(24.dp))
-                ValueWithLabel(
-                    value = prettyDate(
-                        spendsViewModel.finishDate,
-                        showTime = false,
-                        forceShowDate = true,
-                    ),
-                    label = stringResource(R.string.label_finish_date),
-                    fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                )
-            }
-            ValueWithLabel(
-                value = prettyCandyCanes(
-                    restBudget,
-                    currency = spendsViewModel.currency,
-                ),
-                label = stringResource(R.string.rest_budget),
-                fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = stringResource(R.string.period_summary_title),
+                style = MaterialTheme.typography.titleMedium,
             )
-            Row {
+            Spacer(Modifier.height(24.dp))
+            Column(Modifier.fillMaxWidth()) {
                 ValueWithLabel(
-                    value = if (minSpent !== null) {
-                        prettyCandyCanes(
-                            minSpent.value,
-                            currency = spendsViewModel.currency,
-                        )
-                    } else {
-                        "-"
-                    },
-                    secondValue = if (minSpent !== null) {
-                        prettyDate(
-                            minSpent.date,
+                    value = prettyCandyCanes(
+                        wholeBudget,
+                        currency = spendsViewModel.currency,
+                    ),
+                    label = stringResource(R.string.whole_budget),
+                )
+                Row {
+                    ValueWithLabel(
+                        value = prettyDate(
+                            spendsViewModel.startDate,
+                            showTime = false,
                             forceShowDate = true,
-                            showTime = true,
-                        )
-                    } else {
-                        null
-                    },
-                    label = stringResource(R.string.min_spent),
-                    fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                    fontSizeSecondValue = MaterialTheme.typography.bodySmall.fontSize,
-                )
-                Spacer(Modifier.width(24.dp))
-                ValueWithLabel(
-                    value = if (maxSpent !== null) {
-                        prettyCandyCanes(
-                            maxSpent.value,
-                            currency = spendsViewModel.currency,
-                        )
-                    } else {
-                        "-"
-                    },
-                    secondValue = if (maxSpent !== null) {
-                        prettyDate(
-                            maxSpent.date,
+                        ),
+                        label = stringResource(R.string.label_start_date),
+                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+                    )
+                    Spacer(Modifier.width(24.dp))
+                    ValueWithLabel(
+                        value = prettyDate(
+                            spendsViewModel.finishDate,
+                            showTime = false,
                             forceShowDate = true,
-                            showTime = true,
-                        )
-                    } else {
-                        null
-                    },
-                    label = stringResource(R.string.max_spent),
-                    fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                    fontSizeSecondValue = MaterialTheme.typography.bodySmall.fontSize,
-                )
-                Spacer(Modifier.width(24.dp))
+                        ),
+                        label = stringResource(R.string.label_finish_date),
+                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+                    )
+                }
                 ValueWithLabel(
-                    value = spends.size.toString(),
-                    label = stringResource(R.string.count_spends),
+                    value = prettyCandyCanes(
+                        restBudget,
+                        currency = spendsViewModel.currency,
+                    ),
+                    label = stringResource(R.string.rest_budget),
                     fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
                 )
+                Row {
+                    ValueWithLabel(
+                        value = if (minSpent !== null) {
+                            prettyCandyCanes(
+                                minSpent.value,
+                                currency = spendsViewModel.currency,
+                            )
+                        } else {
+                            "-"
+                        },
+                        secondValue = if (minSpent !== null) {
+                            prettyDate(
+                                minSpent.date,
+                                forceShowDate = true,
+                                showTime = true,
+                            )
+                        } else {
+                            null
+                        },
+                        label = stringResource(R.string.min_spent),
+                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontSizeSecondValue = MaterialTheme.typography.bodySmall.fontSize,
+                    )
+                    Spacer(Modifier.width(24.dp))
+                    ValueWithLabel(
+                        value = if (maxSpent !== null) {
+                            prettyCandyCanes(
+                                maxSpent.value,
+                                currency = spendsViewModel.currency,
+                            )
+                        } else {
+                            "-"
+                        },
+                        secondValue = if (maxSpent !== null) {
+                            prettyDate(
+                                maxSpent.date,
+                                forceShowDate = true,
+                                showTime = true,
+                            )
+                        } else {
+                            null
+                        },
+                        label = stringResource(R.string.max_spent),
+                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+                        fontSizeSecondValue = MaterialTheme.typography.bodySmall.fontSize,
+                    )
+                    Spacer(Modifier.width(24.dp))
+                    ValueWithLabel(
+                        value = spends.size.toString(),
+                        label = stringResource(R.string.count_spends),
+                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+                    )
+                }
             }
+            Spacer(Modifier.height(48.dp))
+            ButtonWithIcon(
+                title = stringResource(R.string.new_period_title),
+                onClick = {
+                    onCreateNewPeriod()
+                    onClose()
+                },
+            )
+            Spacer(Modifier.height(24.dp))
         }
-        Spacer(Modifier.height(48.dp))
-        ButtonWithIcon(
-            title = stringResource(R.string.new_period_title),
-            onClick = {
-                onCreateNewPeriod()
-                onClose()
-            },
-        )
-        Spacer(Modifier.height(24.dp))
     }
 }
 
