@@ -20,6 +20,7 @@ fun DebugMenu(
     appViewModel: AppViewModel = hiltViewModel(),
     onDailySummary: () -> Unit = {},
     onPeriodSummary: () -> Unit = {},
+    onBoarding: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
     val navigationBarHeight = androidx.compose.ui.unit.max(
@@ -52,6 +53,13 @@ fun DebugMenu(
                 text = "Open period summary screen",
                 onClick = {
                     onPeriodSummary()
+                    onClose()
+                },
+            )
+            ButtonRow(
+                text = "Open onboarding screen",
+                onClick = {
+                    onBoarding()
                     onClose()
                 },
             )

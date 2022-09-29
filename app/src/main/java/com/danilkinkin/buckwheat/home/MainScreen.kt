@@ -25,6 +25,7 @@ import com.danilkinkin.buckwheat.editor.DebugMenu
 import com.danilkinkin.buckwheat.editor.Editor
 import com.danilkinkin.buckwheat.finishPeriod.FinishPeriod
 import com.danilkinkin.buckwheat.keyboard.Keyboard
+import com.danilkinkin.buckwheat.onboarding.Onboarding
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.Settings
 import com.danilkinkin.buckwheat.spendsHistory.History
@@ -54,6 +55,7 @@ fun MainScreen(
     val settingsSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val finishPeriodSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val recalcBudgetSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val onboardingSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val debugMenuSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
     val presetFinishDate = remember { mutableStateOf<Date?>(null) }
@@ -109,7 +111,7 @@ fun MainScreen(
         Log.d("MainScreen", "requireSetBudget = $it")
         if (it) {
             coroutineScope.launch {
-                walletSheetState.show()
+                onboardingSheetState.show()
             }
         }
     }
@@ -301,6 +303,24 @@ fun MainScreen(
             )
         }
 
+        BottomSheetWrapper(
+            state = onboardingSheetState,
+            cancelable = false,
+        ) {
+            Onboarding(
+                onSetBudget = {
+                    coroutineScope.launch {
+                        walletSheetState.show()
+                    }
+                },
+                onClose = {
+                    coroutineScope.launch {
+                        onboardingSheetState.hide()
+                    }
+                },
+            )
+        }
+
         if (isDebug.value) {
             BottomSheetWrapper(state = debugMenuSheetState) {
                 DebugMenu(
@@ -312,6 +332,11 @@ fun MainScreen(
                     onDailySummary = {
                         coroutineScope.launch {
                             recalcBudgetSheetState.show()
+                        }
+                    },
+                    onBoarding = {
+                        coroutineScope.launch {
+                            onboardingSheetState.show()
                         }
                     },
                     onClose = {
