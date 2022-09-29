@@ -6,6 +6,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import java.util.*
 )
 @Composable
 fun Wallet(
+    forceChange: Boolean = false,
     requestFinishDate: ((presetDate: Date, callback: (finishDate: Date) -> Unit) -> Unit) = { _: Date, _: (finishDate: Date) -> Unit -> },
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
@@ -47,9 +49,11 @@ fun Wallet(
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate) }
     val currency = remember { mutableStateOf(spendsViewModel.currency) }
+    val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
 
     val openCurrencyChooserDialog = remember { mutableStateOf(false) }
     val openCustomCurrencyEditorDialog = remember { mutableStateOf(false) }
+    val openConfirmChangeBudgetDialog = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
     val navigationBarHeight = androidx.compose.ui.unit.max(
@@ -176,10 +180,14 @@ fun Wallet(
                 Spacer(Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        spendsViewModel.changeCurrency(currency.value)
-                        spendsViewModel.changeBudget(budget, dateToValue.value)
+                        if (spends.isNotEmpty() && !forceChange) {
+                            openConfirmChangeBudgetDialog.value = true
+                        } else {
+                            spendsViewModel.changeCurrency(currency.value)
+                            spendsViewModel.changeBudget(budget, dateToValue.value)
 
-                        onClose()
+                            onClose()
+                        }
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -218,6 +226,18 @@ fun Wallet(
                 currency.value = ExtendCurrency(type = CurrencyType.CUSTOM, value = it)
             },
             onClose = { openCustomCurrencyEditorDialog.value = false },
+        )
+    }
+
+    if (openConfirmChangeBudgetDialog.value) {
+        ConfirmChangeBudgetDialog(
+            onConfirm = {
+                spendsViewModel.changeCurrency(currency.value)
+                spendsViewModel.changeBudget(budget, dateToValue.value)
+
+                onClose()
+            },
+            onClose = { openConfirmChangeBudgetDialog.value = false },
         )
     }
 }

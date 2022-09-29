@@ -222,6 +222,10 @@ fun MainScreen(
             cancelable = spendsViewModel.requireSetBudget.value == false,
         ) {
             Wallet(
+                forceChange = (
+                        spendsViewModel.finishPeriod.value ?: false
+                                || spendsViewModel.requireSetBudget.value ?: false
+                        ),
                 requestFinishDate = { presetValue, callback ->
                     coroutineScope.launch {
                         finishDateSheetState.show()

@@ -48,6 +48,9 @@
     <string name="select_currency_hint">Введите вашу валюту</string>
     <string name="currency_custom_title">Укажите свою валюту</string>
     <string name="apply">Применить</string>
+    <string name="confirm_change_budget_title">Изменение бюджета</string>
+    <string name="confirm_change_budget_description">Обратите внимание, что при изменении бюджета, история трат сбрасывается</string>
+    <string name="confirm_change_budget">Изменить бюджет</string>
 
     <!-- Settings -->
     <string name="settings_title">Настройки</string>
