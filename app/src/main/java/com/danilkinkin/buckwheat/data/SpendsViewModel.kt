@@ -151,6 +151,7 @@ class SpendsViewModel @Inject constructor(
         this.spentDao.deleteAll()
 
         requireSetBudget.value = false
+        finishPeriod.value = false
 
         resetSpent()
         reCalcDailyBudget(
