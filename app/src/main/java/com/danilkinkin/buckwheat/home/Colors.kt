@@ -117,7 +117,7 @@ fun Color(color: Color, contentColor: Color = contentColorFor(color)) {
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme() {
+    BuckwheatTheme(dynamicColor = false) {
         Colors()
     }
 }
