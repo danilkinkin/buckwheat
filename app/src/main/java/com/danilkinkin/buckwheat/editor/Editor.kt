@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.editor
 
 import android.animation.ValueAnimator
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -13,6 +14,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -30,6 +32,7 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
 
@@ -54,6 +57,7 @@ fun Editor(
     var currAnimator by remember { mutableStateOf<ValueAnimator?>(null) }
 
     val localDensity = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
 
     var budgetValue by remember { mutableStateOf("") }
     var restBudgetValue by remember { mutableStateOf("") }
@@ -78,6 +82,7 @@ fun Editor(
     var spentValueFontSize by remember { mutableStateOf(60.sp) }
     var spentLabelFontSize by remember { mutableStateOf(60.sp) }
 
+    val spendsCountScale = remember { Animatable(1f) }
 
     fun calculateValues(
         budget: Boolean = true,
@@ -241,6 +246,23 @@ fun Editor(
             SpendsViewModel.Stage.COMMITTING_SPENT -> {
                 animTo(AnimState.COMMIT)
 
+                coroutineScope.launch {
+                    spendsCountScale.animateTo(
+                        1.05f,
+                        animationSpec = tween(
+                            durationMillis = 20,
+                            easing = LinearEasing
+                        )
+                    )
+                    spendsCountScale.animateTo(
+                        1f,
+                        animationSpec = tween(
+                            durationMillis = 120,
+                            easing = LinearEasing,
+                        )
+                    )
+                }
+
                 spendsViewModel.resetSpent()
             }
         }
@@ -260,7 +282,10 @@ fun Editor(
                     shape = CircleShape,
                     color = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.clip(CircleShape).clickable { onOpenHistory() }
+                    modifier = Modifier
+                        .scale(spendsCountScale.value)
+                        .clip(CircleShape)
+                        .clickable { onOpenHistory() }
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
