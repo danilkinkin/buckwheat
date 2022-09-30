@@ -15,7 +15,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-val BUTTON_GAP = 4.dp
+val BUTTON_GAP = 6.dp
 
 @Composable
 fun Keyboard(
@@ -28,7 +28,7 @@ fun Keyboard(
     Column (
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(14.dp)
     ) {
         Row (modifier = Modifier
             .fillMaxSize()

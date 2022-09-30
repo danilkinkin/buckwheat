@@ -58,9 +58,9 @@ fun KeyboardButton(
 
     val contentColor = when (type) {
         KeyboardButtonType.DEFAULT -> colorOnButton
-        KeyboardButtonType.PRIMARY -> contentColorFor(MaterialTheme.colorScheme.primaryContainer)
-        KeyboardButtonType.SECONDARY -> contentColorFor(MaterialTheme.colorScheme.secondaryContainer)
-        KeyboardButtonType.TERTIARY -> contentColorFor(MaterialTheme.colorScheme.tertiaryContainer)
+        KeyboardButtonType.PRIMARY -> MaterialTheme.colorScheme.onPrimaryContainer
+        KeyboardButtonType.SECONDARY -> MaterialTheme.colorScheme.onSecondaryContainer
+        KeyboardButtonType.TERTIARY -> MaterialTheme.colorScheme.onTertiaryContainer
     }
 
     Surface(
@@ -91,13 +91,13 @@ fun KeyboardButton(
                     text = text,
                     color = contentColor,
                     style = MaterialTheme.typography.titleLarge,
-                    fontSize = with(localDensity) { min(minSizeFloat - minSizeFloat / 2, 904F).toSp() },
+                    fontSize = with(localDensity) { min(minSizeFloat - minSizeFloat / 2F, 904F).toSp() },
                 )
             }
             if (icon !== null) {
                 Icon(
                     painter = icon,
-                    modifier = Modifier.size(min(minSize - minSize / 2F, 154.dp)),
+                    modifier = Modifier.size(min(minSize - minSize / 1.6F, 154.dp)),
                     contentDescription = null,
                 )
             }
