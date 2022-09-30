@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
@@ -70,6 +71,12 @@ fun BottomSheetWrapper(
             statusBarHeight - state.offset.value.roundToInt().toDp(),
             0.toDp(),
         ) } / statusBarHeight
+    }
+
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(Unit) {
+        focusManager.clearFocus()
     }
 
     ModalBottomSheetLayout(
