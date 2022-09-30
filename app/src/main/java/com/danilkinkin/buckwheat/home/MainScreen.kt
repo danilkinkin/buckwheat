@@ -75,7 +75,7 @@ fun MainScreen(
             SystemBarState(
                 statusBarColor = Color.Transparent,
                 statusBarDarkIcons = !isNightModeM.value,
-                navigationBarDarkIcons = false,
+                navigationBarDarkIcons = !isNightModeM.value,
                 navigationBarColor = Color.Transparent,
             )
         },

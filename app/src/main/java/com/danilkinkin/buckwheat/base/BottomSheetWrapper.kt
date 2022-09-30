@@ -50,13 +50,14 @@ fun BottomSheetWrapper(
     val localDensity = LocalDensity.current
 
     val statusBarHeight = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
+    val isNightModeNow = isNightMode()
 
     setSystemStyle(
         style = {
             SystemBarState(
                 statusBarColor = Color.Transparent,
                 statusBarDarkIcons = false,
-                navigationBarDarkIcons = true,
+                navigationBarDarkIcons = !isNightModeNow,
                 navigationBarColor = Color.Transparent,
             )
         },
@@ -90,14 +91,13 @@ fun BottomSheetWrapper(
             topEnd = CornerSize(28.dp * (1F - statusBarFillProgress)),
         ),
         sheetContent = {
-            val isNightModeNow = isNightMode()
 
             setSystemStyle(
                 style = {
                     SystemBarState(
                         statusBarColor = Color.Transparent,
                         statusBarDarkIcons = !isNightModeNow,
-                        navigationBarDarkIcons = true,
+                        navigationBarDarkIcons = !isNightModeNow,
                         navigationBarColor = Color.Transparent,
                     )
                 },
