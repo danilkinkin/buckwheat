@@ -827,7 +827,7 @@ object SwipeableDefaults {
 }
 
 @ExperimentalMaterialApi
-internal val <T> SwipeableState<T>.PreUpPostTopNestedScrollConnection: NestedScrollConnection
+val <T> SwipeableState<T>.PreUpPostTopNestedScrollConnection: NestedScrollConnection
     get() = object : NestedScrollConnection {
         override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
             val delta = available.toFloat()
@@ -852,7 +852,7 @@ internal val <T> SwipeableState<T>.PreUpPostTopNestedScrollConnection: NestedScr
 
         override suspend fun onPreFling(available: Velocity): Velocity {
             val toFling = Offset(available.x, available.y).toFloat()
-            return if (toFling > 0 && offset.value > minBound) {
+            return if (toFling > 0) {
                 performFling(velocity = toFling)
                 // since we go to the anchor with tween settling, consume all for the best UX
                 available
@@ -874,7 +874,7 @@ internal val <T> SwipeableState<T>.PreUpPostTopNestedScrollConnection: NestedScr
 // temp default nested scroll connection for swipeables which desire as an opt in
 // revisit in b/174756744 as all types will have their own specific connection probably
 @ExperimentalMaterialApi
-internal val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedScrollConnection
+val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedScrollConnection
     get() = object : NestedScrollConnection {
         override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
             val delta = available.toFloat()

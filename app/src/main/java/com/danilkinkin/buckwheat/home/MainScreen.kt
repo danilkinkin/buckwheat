@@ -1,9 +1,9 @@
 package com.danilkinkin.buckwheat.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -46,8 +46,7 @@ fun MainScreen(
     appViewModel: AppViewModel = viewModel(),
 ) {
     val isDebug = appViewModel.isDebug.observeAsState(false)
-    val topSheetState =
-        androidx.compose.material.rememberSwipeableState(TopSheetValue.HalfExpanded)
+    val topSheetState = rememberSwipeableState(TopSheetValue.HalfExpanded)
     val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val finishDateSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val settingsSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
@@ -97,7 +96,6 @@ fun MainScreen(
     }
 
     observeLiveData(spendsViewModel.requireReCalcBudget) {
-        Log.d("MainScreen", "requireReCalcBudget = $it")
         if (it) {
             coroutineScope.launch {
                 recalcBudgetSheetState.show()
@@ -106,7 +104,6 @@ fun MainScreen(
     }
 
     observeLiveData(spendsViewModel.requireSetBudget) {
-        Log.d("MainScreen", "requireSetBudget = $it")
         if (it) {
             coroutineScope.launch {
                 onboardingSheetState.show()
@@ -115,7 +112,6 @@ fun MainScreen(
     }
 
     observeLiveData(spendsViewModel.finishPeriod) {
-        Log.d("MainScreen", "finishPeriod = $it")
         if (it) {
             coroutineScope.launch {
                 finishPeriodSheetState.show()
@@ -146,7 +142,6 @@ fun MainScreen(
 
         TopSheetLayout(
             swipeableState = topSheetState,
-            // sheetState = topSheetState,
             customHalfHeight = editorHeight,
             lockSwipeable = appViewModel.lockSwipeable,
             sheetContentHalfExpand = {

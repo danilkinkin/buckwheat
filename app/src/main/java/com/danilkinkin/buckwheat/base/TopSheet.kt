@@ -1,20 +1,16 @@
 package com.danilkinkin.buckwheat.base
 
-import android.util.Log
-import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -25,18 +21,13 @@ import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.onClick
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import java.lang.Float.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 @ExperimentalMaterialApi
@@ -45,122 +36,11 @@ enum class TopSheetValue {
     HalfExpanded
 }
 
-/* @ExperimentalMaterialApi
-class TopSheetState(
-    initialValue: TopSheetValue,
-    animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-    internal val isSkipHalfExpanded: Boolean,
-    confirmStateChange: (TopSheetValue) -> Boolean = { true },
-    internal val sheetHeightFloat: MutableState<Float>,
-) : SwipeableState<TopSheetValue>(
-    initialValue = initialValue,
-    animationSpec = animationSpec,
-    confirmStateChange = confirmStateChange
-) {
-    val isExpand: Boolean
-        get() = currentValue != TopSheetValue.HalfExpanded
-
-    val sheetHeight: Float
-        get() = this.sheetHeightFloat.value
-
-    constructor(
-        initialValue: TopSheetValue,
-        animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-        confirmStateChange: (TopSheetValue) -> Boolean = { true },
-        sheetHeightFloat: MutableState<Float>,
-    ) : this(initialValue, animationSpec, isSkipHalfExpanded = false, confirmStateChange, sheetHeightFloat)
-
-    init {
-        if (isSkipHalfExpanded) {
-            require(initialValue != TopSheetValue.HalfExpanded) {
-                "The initial value must not be set to HalfExpanded if skipHalfExpanded is set to" +
-                        " true."
-            }
-        }
-    }
-
-    internal suspend fun halfExpand() {
-        animateTo(TopSheetValue.HalfExpanded)
-    }
-
-    internal suspend fun expand() = animateTo(TopSheetValue.Expanded)
-
-    internal val nestedScrollConnection = this.PreUpPostTopNestedScrollConnection
-
-    companion object {
-        fun Saver(
-            animationSpec: AnimationSpec<Float>,
-            skipHalfExpanded: Boolean,
-            confirmStateChange: (TopSheetValue) -> Boolean
-        ): Saver<TopSheetState, *> = Saver(
-            save = { Pair(it.currentValue, it.sheetHeightFloat) },
-            restore = { (currentValue, sheetHeightFloat) ->
-                TopSheetState(
-                    initialValue = currentValue,
-                    animationSpec = animationSpec,
-                    isSkipHalfExpanded = skipHalfExpanded,
-                    confirmStateChange = confirmStateChange,
-                    sheetHeightFloat = sheetHeightFloat,
-                )
-            }
-        )
-    }
-}
-
-@Composable
-@ExperimentalMaterialApi
-fun rememberTopSheetState(
-    initialValue: TopSheetValue,
-    animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-    skipHalfExpanded: Boolean,
-    confirmStateChange: (TopSheetValue) -> Boolean = { true },
-    sheetHeightFloat: MutableState<Float>,
-): TopSheetState {
-    return rememberSaveable(
-        initialValue, animationSpec, skipHalfExpanded, confirmStateChange,
-        saver = TopSheetState.Saver(
-            animationSpec = animationSpec,
-            skipHalfExpanded = skipHalfExpanded,
-            confirmStateChange = confirmStateChange
-        )
-    ) {
-        TopSheetState(
-            initialValue = initialValue,
-            animationSpec = animationSpec,
-            isSkipHalfExpanded = skipHalfExpanded,
-            confirmStateChange = confirmStateChange,
-            sheetHeightFloat = sheetHeightFloat,
-        )
-    }
-}
-
-/**
- * Create a [TopSheetState] and [remember] it.
- *
- * @param initialValue The initial value of the state.
- * @param animationSpec The default animation that will be used to animate to a new state.
- * @param confirmStateChange Optional callback invoked to confirm or veto a pending state change.
- */
-@Composable
-@ExperimentalMaterialApi
-fun rememberTopSheetState(
-    initialValue: TopSheetValue,
-    animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-    confirmStateChange: (TopSheetValue) -> Boolean = { true }
-): TopSheetState = rememberTopSheetState(
-    initialValue = initialValue,
-    animationSpec = animationSpec,
-    skipHalfExpanded = false,
-    confirmStateChange = confirmStateChange,
-    sheetHeightFloat = mutableStateOf(0f)
-) */
-
 @Composable
 @ExperimentalMaterialApi
 fun TopSheetLayout(
     modifier: Modifier = Modifier,
     swipeableState: SwipeableState<TopSheetValue> = rememberSwipeableState(TopSheetValue.HalfExpanded),
-    // sheetState: TopSheetState = rememberTopSheetState(TopSheetValue.HalfExpanded),
     customHalfHeight: Float? = null,
     lockSwipeable: MutableState<Boolean>,
     sheetContentHalfExpand: @Composable () -> Unit,
@@ -330,27 +210,6 @@ fun TopSheetLayout(
         }
     }
 }
-
-/* @Suppress("ModifierInspectorInfo")
-@OptIn(ExperimentalMaterialApi::class)
-private fun Modifier.topSheetSwipeable(
-    sheetState: TopSheetState,
-    fullHeight: Float,
-    halfHeight: Float,
-    expandHeight: Float,
-): Modifier {
-    val modifier = Modifier.swipeable(
-        state = sheetState,
-        anchors = mapOf(
-            -(fullHeight - halfHeight) to TopSheetValue.HalfExpanded,
-            -(fullHeight - expandHeight) to TopSheetValue.Expanded
-        ),
-        orientation = Orientation.Vertical,
-        resistance = null
-    )
-
-    return this.then(modifier)
-} */
 
 @Composable
 fun Scrim(

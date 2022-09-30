@@ -33,7 +33,7 @@ fun RecalcBudget(
 
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!) - spendsViewModel.dailyBudget.value!!
-    val perDayBudget = restBudget / (restDays + skippedDays - 1).toBigDecimal()
+    val perDayBudget = restBudget / (restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal()
 
     val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0)
         .toBigDecimal() + spendsViewModel.dailyBudget.value!! - spendsViewModel.spentFromDailyBudget.value!!
