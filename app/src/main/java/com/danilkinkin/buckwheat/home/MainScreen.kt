@@ -13,6 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.coerceAtLeast
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.*
@@ -80,8 +82,6 @@ fun MainScreen(
         key = isNightModeM.value,
     )
 
-
-
     LaunchedEffect(Unit) {
         spendsViewModel.lastRemoveSpent.collectLatest {
             val snackbarResult = snackbarHostState.showSnackbar(
@@ -119,6 +119,8 @@ fun MainScreen(
         }
     }
 
+    val keyboardAdditionalOffset = (WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() - 16.dp).coerceAtLeast(0.dp)
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -126,12 +128,13 @@ fun MainScreen(
     ) {
         val contentHeight = constraints.maxHeight.toFloat()
         val contentWidth = constraints.maxWidth.toFloat()
-        val editorHeight = contentHeight - contentWidth
+        val editorHeight = contentHeight - contentWidth - with(localDensity) { keyboardAdditionalOffset.toPx() }
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = with(localDensity) { editorHeight.toDp() })
+                .padding(bottom = keyboardAdditionalOffset),
+            contentAlignment = Alignment.BottomCenter,
         ) {
             Keyboard(
                 modifier = Modifier

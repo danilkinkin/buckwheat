@@ -25,15 +25,10 @@ fun Keyboard(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val navigationBarHeight = androidx.compose.ui.unit.max(
-        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-        16.dp,
-    )
-
     Column (
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = navigationBarHeight)
+            .padding(16.dp)
     ) {
         Row (modifier = Modifier
             .fillMaxSize()
