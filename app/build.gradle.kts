@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.danilkinkin.buckwheat"
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk = 26
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
