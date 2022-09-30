@@ -1,14 +1,23 @@
 package com.danilkinkin.buckwheat.spendsHistory
 
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.Collapse
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -45,70 +54,99 @@ fun History(
         }
     }
 
-    Column(Modifier.fillMaxSize()) {
-        LazyColumn(state = scrollState) {
-            item("budgetInfo") {
-                DisposableEffect(spends.size) {
-                    if (spends.isEmpty() || !isFirstRender) return@DisposableEffect onDispose {  }
+    val fapScale by animateFloatAsState(
+        targetValue = if (appViewModel.lockSwipeable.value) 1f else 0f,
+        animationSpec = TweenSpec(250),
+    )
 
-                    isFirstRender = false
+    Box(Modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            LazyColumn(state = scrollState) {
+                item("budgetInfo") {
+                    DisposableEffect(spends.size) {
+                        if (spends.isEmpty() || !isFirstRender) return@DisposableEffect onDispose {  }
 
-                    coroutineScope.launch {
-                        scrollState.scrollToItem(spends.size + 1)
-                    }
+                        isFirstRender = false
 
-                    onDispose { }
-                }
-                BudgetInfo(
-                    budget = budget.value ?: BigDecimal(0),
-                    startDate = startDate,
-                    finishDate = finishDate,
-                    currency = spendsViewModel.currency,
-                )
-            }
-
-            var lastDate: Date? = null
-
-            spends.forEach { item ->
-                if (lastDate === null || !isSameDay(item.date.time, lastDate!!.time)) {
-                    lastDate = item.date
-
-                    item(item.date.time) {
-                        Collapse(show = hasNextSpendsInThisDay(spends, item) || !item.deleted) {
-                            HistoryDateDivider(item.date)
+                        coroutineScope.launch {
+                            scrollState.scrollToItem(spends.size + 1)
                         }
-                    }
-                }
 
-                item(item.uid) {
-                    Spent(
-                        spent = item,
+                        onDispose { }
+                    }
+                    BudgetInfo(
+                        budget = budget.value ?: BigDecimal(0),
+                        startDate = startDate,
+                        finishDate = finishDate,
                         currency = spendsViewModel.currency,
-                        onDelete = {
-                            spendsViewModel.removeSpent(item)
-                        }
                     )
                 }
-            }
-            item("spacer") {
-                Spacer(modifier = Modifier.height(20.dp))
-            }
-            item("endChecker") {
-                DisposableEffect(Unit) {
-                    appViewModel.lockSwipeable.value = false
 
-                    onDispose { appViewModel.lockSwipeable.value = true }
+                var lastDate: Date? = null
+
+                spends.forEach { item ->
+                    if (lastDate === null || !isSameDay(item.date.time, lastDate!!.time)) {
+                        lastDate = item.date
+
+                        item(item.date.time) {
+                            Collapse(show = hasNextSpendsInThisDay(spends, item) || !item.deleted) {
+                                HistoryDateDivider(item.date)
+                            }
+                        }
+                    }
+
+                    item(item.uid) {
+                        Spent(
+                            spent = item,
+                            currency = spendsViewModel.currency,
+                            onDelete = {
+                                spendsViewModel.removeSpent(item)
+                            }
+                        )
+                    }
+                }
+                item("spacer") {
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+                item("endChecker") {
+                    DisposableEffect(Unit) {
+                        appViewModel.lockSwipeable.value = false
+
+                        onDispose { appViewModel.lockSwipeable.value = true }
+                    }
                 }
             }
+
+
+            if (spends.none { !it.deleted }) {
+                NoSpends(Modifier.weight(1f))
+            }
         }
 
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .navigationBarsPadding(),
+        ) {
+            FloatingActionButton(
+                modifier = Modifier.padding(end = 24.dp, bottom = 32.dp).scale(fapScale),
+                onClick = {
+                    coroutineScope.launch {
+                        scrollState.animateScrollToItem(spends.size + 1)
+                    }
+                },
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_down),
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                )
 
-        if (spends.none { !it.deleted }) {
-            NoSpends(Modifier.weight(1f))
+            }
         }
     }
-
-
 }
 
 fun hasNextSpendsInThisDay(spends: List<Spent>, currSpent: Spent): Boolean {
