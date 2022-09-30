@@ -46,7 +46,12 @@ fun Wallet(
     onClose: () -> Unit = {},
 ) {
     var rawBudget by remember {
-        val converted = tryConvertStringToNumber(spendsViewModel.budget.value!!.toString())
+        val converted = if (spendsViewModel.budget.value !== BigDecimal(0)) {
+            tryConvertStringToNumber(spendsViewModel.budget.value!!.toString())
+        } else {
+            Triple("", "0", "")
+        }
+        
         mutableStateOf(converted.first + converted.second)
     }
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
@@ -87,8 +92,7 @@ fun Wallet(
                     text = stringResource(R.string.label_budget),
                 )
                 TextField(
-                    modifier = Modifier
-                        .padding(start = 56.dp),
+                    modifier = Modifier.padding(start = 56.dp),
                     value = rawBudget,
                     onValueChange = {
                         val converted = tryConvertStringToNumber(it)

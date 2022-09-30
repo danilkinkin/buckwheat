@@ -33,7 +33,7 @@ class SpendsViewModel @Inject constructor(
         try {
             storageDao.get("budget").value.toBigDecimal()
         } catch (e: Exception) {
-            0.0.toBigDecimal()
+            0.toBigDecimal()
         }
     )
     var spent: MutableLiveData<BigDecimal> = MutableLiveData(
