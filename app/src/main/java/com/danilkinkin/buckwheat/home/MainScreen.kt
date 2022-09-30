@@ -219,16 +219,15 @@ fun MainScreen(
             }
         }
 
+        val requireSetBudget by spendsViewModel.requireSetBudget.observeAsState(false)
+        val finishPeriod by spendsViewModel.finishPeriod.observeAsState(false)
+
         BottomSheetWrapper(
             state = walletSheetState,
-            cancelable = spendsViewModel.requireSetBudget.value == false
-                    && spendsViewModel.finishPeriod.value == false,
+            cancelable = !requireSetBudget && !finishPeriod,
         ) {
             Wallet(
-                forceChange = (
-                        spendsViewModel.finishPeriod.value ?: false
-                                || spendsViewModel.requireSetBudget.value ?: false
-                        ),
+                forceChange = finishPeriod || requireSetBudget,
                 requestFinishDate = { presetValue, callback ->
                     coroutineScope.launch {
                         finishDateSheetState.show()
