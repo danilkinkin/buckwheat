@@ -65,7 +65,7 @@ fun BottomSheetWrapper(
         confirmChange = { state.targetValue !== ModalBottomSheetValue.Hidden },
     )
 
-    val statusBarFillProgress = if (statusBarHeight == 0.dp) {
+    val statusBarFillProgress = if (statusBarHeight == 0.dp || state.targetValue === ModalBottomSheetValue.Hidden) {
         0F
     } else {
         with(localDensity) { max(
