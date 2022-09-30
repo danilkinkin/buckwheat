@@ -47,91 +47,93 @@ fun RecalcBudget(
     val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
 
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 24.dp)
-            .navigationBarsPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(Modifier.height(24.dp))
-        Text(
-            text = stringResource(R.string.new_day_title),
-            style = MaterialTheme.typography.titleLarge,
-        )
-        Spacer(Modifier.height(24.dp))
-        Text(
-            text = prettyCandyCanes(
-                requireDistributeBudget,
-                currency = spendsViewModel.currency,
-            ),
-            style = MaterialTheme.typography.displayLarge,
-        )
-        Spacer(Modifier.height(24.dp))
-        Text(
-            text = stringResource(R.string.recalc_budget),
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        if (isDebug.value) {
-            Spacer(Modifier.height(48.dp))
+    Surface {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .navigationBarsPadding(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(Modifier.height(24.dp))
             Text(
-                text = "Осталось дней = $restDays " +
-                        "\nПрошло дней с последнего пересчета = $skippedDays " +
-                        "\nНачало = ${spendsViewModel.startDate} " +
-                        "\nПоследний пересчет = ${spendsViewModel.lastReCalcBudgetDate} " +
-                        "\nКонец = ${spendsViewModel.finishDate} " +
-                        "\nВесь бюджет = ${spendsViewModel.budget.value!!}" +
-                        "\nПотрачено из бюджета = ${spendsViewModel.spent.value!!}" +
-                        "\nБюджет на сегодня = ${spendsViewModel.dailyBudget.value!!}" +
-                        "\nПотрачено из дневного бюджета = ${spendsViewModel.spentFromDailyBudget.value!!}" +
-                        "\nОставшийся бюджет = $restBudget" +
-                        "\nОставшийся бюджет на по дням = $perDayBudget",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth()
+                text = stringResource(R.string.new_day_title),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Spacer(Modifier.height(24.dp))
+            Text(
+                text = prettyCandyCanes(
+                    requireDistributeBudget,
+                    currency = spendsViewModel.currency,
+                ),
+                style = MaterialTheme.typography.displayLarge,
+            )
+            Spacer(Modifier.height(24.dp))
+            Text(
+                text = stringResource(R.string.recalc_budget),
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            if (isDebug.value) {
+                Spacer(Modifier.height(48.dp))
+                Text(
+                    text = "Осталось дней = $restDays " +
+                            "\nПрошло дней с последнего пересчета = $skippedDays " +
+                            "\nНачало = ${spendsViewModel.startDate} " +
+                            "\nПоследний пересчет = ${spendsViewModel.lastReCalcBudgetDate} " +
+                            "\nКонец = ${spendsViewModel.finishDate} " +
+                            "\nВесь бюджет = ${spendsViewModel.budget.value!!}" +
+                            "\nПотрачено из бюджета = ${spendsViewModel.spent.value!!}" +
+                            "\nБюджет на сегодня = ${spendsViewModel.dailyBudget.value!!}" +
+                            "\nПотрачено из дневного бюджета = ${spendsViewModel.spentFromDailyBudget.value!!}" +
+                            "\nОставшийся бюджет = $restBudget" +
+                            "\nОставшийся бюджет на по дням = $perDayBudget",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(Modifier.height(48.dp))
+            ButtonWithIcon(
+                title = stringResource(R.string.split_rest_days_title),
+                description = stringResource(
+                    R.string.split_rest_days_description,
+                    prettyCandyCanes(
+                        budgetPerDaySplit,
+                        currency = spendsViewModel.currency,
+                    ),
+                ),
+                secondDescription = if (isDebug.value) {
+                    "($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit"
+                } else null,
+                onClick = {
+                    spendsViewModel.reCalcDailyBudget(budgetPerDaySplit)
+
+                    onClose()
+                },
+            )
+            Spacer(Modifier.height(16.dp))
+            ButtonWithIcon(
+                title = stringResource(R.string.add_current_day_title),
+                description = stringResource(
+                    R.string.add_current_day_description,
+                    prettyCandyCanes(
+                        requireDistributeBudget + budgetPerDayAdd,
+                        currency = spendsViewModel.currency,
+                    ),
+                    prettyCandyCanes(
+                        budgetPerDayAdd,
+                        currency = spendsViewModel.currency,
+                    ),
+                ),
+                secondDescription = if (isDebug.value) {
+                    "$restBudget / $restDays = $budgetPerDayAdd " +
+                            "\n${budgetPerDayAdd} + $requireDistributeBudget = $budgetPerDayAddDailyBudget"
+                } else null,
+                onClick = {
+                    spendsViewModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
+
+                    onClose()
+                },
             )
         }
-        Spacer(Modifier.height(48.dp))
-        ButtonWithIcon(
-            title = stringResource(R.string.split_rest_days_title),
-            description = stringResource(
-                R.string.split_rest_days_description,
-                prettyCandyCanes(
-                    budgetPerDaySplit,
-                    currency = spendsViewModel.currency,
-                ),
-            ),
-            secondDescription = if (isDebug.value) {
-                "($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit"
-            } else null,
-            onClick = {
-                spendsViewModel.reCalcDailyBudget(budgetPerDaySplit)
-
-                onClose()
-            },
-        )
-        Spacer(Modifier.height(16.dp))
-        ButtonWithIcon(
-            title = stringResource(R.string.add_current_day_title),
-            description = stringResource(
-                R.string.add_current_day_description,
-                prettyCandyCanes(
-                    requireDistributeBudget + budgetPerDayAdd,
-                    currency = spendsViewModel.currency,
-                ),
-                prettyCandyCanes(
-                    budgetPerDayAdd,
-                    currency = spendsViewModel.currency,
-                ),
-            ),
-            secondDescription = if (isDebug.value) {
-                "$restBudget / $restDays = $budgetPerDayAdd " +
-                        "\n${budgetPerDayAdd} + $requireDistributeBudget = $budgetPerDayAddDailyBudget"
-            } else null,
-            onClick = {
-                spendsViewModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
-
-                onClose()
-            },
-        )
     }
 }
 
