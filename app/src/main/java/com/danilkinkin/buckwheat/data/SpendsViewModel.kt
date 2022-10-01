@@ -238,8 +238,24 @@ class SpendsViewModel @Inject constructor(
     fun removeSpent(spent: Spent) {
         this.spentDao.markAsDeleted(spent.uid, true)
 
-        spentFromDailyBudget.value = spentFromDailyBudget.value!! - spent.value
-        storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+        if (!isSameDay(spent.date.time, Date().time)) {
+            val restDays = countDays(finishDate)
+            val spentPerDay = spent.value / restDays.toBigDecimal()
+
+            dailyBudget.value = dailyBudget.value!! + spentPerDay
+            this.spent.value = this.spent.value!! - (spent.value - spentPerDay)
+
+            storageDao.set(
+                Storage("dailyBudget", dailyBudget.value.toString())
+            )
+            storageDao.set(
+                Storage("spent", this.spent.value.toString())
+            )
+        } else {
+            spentFromDailyBudget.value = spentFromDailyBudget.value!! - spent.value
+
+            storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+        }
 
         viewModelScope.launch {
             lastRemoveSpent.emit(spent)
@@ -254,17 +270,25 @@ class SpendsViewModel @Inject constructor(
         }
 
         if (!isSameDay(spent.date.time, Date().time)) {
-            dailyBudget.value = dailyBudget.value!! + spent.value
+            val restDays = countDays(finishDate)
+            val spentPerDay = spent.value / restDays.toBigDecimal()
+            
+            dailyBudget.value = dailyBudget.value!! - spentPerDay
+            this.spent.value = this.spent.value!! + (spent.value - spentPerDay)
+
+            storageDao.set(
+                Storage("dailyBudget", dailyBudget.value.toString())
+            )
+            storageDao.set(
+                Storage("spent", this.spent.value.toString())
+            )
         } else {
             spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
-        }
 
-        storageDao.set(
-            Storage(
-                "spentFromDailyBudget",
-                spentFromDailyBudget.value.toString()
+            storageDao.set(
+                Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString())
             )
-        )
+        }
     }
 
     fun commitDeletedSpends() {
