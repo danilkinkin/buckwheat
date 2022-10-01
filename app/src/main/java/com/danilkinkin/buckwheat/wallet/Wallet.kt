@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.wallet
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -11,7 +12,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -34,10 +34,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class,
-)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Wallet(
     forceChange: Boolean = false,
@@ -87,12 +84,7 @@ fun Wallet(
            }
             Divider()
             Column(Modifier.verticalScroll(rememberScrollState())) {
-                TextRow(
-                    icon = painterResource(R.drawable.ic_money),
-                    text = stringResource(R.string.label_budget),
-                )
-                TextField(
-                    modifier = Modifier.padding(start = 56.dp),
+                BasicTextField(
                     value = rawBudget,
                     onValueChange = {
                         val converted = tryConvertStringToNumber(it)
@@ -100,13 +92,6 @@ fun Wallet(
                         rawBudget = converted.first + converted.second
                         budget = (converted.first + converted.second + converted.third).toBigDecimal()
                     },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent,
-                    ),
                     textStyle = MaterialTheme.typography.displaySmall,
                     visualTransformation = visualTransformationAsCurrency(
                         currency = ExtendCurrency(type = CurrencyType.NONE),
@@ -118,7 +103,18 @@ fun Wallet(
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {keyboardController?.hide()}
-                    )
+                    ),
+                    decorationBox = { input ->
+                        Column {
+                            TextRow(
+                                icon = painterResource(R.drawable.ic_money),
+                                text = stringResource(R.string.label_budget),
+                            )
+                            Box(Modifier.padding(start = 56.dp)) {
+                                input()
+                            }
+                        }
+                    },
                 )
                 Divider()
                 ButtonRow(
