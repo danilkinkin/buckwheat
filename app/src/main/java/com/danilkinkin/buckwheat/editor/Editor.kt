@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.editor
 
 import android.animation.ValueAnimator
+import android.util.Log
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
@@ -23,6 +24,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,8 +35,10 @@ import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.util.join
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import kotlin.math.max
@@ -65,7 +69,7 @@ fun Editor(
 
     var budgetValue by remember { mutableStateOf("") }
     var restBudgetValue by remember { mutableStateOf("") }
-    var spentValue by remember { mutableStateOf("") }
+    var spentValue by remember { mutableStateOf("0") }
     var budgetPerDaySplit by remember { mutableStateOf("") }
     var overdaft by remember { mutableStateOf(false) }
     var endBudget by remember { mutableStateOf(false) }
@@ -131,11 +135,7 @@ fun Editor(
         }
 
         if (spent) {
-            spentValue = prettyCandyCanes(
-                spendsViewModel.currentSpent,
-                currency = spendsViewModel.currency,
-                spendsViewModel.useDot,
-            )
+            spentValue = spendsViewModel.rawSpentValue.value!!
         }
     }
 
@@ -352,7 +352,6 @@ fun Editor(
             contentAlignment = Alignment.BottomStart,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 36.dp, end = 36.dp)
                 .onGloballyPositioned {
                     if (currState === null) animTo(AnimState.FIRST_IDLE)
                 },
@@ -371,8 +370,18 @@ fun Editor(
                     .padding(bottom = 24.dp)
             )
             EditorRow(
-                value = spentValue,
+                value = spendsViewModel.rawSpentValue.observeAsState("").value,
                 label = stringResource(id = R.string.spent),
+                editable = true,
+                onChangeValue = {
+                    Log.d("Editor", "onChangeValue = $it")
+                    val converted = tryConvertStringToNumber(it)
+
+                    spendsViewModel.editSpent(converted.join().toBigDecimal())
+
+                    spendsViewModel.rawSpentValue.value = it
+                },
+                currency = spendsViewModel.currency,
                 fontSizeValue = spentValueFontSize,
                 fontSizeLabel = spentLabelFontSize,
                 modifier = Modifier
@@ -481,6 +490,7 @@ fun Editor(
                                         label = stringResource(id = R.string.new_daily_budget),
                                         fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
                                         fontSizeLabel = MaterialTheme.typography.labelSmall.fontSize,
+                                        contentPaddingValues = PaddingValues(0.dp),
                                     )
                                 }
                             }

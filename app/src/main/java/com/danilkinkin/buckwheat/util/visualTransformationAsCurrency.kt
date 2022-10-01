@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.util
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -9,11 +10,11 @@ import kotlin.math.min
 
 private fun getAnnotatedString(
     value: String,
-    hintAfterIndex: Int,
+    hintAfterIndex: Pair<Int, Int>,
     hintColor: Color,
 ): AnnotatedString {
     val builder = AnnotatedString.Builder(value)
-    builder.addStyle(SpanStyle(color = hintColor), hintAfterIndex, value.length)
+    builder.addStyle(SpanStyle(color = hintColor), hintAfterIndex.first, hintAfterIndex.second)
     return builder.toAnnotatedString()
 }
 
@@ -35,13 +36,14 @@ private fun visualTransformationAsCurrency(
     currency: ExtendCurrency,
     hintColor: Color,
 ): TransformedText {
+    val fixed = tryConvertStringToNumber(input.text)
+    Log.d("Editor", "input.text = ${input.text} fixed = $fixed")
     val output = prettyCandyCanes(
         input.text.ifEmpty { "0" }.toBigDecimal(),
         currency,
         maximumFractionDigits = 2,
-        minimumFractionDigits = 0,
-    ) + (if (input.text.lastOrNull() == '.') "." else "")
-    val fixed = tryConvertStringToNumber(input.text)
+        minimumFractionDigits = 1,
+    )
 
     val offsetTranslator = object : OffsetMapping {
         override fun originalToTransformed(offset: Int): Int {
@@ -53,10 +55,16 @@ private fun visualTransformationAsCurrency(
         }
     }
 
+    val before = output.substringBefore(".0")
+    val after = output.substringAfter(".0", "")
+
     return TransformedText(
         getAnnotatedString(
-            output + fixed.third,
-            output.length,
+            before + (if (fixed.third.isNotEmpty()) ".${fixed.third}" else "") + after,
+            Pair(
+                before.length + (if (fixed.third.isNotEmpty()) 1 else 0),
+                before.length + (if (fixed.third.isNotEmpty()) 2 else 0),
+            ),
             hintColor,
         ),
         offsetTranslator,

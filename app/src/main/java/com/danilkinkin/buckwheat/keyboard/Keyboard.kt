@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.keyboard
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -12,6 +13,8 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.util.join
+import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -24,6 +27,44 @@ fun Keyboard(
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val dispatch = rememberAppKeyboardDispatcher { action, value ->
+        var isMutate = true
+        var newValue = spendsViewModel.rawSpentValue.value ?: ""
+
+        when (action) {
+            SpendsViewModel.Action.PUT_NUMBER -> {
+                newValue += value
+            }
+            SpendsViewModel.Action.SET_DOT -> {
+                newValue += "."
+            }
+            SpendsViewModel.Action.REMOVE_LAST -> {
+
+                newValue = newValue.dropLast(1)
+
+
+                if (newValue == "") {
+                    runBlocking {
+                        spendsViewModel.resetSpent()
+
+                        isMutate = false
+                    }
+                }
+            }
+        }
+
+        if (isMutate) {
+            runBlocking {
+                spendsViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
+
+
+                Log.d("Editor", "rawSpentValue = ${spendsViewModel.rawSpentValue}")
+
+                if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
+                spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
+            }
+        }
+    }
 
     Column (
         modifier = modifier
@@ -41,7 +82,7 @@ fun Keyboard(
                     type = KeyboardButtonType.DEFAULT,
                     text = i.toString(),
                     onClick = {
-                        spendsViewModel.executeAction(SpendsViewModel.Action.PUT_NUMBER, i)
+                        dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
                     }
                 )
             }
@@ -52,7 +93,7 @@ fun Keyboard(
                 type = KeyboardButtonType.SECONDARY,
                 icon = painterResource(R.drawable.ic_backspace),
                 onClick = {
-                    spendsViewModel.executeAction(SpendsViewModel.Action.REMOVE_LAST)
+                    dispatch(SpendsViewModel.Action.REMOVE_LAST, null)
                 },
                 onLongClick = {
                     spendsViewModel.resetSpent()
@@ -76,7 +117,7 @@ fun Keyboard(
                             type = KeyboardButtonType.DEFAULT,
                             text = i.toString(),
                             onClick = {
-                                spendsViewModel.executeAction(SpendsViewModel.Action.PUT_NUMBER, i)
+                                dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
                             }
                         )
                     }
@@ -92,7 +133,7 @@ fun Keyboard(
                             type = KeyboardButtonType.DEFAULT,
                             text = i.toString(),
                             onClick = {
-                                spendsViewModel.executeAction(SpendsViewModel.Action.PUT_NUMBER, i)
+                                dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
                             }
                         )
                     }
@@ -107,7 +148,7 @@ fun Keyboard(
                         type = KeyboardButtonType.DEFAULT,
                         text = "0",
                         onClick = {
-                            spendsViewModel.executeAction(SpendsViewModel.Action.PUT_NUMBER, 0)
+                            dispatch(SpendsViewModel.Action.PUT_NUMBER, 0)
                         }
                     )
                     KeyboardButton(
@@ -117,7 +158,7 @@ fun Keyboard(
                         type = KeyboardButtonType.DEFAULT,
                         text = ".",
                         onClick = {
-                            spendsViewModel.executeAction(SpendsViewModel.Action.SET_DOT)
+                            dispatch(SpendsViewModel.Action.SET_DOT, null)
                         }
                     )
                 }

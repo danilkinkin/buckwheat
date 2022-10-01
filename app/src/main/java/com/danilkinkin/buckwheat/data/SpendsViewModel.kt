@@ -87,6 +87,7 @@ class SpendsViewModel @Inject constructor(
     var requireSetBudget: MutableLiveData<Boolean> = MutableLiveData(false)
     var finishPeriod: MutableLiveData<Boolean> = MutableLiveData(false)
 
+    var rawSpentValue: MutableLiveData<String> = MutableLiveData("")
     var valueLeftDot: String = ""
     var valueRightDot: String = ""
     var useDot: Boolean = false
@@ -196,15 +197,13 @@ class SpendsViewModel @Inject constructor(
         storageDao.set(Storage("lastReCalcBudgetDate", lastReCalcBudgetDate!!.time.toString()))
     }
 
-    private fun createSpent() {
-        Log.d("Main", "createSpent")
+    fun createSpent() {
         currentSpent = 0.0.toBigDecimal()
 
         stage.value = Stage.CREATING_SPENT
     }
 
-    private fun editSpent(value: BigDecimal) {
-        Log.d("Main", "editSpent")
+    fun editSpent(value: BigDecimal) {
         currentSpent = value
 
         stage.value = Stage.EDIT_SPENT
@@ -293,63 +292,5 @@ class SpendsViewModel @Inject constructor(
 
     fun commitDeletedSpends() {
         this.spentDao.commitDeleted()
-    }
-
-    fun executeAction(action: Action, value: Int? = null) {
-        var mutateSpent = true
-
-        when (action) {
-            Action.PUT_NUMBER -> {
-                if (useDot) {
-                    valueRightDot += value
-                } else {
-                    valueLeftDot += value
-                }
-            }
-            Action.SET_DOT -> {
-                if (useDot) return
-
-                useDot = true
-                valueRightDot = ""
-                valueLeftDot = if (valueLeftDot === "") {
-                    "0"
-                } else {
-                    valueLeftDot
-                }
-            }
-            Action.REMOVE_LAST -> {
-                if ("$valueLeftDot.$valueRightDot" == ".") {
-                    mutateSpent = false
-                } else if (useDot && valueRightDot.length > 1) {
-                    valueRightDot = valueRightDot.dropLast(1)
-                } else if (useDot && valueRightDot.length <= 1) {
-                    valueRightDot = ""
-                    useDot = false
-                } else if (valueLeftDot.length > 1) {
-                    valueLeftDot = valueLeftDot.dropLast(1)
-                    useDot = false
-                } else {
-                    valueLeftDot = ""
-                    useDot = false
-                }
-
-                if ("$valueLeftDot.$valueRightDot" == ".") {
-                    runBlocking {
-                        Log.d("ViewModel", "resetSpent")
-                        resetSpent()
-                    }
-
-                    return
-                }
-            }
-        }
-
-        if (mutateSpent) {
-            runBlocking {
-                Log.d("ViewModel", "create/edit")
-                if (stage.value === Stage.IDLE) createSpent()
-                editSpent("$valueLeftDot.$valueRightDot".toBigDecimal())
-            }
-        }
     }
 }
