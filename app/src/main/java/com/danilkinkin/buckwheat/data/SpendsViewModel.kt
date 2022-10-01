@@ -196,21 +196,21 @@ class SpendsViewModel @Inject constructor(
         storageDao.set(Storage("lastReCalcBudgetDate", lastReCalcBudgetDate!!.time.toString()))
     }
 
-    private suspend fun createSpent() {
+    private fun createSpent() {
         Log.d("Main", "createSpent")
         currentSpent = 0.0.toBigDecimal()
 
         stage.value = Stage.CREATING_SPENT
     }
 
-    private suspend fun editSpent(value: BigDecimal) {
+    private fun editSpent(value: BigDecimal) {
         Log.d("Main", "editSpent")
         currentSpent = value
 
         stage.value = Stage.EDIT_SPENT
     }
 
-    suspend fun commitSpent() {
+    fun commitSpent() {
         if (stage.value !== Stage.EDIT_SPENT) return
 
         this.spentDao.insert(Spent(currentSpent, Date()))
@@ -253,8 +253,12 @@ class SpendsViewModel @Inject constructor(
             this.spentDao.insert(spent.copy(deleted = false))
         }
 
+        if (!isSameDay(spent.date.time, Date().time)) {
+            dailyBudget.value = dailyBudget.value!! + spent.value
+        } else {
+            spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
+        }
 
-        spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
         storageDao.set(
             Storage(
                 "spentFromDailyBudget",
