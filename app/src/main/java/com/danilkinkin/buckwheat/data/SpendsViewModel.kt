@@ -97,10 +97,13 @@ class SpendsViewModel @Inject constructor(
             && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)
             && countDays(finishDate) > 0
         ) {
-            requireReCalcBudget.value = true
+            if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value ?: BigDecimal(0)) > BigDecimal(0))) {
+                requireReCalcBudget.value = true
+            } else {
+                reCalcDailyBudget(calcBudgetPerDaySplit())
+            }
         }
 
-        Log.d("SpentViewModel", "init")
 
         if (lastReCalcBudgetDate === null) {
             requireSetBudget.value = true
@@ -163,13 +166,16 @@ class SpendsViewModel @Inject constructor(
         )
     }
 
-    fun calcBudgetPerDaySplit(applyCurrentSpent: Boolean = false): BigDecimal {
-        val restDays = countDays(finishDate)
-        var restBudget = (budget.value!! - spent.value!!) - dailyBudget.value!!
+    fun calcBudgetPerDaySplit(
+        applyCurrentSpent: Boolean = false,
+        excludeCurrentDay: Boolean = false,
+    ): BigDecimal {
+        val restDays = countDays(finishDate) - if (excludeCurrentDay) 1 else 0
+        val restBudget = (budget.value!! - spent.value!!) - dailyBudget.value!!
+        var splitBudget = restBudget + dailyBudget.value!! - spentFromDailyBudget.value!!
         if (applyCurrentSpent) {
-            restBudget -= currentSpent
+            splitBudget -= currentSpent
         }
-        val splitBudget = restBudget + dailyBudget.value!! - spentFromDailyBudget.value!!
 
         return (splitBudget / restDays.toBigDecimal())
             .setScale(
@@ -182,6 +188,7 @@ class SpendsViewModel @Inject constructor(
         this.dailyBudget.value = dailyBudget
         lastReCalcBudgetDate = roundToDay(Date())
         this.spent.value = this.spent.value!! + spentFromDailyBudget.value!!
+        this.spentFromDailyBudget.value = BigDecimal(0)
 
         storageDao.set(Storage("spent", this.spent.value.toString()))
         storageDao.set(Storage("dailyBudget", dailyBudget.toString()))

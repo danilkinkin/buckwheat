@@ -105,6 +105,7 @@ fun Editor(
             ),
             currency = spendsViewModel.currency,
         )
+
         if (restBudget) {
             val newBudget = dailyBudget - spentFromDailyBudget - spendsViewModel.currentSpent
 
@@ -115,21 +116,27 @@ fun Editor(
                     newBudget.coerceAtLeast(BigDecimal(0)),
                     currency = spendsViewModel.currency,
                 )
+
+            val newPerDayBudget = spendsViewModel.calcBudgetPerDaySplit(
+                applyCurrentSpent = true,
+                excludeCurrentDay = true,
+            )
+
+            endBudget = newPerDayBudget < BigDecimal(0)
+
+            budgetPerDaySplit = prettyCandyCanes(
+                newPerDayBudget.coerceAtLeast(BigDecimal(0)),
+                currency = spendsViewModel.currency,
+            )
         }
-        if (spent) spentValue = prettyCandyCanes(
-            spendsViewModel.currentSpent,
-            currency = spendsViewModel.currency,
-            spendsViewModel.useDot,
-        )
 
-        val newPerDayBudget = spendsViewModel.calcBudgetPerDaySplit(applyCurrentSpent = true)
-
-        endBudget = newPerDayBudget < BigDecimal(0)
-
-        budgetPerDaySplit = prettyCandyCanes(
-            newPerDayBudget.coerceAtLeast(BigDecimal(0)),
-            currency = spendsViewModel.currency,
-        )
+        if (spent) {
+            spentValue = prettyCandyCanes(
+                spendsViewModel.currentSpent,
+                currency = spendsViewModel.currency,
+                spendsViewModel.useDot,
+            )
+        }
     }
 
     fun animFrame(state: AnimState, progress: Float = 1F) {
