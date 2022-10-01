@@ -363,12 +363,12 @@ fun Editor(
                 fontSizeValue = budgetValueFontSize,
                 fontSizeLabel = budgetLabelFontSize,
                 modifier = Modifier
-                    .padding(bottom = 24.dp)
                     .offset(y = with(localDensity) { budgetOffset.toDp() })
                     .alpha(budgetAlpha)
                     .onGloballyPositioned {
                         budgetHeight = it.size.height.toFloat()
                     }
+                    .padding(bottom = 24.dp)
             )
             EditorRow(
                 value = spentValue,
@@ -376,12 +376,12 @@ fun Editor(
                 fontSizeValue = spentValueFontSize,
                 fontSizeLabel = spentLabelFontSize,
                 modifier = Modifier
-                    .padding(bottom = 24.dp)
                     .offset(y = with(localDensity) { spentOffset.toDp() })
                     .alpha(spentAlpha)
                     .onGloballyPositioned {
                         spentHeight = it.size.height.toFloat()
-                    },
+                    }
+                    .padding(bottom = 24.dp),
             )
             Row(
                 modifier = Modifier
