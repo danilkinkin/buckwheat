@@ -10,7 +10,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BuckwheatTheme">
+        android:theme="@style/Theme.BuckwheatTheme"
+        android:localeConfig="@xml/locales_config"
+        tools:targetApi="33">
         <profileable
             android:shell="true"
             tools:targetApi="q" />
