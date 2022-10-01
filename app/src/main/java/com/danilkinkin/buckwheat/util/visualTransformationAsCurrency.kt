@@ -36,7 +36,7 @@ private fun visualTransformationAsCurrency(
     hintColor: Color,
 ): TransformedText {
     val output = prettyCandyCanes(
-        input.text.toBigDecimal(),
+        input.text.ifEmpty { "0" }.toBigDecimal(),
         currency,
         maximumFractionDigits = 2,
         minimumFractionDigits = 0,
@@ -79,6 +79,8 @@ fun isNumber(char: Char): Boolean {
         false
     }
 }
+
+fun Triple<String, String, String>.join(third: Boolean = true): String = this.first + this.second + if (third) this.third else ""
 
 fun tryConvertStringToNumber(input: String): Triple<String, String, String> {
     val afterDot = input.dropWhile { it != '.' }
