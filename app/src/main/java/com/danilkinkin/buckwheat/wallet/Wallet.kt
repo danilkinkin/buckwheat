@@ -110,7 +110,7 @@ fun Wallet(
                                 icon = painterResource(R.drawable.ic_money),
                                 text = stringResource(R.string.label_budget),
                             )
-                            Box(Modifier.padding(start = 56.dp)) {
+                            Box(Modifier.padding(start = 56.dp, bottom = 12.dp)) {
                                 input()
                             }
                         }
