@@ -34,7 +34,6 @@ fun EditorRow(
 
     Column(
         modifier = modifier
-            .padding(bottom = 24.dp)
     ) {
         Text(
             text = value,

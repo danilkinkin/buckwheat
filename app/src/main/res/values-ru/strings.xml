@@ -5,6 +5,8 @@
     <!-- Main -->
     <string name="budget_for_today">Бюджет на сегодня</string>
     <string name="rest_budget_for_today">Останется на сегодня</string>
+    <string name="new_daily_budget">Новый бюджет на день</string>
+    <string name="budget_end">Бюджет закончился</string>
     <string name="spent">Трата</string>
     <string name="fab_home_desc">Домой</string>
     <plurals name="spends_today">

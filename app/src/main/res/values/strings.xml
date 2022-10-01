@@ -5,6 +5,8 @@
     <!-- Main -->
     <string name="budget_for_today">Budget for today</string>
     <string name="rest_budget_for_today">Remains for today</string>
+    <string name="new_daily_budget">New budget for the day</string>
+    <string name="budget_end">The budget is over</string>
     <string name="spent">Spending</string>
     <string name="fab_home_desc">Home</string>
     <plurals name="spends_today">

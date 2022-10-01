@@ -2,7 +2,10 @@ package com.danilkinkin.buckwheat.editor
 
 import android.animation.ValueAnimator
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.compose.animation.core.*
+import androidx.compose.animation.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -33,12 +36,13 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import kotlin.math.max
 import kotlin.math.min
 
 enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun Editor(
     modifier: Modifier = Modifier,
@@ -62,6 +66,9 @@ fun Editor(
     var budgetValue by remember { mutableStateOf("") }
     var restBudgetValue by remember { mutableStateOf("") }
     var spentValue by remember { mutableStateOf("") }
+    var budgetPerDaySplit by remember { mutableStateOf("") }
+    var overdaft by remember { mutableStateOf(false) }
+    var endBudget by remember { mutableStateOf(false) }
 
     var budgetHeight by remember { mutableStateOf(0F) }
     var restBudgetHeight by remember { mutableStateOf(0F) }
@@ -93,18 +100,35 @@ fun Editor(
         val dailyBudget = spendsViewModel.dailyBudget.value!!
 
         if (budget) budgetValue = prettyCandyCanes(
-            dailyBudget - spentFromDailyBudget,
+            (dailyBudget - spentFromDailyBudget).coerceAtLeast(
+                BigDecimal(0)
+            ),
             currency = spendsViewModel.currency,
         )
-        if (restBudget) restBudgetValue =
-            prettyCandyCanes(
-                dailyBudget - spentFromDailyBudget - spendsViewModel.currentSpent,
-                currency = spendsViewModel.currency,
-            )
+        if (restBudget) {
+            val newBudget = dailyBudget - spentFromDailyBudget - spendsViewModel.currentSpent
+
+            overdaft = newBudget < BigDecimal(0)
+
+            restBudgetValue =
+                prettyCandyCanes(
+                    newBudget.coerceAtLeast(BigDecimal(0)),
+                    currency = spendsViewModel.currency,
+                )
+        }
         if (spent) spentValue = prettyCandyCanes(
             spendsViewModel.currentSpent,
             currency = spendsViewModel.currency,
             spendsViewModel.useDot,
+        )
+
+        val newPerDayBudget = spendsViewModel.calcBudgetPerDaySplit(applyCurrentSpent = true)
+
+        endBudget = newPerDayBudget < BigDecimal(0)
+
+        budgetPerDaySplit = prettyCandyCanes(
+            newPerDayBudget.coerceAtLeast(BigDecimal(0)),
+            currency = spendsViewModel.currency,
         )
     }
 
@@ -332,6 +356,7 @@ fun Editor(
                 fontSizeValue = budgetValueFontSize,
                 fontSizeLabel = budgetLabelFontSize,
                 modifier = Modifier
+                    .padding(bottom = 24.dp)
                     .offset(y = with(localDensity) { budgetOffset.toDp() })
                     .alpha(budgetAlpha)
                     .onGloballyPositioned {
@@ -344,24 +369,118 @@ fun Editor(
                 fontSizeValue = spentValueFontSize,
                 fontSizeLabel = spentLabelFontSize,
                 modifier = Modifier
+                    .padding(bottom = 24.dp)
                     .offset(y = with(localDensity) { spentOffset.toDp() })
                     .alpha(spentAlpha)
                     .onGloballyPositioned {
                         spentHeight = it.size.height.toFloat()
                     },
             )
-            EditorRow(
-                value = restBudgetValue,
-                label = stringResource(id = R.string.rest_budget_for_today),
-                fontSizeValue = restBudgetValueFontSize,
-                fontSizeLabel = restBudgetLabelFontSize,
+            Row(
                 modifier = Modifier
                     .offset(y = with(localDensity) { restBudgetOffset.toDp() })
                     .alpha(restBudgetAlpha)
                     .onGloballyPositioned {
                         restBudgetHeight = it.size.height.toFloat()
                     },
-            )
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                EditorRow(
+                    modifier = Modifier.padding(bottom = 24.dp),
+                    value = restBudgetValue,
+                    label = stringResource(id = R.string.rest_budget_for_today),
+                    fontSizeValue = restBudgetValueFontSize,
+                    fontSizeLabel = restBudgetLabelFontSize,
+                )
+                AnimatedVisibility(
+                    visible = overdaft && currState == AnimState.EDITING,
+                    enter = fadeIn() + slideInHorizontally { with(localDensity) { 30.dp.toPx().toInt() } },
+                    exit = fadeOut()
+
+                ) {
+                    val containerColor by animateColorAsState(
+                        targetValue = if (endBudget) {
+                            MaterialTheme.colorScheme.errorContainer
+                        } else {
+                            MaterialTheme.colorScheme.surface
+                        },
+                        animationSpec = tween(durationMillis = 250)
+                    )
+                    val contentColor by animateColorAsState(
+                        targetValue = if (endBudget) {
+                            MaterialTheme.colorScheme.onErrorContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                        animationSpec = tween(durationMillis = 250)
+                    )
+
+
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = containerColor,
+                            contentColor = contentColor,
+                        ),
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)
+                    ) {
+                        Row(modifier = Modifier.padding(8.dp)) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_info),
+                                contentDescription = null,
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            AnimatedContent(
+                                targetState = endBudget,
+                                transitionSpec = {
+                                    if (targetState && !initialState) {
+                                        slideInVertically(
+                                            tween(durationMillis = 250)
+                                        ) { height -> height } + fadeIn(
+                                            tween(durationMillis = 250)
+                                        ) with slideOutVertically(
+                                            tween(durationMillis = 250)
+                                        ) { height -> -height } + fadeOut(
+                                            tween(durationMillis = 250)
+                                        )
+                                    } else {
+                                        slideInVertically(
+                                            tween(durationMillis = 250)
+                                        ) { height -> -height } + fadeIn(
+                                            tween(durationMillis = 250)
+                                        ) with slideOutVertically(
+                                            tween(durationMillis = 250)
+                                        ) { height -> height } + fadeOut(
+                                            tween(durationMillis = 250)
+                                        )
+                                    }.using(
+                                        SizeTransform(clip = false)
+                                    )
+                                }
+                            ) { targetEndBudget ->
+                                if (targetEndBudget) {
+                                    Box(
+                                        modifier = Modifier.heightIn(24.dp),
+                                        contentAlignment = Alignment.CenterStart,
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.budget_end),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onErrorContainer,
+                                        )
+                                    }
+                                } else {
+                                    EditorRow(
+                                        value = budgetPerDaySplit,
+                                        label = stringResource(id = R.string.new_daily_budget),
+                                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+                                        fontSizeLabel = MaterialTheme.typography.labelSmall.fontSize,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

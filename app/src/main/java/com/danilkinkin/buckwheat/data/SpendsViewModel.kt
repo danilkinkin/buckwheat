@@ -14,6 +14,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 @HiltViewModel
 class SpendsViewModel @Inject constructor(
@@ -160,6 +161,21 @@ class SpendsViewModel @Inject constructor(
                 RoundingMode.FLOOR
             )
         )
+    }
+
+    fun calcBudgetPerDaySplit(applyCurrentSpent: Boolean = false): BigDecimal {
+        val restDays = countDays(finishDate)
+        var restBudget = (budget.value!! - spent.value!!) - dailyBudget.value!!
+        if (applyCurrentSpent) {
+            restBudget -= currentSpent
+        }
+        val splitBudget = restBudget + dailyBudget.value!! - spentFromDailyBudget.value!!
+
+        return (splitBudget / restDays.toBigDecimal())
+            .setScale(
+                0,
+                RoundingMode.FLOOR
+            )
     }
 
     fun reCalcDailyBudget(dailyBudget: BigDecimal) {

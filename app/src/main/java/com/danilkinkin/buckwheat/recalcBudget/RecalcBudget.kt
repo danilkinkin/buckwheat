@@ -18,7 +18,6 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import java.math.RoundingMode
 import kotlin.math.abs
-import androidx.activity.viewModels
 
 @Composable
 fun RecalcBudget(
@@ -38,11 +37,7 @@ fun RecalcBudget(
     val requireDistributeBudget = perDayBudget * (skippedDays - 1).coerceAtLeast(0)
         .toBigDecimal() + spendsViewModel.dailyBudget.value!! - spendsViewModel.spentFromDailyBudget.value!!
 
-    val budgetPerDaySplit =
-        ((restBudget + spendsViewModel.dailyBudget.value!! - spendsViewModel.spentFromDailyBudget.value!!) / restDays.toBigDecimal()).setScale(
-            0,
-            RoundingMode.FLOOR
-        )
+    val budgetPerDaySplit = spendsViewModel.calcBudgetPerDaySplit()
     val budgetPerDayAdd = (restBudget / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
     val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
