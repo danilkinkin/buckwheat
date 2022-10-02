@@ -88,9 +88,6 @@ class SpendsViewModel @Inject constructor(
     var finishPeriod: MutableLiveData<Boolean> = MutableLiveData(false)
 
     var rawSpentValue: MutableLiveData<String> = MutableLiveData("")
-    var valueLeftDot: String = ""
-    var valueRightDot: String = ""
-    var useDot: Boolean = false
 
     init {
         if (
@@ -218,18 +215,14 @@ class SpendsViewModel @Inject constructor(
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
 
         currentSpent = 0.0.toBigDecimal()
-        valueLeftDot = ""
-        valueRightDot = ""
-        useDot = false
+        rawSpentValue.value = ""
 
         stage.value = Stage.COMMITTING_SPENT
     }
 
     fun resetSpent() {
         currentSpent = 0.0.toBigDecimal()
-        valueLeftDot = ""
-        valueRightDot = ""
-        useDot = false
+        rawSpentValue.value = ""
 
         stage.value = Stage.IDLE
     }

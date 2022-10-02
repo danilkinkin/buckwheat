@@ -59,7 +59,7 @@ fun Keyboard(
                 spendsViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
 
 
-                Log.d("Editor", "rawSpentValue = ${spendsViewModel.rawSpentValue}")
+                Log.d("Editor", "rawSpentValue = ${spendsViewModel.rawSpentValue.value}")
 
                 if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
                 spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())

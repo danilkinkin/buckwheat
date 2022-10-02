@@ -370,16 +370,16 @@ fun Editor(
                     .padding(bottom = 24.dp)
             )
             EditorRow(
-                value = spendsViewModel.rawSpentValue.observeAsState("").value,
+                value = spentValue,
                 label = stringResource(id = R.string.spent),
                 editable = true,
                 onChangeValue = {
                     Log.d("Editor", "onChangeValue = $it")
                     val converted = tryConvertStringToNumber(it)
 
-                    spendsViewModel.editSpent(converted.join().toBigDecimal())
-
                     spendsViewModel.rawSpentValue.value = it
+
+                    spendsViewModel.editSpent(converted.join().toBigDecimal())
                 },
                 currency = spendsViewModel.currency,
                 fontSizeValue = spentValueFontSize,
