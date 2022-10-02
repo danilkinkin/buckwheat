@@ -12,6 +12,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -89,10 +90,12 @@ fun Wallet(
                     onValueChange = {
                         val converted = tryConvertStringToNumber(it)
 
-                        rawBudget = converted.first + converted.second
-                        budget = (converted.first + converted.second + converted.third).toBigDecimal()
+                        rawBudget = converted.join(third = false)
+                        budget = converted.join().toBigDecimal()
                     },
-                    textStyle = MaterialTheme.typography.displaySmall,
+                    textStyle = MaterialTheme.typography.displaySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ),
                     visualTransformation = visualTransformationAsCurrency(
                         currency = ExtendCurrency(type = CurrencyType.NONE),
                         hintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
@@ -102,8 +105,9 @@ fun Wallet(
                         imeAction = ImeAction.Done,
                     ),
                     keyboardActions = KeyboardActions(
-                        onDone = {keyboardController?.hide()}
+                        onDone = { keyboardController?.hide() }
                     ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     decorationBox = { input ->
                         Column {
                             TextRow(

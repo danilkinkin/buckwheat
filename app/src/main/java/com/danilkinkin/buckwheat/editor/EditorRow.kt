@@ -7,6 +7,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -58,6 +59,7 @@ fun EditorRow(
                         fontSize = fontSizeValue,
                         color = color,
                     ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     visualTransformation = visualTransformationAsCurrency(
                         currency = currency ?: ExtendCurrency(type = CurrencyType.NONE),
                         hintColor = color.copy(alpha = 0.2f),
