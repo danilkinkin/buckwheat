@@ -18,17 +18,28 @@ private fun getAnnotatedString(
     return builder.toAnnotatedString()
 }
 
-private fun calcOffset(before: String, after: String, position: Int): Int {
-    var offset = 0
+private fun calcShift(before: String, after: String, position: Int): Int {
+    var shift = 0
 
     for (i in 0 until position) {
-        while (i < before.length && i + offset < after.length && (before[i] != after[i + offset])) {
-            offset += 1
+        while (i < before.length && i + shift < after.length && (before[i] != after[i + shift])) {
+            shift += 1
         }
     }
 
+    return shift
+}
 
-    return offset
+private fun calcMinShift(before: String, after: String): Int {
+    var shift = 0
+
+    if (before.isEmpty() || after.isEmpty()) return 0
+
+    while (shift < after.length && (before.first() != after[shift])) {
+        shift += 1
+    }
+
+    return shift
 }
 
 private fun visualTransformationAsCurrency(
@@ -38,7 +49,6 @@ private fun visualTransformationAsCurrency(
 ): TransformedText {
     val floatDivider = getFloatDivider()
     val fixed = tryConvertStringToNumber(input.text)
-    Log.d("Editor", "input.text = ${input.text} fixed = $fixed")
     val output = prettyCandyCanes(
         input.text.ifEmpty { "0" }.toBigDecimal(),
         currency,
@@ -48,13 +58,16 @@ private fun visualTransformationAsCurrency(
 
     val offsetTranslator = object : OffsetMapping {
         override fun originalToTransformed(offset: Int): Int {
-            return (offset + calcOffset(input.text.replace(".", floatDivider), output, offset))
-                .coerceIn(0, output.length)
+            val shift = calcShift(input.text.replace(".", floatDivider), output, offset)
+            val minShift = calcMinShift(input.text.replace(".", floatDivider), output)
+
+            return (offset + shift).coerceIn(minShift, output.length)
         }
 
         override fun transformedToOriginal(offset: Int): Int {
-            return (offset - calcOffset(input.text.replace(".", floatDivider), output, offset))
-                .coerceIn(0, output.length)
+            val shift = calcShift(input.text.replace(".", floatDivider), output, offset)
+
+            return (offset - shift).coerceIn(0, output.length)
         }
     }
 
