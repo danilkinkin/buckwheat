@@ -59,14 +59,14 @@ fun Spent(
                     text = prettyCandyCanes(spent.value, currency = currency),
                     style = MaterialTheme.typography.displaySmall,
                     color = colorOnEditor,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
+                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp),
                 )
                 Spacer(Modifier.weight(1F))
                 Box(Modifier) {
                     Text(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
-                            .padding(horizontal = 24.dp, vertical = 16.dp),
+                            .padding(horizontal = 32.dp, vertical = 16.dp),
                         text = prettyDate(spent.date),
                         style = MaterialTheme.typography.labelSmall,
                         color = colorOnEditor,

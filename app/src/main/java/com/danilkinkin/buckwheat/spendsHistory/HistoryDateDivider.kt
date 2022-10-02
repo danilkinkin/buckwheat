@@ -18,7 +18,7 @@ fun HistoryDateDivider(date: Date) {
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
-            .padding(start = 24.dp, end = 24.dp, top = 36.dp, bottom = 16.dp)
+            .padding(start = 32.dp, end = 32.dp, top = 36.dp, bottom = 16.dp)
     )
 }
 
