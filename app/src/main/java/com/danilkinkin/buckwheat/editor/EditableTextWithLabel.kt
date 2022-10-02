@@ -1,11 +1,17 @@
 package com.danilkinkin.buckwheat.editor
 
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalTextInputService
@@ -19,13 +25,11 @@ import com.danilkinkin.buckwheat.keyboard.rememberAppKeyboard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 
-
 @Composable
-fun EditorRow(
+fun EditableTextWithLabel(
     value: String,
     label: String,
     modifier: Modifier = Modifier,
-    editable: Boolean = false,
     currency: ExtendCurrency? = null,
     onChangeValue: (value: String) -> Unit = {},
     fontSizeValue: TextUnit = MaterialTheme.typography.displayLarge.fontSize,
@@ -40,51 +44,37 @@ fun EditorRow(
         )
     )
 
-    Column(
-        modifier = modifier
-    ) {
-        if (editable) {
-            CompositionLocalProvider(
-                LocalTextInputService provides rememberAppKeyboard()
-            ) {
-                BasicTextField(
-                    value = value,
-                    onValueChange = {
-                        val converted = tryConvertStringToNumber(it)
+    Column(modifier) {
+        CompositionLocalProvider(
+            LocalTextInputService provides rememberAppKeyboard()
+        ) {
+            BasicTextField(
+                value = value,
+                onValueChange = {
+                    val converted = tryConvertStringToNumber(it)
 
-                        onChangeValue(converted.join(third = false))
-                    },
-                    singleLine = true,
-                    textStyle = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = fontSizeValue,
-                        color = color,
-                    ),
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    visualTransformation = visualTransformationAsCurrency(
-                        currency = currency ?: ExtendCurrency(type = CurrencyType.NONE),
-                        hintColor = color.copy(alpha = 0.2f),
-                    ),
+                    onChangeValue(converted.join(third = false))
+                },
+                singleLine = true,
+                textStyle = MaterialTheme.typography.displayLarge.copy(
+                    fontSize = fontSizeValue,
+                    color = color,
+                ),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                visualTransformation = visualTransformationAsCurrency(
+                    currency = currency ?: ExtendCurrency(type = CurrencyType.NONE),
+                    hintColor = color.copy(alpha = 0.2f),
+                ),
 
-                    decorationBox = { input ->
-                        Box(
-                            Modifier
-                                .horizontalScroll(rememberScrollState())
-                                .padding(contentPaddingValues)
-                        ) {
-                            input()
-                        }
+                decorationBox = { input ->
+                    Box(
+                        Modifier
+                            .horizontalScroll(rememberScrollState())
+                            .padding(contentPaddingValues)
+                    ) {
+                        input()
                     }
-                )
-            }
-        } else {
-            Text(
-                text = value,
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = fontSizeValue,
-                color = color,
-                overflow = TextOverflow.Ellipsis,
-                softWrap = false,
-                modifier = Modifier.padding(contentPaddingValues),
+                }
             )
         }
         Text(
@@ -103,7 +93,7 @@ fun EditorRow(
 @Composable
 private fun PreviewDefault() {
     BuckwheatTheme {
-        EditorRow(
+        EditableTextWithLabel(
             value = "1 245 234 234 P",
             label = stringResource(id = R.string.budget_for_today),
         )

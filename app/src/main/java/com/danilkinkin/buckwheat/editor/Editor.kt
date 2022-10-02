@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -356,7 +355,7 @@ fun Editor(
                     if (currState === null) animTo(AnimState.FIRST_IDLE)
                 },
         ) {
-            EditorRow(
+            TextWithLabel(
                 value = budgetValue,
                 label = stringResource(id = R.string.budget_for_today),
                 fontSizeValue = budgetValueFontSize,
@@ -369,10 +368,9 @@ fun Editor(
                     }
                     .padding(bottom = 24.dp)
             )
-            EditorRow(
+            EditableTextWithLabel(
                 value = spentValue,
                 label = stringResource(id = R.string.spent),
-                editable = true,
                 onChangeValue = {
                     Log.d("Editor", "onChangeValue = $it")
                     val converted = tryConvertStringToNumber(it)
@@ -401,7 +399,7 @@ fun Editor(
                     },
                 verticalAlignment = Alignment.Bottom,
             ) {
-                EditorRow(
+                TextWithLabel(
                     modifier = Modifier.padding(bottom = 24.dp),
                     value = restBudgetValue,
                     label = stringResource(id = R.string.rest_budget_for_today),
@@ -485,7 +483,7 @@ fun Editor(
                                         )
                                     }
                                 } else {
-                                    EditorRow(
+                                    TextWithLabel(
                                         value = budgetPerDaySplit,
                                         label = stringResource(id = R.string.new_daily_budget),
                                         fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
