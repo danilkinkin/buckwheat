@@ -2,8 +2,7 @@ package com.danilkinkin.buckwheat.keyboard
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +27,7 @@ fun Keyboard(
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    var debugProgress by remember { mutableStateOf(0) }
     val dispatch = rememberAppKeyboardDispatcher { action, value ->
         var isMutate = true
         var newValue = spendsViewModel.rawSpentValue.value ?: ""
@@ -84,6 +84,7 @@ fun Keyboard(
                     text = i.toString(),
                     onClick = {
                         dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
+                        debugProgress = 0
                     }
                 )
             }
@@ -95,9 +96,11 @@ fun Keyboard(
                 icon = painterResource(R.drawable.ic_backspace),
                 onClick = {
                     dispatch(SpendsViewModel.Action.REMOVE_LAST, null)
+                    debugProgress = 0
                 },
                 onLongClick = {
                     spendsViewModel.resetSpent()
+                    debugProgress = 0
                 },
             )
         }
@@ -119,6 +122,7 @@ fun Keyboard(
                             text = i.toString(),
                             onClick = {
                                 dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
+                                debugProgress = 0
                             }
                         )
                     }
@@ -135,6 +139,7 @@ fun Keyboard(
                             text = i.toString(),
                             onClick = {
                                 dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
+                                debugProgress = 0
                             }
                         )
                     }
@@ -150,7 +155,8 @@ fun Keyboard(
                         text = "0",
                         onClick = {
                             dispatch(SpendsViewModel.Action.PUT_NUMBER, 0)
-                        }
+                            debugProgress += 1
+                        },
                     )
                     KeyboardButton(
                         modifier = Modifier
@@ -160,6 +166,7 @@ fun Keyboard(
                         text = getFloatDivider(),
                         onClick = {
                             dispatch(SpendsViewModel.Action.SET_DOT, null)
+                            debugProgress = if (debugProgress == 8) -1 else 0
                         }
                     )
                 }
@@ -174,7 +181,7 @@ fun Keyboard(
                     type = KeyboardButtonType.PRIMARY,
                     icon = painterResource(R.drawable.ic_apply),
                     onClick = {
-                        if ("${spendsViewModel.valueLeftDot}.${spendsViewModel.valueRightDot}" == "00000000.") {
+                        if (debugProgress == -1) {
                             spendsViewModel.resetSpent()
 
                             appViewModel.setIsDebug(!appViewModel.isDebug.value!!)
@@ -193,6 +200,8 @@ fun Keyboard(
 
                             return@KeyboardButton
                         }
+
+                        debugProgress = 0
 
                         runBlocking {
                             spendsViewModel.commitSpent()
