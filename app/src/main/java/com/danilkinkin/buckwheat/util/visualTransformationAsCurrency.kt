@@ -36,6 +36,7 @@ private fun visualTransformationAsCurrency(
     currency: ExtendCurrency,
     hintColor: Color,
 ): TransformedText {
+    val floatDivider = getFloatDivider()
     val fixed = tryConvertStringToNumber(input.text)
     Log.d("Editor", "input.text = ${input.text} fixed = $fixed")
     val output = prettyCandyCanes(
@@ -47,20 +48,22 @@ private fun visualTransformationAsCurrency(
 
     val offsetTranslator = object : OffsetMapping {
         override fun originalToTransformed(offset: Int): Int {
-            return (offset + calcOffset(input.text, output, offset)).coerceIn(0, output.length)
+            return (offset + calcOffset(input.text.replace(".", floatDivider), output, offset))
+                .coerceIn(0, output.length)
         }
 
         override fun transformedToOriginal(offset: Int): Int {
-            return (offset - calcOffset(input.text, output, offset)).coerceIn(0, output.length)
+            return (offset - calcOffset(input.text.replace(".", floatDivider), output, offset))
+                .coerceIn(0, output.length)
         }
     }
 
-    val before = output.substringBefore(".0")
-    val after = output.substringAfter(".0", "")
+    val before = output.substringBefore("${floatDivider}0")
+    val after = output.substringAfter("${floatDivider}0", "")
 
     return TransformedText(
         getAnnotatedString(
-            before + (if (fixed.third.isNotEmpty()) ".${fixed.third}" else "") + after,
+            before + (if (fixed.third.isNotEmpty()) "$floatDivider${fixed.third}" else "") + after,
             Pair(
                 before.length + (if (fixed.third.isNotEmpty()) 1 else 0),
                 before.length + (if (fixed.third.isNotEmpty()) 2 else 0),
