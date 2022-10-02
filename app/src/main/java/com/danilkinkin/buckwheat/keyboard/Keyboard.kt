@@ -13,6 +13,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.util.getFloatDivider
 import com.danilkinkin.buckwheat.util.join
 import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import kotlinx.coroutines.launch
@@ -156,7 +157,7 @@ fun Keyboard(
                             .weight(1F)
                             .padding(BUTTON_GAP),
                         type = KeyboardButtonType.DEFAULT,
-                        text = ".",
+                        text = getFloatDivider(),
                         onClick = {
                             dispatch(SpendsViewModel.Action.SET_DOT, null)
                         }

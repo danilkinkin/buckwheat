@@ -38,6 +38,17 @@ class ExtendCurrency(val value: String? = null, val type: CurrencyType) {
 fun Double.round(scale: Int): Double =
     BigDecimal(this).setScale(scale, RoundingMode.HALF_EVEN).toDouble()
 
+fun getFloatDivider(): String {
+    val formatter = numberFormat
+
+    formatter.maximumFractionDigits = 1
+    formatter.minimumFractionDigits = 1
+
+    val formattedValue = formatter.format(1.0)
+
+    return formattedValue.substring(1, 2)
+}
+
 fun prettyCandyCanes(
     value: BigDecimal,
     currency: ExtendCurrency,
