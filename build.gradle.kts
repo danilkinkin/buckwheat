@@ -3,16 +3,14 @@ buildscript {
         google()
         mavenCentral()
 
-        if (!libs.versions.compose.snapshot.get().endsWith("SNAPSHOT")) {
-            maven { url = uri("https://androidx.dev/snapshots/builds/${libs.versions.compose.snapshot.get()}/artifacts/repository/") }
-        }
+        maven { url=uri("https://androidx.dev/snapshots/builds/-/artifacts/repository") }
     }
     dependencies {
-        classpath(libs.android.gradlePlugin)
-        classpath(libs.hilt.gradlePlugin)
-        classpath(libs.kotlin.gradlePlugin)
-        classpath(libs.spotless.gradlePlugin)
-        classpath(libs.secrets.gradlePlugin)
+        classpath("com.android.tools.build:gradle:7.2.2")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.44")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+        classpath("com.diffplug.spotless:spotless-plugin-gradle:6.11.0")
+        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
     }
 }
 
@@ -37,5 +35,3 @@ plugins {
     id("com.github.ben-manes.versions") version "0.41.0"
     id("nl.littlerobots.version-catalog-update") version "0.6.0"
 }
-
-apply("${project.rootDir}/buildscripts/toml-updater-config.gradle")

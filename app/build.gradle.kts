@@ -9,12 +9,12 @@ plugins {
 }
 
 android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.danilkinkin.buckwheat"
         minSdk = 26
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
@@ -60,72 +60,72 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+        kotlinCompilerExtensionVersion = "1.3.0"
     }
 
     packagingOptions {
         // Multiple dependency bring these files in. Exclude them to enable
         // our test APK to build (has no effect on our AARs)
-        excludes += "/META-INF/AL2.0"
-        excludes += "/META-INF/LGPL2.1"
+        resources.excludes += "/META-INF/AL2.0"
+        resources.excludes += "/META-INF/LGPL2.1"
     }
 }
 
 dependencies {
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlinx.coroutines.android)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.runtime)
-    implementation(libs.androidx.compose.foundation)
-    implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.ui.util)
-    implementation(libs.androidx.compose.materialWindow)
-    implementation(libs.androidx.compose.animation)
-    implementation(libs.androidx.compose.material.iconsExtended)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.runtime.livedata)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material)
+    implementation("androidx.appcompat:appcompat:1.5.1")
+    implementation("androidx.activity:activity-compose:1.6.0")
+    implementation("androidx.compose.runtime:runtime:1.2.1")
+    implementation("androidx.compose.foundation:foundation:1.2.1")
+    implementation("androidx.compose.foundation:foundation-layout:1.2.1")
+    implementation("androidx.compose.ui:ui-util:1.2.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.0.0-beta03")
+    implementation("androidx.compose.animation:animation:1.2.1")
+    implementation("androidx.compose.material:material-icons-extended:1.2.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.2.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.2.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.2.1")
+    implementation("androidx.navigation:navigation-compose:2.5.2")
+    implementation("androidx.compose.material3:material3:1.0.0-beta03")
+    implementation("androidx.compose.material:material:1.2.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.23.1")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.1")
 
-    implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
+    implementation("androidx.room:room-runtime:2.5.0-alpha03")
+    kapt("androidx.room:room-compiler:2.5.0-alpha03")
+    implementation("androidx.room:room-ktx:2.5.0-alpha03")
 
     implementation("androidx.room:room-paging:2.4.3")
     implementation("androidx.paging:paging-compose:1.0.0-alpha16")
 
-    implementation("com.google.dagger:dagger:2.43.2")
-    kapt("com.google.dagger:dagger-compiler:2.43.2")
+    implementation("com.google.dagger:dagger:2.44")
+    kapt("com.google.dagger:dagger-compiler:2.44")
 
 
-    implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
 
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    kapt(libs.hilt.ext.compiler)
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    kapt("androidx.hilt:hilt-compiler:1.0.0")
 
-    implementation(libs.coil.kt.compose)
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.2.1")
 
-    androidTestImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.core)
-    androidTestImplementation(libs.androidx.test.runner)
-    androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(libs.androidx.test.rules)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.compose.ui.test)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    androidTestImplementation(libs.hilt.android.testing)
-    coreLibraryDesugaring(libs.core.jdk.desugaring)
-    kaptAndroidTest(libs.hilt.compiler)
+    androidTestImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test:core:1.4.0")
+    androidTestImplementation("androidx.test:runner:1.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test:rules:1.4.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.2.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.2.1")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }

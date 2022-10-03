@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -27,17 +26,16 @@ fun BigIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    colors: IconButtonColors = IconButtonDefaults.iconButtonColors(
-        containerColor = Color.Transparent,
-        contentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer)
-    ),
     icon: Painter,
     contentDescription: String?,
 ) {
+    val contentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer)
+    val disabledContentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer).copy(0.38f)
+
     Box(
         modifier = modifier
             .padding(8.dp)
-            .background(color = colors.containerColor(enabled).value)
+            .background(color = if (enabled) contentColor else disabledContentColor)
             .clickable(
                 onClick = onClick,
                 enabled = enabled,
@@ -53,7 +51,7 @@ fun BigIconButton(
         Icon(
             modifier = Modifier.size(36.dp),
             painter = icon,
-            tint = colors.contentColor(enabled).value,
+            tint = if (enabled) contentColor else disabledContentColor,
             contentDescription = contentDescription,
         )
     }
@@ -66,10 +64,6 @@ fun PreviewBigIconButton() {
         BigIconButton(
             icon = painterResource(R.drawable.ic_balance_wallet),
             contentDescription = null,
-            colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer)
-            ),
             onClick = {},
         )
     }
