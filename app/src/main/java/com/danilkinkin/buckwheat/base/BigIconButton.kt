@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.base
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -35,7 +34,6 @@ fun BigIconButton(
     Box(
         modifier = modifier
             .padding(8.dp)
-            .background(color = if (enabled) contentColor else disabledContentColor)
             .clickable(
                 onClick = onClick,
                 enabled = enabled,
@@ -43,6 +41,7 @@ fun BigIconButton(
                 interactionSource = interactionSource,
                 indication = rememberRipple(
                     bounded = false,
+                    color = contentColor,
                 )
             )
             .padding(4.dp),
