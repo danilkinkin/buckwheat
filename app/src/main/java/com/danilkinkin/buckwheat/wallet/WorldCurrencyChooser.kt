@@ -13,6 +13,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -131,7 +132,13 @@ private fun LazyListScope.itemsCurrency(
                 )
                 .padding(start = 24.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         ) {
-            Text(text = currency.displayName)
+            Text(
+                text = currency.displayName,
+                overflow = TextOverflow.Ellipsis,
+                softWrap = false,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.widthIn(8.dp))
             RadioButton(selected = selected, onClick = null)
         }
     }
