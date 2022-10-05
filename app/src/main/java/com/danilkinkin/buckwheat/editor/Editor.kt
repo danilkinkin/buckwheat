@@ -7,6 +7,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -413,6 +414,9 @@ fun Editor(
                     fontSizeValue = restBudgetValueFontSize,
                     fontSizeLabel = restBudgetLabelFontSize,
                 )
+
+                Spacer(Modifier.weight(1f))
+
                 AnimatedVisibility(
                     visible = overdaft && currState == AnimState.EDITING,
                     enter = fadeIn() + slideInHorizontally { with(localDensity) { 30.dp.toPx().toInt() } },
@@ -435,6 +439,14 @@ fun Editor(
                         },
                         animationSpec = tween(durationMillis = 250)
                     )
+                    val borderColor by animateColorAsState(
+                        targetValue = if (endBudget) {
+                            MaterialTheme.colorScheme.onErrorContainer
+                        } else {
+                            MaterialTheme.colorScheme.surface
+                        },
+                        animationSpec = tween(durationMillis = 250)
+                    )
 
 
                     Card(
@@ -442,9 +454,29 @@ fun Editor(
                             containerColor = containerColor,
                             contentColor = contentColor,
                         ),
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp)
+                        shape = CircleShape,
+                        modifier = Modifier
+                            .padding(
+                                top = 24.dp,
+                                end = 24.dp,
+                                bottom = 24.dp,
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = borderColor,
+                                shape = CircleShape,
+                            )
                     ) {
-                        Row(modifier = Modifier.padding(8.dp)) {
+                        Row(
+                            modifier = Modifier
+                                .padding(
+                                    start = 12.dp,
+                                    top = 12.dp,
+                                    end = 20.dp,
+                                    bottom = 12.dp,
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_info),
                                 contentDescription = null,
