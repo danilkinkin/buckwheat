@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.base
 
-import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.*
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TextFieldWithPaddings(
     value: String = "",
@@ -108,53 +110,56 @@ fun TextFieldWithPaddings(
         onDispose {  }
     }
 
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .onGloballyPositioned {
-                containerWidth = it.size.width
-            }
-    ) {
-        BasicTextField(
-            value = textFieldValue,
-            onValueChange = { newTextFieldValueState ->
-                textFieldValueState = newTextFieldValueState
-
-                val stringChangedSinceLastInvocation = lastTextValue != newTextFieldValueState.text
-                val positionChangedSinceLastInvocation = lastCursorPosition != newTextFieldValueState.selection.start
-
-                lastTextValue = newTextFieldValueState.text
-                lastCursorPosition = newTextFieldValueState.selection.start
-
-                if (stringChangedSinceLastInvocation || positionChangedSinceLastInvocation) {
-                    requestScrollToCursor = true
-
-                    onChangeValue(lastTextValue)
+    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .onGloballyPositioned {
+                    containerWidth = it.size.width
                 }
+        ) {
+            BasicTextField(
+                value = textFieldValue,
+                onValueChange = { newTextFieldValueState ->
+                    textFieldValueState = newTextFieldValueState
 
-                Log.d("textFieldValueState", "request scroll... $requestScrollToCursor")
-            },
-            onTextLayout = { restoreScrollPosition() },
-            textStyle = textStyle,
-            singleLine = true,
-            cursorBrush = cursorBrush,
-            visualTransformation = visualTransformation,
-            modifier = Modifier.disabledHorizontalPointerInputScroll(
-                scrollState.value + containerWidth,
-                width + gapStart + gapEnd,
-            ),
-            decorationBox = { input ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(scrollState)
-                        .padding(contentPadding)
-                ) {
-                    input()
-                }
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-        )
+                    val stringChangedSinceLastInvocation =
+                        lastTextValue != newTextFieldValueState.text
+                    val positionChangedSinceLastInvocation =
+                        lastCursorPosition != newTextFieldValueState.selection.start
+
+                    lastTextValue = newTextFieldValueState.text
+                    lastCursorPosition = newTextFieldValueState.selection.start
+
+                    if (stringChangedSinceLastInvocation || positionChangedSinceLastInvocation) {
+                        requestScrollToCursor = true
+
+                        onChangeValue(lastTextValue)
+                    }
+                },
+                onTextLayout = { restoreScrollPosition() },
+                textStyle = textStyle,
+                singleLine = true,
+                cursorBrush = cursorBrush,
+                visualTransformation = visualTransformation,
+                modifier = Modifier.disabledHorizontalPointerInputScroll(
+                    scrollState.value + containerWidth,
+                    width + gapStart + gapEnd,
+                ),
+                decorationBox = { input ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(scrollState)
+                            .padding(contentPadding)
+                    ) {
+                        input()
+                    }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            )
+        }
+
     }
 }
 
@@ -181,7 +186,7 @@ fun Modifier.disabledHorizontalPointerInputScroll(
             return Offset.Zero
         }
         override suspend fun onPreFling(available: Velocity): Velocity {
-            return available
+            return available.copy(y = 0f)
         }
     })
 }
