@@ -3,11 +3,9 @@ package com.danilkinkin.buckwheat.editor
 import android.animation.ValueAnimator
 import android.util.Log
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.compose.animation.*
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -47,7 +45,7 @@ import kotlin.math.min
 
 enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Editor(
     modifier: Modifier = Modifier,
@@ -75,7 +73,7 @@ fun Editor(
     var overdaft by remember { mutableStateOf(false) }
     var endBudget by remember { mutableStateOf(false) }
 
-    var budgetHeight by remember { mutableStateOf(0F) }
+    var warnMessageWidth by remember { mutableStateOf(0F) }
     var restBudgetHeight by remember { mutableStateOf(0F) }
     var spentHeight by remember { mutableStateOf(0F) }
 
@@ -365,9 +363,6 @@ fun Editor(
                 modifier = Modifier
                     .offset(y = with(localDensity) { budgetOffset.toDp() })
                     .alpha(budgetAlpha)
-                    .onGloballyPositioned {
-                        budgetHeight = it.size.height.toFloat()
-                    }
                     .padding(bottom = 24.dp)
             )
             EditableTextWithLabel(
@@ -408,131 +403,40 @@ fun Editor(
                 verticalAlignment = Alignment.Bottom,
             ) {
                 TextWithLabel(
-                    modifier = Modifier.padding(bottom = 24.dp),
+                    modifier = Modifier.padding(bottom = 24.dp).weight(1f),
                     value = restBudgetValue,
                     label = stringResource(id = R.string.rest_budget_for_today),
                     fontSizeValue = restBudgetValueFontSize,
                     fontSizeLabel = restBudgetLabelFontSize,
                 )
 
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.requiredWidth(with(localDensity) { warnMessageWidth.toDp() }))
+            }
 
-                AnimatedVisibility(
-                    visible = overdaft && currState == AnimState.EDITING,
-                    enter = fadeIn() + slideInHorizontally { with(localDensity) { 30.dp.toPx().toInt() } },
-                    exit = fadeOut()
+            BoxWithConstraints(
+                Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.BottomEnd,
+            ) {
+                val maxWidth = with(localDensity) { (constraints.maxWidth / 2f).toDp() }
 
-                ) {
-                    val containerColor by animateColorAsState(
-                        targetValue = if (endBudget) {
-                            MaterialTheme.colorScheme.errorContainer
-                        } else {
-                            MaterialTheme.colorScheme.surface
-                        },
-                        animationSpec = tween(durationMillis = 250)
-                    )
-                    val contentColor by animateColorAsState(
-                        targetValue = if (endBudget) {
-                            MaterialTheme.colorScheme.onErrorContainer
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        },
-                        animationSpec = tween(durationMillis = 250)
-                    )
-                    val borderColor by animateColorAsState(
-                        targetValue = if (endBudget) {
-                            MaterialTheme.colorScheme.onErrorContainer
-                        } else {
-                            MaterialTheme.colorScheme.surface
-                        },
-                        animationSpec = tween(durationMillis = 250)
-                    )
-
-
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = containerColor,
-                            contentColor = contentColor,
-                        ),
-                        shape = CircleShape,
+                Row(Modifier.fillMaxWidth()) {
+                    Spacer(Modifier.weight(1f))
+                    BudgetEndWarn(
+                        overdaft = overdaft,
+                        forceShow = currState == AnimState.EDITING,
+                        endBudget = endBudget,
+                        budgetPerDaySplit = budgetPerDaySplit,
                         modifier = Modifier
+                            .onGloballyPositioned {
+                                warnMessageWidth = it.size.width.toFloat()
+                            }
+                            .widthIn(max = maxWidth)
                             .padding(
                                 top = 24.dp,
                                 end = 24.dp,
                                 bottom = 24.dp,
                             )
-                            .border(
-                                width = 1.dp,
-                                color = borderColor,
-                                shape = CircleShape,
-                            )
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .padding(
-                                    start = 12.dp,
-                                    top = 12.dp,
-                                    end = 20.dp,
-                                    bottom = 12.dp,
-                                ),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.ic_info),
-                                contentDescription = null,
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            AnimatedContent(
-                                targetState = endBudget,
-                                transitionSpec = {
-                                    if (targetState && !initialState) {
-                                        slideInVertically(
-                                            tween(durationMillis = 250)
-                                        ) { height -> height } + fadeIn(
-                                            tween(durationMillis = 250)
-                                        ) with slideOutVertically(
-                                            tween(durationMillis = 250)
-                                        ) { height -> -height } + fadeOut(
-                                            tween(durationMillis = 250)
-                                        )
-                                    } else {
-                                        slideInVertically(
-                                            tween(durationMillis = 250)
-                                        ) { height -> -height } + fadeIn(
-                                            tween(durationMillis = 250)
-                                        ) with slideOutVertically(
-                                            tween(durationMillis = 250)
-                                        ) { height -> height } + fadeOut(
-                                            tween(durationMillis = 250)
-                                        )
-                                    }.using(
-                                        SizeTransform(clip = false)
-                                    )
-                                }
-                            ) { targetEndBudget ->
-                                if (targetEndBudget) {
-                                    Box(
-                                        modifier = Modifier.heightIn(24.dp),
-                                        contentAlignment = Alignment.CenterStart,
-                                    ) {
-                                        Text(
-                                            text = stringResource(id = R.string.budget_end),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = MaterialTheme.colorScheme.onErrorContainer,
-                                        )
-                                    }
-                                } else {
-                                    TextWithLabel(
-                                        value = budgetPerDaySplit,
-                                        label = stringResource(id = R.string.new_daily_budget),
-                                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                                        fontSizeLabel = MaterialTheme.typography.labelSmall.fontSize,
-                                        contentPaddingValues = PaddingValues(0.dp),
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    )
                 }
             }
         }
