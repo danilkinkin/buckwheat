@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.base
 
+import android.util.Log
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -42,7 +43,6 @@ fun TextFieldWithPaddings(
 
     val scrollState = rememberScrollState()
     var containerWidth by remember { mutableStateOf(0) }
-    var inputWidth by remember { mutableStateOf(0) }
     var width by remember(value) { mutableStateOf(0) }
     var requestScrollToCursor by remember { mutableStateOf(false) }
     val layoutDirection =  when (LocalConfiguration.current.layoutDirection) {
@@ -65,6 +65,48 @@ fun TextFieldWithPaddings(
         ).text.text,
         textStyle,
     ).maxIntrinsicWidth.toInt()
+
+    fun restoreScrollPosition(forceEnd: Boolean = false) {
+        if (!requestScrollToCursor && !forceEnd) return
+
+        val transformation = visualTransformation.filter(
+            AnnotatedString(value)
+        )
+
+        val position = ParagraphIntrinsics(
+            text = transformation.text.text.substring(
+                0,
+                transformation.offsetMapping.originalToTransformed(
+                    if (forceEnd) value.length else textFieldValueState.selection.start,
+                ),
+            ),
+            style = textStyle,
+            density = localDensity,
+            fontFamilyResolver = createFontFamilyResolver(localContext)
+        ).maxIntrinsicWidth
+
+        coroutineScope.launch {
+            if (position.toInt() - scrollState.value < 0) {
+                scrollState.scrollTo(position.toInt())
+            } else if (position.toInt() - scrollState.value + gapStart + gapEnd > containerWidth) {
+                scrollState.scrollTo(position.toInt() - containerWidth + gapStart + gapEnd)
+            } else if (scrollState.value + containerWidth > width + gapStart + gapEnd) {
+                scrollState.scrollTo(position.toInt() - containerWidth + gapStart + gapEnd)
+            } else {
+                requestScrollToCursor = false
+            }
+        }
+    }
+
+    DisposableEffect(value) {
+        if (textFieldValueState.selection.start != 0) {
+            return@DisposableEffect onDispose { }
+        }
+
+        restoreScrollPosition(true)
+
+        onDispose {  }
+    }
 
     Box(
         Modifier
@@ -89,38 +131,10 @@ fun TextFieldWithPaddings(
 
                     onChangeValue(lastTextValue)
                 }
-            },
-            onTextLayout = {
-                if (requestScrollToCursor) {
-                    val transformation = visualTransformation.filter(
-                        AnnotatedString(value)
-                    )
 
-                    val position = ParagraphIntrinsics(
-                        text = transformation.text.text.substring(
-                            0,
-                            transformation.offsetMapping.originalToTransformed(
-                                textFieldValueState.selection.start,
-                            ),
-                        ),
-                        style = textStyle,
-                        density = localDensity,
-                        fontFamilyResolver = createFontFamilyResolver(localContext)
-                    ).maxIntrinsicWidth
-
-                    coroutineScope.launch() {
-                        if (position.toInt() - scrollState.value < 0) {
-                            scrollState.scrollTo(position.toInt())
-                        } else if (position.toInt() - scrollState.value + gapStart + gapEnd > containerWidth) {
-                            scrollState.scrollTo(position.toInt() - containerWidth + gapStart + gapEnd)
-                        } else if (scrollState.value + containerWidth > width + gapStart + gapEnd) {
-                            scrollState.scrollTo(position.toInt() - containerWidth + gapStart + gapEnd)
-                        } else {
-                            requestScrollToCursor = false
-                        }
-                    }
-                }
+                Log.d("textFieldValueState", "request scroll... $requestScrollToCursor")
             },
+            onTextLayout = { restoreScrollPosition() },
             textStyle = textStyle,
             singleLine = true,
             cursorBrush = cursorBrush,
@@ -135,9 +149,6 @@ fun TextFieldWithPaddings(
                         .fillMaxWidth()
                         .horizontalScroll(scrollState)
                         .padding(contentPadding)
-                        .onGloballyPositioned {
-                            inputWidth = it.size.width
-                        }
                 ) {
                     input()
                 }
