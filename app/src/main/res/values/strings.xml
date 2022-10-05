@@ -83,18 +83,18 @@
 
     <!-- Onboarding -->
     <string name="hello">Hello!</string>
-    <string name="onboarding_title">Welcome to Buckwheat, let\'s save together</string>
+    <string name="onboarding_title">Welcome to Buckwheat, let\'s save money together</string>
     <string name="set_period_title">Set up a budget</string>
     <string name="help_set_budget_title">Establish a budget</string>
-    <string name="help_set_budget_description">Calculate approximately how much money you need for a certain period, for example, a month and indicate it in the application. You can specify it very roughly, over time you will specify it more and more accurately.</string>
+    <string name="help_set_budget_description">Calculate approximately how much money you need for a certain period, such as a month, and enter it in the application. You can specify it very roughly, over time you will specify it more and more accurately.</string>
     <string name="help_record_spends_title">Record every expense</string>
-    <string name="help_record_spends_description">The application will calculate how much you need to spend per day to fit into the budget, write down tarts and keep track of the budget</string>
     <string name="help_good_luck_title">Spend wisely</string>
-    <string name="help_good_luck_description">Over time, you will learn to feel the value of money and not waste it on trifles. Good luck!</string>
+    <string name="help_good_luck_description">Over time, you will learn to feel the value of money and will not spend it on trifles. Good luck!</string>
 
     <!-- Common -->
     <string name="copy_in_clipboard">Copied to clipboard</string>
     <string name="search">Search</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
+    <string name="help_record_spends_description">The application will calculate how much you need to spend per day to fit into the budget, write down the expenses and keep track of the budget</string>
 </resources>
