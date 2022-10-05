@@ -39,6 +39,7 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import kotlin.math.max
 import kotlin.math.min
@@ -378,6 +379,12 @@ fun Editor(
                     spendsViewModel.rawSpentValue.value = it
 
                     spendsViewModel.editSpent(converted.join().toBigDecimal())
+
+                    if (it === "") {
+                        runBlocking {
+                            spendsViewModel.resetSpent()
+                        }
+                    }
                 },
                 currency = spendsViewModel.currency,
                 fontSizeValue = spentValueFontSize,

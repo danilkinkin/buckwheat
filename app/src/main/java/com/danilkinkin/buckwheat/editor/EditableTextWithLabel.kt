@@ -50,11 +50,7 @@ fun EditableTextWithLabel(
             ) {
                 TextFieldWithPaddings(
                     value = value,
-                    onChangeValue = {
-                        val converted = tryConvertStringToNumber(it)
-
-                        onChangeValue(converted.join(third = false))
-                    },
+                    onChangeValue = { onChangeValue(it) },
                     textStyle = MaterialTheme.typography.displayLarge.copy(
                         fontSize = fontSizeValue,
                         color = color,
