@@ -56,7 +56,7 @@ data class CalendarUiState(
 
     val hasSelectedDates: Boolean
         get() {
-            return selectedStartDate != null || selectedEndDate != null
+            return selectedEndDate != null && !isSameDay(selectedStartDate!!.toDate().time, selectedEndDate.toDate().time)
         }
 
     fun hasSelectedPeriodOverlap(start: LocalDate, end: LocalDate): Boolean {

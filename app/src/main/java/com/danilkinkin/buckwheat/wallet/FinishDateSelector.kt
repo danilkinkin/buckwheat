@@ -84,11 +84,11 @@ private fun FinishDateSelectorTopAppBar(
                 Button(
                     onClick = { onApply() },
                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
-                    enabled = calendarState.calendarUiState.value.selectedStartDate !== null,
+                    enabled = calendarState.calendarUiState.value.hasSelectedDates,
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Check,
-                        contentDescription = "Localized description",
+                        contentDescription = null,
                         modifier = Modifier.size(ButtonDefaults.IconSize)
 
                     )
