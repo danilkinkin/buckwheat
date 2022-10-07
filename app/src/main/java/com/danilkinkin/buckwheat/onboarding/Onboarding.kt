@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,23 +25,28 @@ fun Onboarding(
     onSetBudget: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
+    val navigationBarHeight = WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+        .coerceAtLeast(16.dp)
+
     Surface {
         Column(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .navigationBarsPadding()
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(start = 24.dp, end = 24.dp, bottom = navigationBarHeight),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(24.dp))
             Text(
                 text = stringResource(R.string.hello),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.displayMedium,
             )
             Spacer(Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.onboarding_title),
                 style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(48.dp))
             Column(
@@ -71,17 +77,16 @@ fun Onboarding(
                     onClose()
                 },
             )
-            Spacer(Modifier.height(24.dp))
         }
     }
 }
 
 @Composable
 fun NumberedRow(
+    modifier: Modifier = Modifier,
     number: Int,
     title: String,
     subtitle: String? = null,
-    modifier: Modifier = Modifier,
 ) {
     val color = contentColorFor(
         combineColors(
@@ -91,7 +96,7 @@ fun NumberedRow(
         )
     )
 
-    Row() {
+    Row {
         Box(
             Modifier
                 .size(28.dp)
