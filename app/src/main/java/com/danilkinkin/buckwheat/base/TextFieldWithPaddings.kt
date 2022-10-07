@@ -80,7 +80,7 @@ fun TextFieldWithPaddings(
                 0,
                 transformation.offsetMapping.originalToTransformed(
                     if (forceEnd) value.length else textFieldValueState.selection.start,
-                ),
+                ).coerceAtMost(transformation.text.text.length),
             ),
             style = textStyle,
             density = localDensity,

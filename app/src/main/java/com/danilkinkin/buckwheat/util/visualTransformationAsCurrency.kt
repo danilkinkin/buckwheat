@@ -71,12 +71,23 @@ private fun visualTransformationAsCurrency(
         }
     }
 
+    val forceShowAfterDot = input.text.contains(".0")
     val before = output.substringBefore("${floatDivider}0")
-    val after = output.substringAfter("${floatDivider}0", "")
+    val after = if (forceShowAfterDot) {
+        output.substringAfter(floatDivider, "")
+    } else {
+        output.substringAfter("${floatDivider}0", "")
+    }
 
+    val divider = if (fixed.third.isNotEmpty() || forceShowAfterDot) {
+        "$floatDivider${fixed.third}"
+    } else {
+        ""
+    }
+    
     return TransformedText(
         getAnnotatedString(
-            before + (if (fixed.third.isNotEmpty()) "$floatDivider${fixed.third}" else "") + after,
+            before + divider + after,
             Pair(
                 before.length + (if (fixed.third.isNotEmpty()) 1 else 0),
                 before.length + (if (fixed.third.isNotEmpty()) 2 else 0),
