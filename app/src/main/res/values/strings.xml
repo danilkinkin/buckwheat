@@ -49,6 +49,7 @@
     <string name="budget_must_greater_zero">Enter your budget</string>
     <string name="days_must_greater_zero">Calculate the budget for at least one day</string>
     <string name="apply">Apply</string>
+    <string name="change_budget">Change budget</string>
     <string name="select_currency_title">Select currency</string>
     <string name="select_currency_hint">Input your currency</string>
     <string name="currency_custom_title">Enter your currency</string>

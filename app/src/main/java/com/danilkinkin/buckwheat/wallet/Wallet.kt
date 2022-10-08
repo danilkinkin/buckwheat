@@ -202,7 +202,13 @@ fun Wallet(
                         .padding(horizontal = 16.dp),
                     enabled = countDays(dateToValue.value) > 0 && budget > BigDecimal(0)
                 ) {
-                    Text(text = stringResource(id = R.string.apply))
+                    Text(
+                        text = if (spends.isNotEmpty() && !forceChange) {
+                            stringResource(R.string.change_budget)
+                        } else {
+                            stringResource(R.string.apply)
+                        },
+                    )
                 }
             }
         }
