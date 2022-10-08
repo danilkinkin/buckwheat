@@ -10,13 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 
@@ -70,8 +70,8 @@ fun Onboarding(
                 )
             }
             Spacer(Modifier.height(48.dp))
-            ButtonWithIcon(
-                title = stringResource(R.string.set_period_title),
+            DescriptionButton(
+                title = { Text(stringResource(R.string.set_period_title)) },
                 onClick = {
                     onSetBudget()
                     onClose()
@@ -133,58 +133,6 @@ fun NumberedRow(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ButtonWithIcon(
-    title: String,
-    description: String? = null,
-    secondDescription: String? = null,
-    onClick: () -> Unit,
-){
-    Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(
-                Modifier
-                    .padding(horizontal = 24.dp, vertical = 32.dp)
-                    .weight(weight = 1F, fill = true)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                if (description !== null) {
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                if (secondDescription !== null) {
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        text = secondDescription,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                }
-            }
-            Icon(
-                modifier = Modifier
-                    .width(48.dp)
-                    .padding(end = 8.dp),
-                painter = painterResource(R.drawable.ic_arrow_right),
-                contentDescription = null,
-            )
         }
     }
 }

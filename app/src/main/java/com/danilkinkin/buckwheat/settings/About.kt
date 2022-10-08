@@ -5,13 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.copyLinkToClipboard
 
@@ -39,9 +39,16 @@ fun About(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodyLarge,
             )
             Spacer(modifier = Modifier.height(24.dp))
-            ButtonWithIcon(
-                title = stringResource(R.string.site),
+            DescriptionButton(
+                title = { Text(stringResource(R.string.site)) },
                 icon = painterResource(R.drawable.ic_open_in_browser),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
+                contentPadding = PaddingValues(
+                    start = 20.dp,
+                    top = 12.dp,
+                    bottom = 12.dp,
+                    end = 12.dp,
+                ),
                 onClick = {
                     copyLinkToClipboard(
                         context,
@@ -50,9 +57,16 @@ fun About(modifier: Modifier = Modifier) {
                 },
             )
             Spacer(modifier = Modifier.height(8.dp))
-            ButtonWithIcon(
-                title = stringResource(R.string.report_bug),
+            DescriptionButton(
+                title = { Text(stringResource(R.string.report_bug)) },
                 icon = painterResource(R.drawable.ic_bug_report),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
+                contentPadding = PaddingValues(
+                    start = 20.dp,
+                    top = 12.dp,
+                    bottom = 12.dp,
+                    end = 12.dp,
+                ),
                 onClick = {
                     copyLinkToClipboard(
                         context,
@@ -61,29 +75,6 @@ fun About(modifier: Modifier = Modifier) {
                 },
             )
         }
-    }
-}
-
-@Composable
-fun ButtonWithIcon(
-    title: String,
-    icon: Painter,
-    onClick: () -> Unit,
-) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(start = 20.dp, top = 12.dp, bottom = 12.dp, end = 12.dp)
-    ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Spacer(Modifier.fillMaxWidth().weight(1F))
-        Icon(
-            painter = icon,
-            contentDescription = null,
-        )
     }
 }
 

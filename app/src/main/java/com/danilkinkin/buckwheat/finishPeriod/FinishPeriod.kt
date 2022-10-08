@@ -6,7 +6,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,6 +13,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -142,8 +142,8 @@ fun FinishPeriod(
                 }
             }
             Spacer(Modifier.height(48.dp))
-            ButtonWithIcon(
-                title = stringResource(R.string.new_period_title),
+            DescriptionButton(
+                title = { Text(stringResource(R.string.new_period_title)) },
                 onClick = {
                     onCreateNewPeriod()
                     onClose()
@@ -156,10 +156,10 @@ fun FinishPeriod(
 
 @Composable
 fun ValueWithLabel(
+    modifier: Modifier = Modifier,
     value: String,
     secondValue: String? = null,
     label: String,
-    modifier: Modifier = Modifier,
     fontSizeValue: TextUnit = MaterialTheme.typography.displayLarge.fontSize,
     fontSizeSecondValue: TextUnit = MaterialTheme.typography.displayLarge.fontSize,
     fontSizeLabel: TextUnit = MaterialTheme.typography.labelMedium.fontSize,
@@ -172,10 +172,7 @@ fun ValueWithLabel(
         )
     )
 
-    Column(
-        modifier = modifier
-            .padding(bottom = 24.dp)
-    ) {
+    Column(modifier.padding(bottom = 24.dp)) {
         Text(
             text = value,
             style = MaterialTheme.typography.displayLarge,
@@ -201,70 +198,6 @@ fun ValueWithLabel(
             color = color,
             overflow = TextOverflow.Ellipsis,
             softWrap = false,
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ButtonWithIcon(
-    title: String,
-    description: String? = null,
-    secondDescription: String? = null,
-    onClick: () -> Unit,
-){
-    Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(
-                Modifier
-                    .padding(horizontal = 24.dp, vertical = 32.dp)
-                    .weight(weight = 1F, fill = true)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-                if (description !== null) {
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        text = description,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-                if (secondDescription !== null) {
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        text = secondDescription,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                }
-            }
-            Icon(
-                modifier = Modifier
-                    .width(48.dp)
-                    .padding(end = 8.dp),
-                painter = painterResource(R.drawable.ic_arrow_right),
-                contentDescription = null,
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun PreviewButtonWithIcon(){
-    BuckwheatTheme {
-        ButtonWithIcon(
-            title = "Title",
-            description = "Button looooooooooooooooooooooooooooooooooong description",
-            onClick = {},
         )
     }
 }
