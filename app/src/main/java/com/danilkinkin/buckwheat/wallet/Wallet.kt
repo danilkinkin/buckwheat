@@ -180,20 +180,10 @@ fun Wallet(
                 )
                 Divider()
                 Spacer(Modifier.height(24.dp))
-                Text(
-                    text = stringResource(
-                        R.string.per_day,
-                        prettyCandyCanes(
-                            if (days != 0) {
-                                (budget / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
-                            } else {
-                                budget
-                            },
-                            currency.value,
-                        ),
-                    ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(start = 56.dp)
+                Total(
+                    budget = budget,
+                    days = days,
+                    currency = currency.value,
                 )
                 Spacer(Modifier.height(24.dp))
                 Button(
@@ -257,6 +247,76 @@ fun Wallet(
             },
             onClose = { openConfirmChangeBudgetDialog.value = false },
         )
+    }
+}
+
+@Composable
+fun Total(budget: BigDecimal, days: Int, currency: ExtendCurrency) {
+    val textColor = LocalContentColor.current
+
+    Column {
+        if (budget > BigDecimal(0) && days > 0) {
+            Text(
+                text = stringResource(R.string.total_title),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(start = 56.dp, end = 16.dp)
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = stringResource(
+                    R.string.per_day,
+                    prettyCandyCanes(
+                        if (days != 0) {
+                            (budget / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
+                        } else {
+                            budget
+                        },
+                        currency,
+                    ),
+                ),
+                color = textColor.copy(alpha = 0.6f),
+                modifier = Modifier.padding(start = 56.dp)
+            )
+        } else {
+            Row(
+                modifier = Modifier
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                    ),
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_info),
+                    contentDescription = null,
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Box(
+                        modifier = Modifier.heightIn(24.dp),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.unable_calc_budget),
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                    if (budget <= BigDecimal(0)) {
+                        Text(
+                            text = "- " + stringResource(id = R.string.budget_must_greater_zero),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = textColor.copy(alpha = 0.6f),
+                        )
+                    }
+                    if (days <= 0) {
+                        Text(
+                            text = "- " + stringResource(id = R.string.days_must_greater_zero),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = textColor.copy(alpha = 0.6f),
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
