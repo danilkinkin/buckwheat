@@ -72,6 +72,7 @@ fun Onboarding(
             Spacer(Modifier.height(48.dp))
             DescriptionButton(
                 title = { Text(stringResource(R.string.set_period_title)) },
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
                 onClick = {
                     onSetBudget()
                     onClose()

@@ -21,7 +21,7 @@ fun DescriptionButton(
     secondDescription: @Composable (() -> Unit)? = null,
     icon: Painter = painterResource(R.drawable.ic_arrow_right),
     onClick: () -> Unit,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
     colors: CardColors = CardDefaults.cardColors(),
 ){
     Card(

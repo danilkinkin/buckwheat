@@ -1,6 +1,8 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -31,12 +33,17 @@ fun FinishPeriod(
     val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!)
     val minSpent = spends.minByOrNull { it.value }
     val maxSpent = spends.maxByOrNull { it.value }
+
+    val navigationBarHeight = WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+        .coerceAtLeast(16.dp)
     
     Surface {
         Column(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .navigationBarsPadding(),
+                .verticalScroll(rememberScrollState())
+                .padding(start = 24.dp, end = 24.dp, bottom = navigationBarHeight),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(24.dp))
@@ -144,12 +151,12 @@ fun FinishPeriod(
             Spacer(Modifier.height(48.dp))
             DescriptionButton(
                 title = { Text(stringResource(R.string.new_period_title)) },
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
                 onClick = {
                     onCreateNewPeriod()
                     onClose()
                 },
             )
-            Spacer(Modifier.height(24.dp))
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.danilkinkin.buckwheat.recalcBudget
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -41,12 +43,16 @@ fun RecalcBudget(
     val budgetPerDayAdd = (restBudget / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
     val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
+    val navigationBarHeight = WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+        .coerceAtLeast(16.dp)
 
     Surface {
         Column(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .navigationBarsPadding(),
+                .verticalScroll(rememberScrollState())
+                .padding(start = 24.dp, end = 24.dp, bottom = navigationBarHeight),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(24.dp))
