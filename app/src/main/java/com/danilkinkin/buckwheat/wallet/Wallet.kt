@@ -123,11 +123,15 @@ fun Wallet(
                 Divider()
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_calendar),
-                    text = String.format(
-                        pluralStringResource(R.plurals.finish_date_label, 32),
-                        prettyDate(dateToValue.value, showTime = false, forceShowDate = true),
-                        days,
-                    ),
+                    text = if (days > 0) {
+                        String.format(
+                            pluralStringResource(R.plurals.finish_date_label, 32),
+                            prettyDate(dateToValue.value, showTime = false, forceShowDate = true),
+                            days,
+                        )
+                    } else {
+                        stringResource(R.string.finish_date_not_select)
+                    },
                     onClick = {
                         coroutineScope.launch {
                             requestFinishDate(dateToValue.value) {
