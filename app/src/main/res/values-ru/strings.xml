@@ -14,6 +14,11 @@
         <item quantity="few">%1$s траты сегодня</item>
         <item quantity="many">%1$s трат сегодня</item>
     </plurals>
+    <plurals name="day">
+        <item quantity="one">%1$s день</item>
+        <item quantity="few">%1$s дня</item>
+        <item quantity="many">%1$s дней</item>
+    </plurals>
 
     <!-- History -->
     <string name="new_budget">Бюджет установлен</string>
@@ -82,13 +87,24 @@
 
     <!-- Finish period -->
     <string name="finish_period_title">Период закончился</string>
-    <string name="period_summary_title">Вот краткие итоги</string>
+    <string name="period_summary_title">Вот такая статистика этого периода получилась</string>
     <string name="new_period_title">Настроить новый бюджет</string>
-    <string name="whole_budget">Весь бюджет</string>
+    <string name="whole_budget">Стартовый бюджет</string>
     <string name="rest_budget">Осталось</string>
+    <string name="rest_budget_percent">%1$s%% от бюджета</string>
     <string name="min_spent">Минимальная трата</string>
     <string name="max_spent">Максимальная трата</string>
     <string name="count_spends">Всего трат</string>
+    <string name="average_spent">Средняя трата</string>
+    <string name="advice_title">У вас хорошо получается</string>
+    <string name="advice_description">Записываете все траты и не беспокойтесь о том что вы превысили бюджет, это не страшно</string>
+    <string name="overspending_value">на %1$s</string>
+    <string name="overspending_never_exceeded_daily_budget">Вы ни разу не превысили дневной бюджет</string>
+    <string name="overspending_first_time">Вы первый раз превысили дневной бюджет</string>
+    <string name="overspending_after_not_go_out_budget">Больше из бюджета вы не выходили</string>
+    <string name="overspending_after_few_times_out_budget">После вы еще %1$s из %2$s оставшихся выходили из бюджета</string>
+    <string name="overspending_after_many_times_out_budget">После только %1$s из %2$s оставшихся вы не выходили из бюджета</string>
+    <string name="overspending_after_all_times_out_budget">После все из %1$s оставшихся вы не выходили из бюджета</string>
 
     <!-- Onboarding -->
     <string name="hello">Привет!</string>

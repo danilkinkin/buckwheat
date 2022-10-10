@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import androidx.datastore.preferences.preferencesDataStore
+import com.danilkinkin.buckwheat.finishPeriod.FinishPeriod
 import dagger.hilt.android.AndroidEntryPoint
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             BuckwheatTheme {
                 //Colors()
+                //FinishPeriod()
                 MainScreen()
             }
         }

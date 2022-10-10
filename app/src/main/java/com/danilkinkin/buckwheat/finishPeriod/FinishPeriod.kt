@@ -19,7 +19,7 @@ import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.util.*
+import com.danilkinkin.buckwheat.util.countDays
 
 @Composable
 fun FinishPeriod(
@@ -30,9 +30,7 @@ fun FinishPeriod(
 ) {
     val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
-    val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!)
-    val minSpent = spends.minByOrNull { it.value }
-    val maxSpent = spends.maxByOrNull { it.value }
+    val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
     val navigationBarHeight = WindowInsets.systemBars
         .asPaddingValues()
@@ -43,7 +41,7 @@ fun FinishPeriod(
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(start = 24.dp, end = 24.dp, bottom = navigationBarHeight),
+                .padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(Modifier.height(24.dp))
@@ -58,95 +56,67 @@ fun FinishPeriod(
             )
             Spacer(Modifier.height(24.dp))
             Column(Modifier.fillMaxWidth()) {
-                ValueWithLabel(
-                    value = prettyCandyCanes(
-                        wholeBudget,
-                        currency = spendsViewModel.currency,
-                    ),
-                    label = stringResource(R.string.whole_budget),
+                WholeBudgetCard(
+                    budget = wholeBudget,
+                    currency = spendsViewModel.currency,
+                    startDate = spendsViewModel.startDate,
+                    finishDate = spendsViewModel.finishDate,
                 )
-                Row {
-                    ValueWithLabel(
-                        value = prettyDate(
-                            spendsViewModel.startDate,
-                            showTime = false,
-                            forceShowDate = true,
-                        ),
-                        label = stringResource(R.string.label_start_date),
-                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min)
+                ) {
+                    RestBudgetCard(
+                        modifier = Modifier.weight(1f),
+                        rest = restBudget,
+                        budget = wholeBudget,
+                        currency = spendsViewModel.currency,
                     )
-                    Spacer(Modifier.width(24.dp))
-                    ValueWithLabel(
-                        value = prettyDate(
-                            spendsViewModel.finishDate,
-                            showTime = false,
-                            forceShowDate = true,
-                        ),
-                        label = stringResource(R.string.label_finish_date),
-                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
+                    Spacer(modifier = Modifier.width(16.dp))
+                    FillCircleStub()
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(Modifier.fillMaxWidth()) {
+                    MinMaxSpentCard(
+                        modifier = Modifier.weight(1f),
+                        isMin = true,
+                        spends = spends,
+                        currency = spendsViewModel.currency,
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    MinMaxSpentCard(
+                        modifier = Modifier.weight(1f),
+                        isMin = false,
+                        spends = spends,
+                        currency = spendsViewModel.currency,
                     )
                 }
-                ValueWithLabel(
-                    value = prettyCandyCanes(
-                        restBudget,
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(Modifier.fillMaxWidth()) {
+                    SpendsCountCard(
+                        modifier = Modifier,
+                        count = spends.size,
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    AverageSpendCard(
+                        modifier = Modifier.weight(1f),
+                        spends = spends,
                         currency = spendsViewModel.currency,
-                    ),
-                    label = stringResource(R.string.rest_budget),
-                    fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                )
-                Row {
-                    ValueWithLabel(
-                        value = if (minSpent !== null) {
-                            prettyCandyCanes(
-                                minSpent.value,
-                                currency = spendsViewModel.currency,
-                            )
-                        } else {
-                            "-"
-                        },
-                        secondValue = if (minSpent !== null) {
-                            prettyDate(
-                                minSpent.date,
-                                forceShowDate = true,
-                                showTime = true,
-                            )
-                        } else {
-                            null
-                        },
-                        label = stringResource(R.string.min_spent),
-                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                        fontSizeSecondValue = MaterialTheme.typography.bodySmall.fontSize,
-                    )
-                    Spacer(Modifier.width(24.dp))
-                    ValueWithLabel(
-                        value = if (maxSpent !== null) {
-                            prettyCandyCanes(
-                                maxSpent.value,
-                                currency = spendsViewModel.currency,
-                            )
-                        } else {
-                            "-"
-                        },
-                        secondValue = if (maxSpent !== null) {
-                            prettyDate(
-                                maxSpent.date,
-                                forceShowDate = true,
-                                showTime = true,
-                            )
-                        } else {
-                            null
-                        },
-                        label = stringResource(R.string.max_spent),
-                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                        fontSizeSecondValue = MaterialTheme.typography.bodySmall.fontSize,
-                    )
-                    Spacer(Modifier.width(24.dp))
-                    ValueWithLabel(
-                        value = spends.size.toString(),
-                        label = stringResource(R.string.count_spends),
-                        fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
                     )
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                OverspendingInfoCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    budget = wholeBudget,
+                    spends = spends,
+                    startDate = spendsViewModel.startDate,
+                    finishDate = spendsViewModel.finishDate,
+                    currency = spendsViewModel.currency,
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                AdviceCard(Modifier.fillMaxWidth())
             }
             Spacer(Modifier.height(48.dp))
             DescriptionButton(
@@ -161,57 +131,9 @@ fun FinishPeriod(
     }
 }
 
-@Composable
-fun ValueWithLabel(
-    modifier: Modifier = Modifier,
-    value: String,
-    secondValue: String? = null,
-    label: String,
-    fontSizeValue: TextUnit = MaterialTheme.typography.displayLarge.fontSize,
-    fontSizeSecondValue: TextUnit = MaterialTheme.typography.displayLarge.fontSize,
-    fontSizeLabel: TextUnit = MaterialTheme.typography.labelMedium.fontSize,
-) {
-    val color = contentColorFor(
-        combineColors(
-            MaterialTheme.colorScheme.primaryContainer,
-            MaterialTheme.colorScheme.surfaceVariant,
-            angle = 0.9F,
-        )
-    )
-
-    Column(modifier.padding(bottom = 24.dp)) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.displayLarge,
-            fontSize = fontSizeValue,
-            color = color,
-            overflow = TextOverflow.Ellipsis,
-            softWrap = false,
-        )
-        if (secondValue !== null) {
-            Text(
-                text = secondValue,
-                style = MaterialTheme.typography.displayLarge,
-                fontSize = fontSizeSecondValue,
-                color = color,
-                overflow = TextOverflow.Ellipsis,
-                softWrap = false,
-            )
-        }
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            fontSize = fontSizeLabel,
-            color = color,
-            overflow = TextOverflow.Ellipsis,
-            softWrap = false,
-        )
-    }
-}
-
 @Preview
 @Composable
-fun PreviewRecalcBudget() {
+private fun Preview() {
     BuckwheatTheme {
         FinishPeriod()
     }

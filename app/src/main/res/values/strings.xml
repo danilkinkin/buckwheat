@@ -13,6 +13,10 @@
         <item quantity="one">%1$s spent today</item>
         <item quantity="other">%1$s spends today</item>
     </plurals>
+    <plurals name="day">
+        <item quantity="one">%1$s day</item>
+        <item quantity="other">%1$s days</item>
+    </plurals>
 
     <!-- History -->
     <string name="new_budget">Budget set</string>
@@ -79,13 +83,24 @@
 
     <!-- Finish period -->
     <string name="finish_period_title">Period ended</string>
-    <string name="period_summary_title">Here are the summary</string>
+    <string name="period_summary_title">Here are the statistics for this period</string>
     <string name="new_period_title">Set up a new budget</string>
-    <string name="whole_budget">Whole budget</string>
+    <string name="whole_budget">Starting budget</string>
     <string name="rest_budget">Left</string>
+    <string name="rest_budget_percent">%1$s%% of budget</string>
     <string name="min_spent">Minimum spend</string>
     <string name="max_spent">Maximum spending</string>
     <string name="count_spends">Total spending</string>
+    <string name="average_spent">Average spend</string>
+    <string name="advice_title">You are doing well</string>
+    <string name="advice_description">Write down all your expenses and don\'t worry about going over budget, it\'s not a big deal</string>
+    <string name="overspending_value">on %1$s</string>
+    <string name="overspending_never_exceeded_daily_budget">You have never exceeded your daily budget</string>
+    <string name="overspending_first_time">You exceeded your daily budget for the first time</string>
+    <string name="overspending_after_not_go_out_budget">More from the budget you did not go</string>
+    <string name="overspending_after_few_times_out_budget">After that, you had %1$s of the %2$s left over budget</string>
+    <string name="overspending_after_many_times_out_budget">After only %1$s of the %2$s remaining, you were on budget</string>
+    <string name="overspending_after_all_times_out_budget">After all of the %1$s left you haven\'t been out of budget</string>
 
     <!-- Onboarding -->
     <string name="hello">Hello!</string>
