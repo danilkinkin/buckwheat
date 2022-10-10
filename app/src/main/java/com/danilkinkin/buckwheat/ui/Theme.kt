@@ -9,74 +9,84 @@ import androidx.compose.runtime.remember
 import com.danilkinkin.buckwheat.data.ThemeViewModel
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import com.danilkinkin.buckwheat.data.ThemeMode
 import com.danilkinkin.buckwheat.home.dataStore
+import com.danilkinkin.buckwheat.ui.harmonize.palettes.CorePalette
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFffb59a),
-    onPrimary = Color(0xFF5a1b00),
-    primaryContainer = Color(0xFF802a00),
-    onPrimaryContainer = Color(0xFFffdbce),
-    inversePrimary = Color(0xFFFA5A00), //
-    secondary = Color(0xFFf2bf43),
-    onSecondary = Color(0xFF3f2e00),
-    secondaryContainer = Color(0xFF5b4300),
-    onSecondaryContainer = Color(0xFFffdf9b),
-    tertiary = Color(0xFFb0d445),
-    onTertiary = Color(0xFF283500),
-    tertiaryContainer = Color(0xFF3c4d00),
-    onTertiaryContainer = Color(0xFFccf15e),
-    background = Color(0xFF201a18),
-    onBackground = Color(0xFFede0dc),
-    surface = Color(0xFF201a18),
-    onSurface = Color(0xFFede0dc),
-    surfaceVariant = Color(0xFF53433e),
-    onSurfaceVariant = Color(0xFFd8c2bb),
-    surfaceTint = Color(0xFFFA5A00),
-    inverseSurface = Color(0xFF000000),
-    inverseOnSurface = Color(0xFFFFFFFF),
-    error = Color(0xFFffb4ab),
-    onError = Color(0xFF690005),
-    errorContainer = Color(0xFF93000a),
-    onErrorContainer = Color(0xFFffdad6),
-    outline = Color(0xFFa08d86),
-    outlineVariant = Color(0xFFFA5A00),
-    scrim = Color(0xFFFA5A00),
-)
 
-private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFFa73a00),
-    onPrimary = Color(0xFFffffff),
-    primaryContainer = Color(0xFFffdbce),
-    onPrimaryContainer = Color(0xFF370e00),
-    inversePrimary = Color(0xFFFA5A00),
-    secondary = Color(0xFF785a00),
-    onSecondary = Color(0xFFffffff),
-    secondaryContainer = Color(0xFFffdf9b),
-    onSecondaryContainer = Color(0xFF251a00),
-    tertiary = Color(0xFF506600),
-    onTertiary = Color(0xFFffffff),
-    tertiaryContainer = Color(0xFFccf15e),
-    onTertiaryContainer = Color(0xFF161f00),
-    background = Color(0xFFfffbff),
-    onBackground = Color(0xFF201a18),
-    surface = Color(0xFFfffbff),
-    onSurface = Color(0xFF201a18),
-    surfaceVariant = Color(0xFFf5ded6),
-    onSurfaceVariant = Color(0xFF53433e),
-    surfaceTint = Color(0xFFFA5A00),
-    inverseSurface = Color(0xFF161616),
-    inverseOnSurface = Color(0xFFFFFFFF),
-    error = Color(0xFFba1a1a),
-    onError = Color(0xFFffffff),
-    errorContainer = Color(0xFFffdad6),
-    onErrorContainer = Color(0xFF410002),
-    outline = Color(0xFF85736d),
-    outlineVariant = Color(0xFFFA5A00),
-    scrim = Color(0xFFFA5A00),
-)
+private fun darkColorScheme(): ColorScheme {
+    val palette = CorePalette.contentOf(colorSeed.toArgb())
+    
+    return darkColorScheme(
+        primary = Color(palette.a1.tone(80)),
+        onPrimary = Color(palette.a1.tone(20)),
+        primaryContainer = Color(palette.a1.tone(30)),
+        onPrimaryContainer = Color(palette.a1.tone(90)),
+        inversePrimary = Color(palette.a1.tone(40)),
+        secondary = Color(palette.a2.tone(80)),
+        onSecondary = Color(palette.a2.tone(20)),
+        secondaryContainer = Color(palette.a2.tone(30)),
+        onSecondaryContainer = Color(palette.a2.tone(90)),
+        tertiary = Color(palette.a3.tone(80)),
+        onTertiary = Color(palette.a3.tone(20)),
+        tertiaryContainer = Color(palette.a3.tone(30)),
+        onTertiaryContainer = Color(palette.a3.tone(90)),
+        background = Color(palette.n1.tone(10)),
+        onBackground = Color(palette.n1.tone(90)),
+        surface = Color(palette.n1.tone(10)),
+        onSurface = Color(palette.n1.tone(90)),
+        surfaceVariant = Color(palette.n1.tone(30)),
+        onSurfaceVariant = Color(palette.n1.tone(80)),
+        surfaceTint = Color(palette.n1.tone(90)), //
+        inverseSurface = Color(palette.n1.tone(90)),
+        inverseOnSurface = Color(palette.n1.tone(20)),
+        error = Color(palette.error.tone(80)),
+        onError = Color(palette.error.tone(20)),
+        errorContainer = Color(palette.error.tone(30)),
+        onErrorContainer = Color(palette.error.tone(80)),
+        outline = Color(palette.n2.tone(60)),
+        outlineVariant = Color(palette.n2.tone(50)), //
+        scrim = Color(palette.n1.tone(30)), //
+    )
+}
 
+private fun lightColorScheme(): ColorScheme {
+    val palette = CorePalette.contentOf(colorSeed.toArgb())
+
+    return lightColorScheme(
+        primary = Color(palette.a1.tone(40)),
+        onPrimary = Color(palette.a1.tone(100)),
+        primaryContainer = Color(palette.a1.tone(90)),
+        onPrimaryContainer = Color(palette.a1.tone(10)),
+        inversePrimary = Color(palette.a1.tone(80)),
+        secondary = Color(palette.a2.tone(40)),
+        onSecondary = Color(palette.a2.tone(100)),
+        secondaryContainer = Color(palette.a2.tone(90)),
+        onSecondaryContainer = Color(palette.a2.tone(10)),
+        tertiary = Color(palette.a3.tone(40)),
+        onTertiary = Color(palette.a3.tone(100)),
+        tertiaryContainer = Color(palette.a3.tone(90)),
+        onTertiaryContainer = Color(palette.a3.tone(10)),
+        background = Color(palette.n1.tone(99)),
+        onBackground = Color(palette.n1.tone(10)),
+        surface = Color(palette.n1.tone(99)),
+        onSurface = Color(palette.n1.tone(10)),
+        surfaceVariant = Color(palette.n1.tone(90)),
+        onSurfaceVariant = Color(palette.n1.tone(30)),
+        surfaceTint = Color(palette.n1.tone(10)), //
+        inverseSurface = Color(palette.n1.tone(20)),
+        inverseOnSurface = Color(palette.n1.tone(95)),
+        error = Color(palette.error.tone(40)),
+        onError = Color(palette.error.tone(100)),
+        errorContainer = Color(palette.error.tone(90)),
+        onErrorContainer = Color(palette.error.tone(10)),
+        outline = Color(palette.n2.tone(50)),
+        outlineVariant = Color(palette.n2.tone(50)), //
+        scrim = Color(palette.n1.tone(90)), //
+    )
+}
 
 
 @Composable
@@ -98,7 +108,6 @@ fun isNightMode(): Boolean {
 @Composable
 fun BuckwheatTheme(
     darkTheme: Boolean = isNightMode(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -107,8 +116,8 @@ fun BuckwheatTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        darkTheme -> darkColorScheme()
+        else -> lightColorScheme()
     }
 
     MaterialTheme(

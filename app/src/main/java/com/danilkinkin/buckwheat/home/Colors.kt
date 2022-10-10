@@ -20,7 +20,12 @@ import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.data.ThemeMode
 import com.danilkinkin.buckwheat.data.ThemeViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.colorBad
+import com.danilkinkin.buckwheat.ui.colorGood
+import com.danilkinkin.buckwheat.ui.colorNotGood
 import com.danilkinkin.buckwheat.util.combineColors
+import com.danilkinkin.buckwheat.util.harmonize
+import com.danilkinkin.buckwheat.util.toPalette
 
 @Composable
 fun Colors() {
@@ -86,6 +91,15 @@ fun Colors() {
                     0.96F,
                 )
             )
+        }
+        Column {
+            Color(colorGood)
+
+            val harmonizedColor = toPalette(harmonize(colorGood))
+
+            Color(harmonizedColor.main, harmonizedColor.onMain)
+            Color(harmonizedColor.surface, harmonizedColor.onSurface)
+            Color(harmonizedColor.container, harmonizedColor.onContainer)
         }
         Column {
             Switch(
