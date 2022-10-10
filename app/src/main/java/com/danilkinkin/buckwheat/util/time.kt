@@ -39,7 +39,13 @@ fun isSameDay(timestampA: Long, timestampB: Long): Boolean {
     return roundToDay(Date(timestampA)) == roundToDay(Date(timestampB))
 }
 
-fun prettyDate(date: Date, showTime: Boolean = true, forceShowDate: Boolean = false): String {
+fun prettyDate(
+    date: Date,
+    showTime: Boolean = true,
+    forceShowDate: Boolean = false,
+    forceHideDate: Boolean = false,
+    forceShowYear: Boolean = false,
+): String {
     val currentYear = yearFormat.format(Date().time)
     val currentDate = dateFormat.format(Date().time)
 
@@ -49,11 +55,11 @@ fun prettyDate(date: Date, showTime: Boolean = true, forceShowDate: Boolean = fa
 
     var final = ""
 
-    if (dateStr != currentDate || !showTime || forceShowDate) {
+    if ((dateStr != currentDate || !showTime || forceShowDate) && !forceHideDate) {
         final += " $dateStr"
     }
 
-    if (yearStr != currentYear) {
+    if (yearStr != currentYear || forceShowYear) {
         final += " $yearStr"
     }
 
