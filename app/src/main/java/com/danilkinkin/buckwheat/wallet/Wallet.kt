@@ -125,7 +125,7 @@ fun Wallet(
                     icon = painterResource(R.drawable.ic_calendar),
                     text = if (days > 0) {
                         String.format(
-                            pluralStringResource(R.plurals.finish_date_label, 32),
+                            pluralStringResource(R.plurals.finish_date_label, days),
                             prettyDate(dateToValue.value, showTime = false, forceShowDate = true),
                             days,
                         )
