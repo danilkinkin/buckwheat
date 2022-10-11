@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
@@ -9,6 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,14 +44,16 @@ fun WholeBudgetCard(
             val textColor = LocalContentColor.current
 
             Spacer(modifier = Modifier.height(24.dp))
-            Row(Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
                 Column(horizontalAlignment = Alignment.Start) {
                     Text(
                         text = prettyDate(
                             startDate,
                             showTime = false,
                             forceShowDate = true,
-                            forceShowYear = true,
                         ),
                         style = MaterialTheme.typography.bodyLarge,
                     )
@@ -57,14 +64,19 @@ fun WholeBudgetCard(
                     )
                 }
 
-                Spacer(Modifier.width(16.dp).weight(1f))
-
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_forward),
-                    contentDescription = null,
+                Spacer(
+                    Modifier
+                        .width(16.dp)
                 )
 
-                Spacer(Modifier.width(16.dp).weight(1f))
+                Arrow(
+                    modifier = Modifier.height(24.dp).widthIn(24.dp).weight(1f),
+                )
+
+                Spacer(
+                    Modifier
+                        .width(16.dp)
+                )
 
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
@@ -72,7 +84,6 @@ fun WholeBudgetCard(
                             finishDate,
                             showTime = false,
                             forceShowDate = true,
-                            forceShowYear = true,
                         ),
                         style = MaterialTheme.typography.bodyLarge,
                     )
@@ -85,6 +96,63 @@ fun WholeBudgetCard(
             }
         }
     )
+}
+
+@Composable
+fun Arrow(
+    modifier: Modifier = Modifier,
+    tint: Color = LocalContentColor.current,
+) {
+    Canvas(modifier = modifier) {
+
+
+        val width = this.size.width
+        val height = this.size.height
+        val heightHalf = height / 2
+
+        val thickness = 6
+        val thicknessHalf = thickness / 2
+
+        val trianglePath = Path().let {
+            it.moveTo(11f, heightHalf - thicknessHalf)
+            it.lineTo(width - 22.4f, heightHalf - thicknessHalf)
+            it.lineTo(width - 37.4f, heightHalf - 18)
+            it.lineTo(width - 33, heightHalf - 22.4f)
+            it.lineTo(width - 10.5f, heightHalf)
+            it.lineTo(width - 33, heightHalf + 22.4f)
+            it.lineTo(width - 37.4f, heightHalf + 18)
+            it.lineTo(width - 22.4f, heightHalf + thicknessHalf)
+            it.lineTo(width - 22.4f, heightHalf + thicknessHalf)
+            it.lineTo(11f, heightHalf + thicknessHalf)
+
+            it.close()
+
+            it
+        }
+
+        drawPath(
+            path = trianglePath,
+            SolidColor(tint),
+            style = Fill
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewChart() {
+    BuckwheatTheme {
+        Box() {
+            Icon(
+                painter = painterResource(R.drawable.ic_arrow_forward),
+                tint = Color.Green,
+                contentDescription = null,
+            )
+            Arrow(
+                modifier = Modifier.height(24.dp).width(100.dp),
+            )
+        }
+    }
 }
 
 @Preview
