@@ -175,7 +175,7 @@ class SpendsViewModel @Inject constructor(
             splitBudget -= currentSpent
         }
 
-        return (splitBudget / restDays.toBigDecimal())
+        return (splitBudget / restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)))
             .setScale(
                 0,
                 RoundingMode.FLOOR
