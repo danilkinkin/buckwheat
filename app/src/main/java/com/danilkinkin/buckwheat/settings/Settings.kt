@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.TextRow
@@ -50,7 +51,9 @@ fun Settings(onClose: () -> Unit = {}) {
     Surface {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -80,7 +83,10 @@ fun Settings(onClose: () -> Unit = {}) {
                     text = stringResource(R.string.theme_system),
                 )
                 Divider()
-                About(Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp))
+                TextRow(
+                    text = stringResource(R.string.version, BuildConfig.VERSION_NAME),
+                )
+                About(Modifier.padding(start = 16.dp, end = 16.dp))
             }
         }
     }

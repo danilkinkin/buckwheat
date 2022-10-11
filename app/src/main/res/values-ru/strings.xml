@@ -71,6 +71,7 @@
     <string name="theme_light">Светлая</string>
     <string name="theme_dark">Темная</string>
     <string name="theme_system">Системная</string>
+    <string name="version">Версия: %1$s</string>
     <string name="about">О приложении</string>
     <string name="description">Buckwheat - это приложение, которое поможет осознанно тратить бюджет. Внося каждую трату, будет легче следить и понимать свои финансовые возможности и не тратить деньги на ерунду</string>
     <string name="site">Сайт разработчика</string>

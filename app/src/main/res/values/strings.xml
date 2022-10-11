@@ -67,6 +67,7 @@
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_system">System</string>
+    <string name="version">Version: %1$s</string>
     <string name="about">About app</string>
     <string name="description">Buckwheat is an app that will help you consciously spend your budget. By making every expense, it will be easier to monitor and understand your financial capabilities and not spend money on nonsense</string>
     <string name="site">Developer site</string>
