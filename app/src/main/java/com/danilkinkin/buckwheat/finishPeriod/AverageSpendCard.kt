@@ -13,6 +13,7 @@ import com.danilkinkin.buckwheat.util.CurrencyType
 import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 
 @Composable
@@ -27,7 +28,8 @@ fun AverageSpendCard(
             prettyCandyCanes(
                 spends
                     .reduce { acc, spent -> acc.copy(value = acc.value + spent.value) }
-                    .value,
+                    .value
+                    .divide(spends.size.toBigDecimal(), 2, RoundingMode.HALF_EVEN),
                 currency = currency,
             )
         } else {
