@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -93,6 +94,8 @@ fun Editor(
     var spentLabelFontSize by remember { mutableStateOf(60.sp) }
 
     val spendsCountScale = remember { Animatable(1f) }
+
+    val focusManager = LocalFocusManager.current
 
     fun calculateValues(
         budget: Boolean = true,
@@ -262,6 +265,7 @@ fun Editor(
         when (it) {
             SpendsViewModel.Stage.IDLE, null -> {
                 if (currState === AnimState.EDITING) animTo(AnimState.RESET)
+                focusManager.clearFocus()
             }
             SpendsViewModel.Stage.CREATING_SPENT -> {
                 calculateValues(budget = false)
@@ -294,6 +298,7 @@ fun Editor(
                 }
 
                 spendsViewModel.resetSpent()
+                focusManager.clearFocus()
             }
         }
     }
