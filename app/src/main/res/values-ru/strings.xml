@@ -60,6 +60,8 @@
     <string name="budget_must_greater_zero">Укажите бюджет</string>
     <string name="days_must_greater_zero">Посчитатйте бюджет хотя-бы на один день</string>
     <string name="apply">Применить</string>
+    <string name="done">Понятно</string>
+    <string name="change_currency">Изменить валюту</string>
     <string name="change_budget">Изменить бюджет</string>
     <string name="confirm_change_budget_title">Изменение бюджета</string>
     <string name="confirm_change_budget_description">Обратите внимание, что при изменении бюджета, история трат сбрасывается</string>

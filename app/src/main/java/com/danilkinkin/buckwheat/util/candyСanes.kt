@@ -33,6 +33,12 @@ class ExtendCurrency(val value: String? = null, val type: CurrencyType) {
             return ExtendCurrency(value = value, type = CurrencyType.CUSTOM)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is ExtendCurrency) return false
+
+        return other.value == this.value && this.type == this.type
+    }
 }
 
 fun Double.round(scale: Int): Double =

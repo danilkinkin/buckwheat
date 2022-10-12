@@ -49,12 +49,12 @@ fun Wallet(
         } else {
             Triple("", "0", "")
         }
-        
+
         mutableStateOf(converted.first + converted.second)
     }
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate) }
-    val currency = remember { mutableStateOf(spendsViewModel.currency) }
+    var currency by remember { mutableStateOf(spendsViewModel.currency) }
     val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
 
     val openCurrencyChooserDialog = remember { mutableStateOf(false) }
@@ -82,7 +82,7 @@ fun Wallet(
                     text = stringResource(R.string.wallet_title),
                     style = MaterialTheme.typography.titleLarge,
                 )
-           }
+            }
             Divider()
             Column(Modifier.verticalScroll(rememberScrollState())) {
                 BasicTextField(
@@ -146,34 +146,34 @@ fun Wallet(
                     text = stringResource(R.string.in_currency_label),
                 )
                 CheckedRow(
-                    checked = currency.value.type === CurrencyType.FROM_LIST,
+                    checked = currency.type === CurrencyType.FROM_LIST,
                     onValueChange = { openCurrencyChooserDialog.value = true },
-                    text = if (currency.value.type !== CurrencyType.FROM_LIST) {
+                    text = if (currency.type !== CurrencyType.FROM_LIST) {
                         stringResource(R.string.currency_from_list)
                     } else {
                         stringResource(
                             id = R.string.currency_from_list_selected,
-                            Currency.getInstance(currency.value.value).symbol
+                            Currency.getInstance(currency.value).symbol
                         )
                     },
                 )
                 CheckedRow(
-                    checked = currency.value.type === CurrencyType.CUSTOM,
+                    checked = currency.type === CurrencyType.CUSTOM,
                     onValueChange = { openCustomCurrencyEditorDialog.value = true },
-                    text = if (currency.value.type !== CurrencyType.CUSTOM) {
+                    text = if (currency.type !== CurrencyType.CUSTOM) {
                         stringResource(R.string.currency_custom)
                     } else {
                         stringResource(
                             id = R.string.currency_custom_selected,
-                            currency.value.value!!
+                            currency.value!!
                         )
                     },
                 )
                 CheckedRow(
-                    checked = currency.value.type === CurrencyType.NONE,
+                    checked = currency.type === CurrencyType.NONE,
                     onValueChange = {
                         if (it) {
-                            currency.value = ExtendCurrency(type = CurrencyType.NONE)
+                            currency = ExtendCurrency(type = CurrencyType.NONE)
                         }
                     },
                     text = stringResource(R.string.currency_none),
@@ -183,15 +183,28 @@ fun Wallet(
                 Total(
                     budget = budget,
                     days = days,
-                    currency = currency.value,
+                    currency = currency,
                 )
                 Spacer(Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        if (spends.isNotEmpty() && !forceChange) {
+                        if (
+                            budget == spendsViewModel.budget.value
+                            && dateToValue.value == spendsViewModel.finishDate
+                            && currency == spendsViewModel.currency
+                        ) {
+                            onClose()
+                        } else if (
+                            budget == spendsViewModel.budget.value
+                            && dateToValue.value == spendsViewModel.finishDate
+                            && currency != spendsViewModel.currency
+                        ) {
+                            spendsViewModel.changeCurrency(currency)
+                            onClose()
+                        } else if (spends.isNotEmpty() && !forceChange) {
                             openConfirmChangeBudgetDialog.value = true
                         } else {
-                            spendsViewModel.changeCurrency(currency.value)
+                            spendsViewModel.changeCurrency(currency)
                             spendsViewModel.changeBudget(budget, dateToValue.value)
 
                             onClose()
@@ -203,7 +216,19 @@ fun Wallet(
                     enabled = countDays(dateToValue.value) > 0 && budget > BigDecimal(0)
                 ) {
                     Text(
-                        text = if (spends.isNotEmpty() && !forceChange) {
+                        text = if (
+                            budget == spendsViewModel.budget.value
+                            && dateToValue.value == spendsViewModel.finishDate
+                            && currency == spendsViewModel.currency
+                        ) {
+                            stringResource(R.string.done)
+                        } else if (
+                            budget == spendsViewModel.budget.value
+                            && dateToValue.value == spendsViewModel.finishDate
+                            && currency != spendsViewModel.currency
+                        ) {
+                            stringResource(R.string.change_currency)
+                        } else if (spends.isNotEmpty() && !forceChange) {
                             stringResource(R.string.change_budget)
                         } else {
                             stringResource(R.string.apply)
@@ -216,13 +241,13 @@ fun Wallet(
 
     if (openCurrencyChooserDialog.value) {
         WorldCurrencyChooser(
-            defaultCurrency = if (currency.value.type === CurrencyType.FROM_LIST) {
-                Currency.getInstance(currency.value.value)
+            defaultCurrency = if (currency.type === CurrencyType.FROM_LIST) {
+                Currency.getInstance(currency.value)
             } else {
                 null
             },
             onSelect = {
-                currency.value =
+                currency =
                     ExtendCurrency(type = CurrencyType.FROM_LIST, value = it.currencyCode)
             },
             onClose = { openCurrencyChooserDialog.value = false },
@@ -231,13 +256,13 @@ fun Wallet(
 
     if (openCustomCurrencyEditorDialog.value) {
         CustomCurrencyEditor(
-            defaultCurrency = if (currency.value.type === CurrencyType.CUSTOM) {
-                currency.value.value
+            defaultCurrency = if (currency.type === CurrencyType.CUSTOM) {
+                currency.value
             } else {
                 null
             },
             onChange = {
-                currency.value = ExtendCurrency(type = CurrencyType.CUSTOM, value = it)
+                currency = ExtendCurrency(type = CurrencyType.CUSTOM, value = it)
             },
             onClose = { openCustomCurrencyEditorDialog.value = false },
         )
@@ -246,7 +271,7 @@ fun Wallet(
     if (openConfirmChangeBudgetDialog.value) {
         ConfirmChangeBudgetDialog(
             onConfirm = {
-                spendsViewModel.changeCurrency(currency.value)
+                spendsViewModel.changeCurrency(currency)
                 spendsViewModel.changeBudget(budget, dateToValue.value)
 
                 onClose()
