@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
@@ -18,9 +19,10 @@ import com.danilkinkin.buckwheat.util.combineColors
 
 @Composable
 fun TextRow(
-    icon: Painter? = null,
-    text: String,
     modifier: Modifier = Modifier,
+    icon: Painter? = null,
+    endIcon: Painter? = null,
+    text: String,
 ) {
     val color = contentColorFor(
         combineColors(
@@ -43,7 +45,12 @@ fun TextRow(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
                 color = color,
-                modifier = Modifier.padding(start = (24 + 16).dp)
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(
+                    start = (24 + 16).dp,
+                    end = if (endIcon !== null) (24 + 16).dp else 0.dp,
+                )
             )
         }
 
@@ -62,13 +69,39 @@ fun TextRow(
                 )
             }
         }
+
+        if (endIcon !== null) {
+            Box(
+                Modifier
+                    .height(56.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    painter = endIcon,
+                    tint = color,
+                    contentDescription = null
+                )
+            }
+        }
     }
 
 }
 
+@Preview
+@Composable
+private fun Preview() {
+    BuckwheatTheme {
+        TextRow(
+            text = "Text row",
+        )
+    }
+}
+
 @Preview()
 @Composable
-fun PreviewTextRowWithIcon() {
+private fun PreviewTWithIcon() {
     BuckwheatTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
@@ -77,12 +110,14 @@ fun PreviewTextRowWithIcon() {
     }
 }
 
-@Preview
+@Preview()
 @Composable
-fun PreviewTextRowWithoutIcon() {
+private fun PreviewWithIcons() {
     BuckwheatTheme {
         TextRow(
-            text = "Text row",
+            icon = painterResource(R.drawable.ic_home),
+            endIcon = painterResource(R.drawable.ic_edit),
+            text = "Text row loooooooooooooooooooooooooooooooong",
         )
     }
 }

@@ -14,21 +14,23 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
 @Composable
 fun ButtonRow(
+    modifier: Modifier = Modifier,
     icon: Painter? = null,
+    endIcon: Painter? = null,
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     TextRow(
-        icon = icon,
-        text = text,
         modifier
             .clickable(
                 interactionSource = interactionSource,
                 indication = rememberRipple()
             ) { onClick.invoke() },
+        icon = icon,
+        endIcon = endIcon,
+        text = text,
     )
 }
 
