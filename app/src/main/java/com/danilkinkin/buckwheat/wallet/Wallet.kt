@@ -44,8 +44,10 @@ fun Wallet(
     onClose: () -> Unit = {},
 ) {
     var rawBudget by remember {
-        val converted = if (spendsViewModel.budget.value !== BigDecimal(0)) {
-            tryConvertStringToNumber(spendsViewModel.budget.value!!.toString())
+        val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+
+        val converted = if (restBudget !== BigDecimal(0)) {
+            tryConvertStringToNumber(restBudget.toString())
         } else {
             Triple("", "0", "")
         }
@@ -56,6 +58,7 @@ fun Wallet(
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate) }
     var currency by remember { mutableStateOf(spendsViewModel.currency) }
     val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
+    val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
     val openCurrencyChooserDialog = remember { mutableStateOf(false) }
     val openCustomCurrencyEditorDialog = remember { mutableStateOf(false) }
@@ -112,6 +115,11 @@ fun Wallet(
                         Column {
                             TextRow(
                                 icon = painterResource(R.drawable.ic_money),
+                                endIcon = if (spends.isNotEmpty() && !forceChange) {
+                                    painterResource(R.drawable.ic_edit)
+                                } else {
+                                    null
+                                },
                                 text = stringResource(R.string.label_budget),
                             )
                             Box(Modifier.padding(start = 56.dp, bottom = 12.dp)) {
@@ -123,6 +131,11 @@ fun Wallet(
                 Divider()
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_calendar),
+                    endIcon = if (spends.isNotEmpty() && !forceChange) {
+                        painterResource(R.drawable.ic_edit)
+                    } else {
+                        null
+                    },
                     text = if (days > 0) {
                         String.format(
                             pluralStringResource(R.plurals.finish_date_label, days),
@@ -174,6 +187,8 @@ fun Wallet(
                     onValueChange = {
                         if (it) {
                             currency = ExtendCurrency(type = CurrencyType.NONE)
+
+                            spendsViewModel.changeCurrency(currency)
                         }
                     },
                     text = stringResource(R.string.currency_none),
@@ -186,54 +201,34 @@ fun Wallet(
                     currency = currency,
                 )
                 Spacer(Modifier.height(24.dp))
-                Button(
-                    onClick = {
-                        if (
-                            budget == spendsViewModel.budget.value
-                            && dateToValue.value == spendsViewModel.finishDate
-                            && currency == spendsViewModel.currency
-                        ) {
-                            onClose()
-                        } else if (
-                            budget == spendsViewModel.budget.value
-                            && dateToValue.value == spendsViewModel.finishDate
-                            && currency != spendsViewModel.currency
-                        ) {
-                            spendsViewModel.changeCurrency(currency)
-                            onClose()
-                        } else if (spends.isNotEmpty() && !forceChange) {
-                            openConfirmChangeBudgetDialog.value = true
-                        } else {
-                            spendsViewModel.changeCurrency(currency)
-                            spendsViewModel.changeBudget(budget, dateToValue.value)
-
-                            onClose()
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    enabled = countDays(dateToValue.value) > 0 && budget > BigDecimal(0)
+                if (
+                    budget != spendsViewModel.budget.value
+                    || dateToValue.value != spendsViewModel.finishDate
                 ) {
-                    Text(
-                        text = if (
-                            budget == spendsViewModel.budget.value
-                            && dateToValue.value == spendsViewModel.finishDate
-                            && currency == spendsViewModel.currency
-                        ) {
-                            stringResource(R.string.done)
-                        } else if (
-                            budget == spendsViewModel.budget.value
-                            && dateToValue.value == spendsViewModel.finishDate
-                            && currency != spendsViewModel.currency
-                        ) {
-                            stringResource(R.string.change_currency)
-                        } else if (spends.isNotEmpty() && !forceChange) {
-                            stringResource(R.string.change_budget)
-                        } else {
-                            stringResource(R.string.apply)
+                    Button(
+                        onClick = {
+                            if (spends.isNotEmpty() && !forceChange) {
+                                openConfirmChangeBudgetDialog.value = true
+                            } else {
+                                spendsViewModel.changeCurrency(currency)
+                                spendsViewModel.changeBudget(budget, dateToValue.value)
+
+                                onClose()
+                            }
                         },
-                    )
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        enabled = countDays(dateToValue.value) > 0 && budget > BigDecimal(0)
+                    ) {
+                        Text(
+                            text = if (spends.isNotEmpty() && !forceChange) {
+                                stringResource(R.string.change_budget)
+                            } else {
+                                stringResource(R.string.apply)
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -247,8 +242,9 @@ fun Wallet(
                 null
             },
             onSelect = {
-                currency =
-                    ExtendCurrency(type = CurrencyType.FROM_LIST, value = it.currencyCode)
+                currency = ExtendCurrency(type = CurrencyType.FROM_LIST, value = it.currencyCode)
+
+                spendsViewModel.changeCurrency(currency)
             },
             onClose = { openCurrencyChooserDialog.value = false },
         )
@@ -263,6 +259,8 @@ fun Wallet(
             },
             onChange = {
                 currency = ExtendCurrency(type = CurrencyType.CUSTOM, value = it)
+
+                spendsViewModel.changeCurrency(currency)
             },
             onClose = { openCustomCurrencyEditorDialog.value = false },
         )
