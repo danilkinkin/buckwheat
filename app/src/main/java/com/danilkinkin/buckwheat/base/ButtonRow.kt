@@ -19,6 +19,7 @@ fun ButtonRow(
     endIcon: Painter? = null,
     text: String,
     onClick: () -> Unit,
+    endContent: @Composable (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -31,6 +32,7 @@ fun ButtonRow(
         icon = icon,
         endIcon = endIcon,
         text = text,
+        endContent = endContent,
     )
 }
 

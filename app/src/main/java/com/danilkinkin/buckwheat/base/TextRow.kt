@@ -1,10 +1,7 @@
 package com.danilkinkin.buckwheat.base
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +19,7 @@ fun TextRow(
     modifier: Modifier = Modifier,
     icon: Painter? = null,
     endIcon: Painter? = null,
+    endContent: @Composable (() -> Unit)? = null,
     text: String,
 ) {
     val color = contentColorFor(
@@ -40,7 +38,6 @@ fun TextRow(
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
@@ -49,9 +46,21 @@ fun TextRow(
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(
                     start = (24 + 16).dp,
-                    end = if (endIcon !== null) (24 + 16).dp else 0.dp,
-                )
+                ).weight(1f)
             )
+
+            if (endContent !== null) {
+                Spacer(modifier = Modifier.width(16.dp))
+                endContent()
+            }
+            if (endIcon !== null) {
+                Spacer(modifier = Modifier.width(16.dp))
+                Icon(
+                    painter = endIcon,
+                    tint = color,
+                    contentDescription = null
+                )
+            }
         }
 
         if (icon !== null) {
@@ -64,22 +73,6 @@ fun TextRow(
             ) {
                 Icon(
                     painter = icon,
-                    tint = color,
-                    contentDescription = null
-                )
-            }
-        }
-
-        if (endIcon !== null) {
-            Box(
-                Modifier
-                    .height(56.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Icon(
-                    painter = endIcon,
                     tint = color,
                     contentDescription = null
                 )
@@ -117,6 +110,25 @@ private fun PreviewWithIcons() {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             endIcon = painterResource(R.drawable.ic_edit),
+            text = "Text row loooooooooooooooooooooooooooooooong",
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview()
+@Composable
+private fun PreviewWithIconsWithChip() {
+    BuckwheatTheme {
+        TextRow(
+            icon = painterResource(R.drawable.ic_home),
+            endIcon = painterResource(R.drawable.ic_edit),
+            endContent = {
+                SuggestionChip(
+                    label = { Text(text = "Suggestion") },
+                    onClick = { /*TODO*/ },
+                )
+            },
             text = "Text row loooooooooooooooooooooooooooooooong",
         )
     }
