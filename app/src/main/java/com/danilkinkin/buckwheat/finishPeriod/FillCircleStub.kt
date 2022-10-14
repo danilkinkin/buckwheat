@@ -3,18 +3,22 @@ package com.danilkinkin.buckwheat.finishPeriod
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FillCircleStub() {
+fun FillCircleStub(icon: Painter? = null, onClick: () -> Unit = {}) {
     var size by remember { mutableStateOf(0.dp) }
     val localDensity = LocalDensity.current
 
@@ -26,6 +30,7 @@ fun FillCircleStub() {
             }
     ) {
         Card(
+            onClick = onClick,
             modifier = Modifier.size(size),
             shape = CircleShape,
         ) {
@@ -33,10 +38,14 @@ fun FillCircleStub() {
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = "\uD83C\uDF89",
-                    fontSize = with(localDensity) { (size * 0.4f).toPx().toSp() }
-                )
+                if (icon !== null) {
+                    Icon(painter = icon, contentDescription = null)
+                } else {
+                    Text(
+                        text = "\uD83C\uDF89",
+                        fontSize = with(localDensity) { (size * 0.4f).toPx().toSp() }
+                    )
+                }
             }
         }
     }

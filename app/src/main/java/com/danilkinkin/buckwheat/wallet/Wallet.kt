@@ -1,5 +1,9 @@
 package com.danilkinkin.buckwheat.wallet
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.animate
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
@@ -13,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -20,14 +25,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.viewpager.widget.ViewPager
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.TextWithLabel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.launch
@@ -35,7 +43,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun Wallet(
     forceChange: Boolean = false,
@@ -44,7 +52,8 @@ fun Wallet(
     onClose: () -> Unit = {},
 ) {
     var rawBudget by remember {
-        val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+        val restBudget =
+            (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
         val converted = if (restBudget !== BigDecimal(0)) {
             tryConvertStringToNumber(restBudget.toString())
@@ -57,8 +66,9 @@ fun Wallet(
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate) }
     var currency by remember { mutableStateOf(spendsViewModel.currency) }
-    val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
-    val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+    val spends by spendsViewModel.getSpends().observeAsState()
+    val restBudget =
+        (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
     val openCurrencyChooserDialog = remember { mutableStateOf(false) }
     val openCustomCurrencyEditorDialog = remember { mutableStateOf(false) }
@@ -66,10 +76,21 @@ fun Wallet(
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    if (spends === null) return
+
     val navigationBarHeight = WindowInsets.systemBars
         .asPaddingValues()
         .calculateBottomPadding()
         .coerceAtLeast(16.dp)
+
+    val isChange = (
+            budget != spendsViewModel.budget.value
+                    || dateToValue.value != spendsViewModel.finishDate
+            )
+
+    var isEdit by remember(spends, forceChange) { mutableStateOf(spends!!.isEmpty() || forceChange) }
+
+    val offset = with(LocalDensity.current) { 50.dp.toPx().toInt() }
 
     Surface {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
@@ -82,78 +103,64 @@ fun Wallet(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.wallet_title),
+                    text = if (isChange || isEdit) {
+                        stringResource(R.string.wallet_edit_title)
+                    } else {
+                        stringResource(R.string.wallet_title)
+                    },
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
             Divider()
-            Column(Modifier.verticalScroll(rememberScrollState())) {
-                BasicTextField(
-                    value = rawBudget,
-                    onValueChange = {
-                        val converted = tryConvertStringToNumber(it)
-
-                        rawBudget = converted.join(third = false)
-                        budget = converted.join().toBigDecimal()
-                    },
-                    textStyle = MaterialTheme.typography.displaySmall.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    ),
-                    visualTransformation = visualTransformationAsCurrency(
-                        currency = ExtendCurrency(type = CurrencyType.NONE),
-                        hintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal,
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { keyboardController?.hide() }
-                    ),
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    decorationBox = { input ->
-                        Column {
-                            TextRow(
-                                icon = painterResource(R.drawable.ic_money),
-                                endIcon = if (spends.isNotEmpty() && !forceChange) {
-                                    painterResource(R.drawable.ic_edit)
-                                } else {
-                                    null
-                                },
-                                text = stringResource(R.string.label_budget),
-                            )
-                            Box(Modifier.padding(start = 56.dp, bottom = 12.dp)) {
-                                input()
-                            }
-                        }
-                    },
-                )
-                Divider()
-                ButtonRow(
-                    icon = painterResource(R.drawable.ic_calendar),
-                    endIcon = if (spends.isNotEmpty() && !forceChange) {
-                        painterResource(R.drawable.ic_edit)
-                    } else {
-                        null
-                    },
-                    text = if (days > 0) {
-                        String.format(
-                            pluralStringResource(R.plurals.finish_date_label, days),
-                            prettyDate(dateToValue.value, showTime = false, forceShowDate = true),
-                            days,
+            AnimatedContent(
+                targetState = isEdit,
+                transitionSpec = {
+                    if (targetState && !initialState) {
+                        slideInHorizontally(
+                            tween(durationMillis = 150)
+                        ) { offset } + fadeIn(
+                            tween(durationMillis = 150)
+                        ) with slideOutHorizontally(
+                            tween(durationMillis = 150)
+                        ) { -offset } + fadeOut(
+                            tween(durationMillis = 150)
                         )
                     } else {
-                        stringResource(R.string.finish_date_not_select)
-                    },
-                    onClick = {
-                        coroutineScope.launch {
-                            requestFinishDate(dateToValue.value) {
-                                dateToValue.value = it
-                            }
+                        slideInHorizontally(
+                            tween(durationMillis = 150)
+                        ) { -offset } + fadeIn(
+                            tween(durationMillis = 150)
+                        ) with slideOutHorizontally(
+                            tween(durationMillis = 150)
+                        ) { offset } + fadeOut(
+                            tween(durationMillis = 150)
+                        )
+                    }.using(
+                        SizeTransform(
+                            clip = true,
+                            sizeAnimationSpec = { _, _ -> tween(durationMillis = 350) }
+                        )
+                    )
+                }
+            ) { targetIsEdit ->
+                if (targetIsEdit) {
+                    BudgetConstructor(
+                        requestFinishDate = requestFinishDate,
+                        onChange = { newBudget, finishDate ->
+                            budget = newBudget
+                            dateToValue.value = finishDate
                         }
-                    },
-                )
-                Divider()
+                    )
+                } else {
+                    BudgetSummary(
+                        onEdit = {
+                            isEdit = true
+                        }
+                    )
+                }
+            }
+            Divider()
+            Column(Modifier.verticalScroll(rememberScrollState())) {
                 TextRow(
                     icon = painterResource(R.drawable.ic_currency),
                     text = stringResource(R.string.in_currency_label),
@@ -193,41 +200,54 @@ fun Wallet(
                     },
                     text = stringResource(R.string.currency_none),
                 )
-                Divider()
-                Spacer(Modifier.height(24.dp))
-                Total(
-                    budget = budget,
-                    days = days,
-                    currency = currency,
-                )
-                Spacer(Modifier.height(24.dp))
-                if (
-                    budget != spendsViewModel.budget.value
-                    || dateToValue.value != spendsViewModel.finishDate
+                AnimatedVisibility(
+                    visible = isChange || isEdit,
+                    enter = fadeIn(
+                        tween(durationMillis = 350)
+                    ) + expandVertically(
+                        expandFrom = Alignment.Bottom,
+                        animationSpec = tween(durationMillis = 350)
+                    ),
+                    exit = fadeOut(
+                        tween(durationMillis = 350)
+                    ) + shrinkVertically(
+                        shrinkTowards = Alignment.Bottom,
+                        animationSpec = tween(durationMillis = 350)
+                    ),
                 ) {
-                    Button(
-                        onClick = {
-                            if (spends.isNotEmpty() && !forceChange) {
-                                openConfirmChangeBudgetDialog.value = true
-                            } else {
-                                spendsViewModel.changeCurrency(currency)
-                                spendsViewModel.changeBudget(budget, dateToValue.value)
-
-                                onClose()
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        enabled = countDays(dateToValue.value) > 0 && budget > BigDecimal(0)
-                    ) {
-                        Text(
-                            text = if (spends.isNotEmpty() && !forceChange) {
-                                stringResource(R.string.change_budget)
-                            } else {
-                                stringResource(R.string.apply)
-                            },
+                    Column {
+                        Divider()
+                        Spacer(Modifier.height(24.dp))
+                        Total(
+                            budget = restBudget,
+                            days = days,
+                            currency = currency,
                         )
+                        Spacer(Modifier.height(24.dp))
+                        Button(
+                            onClick = {
+                                if (spends!!.isNotEmpty() && !forceChange) {
+                                    openConfirmChangeBudgetDialog.value = true
+                                } else {
+                                    spendsViewModel.changeCurrency(currency)
+                                    spendsViewModel.changeBudget(budget, dateToValue.value)
+
+                                    onClose()
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            enabled = countDays(dateToValue.value) > 0 && budget > BigDecimal(0)
+                        ) {
+                            Text(
+                                text = if (spends!!.isNotEmpty() && !forceChange) {
+                                    stringResource(R.string.change_budget)
+                                } else {
+                                    stringResource(R.string.apply)
+                                },
+                            )
+                        }
                     }
                 }
             }

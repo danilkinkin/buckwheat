@@ -30,6 +30,7 @@
 
     <!-- Wallet -->
     <string name="wallet_title">Бюджет</string>
+    <string name="wallet_edit_title">Новый бюджет</string>
     <string name="label_budget">Бюджет</string>
     <string name="select_finish_date_title">Выберите дату окончания</string>
     <plurals name="finish_date_label">
