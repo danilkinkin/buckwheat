@@ -49,7 +49,7 @@ fun Settings(onClose: () -> Unit = {}) {
     )
 
     Surface {
-        Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
+        Column(modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,7 +62,11 @@ fun Settings(onClose: () -> Unit = {}) {
                 )
             }
             Divider()
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    //.padding(bottom = navigationBarHeight)
+            ) {
                 TextRow(
                     icon = painterResource(R.drawable.ic_dark_mode),
                     text = stringResource(R.string.theme_label),

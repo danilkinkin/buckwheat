@@ -57,7 +57,7 @@ fun BudgetConstructor(
 
         mutableStateOf(restBudget)
     }
-    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate) }
+    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value!!) }
     var showUseBudgetSuggestion by remember { mutableStateOf(true) }
     var showUseLifetimeSuggestion by remember { mutableStateOf(true) }
 
@@ -160,14 +160,14 @@ fun BudgetConstructor(
                 Log.d("times", "startDate = ${spendsViewModel.startDate} finishDate = ${spendsViewModel.finishDate}")
 
                 val length = countDays(
-                    spendsViewModel.finishDate,
-                    spendsViewModel.startDate,
+                    spendsViewModel.finishDate.value!!,
+                    spendsViewModel.startDate.value!!,
                 )
                 val finishDate = LocalDate.now().plusDays(length.toLong()).toDate()
 
                 if (
-                    isSameDay(spendsViewModel.startDate.time, spendsViewModel.finishDate.time)
-                    || isSameDay(finishDate.time, spendsViewModel.finishDate.time)
+                    isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time)
+                    || isSameDay(finishDate.time, spendsViewModel.finishDate.value!!.time)
                 ) return@ButtonRow
 
                 UseLastSuggestionChip(

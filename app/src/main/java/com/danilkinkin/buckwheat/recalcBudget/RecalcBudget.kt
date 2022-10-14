@@ -29,7 +29,7 @@ fun RecalcBudget(
 ) {
     val isDebug = appViewModel.isDebug.observeAsState(false)
 
-    val restDays = countDays(spendsViewModel.finishDate)
+    val restDays = countDays(spendsViewModel.finishDate.value!!)
     val skippedDays = abs(countDays(spendsViewModel.lastReCalcBudgetDate!!))
 
     val restBudget =

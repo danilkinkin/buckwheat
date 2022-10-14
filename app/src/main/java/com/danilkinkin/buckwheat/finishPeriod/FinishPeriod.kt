@@ -59,8 +59,8 @@ fun FinishPeriod(
                 WholeBudgetCard(
                     budget = wholeBudget,
                     currency = spendsViewModel.currency,
-                    startDate = spendsViewModel.startDate,
-                    finishDate = spendsViewModel.finishDate,
+                    startDate = spendsViewModel.startDate.value!!,
+                    finishDate = spendsViewModel.finishDate.value!!,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
@@ -111,8 +111,8 @@ fun FinishPeriod(
                     modifier = Modifier.fillMaxWidth(),
                     budget = wholeBudget,
                     spends = spends,
-                    startDate = spendsViewModel.startDate,
-                    finishDate = spendsViewModel.finishDate,
+                    startDate = spendsViewModel.startDate.value!!,
+                    finishDate = spendsViewModel.finishDate.value!!,
                     currency = spendsViewModel.currency,
                 )
                 Spacer(modifier = Modifier.height(16.dp))

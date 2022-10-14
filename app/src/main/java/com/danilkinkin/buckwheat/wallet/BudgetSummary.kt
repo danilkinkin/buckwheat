@@ -25,8 +25,8 @@ fun BudgetSummary(
         WholeBudgetCard(
             budget = wholeBudget,
             currency = spendsViewModel.currency,
-            startDate = spendsViewModel.startDate,
-            finishDate = spendsViewModel.finishDate,
+            startDate = spendsViewModel.startDate.value!!,
+            finishDate = spendsViewModel.finishDate.value!!,
         )
         Spacer(modifier = Modifier.height(16.dp))
         Row(

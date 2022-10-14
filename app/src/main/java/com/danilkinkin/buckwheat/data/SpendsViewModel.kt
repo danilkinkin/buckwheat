@@ -59,15 +59,15 @@ class SpendsViewModel @Inject constructor(
         }
     )
 
-    var startDate: Date = try {
-        Date(storageDao.get("startDate").value.toLong())
+    var startDate: MutableLiveData<Date> = try {
+        MutableLiveData(Date(storageDao.get("startDate").value.toLong()))
     } catch (e: Exception) {
-        Date()
+        MutableLiveData(Date())
     }
-    var finishDate: Date = try {
-        Date(storageDao.get("finishDate").value.toLong())
+    var finishDate: MutableLiveData<Date> = try {
+        MutableLiveData(Date(storageDao.get("finishDate").value.toLong()))
     } catch (e: Exception) {
-        Date()
+        MutableLiveData(Date())
     }
     var lastReCalcBudgetDate: Date? = try {
         Date(storageDao.get("lastReCalcBudgetDate").value.toLong())
@@ -93,7 +93,7 @@ class SpendsViewModel @Inject constructor(
         if (
             lastReCalcBudgetDate !== null
             && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)
-            && countDays(finishDate) > 0
+            && countDays(finishDate.value!!) > 0
         ) {
             if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value ?: BigDecimal(0)) > BigDecimal(0))) {
                 requireReCalcBudget.value = true
@@ -107,7 +107,7 @@ class SpendsViewModel @Inject constructor(
             requireSetBudget.value = true
         }
 
-        if (lastReCalcBudgetDate !== null && finishDate.time <= Date().time) {
+        if (lastReCalcBudgetDate !== null && finishDate.value!!.time <= Date().time) {
             finishPeriod.value = true
         }
     }
@@ -132,11 +132,11 @@ class SpendsViewModel @Inject constructor(
 
         val startDate = roundToDay(Date())
         storageDao.set(Storage("startDate", startDate.time.toString()))
-        this.startDate = startDate
+        this.startDate.value = startDate
 
         val roundedFinishDate = roundToDay(finishDate)
         storageDao.set(Storage("finishDate", roundedFinishDate.time.toString()))
-        this.finishDate = roundedFinishDate
+        this.finishDate.value = roundedFinishDate
 
         storageDao.set(Storage("spent", 0.0.toString()))
         this.spent.value = 0.0.toBigDecimal()
@@ -168,7 +168,7 @@ class SpendsViewModel @Inject constructor(
         applyCurrentSpent: Boolean = false,
         excludeCurrentDay: Boolean = false,
     ): BigDecimal {
-        val restDays = countDays(finishDate) - if (excludeCurrentDay) 1 else 0
+        val restDays = countDays(finishDate.value!!) - if (excludeCurrentDay) 1 else 0
         val restBudget = (budget.value!! - spent.value!!) - dailyBudget.value!!
         var splitBudget = restBudget + dailyBudget.value!! - spentFromDailyBudget.value!!
         if (applyCurrentSpent) {
@@ -231,7 +231,7 @@ class SpendsViewModel @Inject constructor(
         this.spentDao.markAsDeleted(spent.uid, true)
 
         if (!isSameDay(spent.date.time, Date().time)) {
-            val restDays = countDays(finishDate)
+            val restDays = countDays(finishDate.value!!)
             val spentPerDay = spent.value / restDays.toBigDecimal()
 
             dailyBudget.value = dailyBudget.value!! + spentPerDay
@@ -262,7 +262,7 @@ class SpendsViewModel @Inject constructor(
         }
 
         if (!isSameDay(spent.date.time, Date().time)) {
-            val restDays = countDays(finishDate)
+            val restDays = countDays(finishDate.value!!)
             val spentPerDay = spent.value / restDays.toBigDecimal()
             
             dailyBudget.value = dailyBudget.value!! - spentPerDay

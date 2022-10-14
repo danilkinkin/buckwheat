@@ -38,9 +38,9 @@ fun History(
     var isFirstRender by remember { mutableStateOf(true) }
 
     val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
-    val budget = spendsViewModel.budget.observeAsState()
-    val startDate = spendsViewModel.startDate
-    val finishDate = spendsViewModel.finishDate
+    val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal(0))
+    val startDate = spendsViewModel.startDate.observeAsState(initial = Date())
+    val finishDate = spendsViewModel.finishDate.observeAsState(initial = Date())
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
@@ -75,9 +75,9 @@ fun History(
                         onDispose { }
                     }
                     BudgetInfo(
-                        budget = budget.value ?: BigDecimal(0),
-                        startDate = startDate,
-                        finishDate = finishDate,
+                        budget = budget.value,
+                        startDate = startDate.value,
+                        finishDate = finishDate.value,
                         currency = spendsViewModel.currency,
                     )
                 }
@@ -131,7 +131,9 @@ fun History(
                 .navigationBarsPadding(),
         ) {
             FloatingActionButton(
-                modifier = Modifier.padding(end = 24.dp, bottom = 32.dp).scale(fapScale),
+                modifier = Modifier
+                    .padding(end = 24.dp, bottom = 32.dp)
+                    .scale(fapScale),
                 onClick = {
                     coroutineScope.launch {
                         scrollState.animateScrollToItem(spends.size + 1)

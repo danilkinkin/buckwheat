@@ -52,7 +52,7 @@ fun Wallet(
     onClose: () -> Unit = {},
 ) {
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
-    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate) }
+    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value!!) }
     var currency by remember { mutableStateOf(spendsViewModel.currency) }
     val spends by spendsViewModel.getSpends().observeAsState()
     val restBudget =
@@ -76,7 +76,7 @@ fun Wallet(
 
     var isEdit by remember(spendsViewModel.startDate, spendsViewModel.finishDate, forceChange) {
         mutableStateOf(
-            isSameDay(spendsViewModel.startDate.time, spendsViewModel.finishDate.time)
+            isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time)
                     || forceChange
         )
     }
@@ -84,7 +84,7 @@ fun Wallet(
     val offset = with(LocalDensity.current) { 50.dp.toPx().toInt() }
 
     Surface {
-        Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
+        Column(modifier = Modifier) {
             val days = countDays(dateToValue.value)
 
             Box(
@@ -103,55 +103,59 @@ fun Wallet(
                 )
             }
             Divider()
-            AnimatedContent(
-                targetState = isEdit,
-                transitionSpec = {
-                    if (targetState && !initialState) {
-                        slideInHorizontally(
-                            tween(durationMillis = 150)
-                        ) { offset } + fadeIn(
-                            tween(durationMillis = 150)
-                        ) with slideOutHorizontally(
-                            tween(durationMillis = 150)
-                        ) { -offset } + fadeOut(
-                            tween(durationMillis = 150)
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = navigationBarHeight)
+            ) {
+                AnimatedContent(
+                    targetState = isEdit,
+                    transitionSpec = {
+                        if (targetState && !initialState) {
+                            slideInHorizontally(
+                                tween(durationMillis = 150)
+                            ) { offset } + fadeIn(
+                                tween(durationMillis = 150)
+                            ) with slideOutHorizontally(
+                                tween(durationMillis = 150)
+                            ) { -offset } + fadeOut(
+                                tween(durationMillis = 150)
+                            )
+                        } else {
+                            slideInHorizontally(
+                                tween(durationMillis = 150)
+                            ) { -offset } + fadeIn(
+                                tween(durationMillis = 150)
+                            ) with slideOutHorizontally(
+                                tween(durationMillis = 150)
+                            ) { offset } + fadeOut(
+                                tween(durationMillis = 150)
+                            )
+                        }.using(
+                            SizeTransform(
+                                clip = true,
+                                sizeAnimationSpec = { _, _ -> tween(durationMillis = 350) }
+                            )
+                        )
+                    }
+                ) { targetIsEdit ->
+                    if (targetIsEdit) {
+                        BudgetConstructor(
+                            requestFinishDate = requestFinishDate,
+                            onChange = { newBudget, finishDate ->
+                                budget = newBudget
+                                dateToValue.value = finishDate
+                            }
                         )
                     } else {
-                        slideInHorizontally(
-                            tween(durationMillis = 150)
-                        ) { -offset } + fadeIn(
-                            tween(durationMillis = 150)
-                        ) with slideOutHorizontally(
-                            tween(durationMillis = 150)
-                        ) { offset } + fadeOut(
-                            tween(durationMillis = 150)
+                        BudgetSummary(
+                            onEdit = {
+                                isEdit = true
+                            }
                         )
-                    }.using(
-                        SizeTransform(
-                            clip = true,
-                            sizeAnimationSpec = { _, _ -> tween(durationMillis = 350) }
-                        )
-                    )
+                    }
                 }
-            ) { targetIsEdit ->
-                if (targetIsEdit) {
-                    BudgetConstructor(
-                        requestFinishDate = requestFinishDate,
-                        onChange = { newBudget, finishDate ->
-                            budget = newBudget
-                            dateToValue.value = finishDate
-                        }
-                    )
-                } else {
-                    BudgetSummary(
-                        onEdit = {
-                            isEdit = true
-                        }
-                    )
-                }
-            }
-            Divider()
-            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Divider()
                 TextRow(
                     icon = painterResource(R.drawable.ic_currency),
                     text = stringResource(R.string.in_currency_label),
