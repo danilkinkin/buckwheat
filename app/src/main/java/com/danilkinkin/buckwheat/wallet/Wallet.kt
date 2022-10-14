@@ -1,46 +1,29 @@
 package com.danilkinkin.buckwheat.wallet
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animate
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.viewpager.widget.ViewPager
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.editor.TextWithLabel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import java.math.RoundingMode
 import java.util.*
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -292,81 +275,6 @@ fun Wallet(
             },
             onClose = { openConfirmChangeBudgetDialog.value = false },
         )
-    }
-}
-
-@Composable
-fun Total(
-    budget: BigDecimal,
-    restBudget: BigDecimal,
-    days: Int,
-    currency: ExtendCurrency,
-) {
-    val textColor = LocalContentColor.current
-
-    Column {
-        if (budget > BigDecimal(0) && days > 0) {
-            Text(
-                text = stringResource(R.string.total_title),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(start = 56.dp, end = 16.dp)
-            )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = stringResource(
-                    R.string.per_day,
-                    prettyCandyCanes(
-                        if (days != 0) {
-                            (budget / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
-                        } else {
-                            budget
-                        },
-                        currency,
-                    ),
-                ),
-                color = textColor.copy(alpha = 0.6f),
-                modifier = Modifier.padding(start = 56.dp)
-            )
-        } else {
-            Row(
-                modifier = Modifier
-                    .padding(
-                        start = 16.dp,
-                        end = 16.dp,
-                    ),
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_info),
-                    contentDescription = null,
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column {
-                    Box(
-                        modifier = Modifier.heightIn(24.dp),
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.unable_calc_budget),
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
-                    if (budget <= BigDecimal(0)) {
-                        Text(
-                            text = "- " + stringResource(id = R.string.budget_must_greater_zero),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = textColor.copy(alpha = 0.6f),
-                        )
-                    }
-                    if (days <= 0) {
-                        Text(
-                            text = "- " + stringResource(id = R.string.days_must_greater_zero),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = textColor.copy(alpha = 0.6f),
-                        )
-                    }
-                }
-            }
-        }
     }
 }
 
