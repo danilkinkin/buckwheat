@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.wallet
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -29,6 +28,7 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 import java.util.*
 
@@ -42,9 +42,12 @@ fun BudgetConstructor(
     var rawBudget by remember {
         val restBudget =
             (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+                .setScale(2, RoundingMode.HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString()
 
-        val converted = if (restBudget !== BigDecimal(0)) {
-            tryConvertStringToNumber(restBudget.toString())
+        val converted = if (restBudget != "0") {
+            tryConvertStringToNumber(restBudget)
         } else {
             Triple("", "0", "")
         }
@@ -54,12 +57,31 @@ fun BudgetConstructor(
     var budget by remember {
         val restBudget =
             (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+                .setScale(2, RoundingMode.HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString()
 
-        mutableStateOf(restBudget)
+        mutableStateOf(BigDecimal(restBudget))
     }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value!!) }
-    var showUseBudgetSuggestion by remember { mutableStateOf(true) }
-    var showUseLifetimeSuggestion by remember { mutableStateOf(true) }
+    var showUseBudgetSuggestion by remember {
+        mutableStateOf(
+            budget != spendsViewModel.budget.value!!
+                    && spendsViewModel.budget.value!! != BigDecimal(0)
+        )
+    }
+    var showUseLifetimeSuggestion by remember {
+        val length = countDays(
+            spendsViewModel.finishDate.value!!,
+            spendsViewModel.startDate.value!!,
+        )
+        val finishDate = LocalDate.now().plusDays(length.toLong()).toDate()
+
+        mutableStateOf(
+            !isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time)
+                    && !isSameDay(finishDate.time, spendsViewModel.finishDate.value!!.time)
+        )
+    }
 
     val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -97,13 +119,6 @@ fun BudgetConstructor(
                         icon = painterResource(R.drawable.ic_money),
                         text = stringResource(R.string.label_budget),
                         endContent = {
-                            Log.d("budget", "budget = ${budget} mbudget = ${spendsViewModel.budget.value!!}")
-
-                            if (
-                                budget == spendsViewModel.budget.value!!
-                                || spendsViewModel.budget.value!! == BigDecimal(0)
-                            ) return@TextRow
-
                             UseLastSuggestionChip(
                                 visible = showUseBudgetSuggestion,
                                 icon = painterResource(R.drawable.ic_money),
@@ -157,23 +172,15 @@ fun BudgetConstructor(
                 }
             },
             endContent = {
-                Log.d("times", "startDate = ${spendsViewModel.startDate} finishDate = ${spendsViewModel.finishDate}")
-
-                val length = countDays(
-                    spendsViewModel.finishDate.value!!,
-                    spendsViewModel.startDate.value!!,
-                )
-                val finishDate = LocalDate.now().plusDays(length.toLong()).toDate()
-
-                if (
-                    isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time)
-                    || isSameDay(finishDate.time, spendsViewModel.finishDate.value!!.time)
-                ) return@ButtonRow
-
                 UseLastSuggestionChip(
                     visible = showUseLifetimeSuggestion,
                     icon = painterResource(R.drawable.ic_calendar),
                     onClick = {
+                        val length = countDays(
+                            spendsViewModel.finishDate.value!!,
+                            spendsViewModel.startDate.value!!,
+                        )
+                        val finishDate = LocalDate.now().plusDays(length.toLong()).toDate()
 
                         dateToValue.value = finishDate
 
