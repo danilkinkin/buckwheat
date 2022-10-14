@@ -32,6 +32,10 @@ class ExtendCurrency(val value: String? = null, val type: CurrencyType) {
 
             return ExtendCurrency(value = value, type = CurrencyType.CUSTOM)
         }
+
+        fun none(): ExtendCurrency {
+            return ExtendCurrency(type = CurrencyType.NONE)
+        }
     }
 
     override fun equals(other: Any?): Boolean {

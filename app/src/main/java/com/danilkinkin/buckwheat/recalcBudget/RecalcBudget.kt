@@ -64,7 +64,7 @@ fun RecalcBudget(
             Text(
                 text = prettyCandyCanes(
                     requireDistributeBudget,
-                    currency = spendsViewModel.currency,
+                    currency = spendsViewModel.currency.value!!,
                 ),
                 style = MaterialTheme.typography.displayLarge,
             )
@@ -99,7 +99,7 @@ fun RecalcBudget(
                         R.string.split_rest_days_description,
                         prettyCandyCanes(
                             budgetPerDaySplit,
-                            currency = spendsViewModel.currency,
+                            currency = spendsViewModel.currency.value!!,
                         ),
                     ))
                 },
@@ -120,11 +120,11 @@ fun RecalcBudget(
                         R.string.add_current_day_description,
                         prettyCandyCanes(
                             requireDistributeBudget + budgetPerDayAdd,
-                            currency = spendsViewModel.currency,
+                            currency = spendsViewModel.currency.value!!,
                         ),
                         prettyCandyCanes(
                             budgetPerDayAdd,
-                            currency = spendsViewModel.currency,
+                            currency = spendsViewModel.currency.value!!,
                         ),
                     ))
                 },

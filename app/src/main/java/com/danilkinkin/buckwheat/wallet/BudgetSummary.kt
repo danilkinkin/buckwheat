@@ -2,6 +2,8 @@ package com.danilkinkin.buckwheat.wallet
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -11,20 +13,22 @@ import com.danilkinkin.buckwheat.finishPeriod.FillCircleStub
 import com.danilkinkin.buckwheat.finishPeriod.RestBudgetCard
 import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.util.ExtendCurrency
 
 @Composable
 fun BudgetSummary(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onEdit: () -> Unit = {},
 ) {
+    val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+
     val wholeBudget = spendsViewModel.budget.value!!
     val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
     Column(Modifier.padding(16.dp)) {
-
         WholeBudgetCard(
             budget = wholeBudget,
-            currency = spendsViewModel.currency,
+            currency = currency!!,
             startDate = spendsViewModel.startDate.value!!,
             finishDate = spendsViewModel.finishDate.value!!,
         )
@@ -38,7 +42,7 @@ fun BudgetSummary(
                 modifier = Modifier.weight(1f),
                 rest = restBudget,
                 budget = wholeBudget,
-                currency = spendsViewModel.currency,
+                currency = currency!!,
             )
             Spacer(modifier = Modifier.width(16.dp))
             FillCircleStub(

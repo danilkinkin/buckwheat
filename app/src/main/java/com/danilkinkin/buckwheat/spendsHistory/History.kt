@@ -78,7 +78,7 @@ fun History(
                         budget = budget.value,
                         startDate = startDate.value,
                         finishDate = finishDate.value,
-                        currency = spendsViewModel.currency,
+                        currency = spendsViewModel.currency.value!!,
                     )
                 }
 
@@ -98,7 +98,7 @@ fun History(
                     item(item.uid) {
                         Spent(
                             spent = item,
-                            currency = spendsViewModel.currency,
+                            currency = spendsViewModel.currency.value!!,
                             onDelete = {
                                 spendsViewModel.removeSpent(item)
                             }

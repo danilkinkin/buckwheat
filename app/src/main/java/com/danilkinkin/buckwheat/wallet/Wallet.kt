@@ -43,7 +43,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Wallet(
     forceChange: Boolean = false,
@@ -53,7 +53,7 @@ fun Wallet(
 ) {
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value!!) }
-    var currency by remember { mutableStateOf(spendsViewModel.currency) }
+    var currency by remember { mutableStateOf(spendsViewModel.currency.value!!) }
     val spends by spendsViewModel.getSpends().observeAsState()
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
@@ -71,7 +71,7 @@ fun Wallet(
 
     val isChange = (
             budget != spendsViewModel.budget.value
-                    || dateToValue.value != spendsViewModel.finishDate
+                    || dateToValue.value != spendsViewModel.finishDate.value!!
             )
 
     var isEdit by remember(spendsViewModel.startDate, spendsViewModel.finishDate, forceChange) {

@@ -75,10 +75,10 @@ class SpendsViewModel @Inject constructor(
         null
     }
 
-    var currency: ExtendCurrency = try {
-        ExtendCurrency.getInstance(storageDao.get("currency").value)
+    var currency: MutableLiveData<ExtendCurrency> = try {
+        MutableLiveData(ExtendCurrency.getInstance(storageDao.get("currency").value))
     } catch (e: Exception) {
-        ExtendCurrency(value = null, type = CurrencyType.NONE)
+        MutableLiveData(ExtendCurrency(value = null, type = CurrencyType.NONE))
     }
 
     var currentSpent: BigDecimal = 0.0.toBigDecimal()
@@ -123,7 +123,7 @@ class SpendsViewModel @Inject constructor(
     fun changeCurrency(currency: ExtendCurrency) {
         storageDao.set(Storage("currency", currency.value.toString()))
 
-        this.currency = currency
+        this.currency.value = currency
     }
 
     fun changeBudget(budget: BigDecimal, finishDate: Date) {

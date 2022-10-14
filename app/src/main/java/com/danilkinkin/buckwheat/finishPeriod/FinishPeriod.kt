@@ -58,7 +58,7 @@ fun FinishPeriod(
             Column(Modifier.fillMaxWidth()) {
                 WholeBudgetCard(
                     budget = wholeBudget,
-                    currency = spendsViewModel.currency,
+                    currency = spendsViewModel.currency.value!!,
                     startDate = spendsViewModel.startDate.value!!,
                     finishDate = spendsViewModel.finishDate.value!!,
                 )
@@ -72,7 +72,7 @@ fun FinishPeriod(
                         modifier = Modifier.weight(1f),
                         rest = restBudget,
                         budget = wholeBudget,
-                        currency = spendsViewModel.currency,
+                        currency = spendsViewModel.currency.value!!,
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     FillCircleStub()
@@ -83,14 +83,14 @@ fun FinishPeriod(
                         modifier = Modifier.weight(1f),
                         isMin = true,
                         spends = spends,
-                        currency = spendsViewModel.currency,
+                        currency = spendsViewModel.currency.value!!,
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     MinMaxSpentCard(
                         modifier = Modifier.weight(1f),
                         isMin = false,
                         spends = spends,
-                        currency = spendsViewModel.currency,
+                        currency = spendsViewModel.currency.value!!,
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -103,7 +103,7 @@ fun FinishPeriod(
                     AverageSpendCard(
                         modifier = Modifier.weight(1f),
                         spends = spends,
-                        currency = spendsViewModel.currency,
+                        currency = spendsViewModel.currency.value!!,
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -113,7 +113,7 @@ fun FinishPeriod(
                     spends = spends,
                     startDate = spendsViewModel.startDate.value!!,
                     finishDate = spendsViewModel.finishDate.value!!,
-                    currency = spendsViewModel.currency,
+                    currency = spendsViewModel.currency.value!!,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 AdviceCard(Modifier.fillMaxWidth())

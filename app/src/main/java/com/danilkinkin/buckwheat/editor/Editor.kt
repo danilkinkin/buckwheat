@@ -34,10 +34,7 @@ import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.util.join
-import com.danilkinkin.buckwheat.util.observeLiveData
-import com.danilkinkin.buckwheat.util.prettyCandyCanes
-import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
+import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
@@ -67,12 +64,14 @@ fun Editor(
     val localDensity = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
-    var budgetValue by remember { mutableStateOf("") }
-    var restBudgetValue by remember { mutableStateOf("") }
+    var budgetValue by remember { mutableStateOf(BigDecimal(0)) }
+    var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var spentValue by remember { mutableStateOf("0") }
     var budgetPerDaySplit by remember { mutableStateOf("") }
     var overdaft by remember { mutableStateOf(false) }
     var endBudget by remember { mutableStateOf(false) }
+
+    val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
 
     var warnMessageWidth by remember { mutableStateOf(0F) }
     var restBudgetHeight by remember { mutableStateOf(0F) }
@@ -105,11 +104,8 @@ fun Editor(
         val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
         val dailyBudget = spendsViewModel.dailyBudget.value!!
 
-        if (budget) budgetValue = prettyCandyCanes(
-            (dailyBudget - spentFromDailyBudget).coerceAtLeast(
-                BigDecimal(0)
-            ),
-            currency = spendsViewModel.currency,
+        if (budget) budgetValue = (dailyBudget - spentFromDailyBudget).coerceAtLeast(
+            BigDecimal(0)
         )
 
         if (restBudget) {
@@ -117,11 +113,7 @@ fun Editor(
 
             overdaft = newBudget < BigDecimal(0)
 
-            restBudgetValue =
-                prettyCandyCanes(
-                    newBudget.coerceAtLeast(BigDecimal(0)),
-                    currency = spendsViewModel.currency,
-                )
+            restBudgetValue = newBudget.coerceAtLeast(BigDecimal(0))
 
             val newPerDayBudget = spendsViewModel.calcBudgetPerDaySplit(
                 applyCurrentSpent = true,
@@ -132,7 +124,7 @@ fun Editor(
 
             budgetPerDaySplit = prettyCandyCanes(
                 newPerDayBudget.coerceAtLeast(BigDecimal(0)),
-                currency = spendsViewModel.currency,
+                currency = currency,
             )
         }
 
@@ -361,7 +353,10 @@ fun Editor(
                 },
         ) {
             TextWithLabel(
-                value = budgetValue,
+                value = prettyCandyCanes(
+                    budgetValue,
+                    currency = currency,
+                ),
                 label = stringResource(id = R.string.budget_for_today),
                 fontSizeValue = budgetValueFontSize,
                 fontSizeLabel = budgetLabelFontSize,
@@ -387,7 +382,7 @@ fun Editor(
                         }
                     }
                 },
-                currency = spendsViewModel.currency,
+                currency = currency,
                 fontSizeValue = spentValueFontSize,
                 fontSizeLabel = spentLabelFontSize,
                 modifier = Modifier
@@ -409,7 +404,10 @@ fun Editor(
             ) {
                 TextWithLabel(
                     modifier = Modifier.padding(bottom = 24.dp).weight(1f),
-                    value = restBudgetValue,
+                    value = prettyCandyCanes(
+                        restBudgetValue,
+                        currency = currency,
+                    ),
                     label = stringResource(id = R.string.rest_budget_for_today),
                     fontSizeValue = restBudgetValueFontSize,
                     fontSizeLabel = restBudgetLabelFontSize,
