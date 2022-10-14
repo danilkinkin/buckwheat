@@ -51,18 +51,6 @@ fun Wallet(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
-    var rawBudget by remember {
-        val restBudget =
-            (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
-
-        val converted = if (restBudget !== BigDecimal(0)) {
-            tryConvertStringToNumber(restBudget.toString())
-        } else {
-            Triple("", "0", "")
-        }
-
-        mutableStateOf(converted.first + converted.second)
-    }
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate) }
     var currency by remember { mutableStateOf(spendsViewModel.currency) }
@@ -73,8 +61,6 @@ fun Wallet(
     val openCurrencyChooserDialog = remember { mutableStateOf(false) }
     val openCustomCurrencyEditorDialog = remember { mutableStateOf(false) }
     val openConfirmChangeBudgetDialog = remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     if (spends === null) return
 
@@ -88,7 +74,12 @@ fun Wallet(
                     || dateToValue.value != spendsViewModel.finishDate
             )
 
-    var isEdit by remember(spends, forceChange) { mutableStateOf(spends!!.isEmpty() || forceChange) }
+    var isEdit by remember(spendsViewModel.startDate, spendsViewModel.finishDate, forceChange) {
+        mutableStateOf(
+            isSameDay(spendsViewModel.startDate.time, spendsViewModel.finishDate.time)
+                    || forceChange
+        )
+    }
 
     val offset = with(LocalDensity.current) { 50.dp.toPx().toInt() }
 
@@ -219,7 +210,8 @@ fun Wallet(
                         Divider()
                         Spacer(Modifier.height(24.dp))
                         Total(
-                            budget = restBudget,
+                            budget = budget,
+                            restBudget = restBudget,
                             days = days,
                             currency = currency,
                         )
@@ -300,7 +292,12 @@ fun Wallet(
 }
 
 @Composable
-fun Total(budget: BigDecimal, days: Int, currency: ExtendCurrency) {
+fun Total(
+    budget: BigDecimal,
+    restBudget: BigDecimal,
+    days: Int,
+    currency: ExtendCurrency,
+) {
     val textColor = LocalContentColor.current
 
     Column {
