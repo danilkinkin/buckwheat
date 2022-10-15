@@ -5,9 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -22,6 +20,7 @@ import com.danilkinkin.buckwheat.base.Collapse
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.isSameDay
 import kotlinx.coroutines.launch
@@ -74,11 +73,27 @@ fun History(
 
                         onDispose { }
                     }
-                    BudgetInfo(
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(
+                                WindowInsets.systemBars
+                                    .asPaddingValues()
+                                    .calculateTopPadding()
+                            )
+                    )
+
+                    WholeBudgetCard(
+                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                         budget = budget.value,
+                        currency = spendsViewModel.currency.value!!,
                         startDate = startDate.value,
                         finishDate = finishDate.value,
-                        currency = spendsViewModel.currency.value!!,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                        ),
                     )
                 }
 

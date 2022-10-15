@@ -3,10 +3,7 @@ package com.danilkinkin.buckwheat.finishPeriod
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,19 +24,24 @@ import java.util.*
 
 @Composable
 fun WholeBudgetCard(
+    modifier: Modifier = Modifier,
     budget: BigDecimal,
     currency: ExtendCurrency,
     startDate: Date,
     finishDate: Date,
+    colors: CardColors = CardDefaults.cardColors(),
+    contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
 ) {
     StatCard(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
+        contentPadding = contentPadding,
         value = prettyCandyCanes(
             budget,
             currency = currency,
         ),
         label = stringResource(R.string.whole_budget),
         valueFontSize = MaterialTheme.typography.displaySmall.fontSize,
+        colors = colors,
         content = {
             val textColor = LocalContentColor.current
 
