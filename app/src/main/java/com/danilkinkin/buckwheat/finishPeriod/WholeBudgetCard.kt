@@ -4,17 +4,20 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
@@ -46,58 +49,60 @@ fun WholeBudgetCard(
             val textColor = LocalContentColor.current
 
             Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Column(horizontalAlignment = Alignment.Start) {
-                    Text(
-                        text = prettyDate(
-                            startDate,
-                            showTime = false,
-                            forceShowDate = true,
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
-                    )
-                    Text(
-                        text = stringResource(R.string.label_start_date),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = textColor.copy(alpha = 0.6f),
-                    )
-                }
+            Layout(
+                measurePolicy = growByMiddleChildRowMeasurePolicy(LocalDensity.current),
+                content = {
+                    Column {
+                        Text(
+                            text = prettyDate(
+                                startDate,
+                                showTime = false,
+                                forceShowDate = true,
+                            ),
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
+                        )
+                        Text(
+                            text = stringResource(R.string.label_start_date),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = textColor.copy(alpha = 0.6f),
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                        )
+                    }
 
-                Spacer(
-                    Modifier
-                        .width(16.dp)
-                )
-
-                Arrow(
-                    modifier = Modifier.height(24.dp).widthIn(24.dp).weight(1f),
-                )
-
-                Spacer(
-                    Modifier
-                        .width(16.dp)
-                )
-
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = prettyDate(
-                            finishDate,
-                            showTime = false,
-                            forceShowDate = true,
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
+                    Arrow(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxHeight()
                     )
-                    Text(
-                        text = stringResource(R.string.label_finish_date),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = textColor.copy(alpha = 0.6f),
-                    )
-                }
-            }
+
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = prettyDate(
+                                finishDate,
+                                showTime = false,
+                                forceShowDate = true,
+                            ),
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
+                        )
+                        Text(
+                            text = stringResource(R.string.label_finish_date),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = textColor.copy(alpha = 0.6f),
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                        )
+                    }
+                },
+            )
         }
     )
 }
@@ -108,8 +113,6 @@ fun Arrow(
     tint: Color = LocalContentColor.current,
 ) {
     Canvas(modifier = modifier) {
-
-
         val width = this.size.width
         val height = this.size.height
         val heightHalf = height / 2
@@ -142,6 +145,37 @@ fun Arrow(
     }
 }
 
+fun growByMiddleChildRowMeasurePolicy(localDensity: Density) = MeasurePolicy { measurables, constraints ->
+    val minMiddleWidth = with(localDensity) { (24 + 32).dp.toPx().toInt() }
+
+    val first = measurables[0]
+        .measure(constraints.copy(
+            maxWidth = (constraints.maxWidth - minMiddleWidth) / 2
+        ))
+    val last = measurables[2]
+        .measure(constraints.copy(
+            maxWidth = (constraints.maxWidth - minMiddleWidth) / 2
+        ))
+
+    val height = listOf(first, last).minOf { it.height }
+
+    layout(constraints.maxWidth, height) {
+        first.placeRelative(0, 0, 0f)
+
+        val middleWidth = (constraints.maxWidth - first.width - last.width).coerceAtLeast(minMiddleWidth)
+
+        val middle = measurables[1]
+            .measure(constraints.copy(
+                maxWidth = middleWidth,
+                minWidth = middleWidth,
+            ))
+
+        middle.placeRelative(first.width, 0, 0f)
+
+        last.placeRelative(constraints.maxWidth - last.width, 0, 0f)
+    }
+}
+
 @Preview
 @Composable
 private fun PreviewChart() {
@@ -153,7 +187,9 @@ private fun PreviewChart() {
                 contentDescription = null,
             )
             Arrow(
-                modifier = Modifier.height(24.dp).width(100.dp),
+                modifier = Modifier
+                    .height(24.dp)
+                    .width(100.dp),
             )
         }
     }
@@ -175,6 +211,19 @@ private fun Preview() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNightMode() {
+    BuckwheatTheme {
+        WholeBudgetCard(
+            budget = BigDecimal(60000),
+            currency = ExtendCurrency(type = CurrencyType.NONE),
+            startDate = LocalDate.now().minusDays(28).toDate(),
+            finishDate = Date(),
+        )
+    }
+}
+
+@Preview(widthDp = 190)
+@Composable
+private fun PreviewSmall() {
     BuckwheatTheme {
         WholeBudgetCard(
             budget = BigDecimal(60000),
