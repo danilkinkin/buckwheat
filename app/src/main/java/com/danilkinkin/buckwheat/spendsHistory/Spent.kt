@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.base.Collapse
@@ -59,9 +60,16 @@ fun Spent(
                     text = prettyCandyCanes(spent.value, currency = currency),
                     style = MaterialTheme.typography.displaySmall,
                     color = colorOnEditor,
-                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 16.dp),
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(
+                            start = 32.dp,
+                            top = 16.dp,
+                            bottom = 16.dp,
+                        )
+                        .weight(1F),
                 )
-                Spacer(Modifier.weight(1F))
                 Box(Modifier) {
                     Text(
                         modifier = Modifier
@@ -70,6 +78,7 @@ fun Spent(
                         text = prettyDate(spent.date),
                         style = MaterialTheme.typography.labelSmall,
                         color = colorOnEditor,
+                        softWrap = false,
                     )
                 }
             }
@@ -93,6 +102,17 @@ private fun PreviewDefault() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNightMode() {
+    BuckwheatTheme {
+        Spent(
+            Spent(value = BigDecimal(12340), date = Date()),
+            ExtendCurrency(type = CurrencyType.NONE)
+        )
+    }
+}
+
+@Preview(name = "Small screen", widthDp = 220)
+@Composable
+private fun PreviewSmallScreen() {
     BuckwheatTheme {
         Spent(
             Spent(value = BigDecimal(12340), date = Date()),
