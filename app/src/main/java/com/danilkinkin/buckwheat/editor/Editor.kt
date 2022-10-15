@@ -3,40 +3,26 @@ package com.danilkinkin.buckwheat.editor
 import android.animation.ValueAnimator
 import android.util.Log
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.animation.doOnEnd
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import kotlin.math.max
@@ -44,7 +30,6 @@ import kotlin.math.min
 
 enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Editor(
     modifier: Modifier = Modifier,
@@ -55,15 +40,11 @@ fun Editor(
     onDebugMenu: () -> Unit = {},
     onOpenHistory: () -> Unit = {},
 ) {
-    val isDebug = appViewModel.isDebug.observeAsState(false)
-
-    val lastDaySpends by spendsViewModel.getCountLastDaySpends().observeAsState(0)
-
     var currState by remember { mutableStateOf<AnimState?>(null) }
     var currAnimator by remember { mutableStateOf<ValueAnimator?>(null) }
 
     val localDensity = LocalDensity.current
-    val coroutineScope = rememberCoroutineScope()
+    val focusManager = LocalFocusManager.current
 
     var budgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
@@ -93,9 +74,6 @@ fun Editor(
     var spentValueFontSize by remember { mutableStateOf(60.sp) }
     var spentLabelFontSize by remember { mutableStateOf(60.sp) }
 
-    val spendsCountScale = remember { Animatable(1f) }
-
-    val focusManager = LocalFocusManager.current
 
     fun calculateValues(
         budget: Boolean = true,
@@ -273,23 +251,6 @@ fun Editor(
             SpendsViewModel.Stage.COMMITTING_SPENT -> {
                 animTo(AnimState.COMMIT)
 
-                coroutineScope.launch {
-                    spendsCountScale.animateTo(
-                        1.05f,
-                        animationSpec = tween(
-                            durationMillis = 20,
-                            easing = LinearEasing
-                        )
-                    )
-                    spendsCountScale.animateTo(
-                        1f,
-                        animationSpec = tween(
-                            durationMillis = 120,
-                            easing = LinearEasing,
-                        )
-                    )
-                }
-
                 spendsViewModel.resetSpent()
                 focusManager.clearFocus()
             }
@@ -396,58 +357,12 @@ fun Editor(
                 }
             }
         }
-        Row(
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp)
-                .statusBarsPadding(),
-        ) {
-            if (lastDaySpends != 0) {
-                Box(Modifier.weight(1f)) {
-                    Surface(
-                        shape = CircleShape,
-                        color = MaterialTheme.colorScheme.surface,
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier
-                            .scale(spendsCountScale.value)
-                            .clip(CircleShape)
-                            .clickable { onOpenHistory() }
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
-                            text = String.format(
-                                pluralStringResource(R.plurals.spends_today, count = lastDaySpends),
-                                lastDaySpends,
-                            ),
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-
-            if (isDebug.value) {
-                BigIconButton(
-                    icon = painterResource(R.drawable.ic_developer_mode),
-                    contentDescription = null,
-                    onClick = onDebugMenu,
-                )
-            }
-            BigIconButton(
-                icon = painterResource(R.drawable.ic_balance_wallet),
-                contentDescription = null,
-                onClick = onOpenWallet,
-            )
-            BigIconButton(
-                icon = painterResource(R.drawable.ic_settings),
-                contentDescription = null,
-                onClick = onOpenSettings,
-            )
-        }
+        EditorToolbar(
+            onOpenWallet = onOpenWallet,
+            onOpenSettings = onOpenSettings,
+            onDebugMenu = onDebugMenu,
+            onOpenHistory = onOpenHistory,
+        )
     }
 }
 
