@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -296,54 +297,6 @@ fun Editor(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        Row(
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp)
-                .statusBarsPadding(),
-        ) {
-            if (lastDaySpends != 0) {
-                Surface(
-                    shape = CircleShape,
-                    color = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier
-                        .scale(spendsCountScale.value)
-                        .clip(CircleShape)
-                        .clickable { onOpenHistory() }
-                ) {
-                    Text(
-                        modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
-                        text = String.format(
-                            pluralStringResource(R.plurals.spends_today, count = lastDaySpends),
-                            lastDaySpends,
-                        ),
-                    )
-                }
-            }
-            
-            Spacer(modifier = Modifier.weight(1f))
-
-            if (isDebug.value) {
-                BigIconButton(
-                    icon = painterResource(R.drawable.ic_developer_mode),
-                    contentDescription = null,
-                    onClick = onDebugMenu,
-                )
-            }
-            BigIconButton(
-                icon = painterResource(R.drawable.ic_balance_wallet),
-                contentDescription = null,
-                onClick = onOpenWallet,
-            )
-            BigIconButton(
-                icon = painterResource(R.drawable.ic_settings),
-                contentDescription = null,
-                onClick = onOpenSettings,
-            )
-        }
         Box(
             contentAlignment = Alignment.BottomStart,
             modifier = Modifier
@@ -442,6 +395,58 @@ fun Editor(
                     )
                 }
             }
+        }
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 24.dp)
+                .statusBarsPadding(),
+        ) {
+            if (lastDaySpends != 0) {
+                Box(Modifier.weight(1f)) {
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .scale(spendsCountScale.value)
+                            .clip(CircleShape)
+                            .clickable { onOpenHistory() }
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
+                            text = String.format(
+                                pluralStringResource(R.plurals.spends_today, count = lastDaySpends),
+                                lastDaySpends,
+                            ),
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+
+            if (isDebug.value) {
+                BigIconButton(
+                    icon = painterResource(R.drawable.ic_developer_mode),
+                    contentDescription = null,
+                    onClick = onDebugMenu,
+                )
+            }
+            BigIconButton(
+                icon = painterResource(R.drawable.ic_balance_wallet),
+                contentDescription = null,
+                onClick = onOpenWallet,
+            )
+            BigIconButton(
+                icon = painterResource(R.drawable.ic_settings),
+                contentDescription = null,
+                onClick = onOpenSettings,
+            )
         }
     }
 }
