@@ -46,7 +46,7 @@ fun Total(
                         currency,
                     ),
                 ),
-                color = textColor.copy(alpha = 0.6f),
+                color = textColor.copy(alpha = 0.8f),
                 modifier = Modifier.padding(start = 56.dp)
             )
         } else {
@@ -76,14 +76,14 @@ fun Total(
                         Text(
                             text = "- " + stringResource(id = R.string.budget_must_greater_zero),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = textColor.copy(alpha = 0.6f),
+                            color = textColor.copy(alpha = 0.8f),
                         )
                     }
                     if (days <= 0) {
                         Text(
                             text = "- " + stringResource(id = R.string.days_must_greater_zero),
                             style = MaterialTheme.typography.bodyMedium,
-                            color = textColor.copy(alpha = 0.6f),
+                            color = textColor.copy(alpha = 0.8f),
                         )
                     }
                 }
