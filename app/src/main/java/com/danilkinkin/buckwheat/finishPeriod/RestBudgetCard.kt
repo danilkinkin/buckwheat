@@ -39,9 +39,7 @@ fun RestBudgetCard(
     rest: BigDecimal,
     currency: ExtendCurrency,
 ) {
-    val percent = remember {
-        rest.divide(budget, 5, RoundingMode.HALF_EVEN)
-    }
+    val percent = remember { rest.divide(budget, 5, RoundingMode.HALF_EVEN) }
 
     val percentFormatted = remember {
         val formatter = numberFormat
@@ -76,7 +74,7 @@ fun RestBudgetCard(
                 colorNotGood,
                 colorGood,
             ),
-            percent.toFloat(),
+            percent.coerceAtLeast(BigDecimal(0)).toFloat(),
         )
     ))
 
@@ -92,10 +90,11 @@ fun RestBudgetCard(
         ),
         label = stringResource(R.string.rest_budget),
         content = {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = stringResource(R.string.rest_budget_percent, percentFormatted),
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
             )
         },
         backdropContent = {
@@ -179,6 +178,18 @@ private fun PreviewFull() {
     BuckwheatTheme {
         RestBudgetCard(
             rest = BigDecimal(45740),
+            budget = BigDecimal(60000),
+            currency = ExtendCurrency(type = CurrencyType.NONE),
+        )
+    }
+}
+
+@Preview(name = "Overspending budget")
+@Composable
+private fun PreviewOverspending() {
+    BuckwheatTheme {
+        RestBudgetCard(
+            rest = BigDecimal(-3740),
             budget = BigDecimal(60000),
             currency = ExtendCurrency(type = CurrencyType.NONE),
         )

@@ -84,7 +84,7 @@ fun MinMaxSpentCard(
             contentColor = harmonizedColor.onContainer,
         ),
         content = {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             if (spent != null) {
                 Text(
@@ -93,7 +93,8 @@ fun MinMaxSpentCard(
                         showTime = false,
                         forceShowDate = true,
                     ),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                 )
                 Text(
                     text = prettyDate(
@@ -101,7 +102,8 @@ fun MinMaxSpentCard(
                         showTime = true,
                         forceHideDate = true,
                     ),
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                 )
             }
         },

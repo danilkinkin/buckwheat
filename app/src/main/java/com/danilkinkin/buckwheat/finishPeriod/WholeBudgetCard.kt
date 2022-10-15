@@ -39,11 +39,11 @@ fun WholeBudgetCard(
             currency = currency,
         ),
         label = stringResource(R.string.whole_budget),
-        valueFontSize = MaterialTheme.typography.displayMedium.fontSize,
+        valueFontSize = MaterialTheme.typography.displaySmall.fontSize,
         content = {
             val textColor = LocalContentColor.current
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -55,11 +55,12 @@ fun WholeBudgetCard(
                             showTime = false,
                             forceShowDate = true,
                         ),
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                     )
                     Text(
                         text = stringResource(R.string.label_start_date),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelMedium,
                         color = textColor.copy(alpha = 0.6f),
                     )
                 }
@@ -85,11 +86,12 @@ fun WholeBudgetCard(
                             showTime = false,
                             forceShowDate = true,
                         ),
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                     )
                     Text(
                         text = stringResource(R.string.label_finish_date),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelMedium,
                         color = textColor.copy(alpha = 0.6f),
                     )
                 }

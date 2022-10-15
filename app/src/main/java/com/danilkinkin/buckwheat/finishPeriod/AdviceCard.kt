@@ -32,13 +32,13 @@ fun AdviceCard(
     ) {
         Column(
             Modifier
-                .padding(vertical = 24.dp, horizontal = 32.dp),
+                .padding(vertical = 24.dp, horizontal = 24.dp),
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
                 text = stringResource(R.string.advice_title),
                 style = MaterialTheme.typography.displayMedium,
-                fontSize = MaterialTheme.typography.displayMedium.fontSize,
+                fontSize = MaterialTheme.typography.displaySmall.fontSize,
                 fontWeight = FontWeight.W900,
                 overflow = TextOverflow.Ellipsis,
                 softWrap = true,
@@ -48,13 +48,13 @@ fun AdviceCard(
             Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = stringResource(R.string.advice_description),
-                style = MaterialTheme.typography.bodyLarge,
-                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                 color = textColor.copy(alpha = 0.6f),
                 softWrap = true,
                 textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

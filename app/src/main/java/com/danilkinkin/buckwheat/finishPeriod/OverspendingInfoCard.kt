@@ -87,8 +87,8 @@ fun OverspendingInfoCard(
             Column(Modifier.padding(vertical = 32.dp, horizontal = 24.dp)) {
                 Text(
                     text = stringResource(R.string.overspending_never_exceeded_daily_budget),
-                    style = MaterialTheme.typography.labelLarge,
-                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                     softWrap = true,
                 )
             }
@@ -143,14 +143,14 @@ fun OverspendingInfoCard(
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = stringResource(R.string.overspending_first_time),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                         color = textColor.copy(alpha = 0.6f),
                         overflow = TextOverflow.Ellipsis,
                         softWrap = false,
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),

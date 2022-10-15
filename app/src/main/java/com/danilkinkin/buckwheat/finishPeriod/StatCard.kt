@@ -58,8 +58,7 @@ fun StatCard(
                 )
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelLarge,
-                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                    style = MaterialTheme.typography.labelMedium,
                     color = textColor.copy(alpha = 0.6f),
                     overflow = TextOverflow.Ellipsis,
                     softWrap = false,
