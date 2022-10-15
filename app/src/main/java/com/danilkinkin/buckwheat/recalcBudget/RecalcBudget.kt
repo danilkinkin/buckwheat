@@ -9,6 +9,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,6 +60,7 @@ fun RecalcBudget(
             Text(
                 text = stringResource(R.string.new_day_title),
                 style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(24.dp))
             Text(
@@ -67,11 +69,13 @@ fun RecalcBudget(
                     currency = spendsViewModel.currency.value!!,
                 ),
                 style = MaterialTheme.typography.displayLarge,
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(24.dp))
             Text(
                 text = stringResource(R.string.recalc_budget),
                 style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
             )
             if (isDebug.value) {
                 Spacer(Modifier.height(48.dp))
