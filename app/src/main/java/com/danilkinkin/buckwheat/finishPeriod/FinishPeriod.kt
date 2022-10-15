@@ -9,6 +9,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -48,11 +49,13 @@ fun FinishPeriod(
             Text(
                 text = stringResource(R.string.finish_period_title),
                 style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.period_summary_title),
                 style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(24.dp))
             Column(Modifier.fillMaxWidth()) {
