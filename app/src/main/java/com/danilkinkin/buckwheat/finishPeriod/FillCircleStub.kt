@@ -24,6 +24,7 @@ fun FillCircleStub(icon: Painter? = null, onClick: () -> Unit = {}) {
 
     Box(
         Modifier
+            .widthIn(max = 120.dp)
             .fillMaxHeight()
             .onGloballyPositioned {
                 size = with(localDensity) { it.size.height.toDp() }
