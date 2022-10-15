@@ -1,6 +1,8 @@
 package com.danilkinkin.buckwheat.base
 
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +28,12 @@ fun CheckedRow(
                 role = Role.Checkbox
             ),
         icon = if (checked) painterResource(R.drawable.ic_apply) else null,
+        iconTint = MaterialTheme.colorScheme.primary,
         text = text,
+        textStyle = MaterialTheme.typography.bodyMedium.copy(
+            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        ),
     )
 }
 

@@ -5,8 +5,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,18 +20,18 @@ import com.danilkinkin.buckwheat.util.combineColors
 fun TextRow(
     modifier: Modifier = Modifier,
     icon: Painter? = null,
-    endIcon: Painter? = null,
-    endContent: @Composable (() -> Unit)? = null,
-    text: String,
-) {
-    val color = contentColorFor(
+    iconTint: Color = contentColorFor(
         combineColors(
             MaterialTheme.colorScheme.secondaryContainer,
             MaterialTheme.colorScheme.surfaceVariant,
             angle = 0.3F,
         )
-    )
-
+    ),
+    endIcon: Painter? = null,
+    endContent: @Composable (() -> Unit)? = null,
+    text: String,
+    textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+) {
     Box(modifier) {
         Row(
             Modifier
@@ -40,8 +42,7 @@ fun TextRow(
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.bodyLarge,
-                color = color,
+                style = textStyle,
                 softWrap = false,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(
@@ -57,7 +58,6 @@ fun TextRow(
                 Spacer(modifier = Modifier.width(16.dp))
                 Icon(
                     painter = endIcon,
-                    tint = color,
                     contentDescription = null
                 )
             }
@@ -73,7 +73,7 @@ fun TextRow(
             ) {
                 Icon(
                     painter = icon,
-                    tint = color,
+                    tint = iconTint,
                     contentDescription = null
                 )
             }
