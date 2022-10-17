@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.animation.doOnEnd
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -107,8 +108,8 @@ fun Editor(
         }
 
         currAnimator = ValueAnimator.ofFloat(0F, 1F).apply {
-            duration = 2200
-            interpolator = AccelerateDecelerateInterpolator()
+            duration = 220
+            interpolator = FastOutSlowInInterpolator()
 
             addUpdateListener { valueAnimator ->
                 editorState = animFrame(
@@ -188,7 +189,6 @@ fun Editor(
                 value = spentValue,
                 label = stringResource(id = R.string.spent),
                 onChangeValue = {
-                    Log.d("Editor", "onChangeValue = $it")
                     val converted = tryConvertStringToNumber(it)
 
                     spendsViewModel.rawSpentValue.value = it
