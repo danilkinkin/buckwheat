@@ -67,7 +67,7 @@ fun Wallet(
     val offset = with(LocalDensity.current) { 50.dp.toPx().toInt() }
 
     Surface {
-        Column(modifier = Modifier) {
+        Column {
             val days = countDays(dateToValue.value)
 
             Box(

@@ -221,9 +221,9 @@ private fun PreviewNightMode() {
     }
 }
 
-@Preview(widthDp = 190)
+@Preview(name = "Small screen", widthDp = 190)
 @Composable
-private fun PreviewSmall() {
+private fun PreviewSmallScreen() {
     BuckwheatTheme {
         WholeBudgetCard(
             budget = BigDecimal(60000),
