@@ -1,8 +1,6 @@
 package com.danilkinkin.buckwheat.editor
 
 import android.animation.ValueAnimator
-import android.util.Log
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -14,7 +12,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.animation.doOnEnd
@@ -59,6 +56,8 @@ fun Editor(
     var warnMessageWidth by remember { mutableStateOf(0F) }
 
     var editorState by remember { mutableStateOf(EditorState()) }
+
+    val statusBarHeight = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
 
 
     fun calculateValues(
@@ -164,6 +163,17 @@ fun Editor(
     }
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        val maxHeight = with(localDensity) {
+            constraints.maxHeight.toDp() - 60.dp - statusBarHeight
+        }
+
+        val maxFontSize = min(
+            calcMaxFont(with(localDensity) {
+                (maxHeight.toPx() - 72.dp.toPx()) * 0.45f
+            }),
+            90.sp,
+        )
+
         Box(
             contentAlignment = Alignment.BottomStart,
             modifier = Modifier
@@ -178,8 +188,8 @@ fun Editor(
                     currency = currency,
                 ),
                 label = stringResource(id = R.string.budget_for_today),
-                fontSizeValue = editorState.budget.valueFontSize,
-                fontSizeLabel = editorState.budget.labelFontSize,
+                fontSizeValue = maxFontSize * editorState.budget.valueFontSize,
+                fontSizeLabel = maxFontSize * editorState.budget.labelFontSize,
                 modifier = Modifier
                     .offset(y = with(localDensity) { editorState.budget.offset.toDp() })
                     .alpha(editorState.budget.alpha)
@@ -202,8 +212,8 @@ fun Editor(
                     }
                 },
                 currency = currency,
-                fontSizeValue = editorState.spent.valueFontSize,
-                fontSizeLabel = editorState.spent.labelFontSize,
+                fontSizeValue = maxFontSize * editorState.spent.valueFontSize,
+                fontSizeLabel = maxFontSize * editorState.spent.labelFontSize,
                 modifier = Modifier
                     .offset(y = with(localDensity) { editorState.spent.offset.toDp() })
                     .alpha(editorState.spent.alpha)
@@ -242,8 +252,8 @@ fun Editor(
                         currency = currency,
                     ),
                     label = stringResource(id = R.string.rest_budget_for_today),
-                    fontSizeValue = editorState.restBudget.valueFontSize,
-                    fontSizeLabel = editorState.restBudget.labelFontSize,
+                    fontSizeValue = maxFontSize * editorState.restBudget.valueFontSize,
+                    fontSizeLabel = maxFontSize * editorState.restBudget.labelFontSize,
                 )
 
                 Spacer(Modifier.requiredWidth(with(localDensity) { warnMessageWidth.toDp() }))
@@ -286,8 +296,8 @@ fun Editor(
 }
 
 data class RowState(
-    val valueFontSize: TextUnit,
-    val labelFontSize: TextUnit,
+    val valueFontSize: Float,
+    val labelFontSize: Float,
     val offset: Float,
     var height: Float,
     val alpha: Float,
@@ -295,22 +305,22 @@ data class RowState(
 
 data class EditorState(
     val budget: RowState = RowState(
-        valueFontSize = 30.sp,
-        labelFontSize = 16.sp,
+        valueFontSize = 0.375f,
+        labelFontSize = 0.2f,
         offset = 0f,
         height = 1000f,
         alpha = 0f
     ),
     val spent: RowState = RowState(
-        valueFontSize = 30.sp,
-        labelFontSize = 16.sp,
+        valueFontSize = 0.375f,
+        labelFontSize = 0.2f,
         offset = 0f,
         height = 1000f,
         alpha = 0f
     ),
     val restBudget: RowState = RowState(
-        valueFontSize = 30.sp,
-        labelFontSize = 16.sp,
+        valueFontSize = 0.375f,
+        labelFontSize = 0.2f,
         offset = 0f,
         height = 1000f,
         alpha = 0f
@@ -322,8 +332,8 @@ fun animFrame(rowState: EditorState, state: AnimState, progress: Float = 1F): Ed
         AnimState.FIRST_IDLE -> {
             return rowState.copy(
                 budget = rowState.budget.copy(
-                    valueFontSize = 80.sp,
-                    labelFontSize = 20.sp,
+                    valueFontSize = 1f,
+                    labelFontSize = 0.25f,
                     offset = 60.dp.value * (1F - progress),
                     alpha = progress
                 )
@@ -333,17 +343,15 @@ fun animFrame(rowState: EditorState, state: AnimState, progress: Float = 1F): Ed
             var offset = rowState.restBudget.height
 
             val restBudget = rowState.restBudget.copy(
-                valueFontSize = 30.sp,
-                labelFontSize = 16.sp,
+                valueFontSize = 0.375f,
+                labelFontSize = 0.2f,
                 offset = (offset + rowState.spent.height) * (1f - progress),
                 alpha = 1f
             )
 
-            Log.d("spend calc", "progress=$progress altProgress=${1f - progress} offset=$offset h=${rowState.spent.height} res=${(offset + rowState.spent.height) * (1f - progress) - offset}")
-
             val spent = rowState.spent.copy(
-                valueFontSize = 80.sp,
-                labelFontSize = 20.sp,
+                valueFontSize = 1f,
+                labelFontSize = 0.25f,
                 offset = (offset + rowState.spent.height) * (1f - progress) - offset,
                 alpha = 1f
             )
@@ -351,8 +359,8 @@ fun animFrame(rowState: EditorState, state: AnimState, progress: Float = 1F): Ed
             offset += rowState.spent.height
 
             val budget = rowState.budget.copy(
-                valueFontSize = (80 - 60 * progress).sp,
-                labelFontSize = (20 - 10 * progress).sp,
+                valueFontSize = 1f - 0.75f * progress,
+                labelFontSize = 0.25f -0.125f * progress,
                 offset = -offset * progress,
                 alpha = 1f
             )
@@ -369,14 +377,14 @@ fun animFrame(rowState: EditorState, state: AnimState, progress: Float = 1F): Ed
             var offset = rowState.restBudget.height
 
             val restBudget = rowState.restBudget.copy(
-                valueFontSize = (30 + 50 * progress).sp,
-                labelFontSize = (16 + 4 * progress).sp,
+                valueFontSize = 0.375f + 0.625f * progress,
+                labelFontSize = 0.2f + 0.05f * progress,
                 alpha = 1f
             )
 
             val spent = rowState.spent.copy(
-                valueFontSize = 80.sp,
-                labelFontSize = 20.sp,
+                valueFontSize = 1f,
+                labelFontSize = 0.25f,
                 offset = -offset - 50 * progressB,
                 alpha = 1f - progressB
             )
@@ -384,8 +392,8 @@ fun animFrame(rowState: EditorState, state: AnimState, progress: Float = 1F): Ed
             offset += rowState.spent.height
 
             val budget = rowState.budget.copy(
-                valueFontSize = 20.sp,
-                labelFontSize = 10.sp,
+                valueFontSize = 0.25f,
+                labelFontSize = 0.125f,
                 offset = -offset - 50 * progressA,
                 alpha = 1f - progressA
             )
@@ -401,22 +409,22 @@ fun animFrame(rowState: EditorState, state: AnimState, progress: Float = 1F): Ed
             var offset = rowState.restBudget.height
 
             val restBudget = rowState.restBudget.copy(
-                valueFontSize = 30.sp,
-                labelFontSize = 16.sp,
+                valueFontSize = 0.375f,
+                labelFontSize = 0.2f,
                 offset = (offset + rowState.spent.height) * progress,
             )
 
             val spent = rowState.spent.copy(
-                valueFontSize = 80.sp,
-                labelFontSize = 20.sp,
+                valueFontSize = 1f,
+                labelFontSize = 0.25f,
                 offset = (rowState.spent.height + offset) * progress - offset,
             )
 
             offset += rowState.spent.height
 
             val budget = rowState.budget.copy(
-                valueFontSize = (20 + 60 * progress).sp,
-                labelFontSize = (10 + 10 * progress).sp,
+                valueFontSize = 0.25f + 0.75f * progress,
+                labelFontSize = 0.125f + 0.125f * progress,
                 offset = -offset * (1F - progress),
             )
 
@@ -430,8 +438,8 @@ fun animFrame(rowState: EditorState, state: AnimState, progress: Float = 1F): Ed
         AnimState.IDLE -> {
             rowState.copy(
                 budget = rowState.budget.copy(
-                    valueFontSize = 80.sp,
-                    labelFontSize = 20.sp,
+                    valueFontSize = 1f,
+                    labelFontSize = 0.25f,
                     offset = 0f,
                     alpha = 1f,
                 ),

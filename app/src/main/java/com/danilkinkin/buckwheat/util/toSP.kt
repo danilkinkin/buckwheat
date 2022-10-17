@@ -1,10 +1,8 @@
 package com.danilkinkin.buckwheat.util
 
-import android.content.res.Resources
-import kotlin.math.roundToInt
+import androidx.compose.runtime.Stable
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
-fun Int.toSP(): Int = (this * Resources.getSystem().displayMetrics.scaledDensity).roundToInt()
-
-fun Float.toSP(): Int = (this * Resources.getSystem().displayMetrics.scaledDensity).roundToInt()
-
-fun Double.toSP(): Int = (this * Resources.getSystem().displayMetrics.scaledDensity).roundToInt()
+@Stable
+fun min(a: TextUnit, b: TextUnit): TextUnit = kotlin.math.min(a.value, b.value).sp
