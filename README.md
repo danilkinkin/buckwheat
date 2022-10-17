@@ -1,4 +1,4 @@
-![Logo](app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
+![Banner](screenshots/banner.jpg)
 
 # buckwheat
 
