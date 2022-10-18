@@ -13,19 +13,30 @@
         android:theme="@style/Theme.BuckwheatTheme"
         android:localeConfig="@xml/locales_config"
         tools:targetApi="33">
+
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="${sentryDsn}" />
+        <meta-data
+            android:name="io.sentry.traces.sample-rate"
+            android:value="1.0" />
+        <meta-data
+            android:name="io.sentry.traces.user-interaction.enable"
+            android:value="true" />
         <profileable
             android:shell="true"
             tools:targetApi="q" />
-
         <activity
             android:name="com.danilkinkin.buckwheat.home.MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
     </application>
 
 </manifest>

@@ -18,6 +18,7 @@ android {
         versionCode = 3
         versionName = "alpha-3.0"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
+        manifestPlaceholders["sentryDsn"] = ""
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
@@ -33,16 +34,20 @@ android {
         getByName("release") {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("debug")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
 
         create("benchmark") {
             initWith(getByName("release"))
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks.add("release")
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-benchmark-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-benchmark-rules.pro",
+            )
             isDebuggable = false
         }
     }
@@ -114,6 +119,9 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.2.2")
 
+    implementation("io.sentry:sentry-android:6.5.0")
+    implementation("io.sentry:sentry-compose-android:6.5.0")
+
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.2.1")
 
     androidTestImplementation("junit:junit:4.13.2")
@@ -128,4 +136,8 @@ dependencies {
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+}
+
+secrets {
+    defaultPropertiesFileName = "local.defaults.properties"
 }
