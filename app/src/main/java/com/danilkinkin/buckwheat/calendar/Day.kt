@@ -1,33 +1,19 @@
 package com.danilkinkin.buckwheat.calendar
 
-import android.app.usage.UsageEvents
-import android.util.Log
-import android.view.MotionEvent
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.danilkinkin.buckwheat.calendar.model.CalendarUiState
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.pointerInteropFilter
-import androidx.compose.ui.semantics.*
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
@@ -101,15 +87,7 @@ internal fun Day(
     val current = calendarState.isCurrentDay(day)
 
     DayContainer(
-        modifier = modifier
-            .semantics {
-                text = AnnotatedString(
-                    "${
-                        month.month.name.lowercase().capitalize(Locale.current)
-                    } ${day.dayOfMonth} ${month.year}"
-                )
-                dayStatusProperty = selected
-            },
+        modifier = modifier,
         current = current,
         onSelect = { if (!disabled) onDayClicked(day) },
     ) {
@@ -117,9 +95,7 @@ internal fun Day(
         Text(
             modifier = Modifier
                 .fillMaxSize()
-                .wrapContentSize(Alignment.Center)
-                // Parent will handle semantics
-                .clearAndSetSemantics {},
+                .wrapContentSize(Alignment.Center),
             text = day.dayOfMonth.toString(),
             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W800),
             color = when (true) {
@@ -130,6 +106,3 @@ internal fun Day(
         )
     }
 }
-
-val DayStatusKey = SemanticsPropertyKey<Boolean>("DayStatusKey")
-var SemanticsPropertyReceiver.dayStatusProperty by DayStatusKey

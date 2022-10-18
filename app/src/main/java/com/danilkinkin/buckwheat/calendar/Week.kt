@@ -1,13 +1,10 @@
 package com.danilkinkin.buckwheat.calendar
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import com.danilkinkin.buckwheat.calendar.model.CalendarUiState
 import com.danilkinkin.buckwheat.calendar.model.Week
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -15,7 +12,7 @@ import java.time.temporal.TemporalAdjusters
 
 @Composable
 internal fun DaysOfWeek(modifier: Modifier = Modifier) {
-    Row(modifier = modifier.clearAndSetSemantics { }) {
+    Row(modifier = modifier) {
         for (day in DayOfWeek.values()) {
             DayOfWeekHeading(
                 day = day.name.take(1),
