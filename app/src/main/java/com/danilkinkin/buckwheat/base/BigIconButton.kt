@@ -33,7 +33,7 @@ fun BigIconButton(
 
     Box(
         modifier = modifier
-            .padding(12.dp)
+            .padding(8.dp)
             .clickable(
                 onClick = onClick,
                 enabled = enabled,
@@ -43,7 +43,8 @@ fun BigIconButton(
                     bounded = false,
                     color = contentColor,
                 )
-            ),
+            )
+            .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
         Icon(
