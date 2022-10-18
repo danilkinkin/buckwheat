@@ -86,7 +86,8 @@ fun MainScreen(
         spendsViewModel.lastRemoveSpent.collectLatest {
             val snackbarResult = snackbarHostState.showSnackbar(
                 message = snackBarMessage,
-                actionLabel = snackBarAction
+                actionLabel = snackBarAction,
+                duration = SnackbarDuration.Long,
             )
 
             if (snackbarResult == SnackbarResult.ActionPerformed) {
@@ -194,7 +195,7 @@ fun MainScreen(
                 .fillMaxWidth()
                 .navigationBarsPadding(),
         ) {
-            SnackbarHost(hostState = snackbarHostState)
+            SwipeableSnackbarHost(hostState = snackbarHostState)
         }
 
         val requireSetBudget by spendsViewModel.requireSetBudget.observeAsState(false)
