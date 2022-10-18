@@ -177,7 +177,7 @@ fun SpendsChart(
                 color = color,
                 radius = with(localDensity) { 3.dp.toPx() },
                 center = Offset(
-                    startOffset + widthWithPaddings * ((indexMarked!! - firstShowIndex) / size),
+                    startOffset + widthWithPaddings * ((indexMarked - firstShowIndex) / size),
                     topOffset + heightWithPaddings * (1 - scale),
                 )
             )
