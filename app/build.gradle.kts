@@ -15,8 +15,8 @@ android {
         applicationId = "com.danilkinkin.buckwheat"
         minSdk = 26
         targetSdk = 33
-        versionCode = 3
-        versionName = "alpha-3.0"
+        versionCode = 4
+        versionName = "alpha-4.0"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
         manifestPlaceholders["sentryDsn"] = ""
         javaCompileOptions {
