@@ -1,20 +1,22 @@
 package com.danilkinkin.buckwheat.ui
 
+import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
-import com.danilkinkin.buckwheat.data.ThemeViewModel
-import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import com.danilkinkin.buckwheat.data.ThemeMode
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.danilkinkin.buckwheat.home.appTheme
 import com.danilkinkin.buckwheat.home.dataStore
 import com.danilkinkin.buckwheat.ui.harmonize.palettes.CorePalette
+import kotlinx.coroutines.flow.first
 
+
+enum class ThemeMode { LIGHT, NIGHT, SYSTEM }
 
 private fun darkColorScheme(): ColorScheme {
     val palette = CorePalette.contentOf(colorSeed.toArgb())
@@ -90,18 +92,10 @@ private fun lightColorScheme(): ColorScheme {
 
 
 @Composable
-fun isNightMode(): Boolean {
-    val context = LocalContext.current
-    val viewModel = remember { ThemeViewModel(context.dataStore) }
-    val state = viewModel.state.observeAsState()
-
-    LaunchedEffect(viewModel) { viewModel.request() }
-
-    return when (state.value) {
-        ThemeMode.LIGHT -> false
-        ThemeMode.NIGHT -> true
-        else -> isSystemInDarkTheme()
-    }
+fun isNightMode(): Boolean = when (LocalContext.current.appTheme) {
+    ThemeMode.LIGHT -> false
+    ThemeMode.NIGHT -> true
+    else -> isSystemInDarkTheme()
 }
 
 
@@ -109,7 +103,7 @@ fun isNightMode(): Boolean {
 fun BuckwheatTheme(
     darkTheme: Boolean = isNightMode(),
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -126,4 +120,22 @@ fun BuckwheatTheme(
         typography = typography,
         content = content
     )
+}
+
+suspend fun switchTheme(context: Context, mode: ThemeMode) {
+    context.dataStore.edit {
+        it[stringPreferencesKey("theme")] = mode.toString()
+    }
+
+    context.appTheme = mode
+}
+
+suspend fun syncTheme(context: Context) {
+    val currentValue = context.dataStore.data.first()
+
+    val mode = ThemeMode.valueOf(
+        currentValue[stringPreferencesKey("theme")] ?: ThemeMode.SYSTEM.toString()
+    )
+
+    context.appTheme = mode
 }

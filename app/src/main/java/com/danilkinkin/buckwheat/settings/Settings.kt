@@ -7,7 +7,6 @@ import androidx.compose.foundation.verticalScroll
 import com.danilkinkin.buckwheat.base.Divider
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,28 +18,22 @@ import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.TextRow
-import com.danilkinkin.buckwheat.data.ThemeMode
-import com.danilkinkin.buckwheat.data.ThemeViewModel
-import com.danilkinkin.buckwheat.home.dataStore
+import com.danilkinkin.buckwheat.home.appTheme
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.ThemeMode
+import com.danilkinkin.buckwheat.ui.switchTheme
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun Settings(onClose: () -> Unit = {}) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
-    val viewModel = remember {
-        ThemeViewModel(context.dataStore)
-    }
-
-    val theme = viewModel.state.observeAsState().value
-
-    fun switchTheme(mode: ThemeMode) {
-        viewModel.changeThemeMode(mode)
-    }
-
-    LaunchedEffect(viewModel) {
-        viewModel.request()
+    fun handleSwitchTheme(mode: ThemeMode) {
+        coroutineScope.launch {
+            switchTheme(context, mode)
+        }
     }
 
     val navigationBarHeight = androidx.compose.ui.unit.max(
@@ -72,18 +65,18 @@ fun Settings(onClose: () -> Unit = {}) {
                     text = stringResource(R.string.theme_label),
                 )
                 CheckedRow(
-                    checked = theme == ThemeMode.LIGHT,
-                    onValueChange = { switchTheme(ThemeMode.LIGHT) },
+                    checked = context.appTheme == ThemeMode.LIGHT,
+                    onValueChange = { handleSwitchTheme(ThemeMode.LIGHT) },
                     text = stringResource(R.string.theme_light),
                 )
                 CheckedRow(
-                    checked = theme == ThemeMode.NIGHT,
-                    onValueChange = { switchTheme(ThemeMode.NIGHT) },
+                    checked = context.appTheme == ThemeMode.NIGHT,
+                    onValueChange = { handleSwitchTheme(ThemeMode.NIGHT) },
                     text = stringResource(R.string.theme_dark),
                 )
                 CheckedRow(
-                    checked = theme == ThemeMode.SYSTEM,
-                    onValueChange = { switchTheme(ThemeMode.SYSTEM) },
+                    checked = context.appTheme == ThemeMode.SYSTEM,
+                    onValueChange = { handleSwitchTheme(ThemeMode.SYSTEM) },
                     text = stringResource(R.string.theme_system),
                 )
                 Divider()

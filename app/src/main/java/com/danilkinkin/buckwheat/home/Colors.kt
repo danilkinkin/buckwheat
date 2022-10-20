@@ -8,21 +8,15 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.buckwheat.data.ThemeMode
-import com.danilkinkin.buckwheat.data.ThemeViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.ui.colorBad
+import com.danilkinkin.buckwheat.ui.ThemeMode
 import com.danilkinkin.buckwheat.ui.colorGood
-import com.danilkinkin.buckwheat.ui.colorNotGood
 import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.harmonize
 import com.danilkinkin.buckwheat.util.toPalette
@@ -30,19 +24,10 @@ import com.danilkinkin.buckwheat.util.toPalette
 @Composable
 fun Colors() {
     val context = LocalContext.current
-
-    val viewModel = remember {
-        ThemeViewModel(context.dataStore)
-    }
-
-    val theme = viewModel.state.observeAsState().value
+    val theme = context.appTheme
 
     fun switchTheme(mode: ThemeMode) {
-        viewModel.changeThemeMode(mode)
-    }
-
-    LaunchedEffect(viewModel) {
-        viewModel.request()
+        context.appTheme = mode
     }
 
     Row(
