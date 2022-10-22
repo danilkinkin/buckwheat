@@ -198,7 +198,7 @@ fun TopSheetLayout(
                     Box(
                         Modifier
                             .height(4.dp)
-                            .width(50.dp)
+                            .width(30.dp)
                             .background(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 shape = CircleShape
