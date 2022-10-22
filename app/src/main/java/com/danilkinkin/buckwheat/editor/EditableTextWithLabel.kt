@@ -6,8 +6,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
@@ -30,7 +32,8 @@ fun EditableTextWithLabel(
     onChangeValue: (value: String) -> Unit = {},
     fontSizeValue: TextUnit = MaterialTheme.typography.displayLarge.fontSize,
     fontSizeLabel: TextUnit = MaterialTheme.typography.labelMedium.fontSize,
-    contentPaddingValues: PaddingValues = PaddingValues(start = 36.dp, end = 36.dp)
+    contentPaddingValues: PaddingValues = PaddingValues(start = 36.dp, end = 36.dp),
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     val color = contentColorFor(
         combineColors(
@@ -60,6 +63,7 @@ fun EditableTextWithLabel(
                         currency = currency ?: ExtendCurrency(type = CurrencyType.NONE),
                         hintColor = color.copy(alpha = 0.2f),
                     ),
+                    focusRequester = focusRequester,
                 )
             }
         }

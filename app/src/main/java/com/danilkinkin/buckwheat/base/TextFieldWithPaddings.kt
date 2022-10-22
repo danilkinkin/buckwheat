@@ -10,6 +10,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
@@ -39,6 +41,7 @@ fun TextFieldWithPaddings(
     textStyle: TextStyle = MaterialTheme.typography.displayLarge,
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
     val textFieldValue = textFieldValueState.copy(text = value)
@@ -142,10 +145,12 @@ fun TextFieldWithPaddings(
                 singleLine = true,
                 cursorBrush = cursorBrush,
                 visualTransformation = visualTransformation,
-                modifier = Modifier.disabledHorizontalPointerInputScroll(
-                    scrollState.value + containerWidth,
-                    width + gapStart + gapEnd,
-                ),
+                modifier = Modifier
+                    .disabledHorizontalPointerInputScroll(
+                        scrollState.value + containerWidth,
+                        width + gapStart + gapEnd,
+                    )
+                    .focusRequester(focusRequester),
                 decorationBox = { input ->
                     Box(
                         modifier = Modifier
