@@ -25,9 +25,10 @@ import com.danilkinkin.buckwheat.util.*
 
 @Composable
 fun EditableTextWithLabel(
+    modifier: Modifier = Modifier,
     value: String,
     label: String,
-    modifier: Modifier = Modifier,
+    placeholder: String = "",
     currency: ExtendCurrency? = null,
     onChangeValue: (value: String) -> Unit = {},
     fontSizeValue: TextUnit = MaterialTheme.typography.displayLarge.fontSize,
@@ -62,6 +63,7 @@ fun EditableTextWithLabel(
                     visualTransformation = visualTransformationAsCurrency(
                         currency = currency ?: ExtendCurrency(type = CurrencyType.NONE),
                         hintColor = color.copy(alpha = 0.2f),
+                        placeholder = placeholder,
                     ),
                     focusRequester = focusRequester,
                 )
@@ -72,7 +74,7 @@ fun EditableTextWithLabel(
             text = label,
             style = MaterialTheme.typography.labelMedium,
             fontSize = fontSizeLabel,
-            color = color,
+            color = color.copy(alpha = 0.7f),
             overflow = TextOverflow.Ellipsis,
             softWrap = false,
             modifier = Modifier.padding(contentPaddingValues),
