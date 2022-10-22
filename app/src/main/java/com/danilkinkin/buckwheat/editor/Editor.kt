@@ -20,9 +20,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphIntrinsics
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.createFontFamilyResolver
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -284,10 +286,15 @@ fun Editor(
                     }
 
                     val intrinsics = ParagraphIntrinsics(
-                        text = currSymbol,
+                        text = "$currSymbol  ",
                         style = typography.labelMedium.copy(
                             fontSize = maxFontSize,
                         ),
+                        spanStyles = listOf(AnnotatedString.Range(
+                            SpanStyle(fontSize = typography.displaySmall.fontSize),
+                            currSymbol.length,
+                            currSymbol.length + 2,
+                        )),
                         density = localDensity,
                         fontFamilyResolver = createFontFamilyResolver(localContext)
                     )
@@ -398,7 +405,7 @@ fun Editor(
                             EditableTextWithLabel(
                                 value = spentValue,
                                 label = stringResource(id = R.string.spent),
-                                placeholder = "Enter spent",
+                                placeholder = "  Enter spent",
                                 onChangeValue = {
                                     val converted = tryConvertStringToNumber(it)
 
@@ -418,6 +425,7 @@ fun Editor(
                                 focusRequester = focusRequester,
                                 placeholderStyle = SpanStyle(
                                     fontSize = MaterialTheme.typography.displaySmall.fontSize,
+                                    baselineShift = BaselineShift(0.23f)
                                 ),
                             )
 

@@ -145,7 +145,6 @@ private fun visualTransformationAsCurrency(
                 listOf(
                     placeholderStyle.copy(
                         color = hintColor,
-                        baselineShift = BaselineShift(0.23f)
                     ),
                     SpanStyle(color = hintColor),
                 ),
