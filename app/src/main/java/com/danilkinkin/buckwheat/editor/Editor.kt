@@ -1,16 +1,29 @@
 package com.danilkinkin.buckwheat.editor
 
 import android.animation.ValueAnimator
+import android.util.Log
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ParagraphIntrinsics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.createFontFamilyResolver
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +42,7 @@ import kotlin.math.min
 
 enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Editor(
     modifier: Modifier = Modifier,
@@ -42,9 +56,13 @@ fun Editor(
     var currState by remember { mutableStateOf<AnimState?>(null) }
     var currAnimator by remember { mutableStateOf<ValueAnimator?>(null) }
 
+    val textColor = LocalContentColor.current
+    val localContext = LocalContext.current
     val localDensity = LocalDensity.current
     val focusManager = LocalFocusManager.current
+    val typography = MaterialTheme.typography
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+    var stage by remember { mutableStateOf(AnimState.IDLE) }
 
     var budgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
@@ -58,7 +76,8 @@ fun Editor(
     var editorState by remember { mutableStateOf(EditorState()) }
 
     val statusBarHeight = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
-
+    val focusRequester = remember { FocusRequester() }
+    var requestFocus by remember { mutableStateOf(false) }
 
     fun calculateValues(
         budget: Boolean = true,
@@ -140,158 +159,277 @@ fun Editor(
     observeLiveData(spendsViewModel.stage) {
         when (it) {
             SpendsViewModel.Stage.IDLE, null -> {
-                if (currState === AnimState.EDITING) animTo(AnimState.RESET)
+                if (currState === AnimState.EDITING) {
+                    stage = AnimState.RESET
+                }
                 focusManager.clearFocus()
+                calculateValues(budget = false)
             }
             SpendsViewModel.Stage.CREATING_SPENT -> {
                 calculateValues(budget = false)
 
-                animTo(AnimState.EDITING)
+                stage = AnimState.EDITING
             }
             SpendsViewModel.Stage.EDIT_SPENT -> {
                 calculateValues(budget = false)
 
-                animTo(AnimState.EDITING)
+                stage = AnimState.EDITING
             }
             SpendsViewModel.Stage.COMMITTING_SPENT -> {
-                animTo(AnimState.COMMIT)
+                stage = AnimState.COMMIT
 
                 spendsViewModel.resetSpent()
                 focusManager.clearFocus()
             }
         }
+
+        currState = stage
     }
 
-    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
-        val maxHeight = with(localDensity) {
-            constraints.maxHeight.toDp() - 60.dp - statusBarHeight
-        }
-
-        val maxFontSize = min(
-            calcMaxFont(with(localDensity) {
-                (maxHeight.toPx() - 72.dp.toPx()) * 0.45f
-            }),
-            90.sp,
-        )
-
-        Box(
-            contentAlignment = Alignment.BottomStart,
-            modifier = Modifier
-                .fillMaxSize()
-                .onGloballyPositioned {
-                    if (currState === null) animTo(AnimState.FIRST_IDLE)
-                },
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            Modifier
+                .fillMaxHeight()
         ) {
-            TextWithLabel(
-                value = prettyCandyCanes(
-                    budgetValue,
-                    currency = currency,
-                ),
-                label = stringResource(id = R.string.budget_for_today),
-                fontSizeValue = maxFontSize * editorState.budget.valueFontSize,
-                fontSizeLabel = maxFontSize * editorState.budget.labelFontSize,
-                modifier = Modifier
-                    .offset(y = with(localDensity) { editorState.budget.offset.toDp() })
-                    .alpha(editorState.budget.alpha)
-                    .padding(bottom = 24.dp)
-            )
-            EditableTextWithLabel(
-                value = spentValue,
-                label = stringResource(id = R.string.spent),
-                onChangeValue = {
-                    val converted = tryConvertStringToNumber(it)
-
-                    spendsViewModel.rawSpentValue.value = it
-
-                    spendsViewModel.editSpent(converted.join().toBigDecimal())
-
-                    if (it === "") {
-                        runBlocking {
-                            spendsViewModel.resetSpent()
-                        }
-                    }
-                },
-                currency = currency,
-                fontSizeValue = maxFontSize * editorState.spent.valueFontSize,
-                fontSizeLabel = maxFontSize * editorState.spent.labelFontSize,
-                modifier = Modifier
-                    .offset(y = with(localDensity) { editorState.spent.offset.toDp() })
-                    .alpha(editorState.spent.alpha)
-                    .onGloballyPositioned {
-                        if (editorState.spent.alpha == 0f) return@onGloballyPositioned
-
-                        editorState = editorState.copy(
-                            spent = editorState.spent.copy(
-                                height = it.size.height.toFloat()
-                            )
-                        )
-                    }
-                    .padding(bottom = 24.dp),
+            EditorToolbar(
+                onOpenWallet = onOpenWallet,
+                onOpenSettings = onOpenSettings,
+                onDebugMenu = onDebugMenu,
+                onOpenHistory = onOpenHistory,
             )
             Row(
-                modifier = Modifier
-                    .offset(y = with(localDensity) { editorState.restBudget.offset.toDp() })
-                    .alpha(editorState.restBudget.alpha)
-                    .onGloballyPositioned {
-                        if (editorState.restBudget.alpha == 0f) return@onGloballyPositioned
-
-                        editorState = editorState.copy(
-                            restBudget = editorState.restBudget.copy(
-                                height = it.size.height.toFloat()
-                            )
-                        )
-                    },
-                verticalAlignment = Alignment.Bottom,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 0.dp, top = 0.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                TextWithLabel(
+                BudgetEndWarn(
+                    overdaft = overdaft,
+                    forceShow = currState == AnimState.EDITING,
+                    endBudget = endBudget,
+                    budgetPerDaySplit = budgetPerDaySplit,
                     modifier = Modifier
-                        .padding(bottom = 24.dp)
-                        .weight(1f),
-                    value = prettyCandyCanes(
-                        restBudgetValue,
-                        currency = currency,
-                    ),
-                    label = stringResource(id = R.string.rest_budget_for_today),
-                    fontSizeValue = maxFontSize * editorState.restBudget.valueFontSize,
-                    fontSizeLabel = maxFontSize * editorState.restBudget.labelFontSize,
+                        .onGloballyPositioned {
+                            warnMessageWidth = it.size.width.toFloat()
+                        }
                 )
-
-                Spacer(Modifier.requiredWidth(with(localDensity) { warnMessageWidth.toDp() }))
-            }
-
-            BoxWithConstraints(
-                Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.BottomEnd,
-            ) {
-                val maxWidth = with(localDensity) { (constraints.maxWidth / 2f).toDp() }
-
-                Row(Modifier.fillMaxWidth()) {
-                    Spacer(Modifier.weight(1f))
-                    BudgetEndWarn(
-                        overdaft = overdaft,
-                        forceShow = currState == AnimState.EDITING,
-                        endBudget = endBudget,
-                        budgetPerDaySplit = budgetPerDaySplit,
-                        modifier = Modifier
-                            .onGloballyPositioned {
-                                warnMessageWidth = it.size.width.toFloat()
-                            }
-                            .widthIn(max = maxWidth)
-                            .padding(
-                                top = 24.dp,
-                                end = 24.dp,
-                                bottom = 24.dp,
-                            )
+                Spacer(Modifier.width(16.dp))
+                if (stage != AnimState.IDLE) {
+                    TextWithLabel(
+                        modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+                        value = prettyCandyCanes(
+                            restBudgetValue,
+                            currency = currency,
+                        ),
+                        label = stringResource(id = R.string.rest_budget_for_today),
+                        fontSizeValue = MaterialTheme.typography.headlineSmall.fontSize,
+                        fontSizeLabel = MaterialTheme.typography.labelMedium .fontSize,
+                        horizontalAlignment = Alignment.End,
+                    )
+                } else {
+                    TextWithLabel(
+                        modifier = Modifier.padding(top = 16.dp, bottom = 16.dp),
+                        value = prettyCandyCanes(
+                            budgetValue,
+                            currency = currency,
+                        ),
+                        label = stringResource(id = R.string.budget_for_today),
+                        fontSizeValue = MaterialTheme.typography.headlineSmall.fontSize,
+                        fontSizeLabel = MaterialTheme.typography.labelMedium.fontSize,
+                        horizontalAlignment = Alignment.End,
                     )
                 }
             }
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        requestFocus = true
+                        stage = AnimState.EDITING
+                    },
+            ) {
+                val maxHeight = with(localDensity) {
+                    constraints.maxHeight.toDp()
+                }
+
+                val maxFontSize = min(
+                    calcMaxFont(with(localDensity) { maxHeight.toPx() }),
+                    100.sp,
+                )
+
+                Log.d("stage", stage.toString())
+
+                val smallShift = with(localDensity) { 30.dp.toPx().toInt() }
+                val bigShift = with(localDensity) { 40.dp.toPx().toInt() }
+
+                val currencyShiftWidth by remember(currency) {
+                    val output = prettyCandyCanes(
+                        0.toBigDecimal(),
+                        currency,
+                        maximumFractionDigits = 0,
+                        minimumFractionDigits = 0,
+                    )
+
+                    val currSymbol = output.filter { it !='0' }
+
+                    val startWithCurr = output.startsWith(currSymbol)
+
+                    if (!startWithCurr) {
+                        return@remember mutableStateOf(0)
+                    }
+
+                    val intrinsics = ParagraphIntrinsics(
+                        text = currSymbol,
+                        style = typography.labelMedium.copy(
+                            fontSize = maxFontSize,
+                        ),
+                        density = localDensity,
+                        fontFamilyResolver = createFontFamilyResolver(localContext)
+                    )
+
+                    mutableStateOf(intrinsics.maxIntrinsicWidth.toInt())
+                }
+
+                AnimatedContent(
+                    targetState = stage,
+                    transitionSpec = {
+                        when(targetState) {
+                            AnimState.EDITING -> slideInHorizontally(
+                                tween(
+                                    durationMillis = 150,
+                                    easing = EaseInOutQuad,
+                                )
+                            ) {
+                                -currencyShiftWidth
+                            } + fadeIn(
+                                tween(durationMillis = 150)
+                            ) with slideOutHorizontally(
+                                tween(
+                                    durationMillis = 150,
+                                    easing = EaseInOutQuad,
+                                )
+                            ) {
+                                currencyShiftWidth
+                            } + fadeOut(
+                                tween(durationMillis = 150)
+                            )
+                            AnimState.COMMIT -> slideInVertically(
+                                tween(
+                                    durationMillis = 150,
+                                    easing = EaseInQuad,
+                                )
+                            ) { smallShift } + fadeIn(
+                                tween(
+                                    durationMillis = 150,
+                                    easing = EaseInQuad,
+                                )
+                            ) with slideOutVertically(
+                                tween(
+                                    durationMillis = 150,
+                                    easing = EaseInQuad,
+                                )
+                            ) { -bigShift } + fadeOut(
+                                tween(
+                                    durationMillis = 150,
+                                    easing = EaseInQuad,
+                                )
+                            )
+                            AnimState.RESET -> fadeIn(
+                                tween(
+                                    durationMillis = 50,
+                                    easing = EaseInQuad,
+                                )
+                            ) with fadeOut(
+                                tween(
+                                    durationMillis = 50,
+                                    easing = EaseInQuad,
+                                )
+                            )
+                            else -> fadeIn(
+                                tween(durationMillis = 50)
+                            ) with fadeOut(
+                                tween(durationMillis = 50)
+                            )
+                        }.using(
+                            SizeTransform(clip = false)
+                        )
+                    }
+                ) { targetStage ->
+                    if (targetStage !== AnimState.EDITING) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.CenterStart,
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                            ) {
+                                Text(
+                                    text = "Enter spent",
+                                    style = MaterialTheme.typography.displayLarge,
+                                    fontSize = MaterialTheme.typography.displaySmall.fontSize,
+                                    color = textColor.copy(alpha = 0.6f),
+                                    overflow = TextOverflow.Visible,
+                                    softWrap = false,
+                                    modifier = Modifier
+                                        .padding(start = 36.dp, end = 36.dp)
+                                        .offset(x = (-2).dp),
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.spent),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                    color = textColor.copy(alpha = 0f),
+                                    overflow = TextOverflow.Ellipsis,
+                                    softWrap = false,
+                                    modifier = Modifier.padding(start = 36.dp, end = 36.dp),
+                                )
+                            }
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.CenterStart,
+                        ) {
+                            EditableTextWithLabel(
+                                value = spentValue,
+                                label = stringResource(id = R.string.spent),
+                                placeholder = "Enter spent",
+                                onChangeValue = {
+                                    val converted = tryConvertStringToNumber(it)
+
+                                    spendsViewModel.rawSpentValue.value = it
+
+                                    spendsViewModel.editSpent(converted.join().toBigDecimal())
+
+                                    if (it === "") {
+                                        runBlocking {
+                                            spendsViewModel.resetSpent()
+                                        }
+                                    }
+                                },
+                                currency = currency,
+                                fontSizeValue = maxFontSize,
+                                fontSizeLabel = MaterialTheme.typography.labelLarge.fontSize,
+                                focusRequester = focusRequester,
+                                placeholderStyle = SpanStyle(
+                                    fontSize = MaterialTheme.typography.displaySmall.fontSize,
+                                ),
+                            )
+
+                            LaunchedEffect(Unit) {
+                                if (requestFocus) focusRequester.requestFocus()
+                                requestFocus = false
+                            }
+                        }
+                    }
+                }
+            }
         }
-        EditorToolbar(
-            onOpenWallet = onOpenWallet,
-            onOpenSettings = onOpenSettings,
-            onDebugMenu = onDebugMenu,
-            onOpenHistory = onOpenHistory,
-        )
     }
 }
 

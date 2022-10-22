@@ -13,6 +13,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -35,6 +36,7 @@ fun EditableTextWithLabel(
     fontSizeLabel: TextUnit = MaterialTheme.typography.labelMedium.fontSize,
     contentPaddingValues: PaddingValues = PaddingValues(start = 36.dp, end = 36.dp),
     focusRequester: FocusRequester = remember { FocusRequester() },
+    placeholderStyle: SpanStyle = SpanStyle(),
 ) {
     val color = contentColorFor(
         combineColors(
@@ -64,6 +66,7 @@ fun EditableTextWithLabel(
                         currency = currency ?: ExtendCurrency(type = CurrencyType.NONE),
                         hintColor = color.copy(alpha = 0.2f),
                         placeholder = placeholder,
+                        placeholderStyle = placeholderStyle,
                     ),
                     focusRequester = focusRequester,
                 )

@@ -6,22 +6,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import kotlin.math.max
 import kotlin.math.min
 
 private fun getAnnotatedString(
     value: String,
     hintParts: List<Pair<Int, Int>>,
-    hintColor: Color,
+    styles: List<SpanStyle>,
 ): AnnotatedString {
     val builder = AnnotatedString.Builder(value)
-    hintParts.forEach {
-        builder.addStyle(SpanStyle(color = hintColor), it.first, it.second)
+    hintParts.forEachIndexed { index, part ->
+        builder.addStyle(styles[index], part.first, part.second)
     }
     return builder.toAnnotatedString()
+}
+
+private fun getAnnotatedString(
+    value: String,
+    hintParts: List<Pair<Int, Int>>,
+    hintColor: Color,
+): AnnotatedString {
+    return getAnnotatedString(
+        value,
+        hintParts,
+        hintParts.map { SpanStyle(color = hintColor) }
+    )
 }
 
 private fun getAnnotatedString(
@@ -61,6 +77,7 @@ private fun visualTransformationAsCurrency(
     currency: ExtendCurrency,
     hintColor: Color,
     placeholder: String = "",
+    placeholderStyle: SpanStyle = SpanStyle(),
 ): TransformedText {
     val floatDivider = getFloatDivider()
     val fixed = tryConvertStringToNumber(input.text)
@@ -125,7 +142,13 @@ private fun visualTransformationAsCurrency(
                         placeholder.length,
                     ),
                 ),
-                hintColor,
+                listOf(
+                    placeholderStyle.copy(
+                        color = hintColor,
+                        baselineShift = BaselineShift(0.23f)
+                    ),
+                    SpanStyle(color = hintColor),
+                ),
             ),
             offsetTranslator,
         )
@@ -148,9 +171,10 @@ fun visualTransformationAsCurrency(
     currency: ExtendCurrency,
     hintColor: Color,
     placeholder: String = "",
+    placeholderStyle: SpanStyle = SpanStyle(),
 ): ((input: AnnotatedString) -> TransformedText) {
     return {
-        visualTransformationAsCurrency(it, currency, hintColor, placeholder)
+        visualTransformationAsCurrency(it, currency, hintColor, placeholder, placeholderStyle)
     }
 }
 

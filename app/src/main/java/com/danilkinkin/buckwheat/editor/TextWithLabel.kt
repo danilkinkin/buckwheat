@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -19,12 +20,13 @@ import com.danilkinkin.buckwheat.util.*
 
 @Composable
 fun TextWithLabel(
+    modifier: Modifier = Modifier,
     value: String,
     label: String,
-    modifier: Modifier = Modifier,
     fontSizeValue: TextUnit = MaterialTheme.typography.displayLarge.fontSize,
     fontSizeLabel: TextUnit = MaterialTheme.typography.labelMedium.fontSize,
-    contentPaddingValues: PaddingValues = PaddingValues(start = 36.dp, end = 36.dp)
+    contentPaddingValues: PaddingValues = PaddingValues(start = 36.dp, end = 36.dp),
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
 ) {
     val color = contentColorFor(
         combineColors(
@@ -34,7 +36,10 @@ fun TextWithLabel(
         )
     )
 
-    Column(modifier) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = horizontalAlignment,
+    ) {
         Text(
             text = value,
             style = MaterialTheme.typography.displayLarge,
