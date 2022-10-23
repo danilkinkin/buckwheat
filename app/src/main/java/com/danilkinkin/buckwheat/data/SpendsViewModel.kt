@@ -209,6 +209,13 @@ class SpendsViewModel @Inject constructor(
     fun commitSpent() {
         if (stage.value !== Stage.EDIT_SPENT) return
 
+        val fSpent = currentSpent
+            .setScale(2, RoundingMode.HALF_UP)
+            .stripTrailingZeros()
+            .toPlainString()
+
+        if (fSpent == "0") return
+
         this.spentDao.insert(Spent(currentSpent, Date()))
 
         spentFromDailyBudget.value = spentFromDailyBudget.value?.plus(currentSpent)
