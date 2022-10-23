@@ -119,6 +119,8 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.2.2")
 
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
     implementation("io.sentry:sentry-android:6.5.0")
     implementation("io.sentry:sentry-compose-android:6.5.0")
 

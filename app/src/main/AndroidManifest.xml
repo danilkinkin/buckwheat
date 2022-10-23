@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.BuckwheatTheme"
+        android:theme="@style/Theme.Buckwheat.Starting"
         android:localeConfig="@xml/locales_config"
         tools:targetApi="33">
 
@@ -27,7 +27,7 @@
             android:shell="true"
             tools:targetApi="q" />
         <activity
-            android:name="com.danilkinkin.buckwheat.home.MainActivity"
+            android:name=".home.MainActivity"
             android:exported="true">
 
             <intent-filter>
