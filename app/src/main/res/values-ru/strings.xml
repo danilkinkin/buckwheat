@@ -6,7 +6,9 @@
     <string name="budget_for_today">Бюджет на сегодня</string>
     <string name="rest_budget_for_today">Останется на сегодня</string>
     <string name="new_daily_budget">Новый бюджет на день</string>
+    <string name="new_daily_budget_description">Сегодня вы вышли за рамки дневного бюджета, но это не страшно. На последуюшие бюджет пересчитан с учетом оставшегося бюджета</string>
     <string name="budget_end">Бюджет закончился</string>
+    <string name="budget_end_description">Вы вышли за рамки запланированого бюджета, но это не страшно, траты никогда не бывают одинаковыми. Заводите тарты дальше чтобы понимать сколько в итоге вы потратите и какой бюджет вам нужен</string>
     <string name="spent">Трата</string>
     <string name="fab_home_desc">Домой</string>
     <plurals name="spends_today">

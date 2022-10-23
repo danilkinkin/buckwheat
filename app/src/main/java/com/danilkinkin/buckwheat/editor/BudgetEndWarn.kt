@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun BudgetEndWarn(
     modifier: Modifier = Modifier,
@@ -27,6 +27,7 @@ fun BudgetEndWarn(
     forceShow: Boolean,
     endBudget: Boolean,
     budgetPerDaySplit: String,
+    onClick: () -> Unit = {},
 ) {
     val localDensity = LocalDensity.current
 
@@ -93,7 +94,8 @@ fun BudgetEndWarn(
                     width = 1.dp,
                     color = borderColor,
                     shape = CircleShape,
-                )
+                ),
+            onClick = onClick,
         ) {
             Row(
                 modifier = Modifier
@@ -144,7 +146,7 @@ fun BudgetEndWarn(
                             contentAlignment = Alignment.CenterStart,
                         ) {
                             Text(
-                                text = stringResource(id = R.string.budget_end),
+                                text = stringResource(R.string.budget_end),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onErrorContainer,
                             )
@@ -152,7 +154,7 @@ fun BudgetEndWarn(
                     } else {
                         TextWithLabel(
                             value = budgetPerDaySplit,
-                            label = stringResource(id = R.string.new_daily_budget),
+                            label = stringResource(R.string.new_daily_budget),
                             fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
                             fontSizeLabel = MaterialTheme.typography.labelMedium.fontSize,
                             contentPaddingValues = PaddingValues(0.dp),

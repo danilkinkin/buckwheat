@@ -10,8 +10,7 @@ import com.danilkinkin.buckwheat.base.BottomSheetWrapper
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.editor.DEBUG_MENU_SHEET
-import com.danilkinkin.buckwheat.editor.DebugMenu
+import com.danilkinkin.buckwheat.editor.*
 import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.finishPeriod.FinishPeriod
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
@@ -110,6 +109,22 @@ fun BottomSheets(
             onSetBudget = {
                 appViewModel.openSheet(PathState(WALLET_SHEET))
             },
+            onClose = {
+                coroutineScope.launch { state.hide() }
+            },
+        )
+    }
+
+    BottomSheetWrapper(name = NEW_DAY_BUDGET_DESCRIPTION_SHEET) { state ->
+        NewDayBudgetDescription(
+            onClose = {
+                coroutineScope.launch { state.hide() }
+            },
+        )
+    }
+
+    BottomSheetWrapper(name = BUDGET_IS_OVER_DESCRIPTION_SHEET) { state ->
+        BudgetIsOverDescription(
             onClose = {
                 coroutineScope.launch { state.hide() }
             },

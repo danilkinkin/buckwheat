@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
@@ -194,7 +195,14 @@ fun Editor(
                     forceShow = restBudgetValue <= 0.toBigDecimal() || currState == AnimState.EDITING,
                     endBudget = endBudget,
                     budgetPerDaySplit = budgetPerDaySplit,
-                    modifier = Modifier.padding(start = 32.dp, end = 32.dp)
+                    modifier = Modifier.padding(start = 32.dp, end = 32.dp),
+                    onClick = {
+                        if (endBudget) {
+                            appViewModel.openSheet(PathState(BUDGET_IS_OVER_DESCRIPTION_SHEET))
+                        } else {
+                            appViewModel.openSheet(PathState(NEW_DAY_BUDGET_DESCRIPTION_SHEET))
+                        }
+                    }
                 )
             }
             BoxWithConstraints(
