@@ -24,18 +24,20 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.base.TextRow
+import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.*
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.util.*
 
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BudgetConstructor(
-    requestFinishDate: ((presetDate: Date, callback: (finishDate: Date) -> Unit) -> Unit) = { _: Date, _: (finishDate: Date) -> Unit -> },
+    appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onChange: (budget: BigDecimal, finishDate: Date) -> Unit = { _, _ -> },
 ) {
@@ -83,7 +85,6 @@ fun BudgetConstructor(
         )
     }
 
-    val coroutineScope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column {
@@ -163,13 +164,17 @@ fun BudgetConstructor(
                 stringResource(R.string.finish_date_not_select)
             },
             onClick = {
-                coroutineScope.launch {
-                    requestFinishDate(dateToValue.value) {
-                        dateToValue.value = it
+                appViewModel.openSheet(PathState(
+                    name = FINISH_DATE_SELECTOR_SHEET,
+                    args = mapOf("initialDate" to dateToValue.value),
+                    callback = { result ->
+                        if (!result.containsKey("finishDate")) return@PathState
+
+                        dateToValue.value = result["finishDate"] as Date
 
                         onChange(budget, dateToValue.value)
                     }
-                }
+                ))
             },
             endContent = {
                 UseLastSuggestionChip(

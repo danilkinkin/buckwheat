@@ -6,7 +6,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,15 +18,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.*
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
-import com.danilkinkin.buckwheat.editor.DebugMenu
 import com.danilkinkin.buckwheat.editor.Editor
-import com.danilkinkin.buckwheat.finishPeriod.FinishPeriod
+import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.keyboard.Keyboard
-import com.danilkinkin.buckwheat.onboarding.Onboarding
-import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
-import com.danilkinkin.buckwheat.settings.Settings
+import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
+import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.spendsHistory.History
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorBackground
@@ -35,11 +33,8 @@ import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
-import com.danilkinkin.buckwheat.wallet.FinishDateSelector
-import com.danilkinkin.buckwheat.wallet.Wallet
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -47,18 +42,8 @@ fun MainScreen(
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
 ) {
-    val isDebug = appViewModel.isDebug.observeAsState(false)
     val topSheetState = rememberSwipeableState(TopSheetValue.HalfExpanded)
-    val walletSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val finishDateSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val settingsSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val finishPeriodSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val recalcBudgetSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val onboardingSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val debugMenuSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
     val coroutineScope = rememberCoroutineScope()
-    val presetFinishDate = remember { mutableStateOf<Date?>(null) }
-    val requestFinishDateCallback = remember { mutableStateOf<((finishDate: Date) -> Unit)?>(null) }
     val snackbarHostState = remember { appViewModel.snackbarHostState }
 
     val localDensity = LocalDensity.current
@@ -97,27 +82,15 @@ fun MainScreen(
     }
 
     observeLiveData(spendsViewModel.requireReCalcBudget) {
-        if (it) {
-            coroutineScope.launch {
-                recalcBudgetSheetState.show()
-            }
-        }
+        if (it) appViewModel.openSheet(PathState(RECALCULATE_DAILY_BUDGET_SHEET))
     }
 
     observeLiveData(spendsViewModel.requireSetBudget) {
-        if (it) {
-            coroutineScope.launch {
-                onboardingSheetState.show()
-            }
-        }
+        if (it) appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
     }
 
     observeLiveData(spendsViewModel.finishPeriod) {
-        if (it) {
-            coroutineScope.launch {
-                finishPeriodSheetState.show()
-            }
-        }
+        if (it) appViewModel.openSheet(PathState(FINISH_PERIOD_SHEET))
     }
 
     val keyboardAdditionalOffset = (WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() - 16.dp).coerceAtLeast(0.dp)
@@ -151,21 +124,6 @@ fun MainScreen(
             sheetContentHalfExpand = {
                 Editor(
                     modifier = Modifier.height(with(localDensity) { editorHeight.toDp() }),
-                    onOpenWallet = {
-                        coroutineScope.launch {
-                            walletSheetState.show()
-                        }
-                    },
-                    onOpenSettings = {
-                        coroutineScope.launch {
-                            settingsSheetState.show()
-                        }
-                    },
-                    onDebugMenu = {
-                        coroutineScope.launch {
-                            debugMenuSheetState.show()
-                        }
-                    },
                     onOpenHistory = {
                         coroutineScope.launch {
                             topSheetState.animateTo(TopSheetValue.Expanded)
@@ -198,133 +156,7 @@ fun MainScreen(
             SwipeableSnackbarHost(hostState = snackbarHostState)
         }
 
-        val requireSetBudget by spendsViewModel.requireSetBudget.observeAsState(false)
-        val finishPeriod by spendsViewModel.finishPeriod.observeAsState(false)
-
-        BottomSheetWrapper(
-            state = walletSheetState,
-            cancelable = !requireSetBudget && !finishPeriod,
-        ) {
-            Wallet(
-                forceChange = finishPeriod || requireSetBudget,
-                requestFinishDate = { presetValue, callback ->
-                    coroutineScope.launch {
-                        finishDateSheetState.show()
-
-                        presetFinishDate.value = presetValue
-                        requestFinishDateCallback.value = callback
-                    }
-                },
-                onClose = {
-                    coroutineScope.launch {
-                        walletSheetState.hide()
-                    }
-                }
-            )
-        }
-
-        BottomSheetWrapper(state = finishDateSheetState) {
-            FinishDateSelector(
-                selectDate = presetFinishDate.value,
-                onBackPressed = {
-                    coroutineScope.launch {
-                        finishDateSheetState.hide()
-                    }
-                },
-                onApply = {
-                    requestFinishDateCallback.value?.let { callback -> callback(it) }
-                    coroutineScope.launch {
-                        finishDateSheetState.hide()
-                    }
-                },
-            )
-        }
-
-        BottomSheetWrapper(state = settingsSheetState) {
-            Settings(
-                onClose = {
-                    coroutineScope.launch {
-                        settingsSheetState.hide()
-                    }
-                }
-            )
-        }
-
-        BottomSheetWrapper(
-            state = recalcBudgetSheetState,
-            cancelable = false,
-        ) {
-            RecalcBudget(
-                onClose = {
-                    coroutineScope.launch {
-                        recalcBudgetSheetState.hide()
-                    }
-                }
-            )
-        }
-
-        BottomSheetWrapper(
-            state = finishPeriodSheetState,
-            cancelable = false,
-        ) {
-            FinishPeriod(
-                onCreateNewPeriod = {
-                    coroutineScope.launch {
-                        walletSheetState.show()
-                    }
-                },
-                onClose = {
-                    coroutineScope.launch {
-                        finishPeriodSheetState.hide()
-                    }
-                },
-            )
-        }
-
-        BottomSheetWrapper(
-            state = onboardingSheetState,
-            cancelable = false,
-        ) {
-            Onboarding(
-                onSetBudget = {
-                    coroutineScope.launch {
-                        walletSheetState.show()
-                    }
-                },
-                onClose = {
-                    coroutineScope.launch {
-                        onboardingSheetState.hide()
-                    }
-                },
-            )
-        }
-
-        if (isDebug.value) {
-            BottomSheetWrapper(state = debugMenuSheetState) {
-                DebugMenu(
-                    onPeriodSummary = {
-                        coroutineScope.launch {
-                            finishPeriodSheetState.show()
-                        }
-                    },
-                    onDailySummary = {
-                        coroutineScope.launch {
-                            recalcBudgetSheetState.show()
-                        }
-                    },
-                    onBoarding = {
-                        coroutineScope.launch {
-                            onboardingSheetState.show()
-                        }
-                    },
-                    onClose = {
-                        coroutineScope.launch {
-                            debugMenuSheetState.hide()
-                        }
-                    },
-                )
-            }
-        }
+        BottomSheets()
     }
 }
 

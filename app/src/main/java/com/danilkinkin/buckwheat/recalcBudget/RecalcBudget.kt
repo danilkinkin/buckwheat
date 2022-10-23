@@ -22,6 +22,8 @@ import com.danilkinkin.buckwheat.util.*
 import java.math.RoundingMode
 import kotlin.math.abs
 
+const val RECALCULATE_DAILY_BUDGET_SHEET = "recalculateDailyBudget"
+
 @Composable
 fun RecalcBudget(
     spendsViewModel: SpendsViewModel = hiltViewModel(),

@@ -13,14 +13,17 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.base.Divider
+import com.danilkinkin.buckwheat.data.PathState
+import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
+import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
+import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
+
+const val DEBUG_MENU_SHEET = "debugMenu"
 
 @Composable
 fun DebugMenu(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
-    onDailySummary: () -> Unit = {},
-    onPeriodSummary: () -> Unit = {},
-    onBoarding: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
     val navigationBarHeight = androidx.compose.ui.unit.max(
@@ -45,21 +48,21 @@ fun DebugMenu(
             ButtonRow(
                 text = "Open daily summary screen",
                 onClick = {
-                    onDailySummary()
+                    appViewModel.openSheet(PathState(RECALCULATE_DAILY_BUDGET_SHEET))
                     onClose()
                 },
             )
             ButtonRow(
                 text = "Open period summary screen",
                 onClick = {
-                    onPeriodSummary()
+                    appViewModel.openSheet(PathState(FINISH_PERIOD_SHEET))
                     onClose()
                 },
             )
             ButtonRow(
                 text = "Open onboarding screen",
                 onClick = {
-                    onBoarding()
+                    appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
                     onClose()
                 },
             )

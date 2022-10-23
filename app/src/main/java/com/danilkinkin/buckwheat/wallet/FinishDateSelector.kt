@@ -24,6 +24,7 @@ import com.danilkinkin.buckwheat.util.toLocalDate
 import java.time.LocalDate
 import java.util.*
 
+const val FINISH_DATE_SELECTOR_SHEET = "finishDateSelector"
 
 @Composable
 fun FinishDateSelector(

@@ -46,6 +46,8 @@ class ModalBottomSheetState(
     confirmStateChange = confirmStateChange
 ) {
     var render: Boolean by mutableStateOf(render)
+    var args: Map<String, Any> by mutableStateOf(emptyMap())
+    var callback: (result: Map<String, Any>) -> Unit by mutableStateOf({})
 
     val isVisible: Boolean
         get() = currentValue != ModalBottomSheetValue.Hidden
@@ -77,8 +79,17 @@ class ModalBottomSheetState(
         animateTo(targetValue = targetValue)
     }
 
-    suspend fun show() {
+    suspend fun show(args: Map<String, Any>) {
+        this.args = args
         this.render = true
+    }
+
+    suspend fun show() {
+        show(emptyMap())
+    }
+
+    fun bindCallback(callback: (result: Map<String, Any>) -> Unit) {
+        this.callback = callback
     }
 
     internal suspend fun halfExpand() {
@@ -90,8 +101,13 @@ class ModalBottomSheetState(
 
     internal suspend fun expand() = animateTo(ModalBottomSheetValue.Expanded)
 
-    suspend fun hide() {
+    suspend fun hide(result: Map<String, Any>) {
+        callback(result)
         animateTo(ModalBottomSheetValue.Hidden)
+    }
+
+    suspend fun hide() {
+        hide(emptyMap())
     }
 
     internal val nestedScrollConnection = this.PreUpPostDownNestedScrollConnection

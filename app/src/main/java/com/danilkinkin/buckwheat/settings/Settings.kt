@@ -24,6 +24,7 @@ import com.danilkinkin.buckwheat.ui.ThemeMode
 import com.danilkinkin.buckwheat.ui.switchTheme
 import kotlinx.coroutines.launch
 
+const val SETTINGS_SHEET = "settings"
 
 @Composable
 fun Settings(onClose: () -> Unit = {}) {

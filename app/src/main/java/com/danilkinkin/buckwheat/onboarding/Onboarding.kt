@@ -15,6 +15,8 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
+const val ON_BOARDING_SHEET = "onBoarding"
+
 @Composable
 fun Onboarding(
     onSetBudget: () -> Unit = {},

@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,18 +28,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.settings.SETTINGS_SHEET
 import com.danilkinkin.buckwheat.util.observeLiveData
+import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun EditorToolbar(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
-    onOpenWallet: () -> Unit = {},
-    onOpenSettings: () -> Unit = {},
-    onDebugMenu: () -> Unit = {},
     onOpenHistory: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -107,18 +108,18 @@ fun EditorToolbar(
             BigIconButton(
                 icon = painterResource(R.drawable.ic_developer_mode),
                 contentDescription = null,
-                onClick = onDebugMenu,
+                onClick = { appViewModel.openSheet(PathState(DEBUG_MENU_SHEET)) },
             )
         }
         BigIconButton(
             icon = painterResource(R.drawable.ic_balance_wallet),
             contentDescription = null,
-            onClick = onOpenWallet,
+            onClick = { appViewModel.openSheet(PathState(WALLET_SHEET)) },
         )
         BigIconButton(
             icon = painterResource(R.drawable.ic_settings),
             contentDescription = null,
-            onClick = onOpenSettings,
+            onClick = { appViewModel.openSheet(PathState(SETTINGS_SHEET)) },
         )
     }
 }

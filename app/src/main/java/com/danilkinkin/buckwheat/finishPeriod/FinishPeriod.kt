@@ -22,6 +22,8 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.countDays
 
+const val FINISH_PERIOD_SHEET = "finishPeriod"
+
 @Composable
 fun FinishPeriod(
     spendsViewModel: SpendsViewModel = hiltViewModel(),

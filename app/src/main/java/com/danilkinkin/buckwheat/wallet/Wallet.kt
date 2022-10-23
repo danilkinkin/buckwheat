@@ -26,11 +26,12 @@ import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
 import java.util.*
 
+const val WALLET_SHEET = "wallet"
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Wallet(
     forceChange: Boolean = false,
-    requestFinishDate: ((presetDate: Date, callback: (finishDate: Date) -> Unit) -> Unit) = { _: Date, _: (finishDate: Date) -> Unit -> },
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
@@ -124,7 +125,6 @@ fun Wallet(
                 ) { targetIsEdit ->
                     if (targetIsEdit) {
                         BudgetConstructor(
-                            requestFinishDate = requestFinishDate,
                             onChange = { newBudget, finishDate ->
                                 budget = newBudget
                                 dateToValue.value = finishDate

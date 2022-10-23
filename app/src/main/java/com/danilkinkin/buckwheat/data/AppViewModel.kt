@@ -19,6 +19,12 @@ data class SystemBarState (
     val navigationBarColor: Color,
 )
 
+data class PathState (
+    val name: String,
+    val args: Map<String, Any> = emptyMap(),
+    val callback: (result: Map<String, Any>) -> Unit = {},
+)
+
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
@@ -29,10 +35,11 @@ class AppViewModel @Inject constructor(
     var snackbarHostState = SnackbarHostState()
         private set
 
-
     var lockSwipeable: MutableState<Boolean> = mutableStateOf(false)
 
     var statusBarStack: MutableList<() -> SystemBarState> = emptyList<() -> SystemBarState>().toMutableList()
+
+    var sheetStates: MutableLiveData<Map<String, PathState>> = MutableLiveData(emptyMap())
 
     var isDebug: MutableLiveData<Boolean> = MutableLiveData(try {
         storage.get("isDebug").value.toBoolean()
@@ -44,5 +51,13 @@ class AppViewModel @Inject constructor(
         storage.set(Storage("isDebug", debug.toString()))
 
         isDebug.value = debug
+    }
+
+    fun openSheet(state: PathState) {
+        sheetStates.value = sheetStates.value!!.plus(Pair(state.name, state))
+    }
+
+    fun closeSheet(name: String) {
+        sheetStates.value = sheetStates.value!!.minus(name)
     }
 }

@@ -13,25 +13,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
-import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.isNightMode
+import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
-import com.danilkinkin.buckwheat.wallet.Wallet
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheetWrapper(
+    name: String,
+    appViewModel: AppViewModel = viewModel(),
     cancelable: Boolean = true,
     state: ModalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
-    content: @Composable (() -> Unit) -> Unit
+    content: @Composable (state: ModalBottomSheetState) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+
+    observeLiveData(appViewModel.sheetStates) { sheets ->
+        if (sheets.containsKey(name)) {
+            state.bindCallback(sheets[name]!!.callback)
+            coroutineScope.launch { state.show(sheets[name]!!.args) }
+        } else if (state.targetValue !== ModalBottomSheetValue.Hidden) {
+            coroutineScope.launch { state.hide() }
+        }
+    }
 
     DisposableEffect(state.render) {
         if (state.render) coroutineScope.launch { state.realShow() }
@@ -40,7 +51,10 @@ fun BottomSheetWrapper(
     }
 
     DisposableEffect(state.currentValue) {
-        if (state.currentValue === ModalBottomSheetValue.Hidden) state.render = false
+        if (state.currentValue === ModalBottomSheetValue.Hidden) {
+            state.render = false
+            appViewModel.closeSheet(name)
+        }
 
         onDispose {  }
     }
@@ -91,7 +105,6 @@ fun BottomSheetWrapper(
             topEnd = CornerSize(28.dp * (1F - statusBarFillProgress)),
         ),
         sheetContent = {
-
             setSystemStyle(
                 style = {
                     SystemBarState(
@@ -111,11 +124,7 @@ fun BottomSheetWrapper(
                         top = statusBarHeight * statusBarFillProgress
                     )
             ) {
-                content {
-                    coroutineScope.launch {
-                        state.hide()
-                    }
-                }
+                content(state)
             }
 
             if (cancelable) {
@@ -142,35 +151,7 @@ fun BottomSheetWrapper(
     BackHandler(state.isVisible) {
         if (cancelable) {
             coroutineScope.launch {
-                state.hide()
-            }
-        }
-    }
-
-    LaunchedEffect(state.currentValue) {
-
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Preview
-@Composable
-fun PreviewBottomSheetWrapper() {
-    val state = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val coroutineScope = rememberCoroutineScope()
-    
-    BuckwheatTheme {
-        androidx.compose.material3.Surface(modifier = Modifier.fillMaxSize()) {
-            androidx.compose.material3.Button(onClick = {
-                coroutineScope.launch {
-                    state.show()
-                }
-            }) {
-                androidx.compose.material3.Text(text = "Show")
-            }
-
-            BottomSheetWrapper(state = state) {
-                Wallet()
+                appViewModel.closeSheet(name = name)
             }
         }
     }
