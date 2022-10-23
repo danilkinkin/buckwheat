@@ -144,7 +144,7 @@ fun BudgetConstructor(
                             )
                         },
                     )
-                    Box(Modifier.padding(start = 56.dp, bottom = 12.dp)) {
+                    Box(Modifier.padding(start = 56.dp, bottom = 12.dp, end = 16.dp)) {
                         input()
                     }
                 }

@@ -47,7 +47,7 @@ fun Total(
                     ),
                 ),
                 color = textColor.copy(alpha = 0.8f),
-                modifier = Modifier.padding(start = 56.dp)
+                modifier = Modifier.padding(start = 56.dp, end = 16.dp)
             )
         } else {
             Row(

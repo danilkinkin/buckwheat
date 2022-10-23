@@ -32,7 +32,7 @@ fun BudgetEndWarn(
     AnimatedVisibility(
         visible = overdaft && forceShow,
         enter = fadeIn() + slideInHorizontally { with(localDensity) { 30.dp.toPx().toInt() } },
-        exit = fadeOut()
+        exit = fadeOut() + slideOutHorizontally { with(localDensity) { 30.dp.toPx().toInt() } },
 
     ) {
         val containerColor by animateColorAsState(
@@ -133,7 +133,7 @@ fun BudgetEndWarn(
                             value = budgetPerDaySplit,
                             label = stringResource(id = R.string.new_daily_budget),
                             fontSizeValue = MaterialTheme.typography.bodyLarge.fontSize,
-                            fontSizeLabel = MaterialTheme.typography.labelSmall.fontSize,
+                            fontSizeLabel = MaterialTheme.typography.labelMedium.fontSize,
                             contentPaddingValues = PaddingValues(0.dp),
                         )
                     }
