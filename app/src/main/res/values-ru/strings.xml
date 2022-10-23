@@ -19,6 +19,7 @@
         <item quantity="few">%1$s дня</item>
         <item quantity="many">%1$s дней</item>
     </plurals>
+    <string name="enter_spent_placeholder">Введите трату</string>
 
     <!-- History -->
     <string name="new_budget">Бюджет установлен</string>

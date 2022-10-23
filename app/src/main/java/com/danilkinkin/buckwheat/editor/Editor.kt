@@ -335,7 +335,7 @@ fun Editor(
                                 horizontalAlignment = Alignment.Start,
                             ) {
                                 Text(
-                                    text = "Enter spent",
+                                    text = stringResource(R.string.enter_spent_placeholder),
                                     style = MaterialTheme.typography.displayLarge,
                                     fontSize = MaterialTheme.typography.displaySmall.fontSize,
                                     color = textColor.copy(alpha = 0.6f),
@@ -364,7 +364,7 @@ fun Editor(
                             EditableTextWithLabel(
                                 value = spentValue,
                                 label = stringResource(id = R.string.spent),
-                                placeholder = "  Enter spent",
+                                placeholder = "  ${stringResource(R.string.enter_spent_placeholder)}",
                                 onChangeValue = {
                                     val converted = tryConvertStringToNumber(it)
 

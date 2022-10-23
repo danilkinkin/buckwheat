@@ -17,6 +17,7 @@
         <item quantity="one">%1$s day</item>
         <item quantity="other">%1$s days</item>
     </plurals>
+    <string name="enter_spent_placeholder">Enter spent</string>
 
     <!-- History -->
     <string name="new_budget">Budget set</string>
