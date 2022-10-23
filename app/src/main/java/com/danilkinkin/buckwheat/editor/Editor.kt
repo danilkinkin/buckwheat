@@ -121,7 +121,7 @@ fun Editor(
                     stage = AnimState.RESET
                 }
                 focusManager.clearFocus()
-                calculateValues(budget = false)
+                //calculateValues(budget = false)
             }
             SpendsViewModel.Stage.CREATING_SPENT -> {
                 calculateValues(budget = false)
@@ -145,10 +145,7 @@ fun Editor(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        Column(
-            Modifier
-                .fillMaxHeight()
-        ) {
+        Column(Modifier.fillMaxHeight()) {
             EditorToolbar(
                 onOpenWallet = onOpenWallet,
                 onOpenSettings = onOpenSettings,
@@ -160,7 +157,11 @@ fun Editor(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 val alpha: Float by animateFloatAsState(
-                    if (restBudgetValue > 0.toBigDecimal()) 1f else 0f
+                    if (restBudgetValue > 0.toBigDecimal()) 1f else 0f,
+                    tween(
+                        durationMillis = 150,
+                        easing = EaseInOutQuad,
+                    ),
                 )
 
                 if (stage != AnimState.IDLE) {
@@ -211,7 +212,10 @@ fun Editor(
                         indication = null
                     ) {
                         requestFocus = true
-                        stage = AnimState.EDITING
+                        calculateValues(budget = false)
+
+                        spendsViewModel.createSpent()
+                        spendsViewModel.editSpent(0.toBigDecimal())
                     },
             ) {
                 val maxHeight = with(localDensity) {
@@ -305,21 +309,35 @@ fun Editor(
                                     easing = EaseInQuad,
                                 )
                             )
-                            AnimState.RESET -> fadeIn(
+                            AnimState.RESET -> slideInHorizontally(
                                 tween(
-                                    durationMillis = 50,
+                                    durationMillis = 150,
+                                    easing = EaseInOutQuad,
+                                )
+                            ) {
+                                currencyShiftWidth
+                            } + fadeIn(
+                                tween(
+                                    durationMillis = 150,
                                     easing = EaseInQuad,
                                 )
-                            ) with fadeOut(
+                            ) with slideOutHorizontally(
                                 tween(
-                                    durationMillis = 50,
+                                    durationMillis = 150,
+                                    easing = EaseInOutQuad,
+                                )
+                            ) {
+                                -currencyShiftWidth
+                            } + fadeOut(
+                                tween(
+                                    durationMillis = 150,
                                     easing = EaseInQuad,
                                 )
                             )
                             else -> fadeIn(
-                                tween(durationMillis = 50)
+                                tween(durationMillis = 150)
                             ) with fadeOut(
-                                tween(durationMillis = 50)
+                                tween(durationMillis = 150)
                             )
                         }.using(
                             SizeTransform(clip = false)

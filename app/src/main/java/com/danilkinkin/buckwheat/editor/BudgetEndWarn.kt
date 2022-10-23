@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.editor
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -31,8 +32,28 @@ fun BudgetEndWarn(
 
     AnimatedVisibility(
         visible = overdaft && forceShow,
-        enter = fadeIn() + slideInHorizontally { with(localDensity) { 30.dp.toPx().toInt() } },
-        exit = fadeOut() + slideOutHorizontally { with(localDensity) { 30.dp.toPx().toInt() } },
+        enter = fadeIn(
+            tween(
+                durationMillis = 150,
+                easing = EaseInOutQuad,
+            )
+        ) + slideInHorizontally(
+            tween(
+                durationMillis = 150,
+                easing = EaseInOutQuad,
+            )
+        ) { with(localDensity) { 30.dp.toPx().toInt() } },
+        exit = fadeOut(
+            tween(
+                durationMillis = 150,
+                easing = EaseInOutQuad,
+            )
+        ) + slideOutHorizontally(
+            tween(
+                durationMillis = 150,
+                easing = EaseInOutQuad,
+            )
+        ) { with(localDensity) { 30.dp.toPx().toInt() } },
 
     ) {
         val containerColor by animateColorAsState(
