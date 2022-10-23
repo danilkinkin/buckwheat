@@ -40,7 +40,6 @@ fun Keyboard(
                 newValue += "."
             }
             SpendsViewModel.Action.REMOVE_LAST -> {
-
                 newValue = newValue.dropLast(1)
 
 

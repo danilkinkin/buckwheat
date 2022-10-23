@@ -8,7 +8,10 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 @Composable
 fun rememberAppKeyboard(
     keyboardViewModel: KeyboardViewModel = hiltViewModel(),
+    manualDispatcher: ((action: SpendsViewModel.Action, value: Int?) -> Unit) = { _, _ -> },
 ): TextInputService {
+    keyboardViewModel.manualDispatcher = manualDispatcher
+
     return keyboardViewModel.keyboardService
 }
 

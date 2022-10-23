@@ -12,10 +12,10 @@ class KeyboardViewModel @Inject constructor(
 ) : ViewModel() {
     var state: TextFieldValue? = null
     var editCommandDispatcher: ((List<EditCommand>) -> Unit)? = null
+    var manualDispatcher: ((action: SpendsViewModel.Action, value: Int?) -> Unit)? = { _, _ -> }
     var textFiledIsFocus: Boolean = false
 
     private val platformTextInputService = object : PlatformTextInputService {
-
         override fun hideSoftwareKeyboard() { }
 
         override fun showSoftwareKeyboard() { }
@@ -42,6 +42,10 @@ class KeyboardViewModel @Inject constructor(
     }
 
     fun executeAction(action: SpendsViewModel.Action, value: Int? = null) {
+        if (manualDispatcher !== null) {
+            manualDispatcher!!(action, value)
+        }
+
         if (editCommandDispatcher === null) return
 
         if (action === SpendsViewModel.Action.PUT_NUMBER) {
