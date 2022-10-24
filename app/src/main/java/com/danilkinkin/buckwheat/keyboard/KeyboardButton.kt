@@ -23,7 +23,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import androidx.compose.ui.unit.sp
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.editor.calcMaxFont
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorButton
 import com.danilkinkin.buckwheat.ui.colorOnButton
@@ -87,11 +89,16 @@ fun KeyboardButton(
             contentAlignment = Alignment.Center
         ) {
             if (text !== null) {
+                val fontSize = com.danilkinkin.buckwheat.util.min(
+                    calcMaxFont(minSizeFloat),
+                    46.sp,
+                )
+
                 Text(
                     text = text,
                     color = contentColor,
                     style = MaterialTheme.typography.titleLarge,
-                    fontSize = with(localDensity) { min(minSizeFloat - minSizeFloat / 2F, 904F).toSp() },
+                    fontSize = fontSize,
                 )
             }
             if (icon !== null) {
