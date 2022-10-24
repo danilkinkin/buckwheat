@@ -71,7 +71,7 @@ fun KeyboardButton(
             .fillMaxSize()
             .onGloballyPositioned {
                 minSize = with(localDensity) { min(it.size.height, it.size.width).toDp() }
-                minSizeFloat = with(localDensity) { min(it.size.height, it.size.width).toFloat() }
+                minSizeFloat = min(it.size.height, it.size.width).toFloat()
             }
             .clip(RoundedCornerShape(radius.value))
     ) {
@@ -104,7 +104,8 @@ fun KeyboardButton(
             if (icon !== null) {
                 Icon(
                     painter = icon,
-                    modifier = Modifier.size(min(minSize - minSize / 1.6F, 154.dp)),
+                    tint = contentColor,
+                    modifier = Modifier.size(min(minSize * 0.34f, 154.dp)),
                     contentDescription = null,
                 )
             }
