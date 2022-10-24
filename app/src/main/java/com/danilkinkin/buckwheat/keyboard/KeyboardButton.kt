@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
@@ -98,6 +99,7 @@ fun KeyboardButton(
                     text = text,
                     color = contentColor,
                     style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.W600,
                     fontSize = fontSize,
                 )
             }

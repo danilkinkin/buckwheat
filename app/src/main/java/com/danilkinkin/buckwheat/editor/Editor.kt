@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphIntrinsics
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextOverflow
@@ -227,8 +228,6 @@ fun Editor(
                     100.sp,
                 )
 
-                Log.d("stage", stage.toString())
-
                 val smallShift = with(localDensity) { 30.dp.toPx().toInt() }
                 val bigShift = with(localDensity) { 40.dp.toPx().toInt() }
 
@@ -356,7 +355,8 @@ fun Editor(
                                     text = stringResource(R.string.enter_spent_placeholder),
                                     style = MaterialTheme.typography.displayLarge,
                                     fontSize = MaterialTheme.typography.displaySmall.fontSize,
-                                    color = textColor.copy(alpha = 0.6f),
+                                    fontWeight = FontWeight.W600,
+                                    color = textColor.copy(alpha = 0.8f),
                                     overflow = TextOverflow.Visible,
                                     softWrap = false,
                                     modifier = Modifier
@@ -402,6 +402,7 @@ fun Editor(
                                 focusRequester = focusRequester,
                                 placeholderStyle = SpanStyle(
                                     fontSize = MaterialTheme.typography.displaySmall.fontSize,
+                                    fontWeight = FontWeight.W600,
                                     baselineShift = BaselineShift(0.23f)
                                 ),
                             )

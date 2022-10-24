@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -66,6 +67,7 @@ fun EditableTextWithLabel(
                     onChangeValue = { onChangeValue(it) },
                     textStyle = MaterialTheme.typography.displayLarge.copy(
                         fontSize = fontSizeValue,
+                        fontWeight = FontWeight.W700,
                         color = color,
                     ),
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),

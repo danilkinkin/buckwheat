@@ -103,7 +103,9 @@ fun MainScreen(
             constraints.maxWidth.toFloat()
         } else {
             constraints.maxWidth.toFloat() / 2f
-        }.coerceAtMost(with(localDensity) { 400.dp.toPx() })
+        }
+            .coerceAtMost(with(localDensity) { 500.dp.toPx() })
+            .coerceAtMost(contentHeight / 2)
         val editorHeight = contentHeight - keyboardHeight - with(localDensity) { keyboardAdditionalOffset.toPx() }
 
         Row {
