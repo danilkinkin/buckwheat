@@ -200,7 +200,8 @@ fun TopSheetLayout(
                             .height(4.dp)
                             .width(30.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    .copy(alpha = 0.3f),
                                 shape = CircleShape
                             )
                             .align(Alignment.Center)
