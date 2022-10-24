@@ -141,7 +141,7 @@ fun BottomSheetWrapper(
                             .height(4.dp)
                             .width(30.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.primary,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
                                 shape = CircleShape
                             )
                             .align(Alignment.Center)
