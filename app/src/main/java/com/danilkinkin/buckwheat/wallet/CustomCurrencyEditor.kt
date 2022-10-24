@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.RenderAdaptivePane
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.combineColors
 import java.lang.Integer.min
@@ -108,6 +110,7 @@ fun CustomCurrencyEditorContent(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CustomCurrencyEditor(
+    windowSizeClass: WindowWidthSizeClass,
     defaultCurrency: String? = null,
     onChange: (currency: String) -> Unit,
     onClose: () -> Unit,
@@ -116,11 +119,13 @@ fun CustomCurrencyEditor(
         onDismissRequest = { onClose() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        CustomCurrencyEditorContent(
-            defaultCurrency = defaultCurrency,
-            onChange = onChange,
-            onClose = { onClose() }
-        )
+        RenderAdaptivePane(windowSizeClass) {
+            CustomCurrencyEditorContent(
+                defaultCurrency = defaultCurrency,
+                onChange = onChange,
+                onClose = { onClose() }
+            )
+        }
     }
 }
 

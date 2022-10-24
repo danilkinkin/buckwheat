@@ -1,16 +1,19 @@
 package com.danilkinkin.buckwheat.wallet
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,6 +24,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.base.Divider
+import com.danilkinkin.buckwheat.base.RenderAdaptivePane
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
 import java.util.*
@@ -147,6 +151,7 @@ private fun LazyListScope.itemsCurrency(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun WorldCurrencyChooser(
+    windowSizeClass: WindowWidthSizeClass,
     defaultCurrency: Currency? = null,
     onSelect: (currency: Currency) -> Unit,
     onClose: () -> Unit,
@@ -155,11 +160,13 @@ fun WorldCurrencyChooser(
         onDismissRequest = { onClose() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        WorldCurrencyChooserContent(
-            defaultCurrency = defaultCurrency,
-            onSelect = onSelect,
-            onClose = { onClose() }
-        )
+        RenderAdaptivePane(windowSizeClass) {
+            WorldCurrencyChooserContent(
+                defaultCurrency = defaultCurrency,
+                onSelect = onSelect,
+                onClose = { onClose() }
+            )
+        }
     }
 }
 

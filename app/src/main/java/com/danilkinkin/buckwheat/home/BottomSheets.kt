@@ -1,6 +1,8 @@
 package com.danilkinkin.buckwheat.home
 
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,6 +31,7 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheets(
+    windowSizeClass: WindowWidthSizeClass,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
@@ -40,10 +43,12 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = WALLET_SHEET,
+        windowSizeClass = windowSizeClass,
         cancelable = !requireSetBudget && !finishPeriod,
     ) { state ->
         Wallet(
             forceChange = finishPeriod || requireSetBudget,
+            windowSizeClass = windowSizeClass,
             onClose = {
                 coroutineScope.launch {
                     state.hide()
@@ -52,7 +57,10 @@ fun BottomSheets(
         )
     }
 
-    BottomSheetWrapper(name = FINISH_DATE_SELECTOR_SHEET) { state ->
+    BottomSheetWrapper(
+        name = FINISH_DATE_SELECTOR_SHEET,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
         FinishDateSelector(
             selectDate = state.args["initialDate"] as Date,
             onBackPressed = {
@@ -68,7 +76,10 @@ fun BottomSheets(
         )
     }
 
-    BottomSheetWrapper(name = SETTINGS_SHEET) { state ->
+    BottomSheetWrapper(
+        name = SETTINGS_SHEET,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
         Settings(
             onClose = {
                 coroutineScope.launch { state.hide() }
@@ -78,6 +89,7 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = RECALCULATE_DAILY_BUDGET_SHEET,
+        windowSizeClass = windowSizeClass,
         cancelable = false,
     ) { state ->
         RecalcBudget(
@@ -89,6 +101,7 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = FINISH_PERIOD_SHEET,
+        windowSizeClass = windowSizeClass,
         cancelable = false,
     ) { state ->
         FinishPeriod(
@@ -103,6 +116,7 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = ON_BOARDING_SHEET,
+        windowSizeClass = windowSizeClass,
         cancelable = false,
     ) { state ->
         Onboarding(
@@ -115,7 +129,10 @@ fun BottomSheets(
         )
     }
 
-    BottomSheetWrapper(name = NEW_DAY_BUDGET_DESCRIPTION_SHEET) { state ->
+    BottomSheetWrapper(
+        name = NEW_DAY_BUDGET_DESCRIPTION_SHEET,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
         NewDayBudgetDescription(
             onClose = {
                 coroutineScope.launch { state.hide() }
@@ -123,7 +140,10 @@ fun BottomSheets(
         )
     }
 
-    BottomSheetWrapper(name = BUDGET_IS_OVER_DESCRIPTION_SHEET) { state ->
+    BottomSheetWrapper(
+        name = BUDGET_IS_OVER_DESCRIPTION_SHEET,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
         BudgetIsOverDescription(
             onClose = {
                 coroutineScope.launch { state.hide() }
@@ -132,7 +152,10 @@ fun BottomSheets(
     }
 
     if (isDebug.value) {
-        BottomSheetWrapper(name = DEBUG_MENU_SHEET) { state ->
+        BottomSheetWrapper(
+            name = DEBUG_MENU_SHEET,
+            windowSizeClass = windowSizeClass,
+        ) { state ->
             DebugMenu(
                 onClose = {
                     coroutineScope.launch { state.hide() }

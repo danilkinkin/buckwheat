@@ -26,6 +26,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.roundToInt
 import androidx.compose.foundation.Canvas
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.ui.Alignment
 import com.danilkinkin.buckwheat.topSheet.PreUpPostDownNestedScrollConnection
 import com.danilkinkin.buckwheat.topSheet.SwipeableState
 import com.danilkinkin.buckwheat.topSheet.swipeable
@@ -181,6 +183,7 @@ fun rememberModalBottomSheetState(
 @ExperimentalMaterialApi
 fun ModalBottomSheetLayout(
     sheetContent: @Composable () -> Unit,
+    windowSizeClass: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
     sheetState: ModalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
     sheetShape: Shape = MaterialTheme.shapes.large,
@@ -192,7 +195,7 @@ fun ModalBottomSheetLayout(
     content: @Composable () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    BoxWithConstraints(modifier) {
+    BoxWithConstraints(modifier, contentAlignment = Alignment.TopEnd) {
         val fullHeight = constraints.maxHeight.toFloat()
         val sheetHeightState = remember { mutableStateOf<Float?>(null) }
         Box(Modifier.fillMaxSize()) {
@@ -207,33 +210,45 @@ fun ModalBottomSheetLayout(
                 visible = sheetState.targetValue != ModalBottomSheetValue.Hidden
             )
         }
-        Surface(
-            Modifier
-                .fillMaxWidth()
-                .then(if (cancelable) { Modifier.nestedScroll(sheetState.nestedScrollConnection) } else { Modifier })
-                .offset {
-                    val y = if (sheetState.anchors.isEmpty()) {
-                        // if we don't know our anchors yet, render the sheet as hidden
-                        fullHeight.roundToInt()
-                    } else {
-                        // if we do know our anchors, respect them
-                        sheetState.offset.value.roundToInt()
-                    }
-                    IntOffset(0, y)
-                }
-                .bottomSheetSwipeable(sheetState, fullHeight, sheetHeightState, cancelable),
-            shape = sheetShape,
-            elevation = sheetElevation,
-            color = sheetBackgroundColor,
-            contentColor = sheetContentColor
+
+        RenderAdaptivePane(
+            windowSizeClass = windowSizeClass,
+            contentAlignment = Alignment.TopCenter,
         ) {
-            Box(
-                modifier = Modifier
-                    .onGloballyPositioned {
-                        sheetHeightState.value = it.size.height.toFloat()
+            Surface(
+                Modifier
+                    .fillMaxWidth()
+                    .then(
+                        if (cancelable) {
+                            Modifier.nestedScroll(sheetState.nestedScrollConnection)
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .offset {
+                        val y = if (sheetState.anchors.isEmpty()) {
+                            // if we don't know our anchors yet, render the sheet as hidden
+                            fullHeight.roundToInt()
+                        } else {
+                            // if we do know our anchors, respect them
+                            sheetState.offset.value.roundToInt()
+                        }
+                        IntOffset(0, y)
                     }
+                    .bottomSheetSwipeable(sheetState, fullHeight, sheetHeightState, cancelable),
+                shape = sheetShape,
+                elevation = sheetElevation,
+                color = sheetBackgroundColor,
+                contentColor = sheetContentColor
             ) {
-                sheetContent()
+                Box(
+                    modifier = Modifier
+                        .onGloballyPositioned {
+                            sheetHeightState.value = it.size.height.toFloat()
+                        }
+                ) {
+                    sheetContent()
+                }
             }
         }
     }

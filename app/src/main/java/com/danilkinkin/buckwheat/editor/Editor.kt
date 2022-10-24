@@ -46,7 +46,7 @@ fun Editor(
     modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
-    onOpenHistory: () -> Unit = {},
+    onOpenHistory: (() -> Unit)? = null,
 ) {
     var currState by remember { mutableStateOf<AnimState?>(null) }
 
@@ -144,9 +144,7 @@ fun Editor(
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxHeight()) {
-            EditorToolbar(
-                onOpenHistory = onOpenHistory,
-            )
+            EditorToolbar(onOpenHistory = onOpenHistory)
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd

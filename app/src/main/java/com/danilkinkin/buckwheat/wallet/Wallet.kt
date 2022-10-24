@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -32,6 +33,7 @@ const val WALLET_SHEET = "wallet"
 @Composable
 fun Wallet(
     forceChange: Boolean = false,
+    windowSizeClass: WindowWidthSizeClass,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
@@ -235,6 +237,7 @@ fun Wallet(
 
     if (openCurrencyChooserDialog.value) {
         WorldCurrencyChooser(
+            windowSizeClass = windowSizeClass,
             defaultCurrency = if (currency.type === CurrencyType.FROM_LIST) {
                 Currency.getInstance(currency.value)
             } else {
@@ -251,6 +254,7 @@ fun Wallet(
 
     if (openCustomCurrencyEditorDialog.value) {
         CustomCurrencyEditor(
+            windowSizeClass = windowSizeClass,
             defaultCurrency = if (currency.type === CurrencyType.CUSTOM) {
                 currency.value
             } else {
@@ -267,6 +271,7 @@ fun Wallet(
 
     if (openConfirmChangeBudgetDialog.value) {
         ConfirmChangeBudgetDialog(
+            windowSizeClass = windowSizeClass,
             onConfirm = {
                 spendsViewModel.changeCurrency(currency)
                 spendsViewModel.changeBudget(budget, dateToValue.value)
@@ -282,6 +287,6 @@ fun Wallet(
 @Composable
 fun PreviewWallet() {
     BuckwheatTheme {
-        Wallet()
+        Wallet(windowSizeClass = WindowWidthSizeClass.Compact)
     }
 }

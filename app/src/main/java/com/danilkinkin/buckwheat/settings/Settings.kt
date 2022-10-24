@@ -18,7 +18,7 @@ import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.TextRow
-import com.danilkinkin.buckwheat.home.appTheme
+import com.danilkinkin.buckwheat.appTheme
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.ThemeMode
 import com.danilkinkin.buckwheat.ui.switchTheme

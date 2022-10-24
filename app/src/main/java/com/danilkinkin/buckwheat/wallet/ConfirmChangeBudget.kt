@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.wallet
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -11,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.RenderAdaptivePane
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
 @Composable
@@ -66,6 +68,7 @@ fun ConfirmChangeBudget(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ConfirmChangeBudgetDialog(
+    windowSizeClass: WindowWidthSizeClass,
     onConfirm: () -> Unit,
     onClose: () -> Unit,
 ) {
@@ -73,10 +76,12 @@ fun ConfirmChangeBudgetDialog(
         onDismissRequest = { onClose() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        ConfirmChangeBudget(
-            onConfirm = onConfirm,
-            onClose = onClose
-        )
+        RenderAdaptivePane(windowSizeClass) {
+            ConfirmChangeBudget(
+                onConfirm = onConfirm,
+                onClose = onClose
+            )
+        }
     }
 }
 

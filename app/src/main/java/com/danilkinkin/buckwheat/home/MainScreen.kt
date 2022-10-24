@@ -2,16 +2,17 @@ package com.danilkinkin.buckwheat.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.*
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -27,10 +28,7 @@ import com.danilkinkin.buckwheat.keyboard.Keyboard
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.spendsHistory.History
-import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.ui.colorBackground
-import com.danilkinkin.buckwheat.ui.colorEditor
-import com.danilkinkin.buckwheat.ui.isNightMode
+import com.danilkinkin.buckwheat.ui.*
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import kotlinx.coroutines.flow.collectLatest
@@ -39,12 +37,12 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
+    windowSizeClass: WindowWidthSizeClass,
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
 ) {
     val topSheetState = rememberSwipeableState(TopSheetValue.HalfExpanded)
     val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { appViewModel.snackbarHostState }
 
     val localDensity = LocalDensity.current
 
@@ -69,7 +67,7 @@ fun MainScreen(
 
     LaunchedEffect(Unit) {
         spendsViewModel.lastRemoveSpent.collectLatest {
-            val snackbarResult = snackbarHostState.showSnackbar(
+            val snackbarResult = appViewModel.snackbarHostState.showSnackbar(
                 message = snackBarMessage,
                 actionLabel = snackBarAction,
                 duration = SnackbarDuration.Long,
@@ -101,69 +99,117 @@ fun MainScreen(
             .background(colorBackground),
     ) {
         val contentHeight = constraints.maxHeight.toFloat()
-        val contentWidth = constraints.maxWidth.toFloat()
-        val editorHeight = contentHeight - contentWidth - with(localDensity) { keyboardAdditionalOffset.toPx() }
+        val keyboardHeight = if (windowSizeClass == WindowWidthSizeClass.Compact) {
+            constraints.maxWidth.toFloat()
+        } else {
+            constraints.maxWidth.toFloat() / 2f
+        }.coerceAtMost(with(localDensity) { 400.dp.toPx() })
+        val editorHeight = contentHeight - keyboardHeight - with(localDensity) { keyboardAdditionalOffset.toPx() }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = keyboardAdditionalOffset),
-            contentAlignment = Alignment.BottomCenter,
-        ) {
-            Keyboard(
-                modifier = Modifier
-                    .height(with(localDensity) { contentWidth.toDp() })
-                    .fillMaxWidth()
-            )
-        }
-
-        TopSheetLayout(
-            swipeableState = topSheetState,
-            customHalfHeight = editorHeight,
-            lockSwipeable = appViewModel.lockSwipeable,
-            sheetContentHalfExpand = {
-                Editor(
-                    modifier = Modifier.height(with(localDensity) { editorHeight.toDp() }),
-                    onOpenHistory = {
-                        coroutineScope.launch {
-                            topSheetState.animateTo(TopSheetValue.Expanded)
-                        }
-                    },
-                )
+        Row {
+            if (windowSizeClass != WindowWidthSizeClass.Compact) {
+                Surface(
+                    color = colorEditor,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f)
+                        .navigationBarsPadding(),
+                ) {
+                    Box {
+                        History()
+                        StatusBarStub()
+                        SnackbarHost()
+                    }
+                }
+                Spacer(modifier = Modifier.fillMaxHeight().width(16.dp))
             }
-        ) {
-            History()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = keyboardAdditionalOffset),
+                    contentAlignment = Alignment.BottomCenter,
+                ) {
+                    Keyboard(
+                        modifier = Modifier
+                            .height(with(localDensity) { keyboardHeight.toDp() })
+                            .fillMaxWidth()
+                    )
+                }
+
+                if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    TopSheetLayout(
+                        swipeableState = topSheetState,
+                        customHalfHeight = editorHeight,
+                        lockSwipeable = appViewModel.lockSwipeable,
+                        sheetContentHalfExpand = {
+                            Editor(
+                                modifier = Modifier.height(with(localDensity) { editorHeight.toDp() }),
+                                onOpenHistory = {
+                                    coroutineScope.launch {
+                                        topSheetState.animateTo(TopSheetValue.Expanded)
+                                    }
+                                },
+                            )
+                        }
+                    ) {
+                        History()
+                    }
+
+                    StatusBarStub()
+
+                    SnackbarHost()
+                } else {
+                    Card(
+                        shape = RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = colorEditor,
+                            contentColor = colorOnEditor,
+                        ),
+                    ) {
+                        Editor(
+                            modifier = Modifier.height(with(localDensity) { editorHeight.toDp() }),
+                        )
+                    }
+                }
+            }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(
-                    WindowInsets.systemBars
-                        .asPaddingValues()
-                        .calculateTopPadding()
-                )
-                .background(colorEditor.copy(alpha = 0.9F))
-        )
-
-        Column(
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .navigationBarsPadding(),
-        ) {
-            SwipeableSnackbarHost(hostState = snackbarHostState)
-        }
-
-        BottomSheets()
+        BottomSheets(windowSizeClass)
     }
 }
 
-@Preview
 @Composable
-fun MainActivityPreview() {
-    BuckwheatTheme {
-        MainScreen()
+fun BoxScope.SnackbarHost(
+    appViewModel: AppViewModel = viewModel(),
+) {
+    val snackbarHostState = remember { appViewModel.snackbarHostState }
+
+    Column(
+        horizontalAlignment = Alignment.End,
+        modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .fillMaxWidth()
+            .navigationBarsPadding(),
+    ) {
+        SwipeableSnackbarHost(hostState = snackbarHostState)
     }
+}
+
+@Composable
+fun StatusBarStub() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .requiredHeight(
+                WindowInsets.systemBars
+                    .asPaddingValues()
+                    .calculateTopPadding()
+            )
+            .background(colorEditor.copy(alpha = 0.9F))
+    )
 }

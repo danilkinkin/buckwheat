@@ -29,6 +29,7 @@ import java.util.*
 
 @Composable
 fun History(
+    modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
 ) {
@@ -58,7 +59,7 @@ fun History(
         animationSpec = TweenSpec(250),
     )
 
-    Box(Modifier.fillMaxSize()) {
+    Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             LazyColumn(state = scrollState) {
                 item("budgetInfo") {

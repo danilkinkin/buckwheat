@@ -27,7 +27,7 @@
             android:shell="true"
             tools:targetApi="q" />
         <activity
-            android:name=".home.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
 
             <intent-filter>

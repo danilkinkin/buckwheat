@@ -10,8 +10,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.danilkinkin.buckwheat.home.appTheme
-import com.danilkinkin.buckwheat.home.dataStore
+import com.danilkinkin.buckwheat.appTheme
+import com.danilkinkin.buckwheat.dataStore
 import com.danilkinkin.buckwheat.ui.harmonize.palettes.CorePalette
 import kotlinx.coroutines.flow.first
 

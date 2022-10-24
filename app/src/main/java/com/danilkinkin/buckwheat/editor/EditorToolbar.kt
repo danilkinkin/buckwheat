@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 fun EditorToolbar(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
-    onOpenHistory: () -> Unit = {},
+    onOpenHistory: (() -> Unit)? = null,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val isDebug = appViewModel.isDebug.observeAsState(false)
@@ -87,7 +87,11 @@ fun EditorToolbar(
                     modifier = Modifier
                         .scale(spendsCountScale.value)
                         .clip(CircleShape)
-                        .clickable { onOpenHistory() }
+                        .then(
+                            if (onOpenHistory !== null) Modifier.clickable { onOpenHistory() }
+                            else Modifier
+                        )
+
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
