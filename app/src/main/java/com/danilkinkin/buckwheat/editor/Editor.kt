@@ -282,7 +282,11 @@ fun Editor(
                             EditableTextWithLabel(
                                 value = spentValue,
                                 label = stringResource(id = R.string.spent),
-                                placeholder = "  ${stringResource(R.string.enter_spent_placeholder)}",
+                                placeholder = if (currencyShiftWidth != 0) {
+                                    "  ${stringResource(R.string.enter_spent_placeholder)}"
+                                } else {
+                                    stringResource(R.string.enter_spent_placeholder)
+                                },
                                 onChangeValue = {
                                     val converted = tryConvertStringToNumber(it)
 
