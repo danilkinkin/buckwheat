@@ -31,6 +31,7 @@ fun RestBudget(
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+    val roundValues by spendsViewModel.roundValues.observeAsState(true)
 
     var budgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }

@@ -81,6 +81,12 @@ class SpendsViewModel @Inject constructor(
         MutableLiveData(ExtendCurrency(value = null, type = CurrencyType.NONE))
     }
 
+    var roundValues: MutableLiveData<Boolean> = try {
+        MutableLiveData(storageDao.get("roundValues").value.toBoolean())
+    } catch (e: Exception) {
+        MutableLiveData(true)
+    }
+
     var currentSpent: BigDecimal = 0.0.toBigDecimal()
 
     var requireReCalcBudget: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -124,6 +130,13 @@ class SpendsViewModel @Inject constructor(
         storageDao.set(Storage("currency", currency.value.toString()))
 
         this.currency.value = currency
+    }
+
+    fun changeRoundMode(roundValues: Boolean) {
+        storageDao.set(Storage("roundValues", roundValues.toString()))
+
+        this.roundValues.value = roundValues
+
     }
 
     fun changeBudget(budget: BigDecimal, finishDate: Date) {
