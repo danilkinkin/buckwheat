@@ -9,34 +9,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.TextRow
-import com.danilkinkin.buckwheat.appTheme
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.ui.ThemeMode
-import com.danilkinkin.buckwheat.ui.switchTheme
-import kotlinx.coroutines.launch
 
 const val SETTINGS_SHEET = "settings"
 
 @Composable
 fun Settings(onClose: () -> Unit = {}) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
-    fun handleSwitchTheme(mode: ThemeMode) {
-        coroutineScope.launch {
-            switchTheme(context, mode)
-        }
-    }
-
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
@@ -61,25 +45,7 @@ fun Settings(onClose: () -> Unit = {}) {
                     .verticalScroll(rememberScrollState())
                     .padding(bottom = navigationBarHeight)
             ) {
-                TextRow(
-                    icon = painterResource(R.drawable.ic_dark_mode),
-                    text = stringResource(R.string.theme_label),
-                )
-                CheckedRow(
-                    checked = context.appTheme == ThemeMode.LIGHT,
-                    onValueChange = { handleSwitchTheme(ThemeMode.LIGHT) },
-                    text = stringResource(R.string.theme_light),
-                )
-                CheckedRow(
-                    checked = context.appTheme == ThemeMode.NIGHT,
-                    onValueChange = { handleSwitchTheme(ThemeMode.NIGHT) },
-                    text = stringResource(R.string.theme_dark),
-                )
-                CheckedRow(
-                    checked = context.appTheme == ThemeMode.SYSTEM,
-                    onValueChange = { handleSwitchTheme(ThemeMode.SYSTEM) },
-                    text = stringResource(R.string.theme_system),
-                )
+                ThemeSwitcher()
                 Divider()
                 TextRow(
                     text = stringResource(R.string.version, BuildConfig.VERSION_NAME),
