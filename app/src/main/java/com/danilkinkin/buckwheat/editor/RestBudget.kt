@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.editor
 
+import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -13,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -30,45 +32,39 @@ fun RestBudget(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
+    val localDensity = LocalDensity.current
+
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
 
-    var budgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
+    var restBudgetAbsoluteValue by remember { mutableStateOf(BigDecimal(0)) }
     var budgetPerDaySplit by remember { mutableStateOf("") }
     var editing by remember { mutableStateOf(false) }
     var overdaft by remember { mutableStateOf(false) }
     var endBudget by remember { mutableStateOf(false) }
 
-    fun calculateValues(
-        budget: Boolean = true,
-        restBudget: Boolean = true,
-    ) {
+    fun calculateValues() {
         val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
         val dailyBudget = spendsViewModel.dailyBudget.value!!
+        val currentSpent = spendsViewModel.currentSpent
 
-        if (budget) budgetValue = (dailyBudget - spentFromDailyBudget).coerceAtLeast(
-            BigDecimal(0)
+        val newBudget = dailyBudget - spentFromDailyBudget - currentSpent
+
+        overdaft = newBudget < BigDecimal(0)
+        restBudgetValue = newBudget
+        restBudgetAbsoluteValue = restBudgetValue.coerceAtLeast(BigDecimal(0))
+
+        val newPerDayBudget = spendsViewModel.calcBudgetPerDaySplit(
+            applyCurrentSpent = true,
+            excludeCurrentDay = true,
         )
 
-        if (restBudget) {
-            val newBudget = dailyBudget - spentFromDailyBudget - spendsViewModel.currentSpent
+        endBudget = newPerDayBudget <= BigDecimal(0)
 
-            overdaft = newBudget < BigDecimal(0)
-
-            restBudgetValue = newBudget.coerceAtLeast(BigDecimal(0))
-
-            val newPerDayBudget = spendsViewModel.calcBudgetPerDaySplit(
-                applyCurrentSpent = true,
-                excludeCurrentDay = true,
-            )
-
-            endBudget = newPerDayBudget < BigDecimal(0)
-
-            budgetPerDaySplit = prettyCandyCanes(
-                newPerDayBudget.coerceAtLeast(BigDecimal(0)),
-                currency = currency,
-            )
-        }
+        budgetPerDaySplit = prettyCandyCanes(
+            newPerDayBudget.coerceAtLeast(BigDecimal(0)),
+            currency = currency,
+        )
     }
 
     observeLiveData(spendsViewModel.dailyBudget) {
@@ -76,26 +72,13 @@ fun RestBudget(
     }
 
     observeLiveData(spendsViewModel.spentFromDailyBudget) {
-        calculateValues(budget = !editing, restBudget = false)
+        calculateValues()
     }
 
     observeLiveData(spendsViewModel.stage) {
-        editing = false
+        editing = it == SpendsViewModel.Stage.EDIT_SPENT
 
-        when (it) {
-            SpendsViewModel.Stage.IDLE, null -> {
-            }
-            SpendsViewModel.Stage.CREATING_SPENT -> {
-                calculateValues(budget = false)
-            }
-            SpendsViewModel.Stage.EDIT_SPENT -> {
-                calculateValues(budget = false)
-
-                editing = true
-            }
-            SpendsViewModel.Stage.COMMITTING_SPENT -> {
-            }
-        }
+        calculateValues()
     }
 
     Box(
@@ -103,7 +86,7 @@ fun RestBudget(
         contentAlignment = Alignment.CenterEnd
     ) {
         val alpha: Float by animateFloatAsState(
-            if (restBudgetValue > 0.toBigDecimal()) 1f else 0f,
+            if (restBudgetValue >= 0.toBigDecimal()) 1f else 0f,
             tween(
                 durationMillis = 150,
                 easing = EaseInOutQuad,
@@ -117,7 +100,7 @@ fun RestBudget(
                     .alpha(alpha)
                     .offset(x = (-30).dp * (1f - alpha)),
                 value = prettyCandyCanes(
-                    restBudgetValue,
+                    restBudgetAbsoluteValue,
                     currency = currency,
                 ),
                 label = stringResource(id = R.string.rest_budget_for_today),
@@ -132,7 +115,7 @@ fun RestBudget(
                     .alpha(alpha)
                     .offset(x = (-30).dp * (1f - alpha)),
                 value = prettyCandyCanes(
-                    budgetValue,
+                    restBudgetAbsoluteValue,
                     currency = currency,
                 ),
                 label = stringResource(id = R.string.budget_for_today),
@@ -141,19 +124,43 @@ fun RestBudget(
                 horizontalAlignment = Alignment.End,
             )
         }
-        BudgetEndWarn(
-            overdaft = overdaft,
-            forceShow = restBudgetValue <= 0.toBigDecimal(),
-            endBudget = endBudget,
-            budgetPerDaySplit = budgetPerDaySplit,
-            modifier = Modifier.padding(start = 32.dp, end = 32.dp),
-            onClick = {
-                if (endBudget) {
-                    appViewModel.openSheet(PathState(BUDGET_IS_OVER_DESCRIPTION_SHEET))
-                } else {
-                    appViewModel.openSheet(PathState(NEW_DAY_BUDGET_DESCRIPTION_SHEET))
+        AnimatedVisibility(
+            visible = overdaft,
+            enter = fadeIn(
+                tween(
+                    durationMillis = 150,
+                    easing = EaseInOutQuad,
+                )
+            ) + slideInHorizontally(
+                tween(
+                    durationMillis = 150,
+                    easing = EaseInOutQuad,
+                )
+            ) { with(localDensity) { 30.dp.toPx().toInt() } },
+            exit = fadeOut(
+                tween(
+                    durationMillis = 150,
+                    easing = EaseInOutQuad,
+                )
+            ) + slideOutHorizontally(
+                tween(
+                    durationMillis = 150,
+                    easing = EaseInOutQuad,
+                )
+            ) { with(localDensity) { 30.dp.toPx().toInt() } },
+        ) {
+            BudgetEndWarn(
+                endBudget = endBudget,
+                budgetPerDaySplit = budgetPerDaySplit,
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp),
+                onClick = {
+                    if (endBudget) {
+                        appViewModel.openSheet(PathState(BUDGET_IS_OVER_DESCRIPTION_SHEET))
+                    } else {
+                        appViewModel.openSheet(PathState(NEW_DAY_BUDGET_DESCRIPTION_SHEET))
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
