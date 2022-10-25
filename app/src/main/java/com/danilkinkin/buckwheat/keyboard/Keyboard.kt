@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.keyboard
 
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -42,38 +41,24 @@ fun Keyboard(
             SpendsViewModel.Action.REMOVE_LAST -> {
                 newValue = newValue.dropLast(1)
 
+                if (newValue == "") runBlocking {
+                    spendsViewModel.resetSpent()
 
-                if (newValue == "") {
-                    runBlocking {
-                        spendsViewModel.resetSpent()
-
-                        isMutate = false
-                    }
+                    isMutate = false
                 }
             }
         }
 
-        if (isMutate) {
-            runBlocking {
-                spendsViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
+        if (isMutate) runBlocking {
+            spendsViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
 
-
-                Log.d("Editor", "rawSpentValue = ${spendsViewModel.rawSpentValue.value}")
-
-                if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
-                spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
-            }
+            if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
+            spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
         }
     }
 
-    Column (
-        modifier = modifier
-            .fillMaxSize()
-            .padding(14.dp)
-    ) {
-        Row (modifier = Modifier
-            .fillMaxSize()
-            .weight(1F)) {
+    Column (modifier.fillMaxSize().padding(14.dp)) {
+        Row (Modifier.fillMaxSize().weight(1F)) {
             for (i in 7..9) {
                 KeyboardButton(
                     modifier = Modifier
@@ -103,15 +88,9 @@ fun Keyboard(
                 },
             )
         }
-        Row (modifier = Modifier
-            .fillMaxSize()
-            .weight(3F)) {
-            Column (modifier = Modifier
-                .fillMaxSize()
-                .weight(3F)) {
-                Row (modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1F)) {
+        Row (Modifier.fillMaxSize().weight(3F)) {
+            Column (Modifier.fillMaxSize().weight(3F)) {
+                Row (Modifier.fillMaxSize().weight(1F)) {
                     for (i in 4..6) {
                         KeyboardButton(
                             modifier = Modifier
@@ -126,9 +105,7 @@ fun Keyboard(
                         )
                     }
                 }
-                Row (modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1F)) {
+                Row (Modifier.fillMaxSize().weight(1F)) {
                     for (i in 1..3) {
                         KeyboardButton(
                             modifier = Modifier
@@ -143,9 +120,7 @@ fun Keyboard(
                         )
                     }
                 }
-                Row (modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1F)) {
+                Row (Modifier.fillMaxSize().weight(1F)) {
                     KeyboardButton(
                         modifier = Modifier
                             .weight(2F)
@@ -170,9 +145,7 @@ fun Keyboard(
                     )
                 }
             }
-            Column (modifier = Modifier
-                .fillMaxSize()
-                .weight(1F)) {
+            Column (Modifier.fillMaxSize().weight(1F)) {
                 KeyboardButton(
                     modifier = Modifier
                         .weight(1F)
