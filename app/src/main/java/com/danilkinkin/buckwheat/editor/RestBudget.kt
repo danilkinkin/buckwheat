@@ -81,6 +81,12 @@ fun RestBudget(
         calculateValues()
     }
 
+    DisposableEffect(currency) {
+        calculateValues()
+        
+        onDispose {  }
+    }
+
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.CenterEnd
