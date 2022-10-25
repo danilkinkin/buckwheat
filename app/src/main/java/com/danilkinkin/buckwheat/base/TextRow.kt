@@ -30,56 +30,70 @@ fun TextRow(
     endIcon: Painter? = null,
     endContent: @Composable (() -> Unit)? = null,
     text: String,
+    description: String? = null,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    descriptionTextStyle: TextStyle = MaterialTheme.typography.bodyMedium
+        .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
 ) {
-    Box(modifier) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    Column(modifier) {
+        Box {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = text,
+                    style = textStyle,
+                    softWrap = false,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(start = (24 + 16).dp)
+                        .weight(1f)
+                )
+
+                if (endContent !== null) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                    endContent()
+                }
+                if (endIcon !== null) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Icon(
+                        painter = endIcon,
+                        contentDescription = null
+                    )
+                }
+            }
+
+            if (icon !== null) {
+                Box(
+                    Modifier
+                        .height(56.dp)
+                        .width(56.dp)
+                        .padding(horizontal = 16.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Icon(
+                        painter = icon,
+                        tint = iconTint,
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+        if (description !== null) {
             Text(
-                text = text,
-                style = textStyle,
+                text = description,
+                style = descriptionTextStyle,
                 softWrap = false,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(
-                    start = (24 + 16).dp,
-                ).weight(1f)
+                modifier = Modifier
+                    .padding(start = (24 + 16 * 2).dp, bottom = 16.dp)
             )
-
-            if (endContent !== null) {
-                Spacer(modifier = Modifier.width(16.dp))
-                endContent()
-            }
-            if (endIcon !== null) {
-                Spacer(modifier = Modifier.width(16.dp))
-                Icon(
-                    painter = endIcon,
-                    contentDescription = null
-                )
-            }
-        }
-
-        if (icon !== null) {
-            Box(
-                Modifier
-                    .height(56.dp)
-                    .width(56.dp)
-                    .padding(horizontal = 16.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Icon(
-                    painter = icon,
-                    tint = iconTint,
-                    contentDescription = null
-                )
-            }
         }
     }
-
 }
 
 @Preview
@@ -130,6 +144,26 @@ private fun PreviewWithIconsWithChip() {
                 )
             },
             text = "Text row loooooooooooooooooooooooooooooooong",
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "With icon, end content, end icon and description")
+@Composable
+private fun PreviewWithIconsWithChipWithDescription() {
+    BuckwheatTheme {
+        TextRow(
+            icon = painterResource(R.drawable.ic_home),
+            endIcon = painterResource(R.drawable.ic_edit),
+            endContent = {
+                SuggestionChip(
+                    label = { Text(text = "Suggestion") },
+                    onClick = { /*TODO*/ },
+                )
+            },
+            text = "Text row loooooooooooooooooooooooooooooooong",
+            description = "Description text",
         )
     }
 }

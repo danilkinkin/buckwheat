@@ -18,6 +18,7 @@ fun ButtonRow(
     icon: Painter? = null,
     endIcon: Painter? = null,
     text: String,
+    description: String? = null,
     onClick: () -> Unit,
     endContent: @Composable (() -> Unit)? = null,
 ) {
@@ -32,6 +33,7 @@ fun ButtonRow(
         icon = icon,
         endIcon = endIcon,
         text = text,
+        description = description,
         endContent = endContent,
     )
 }
