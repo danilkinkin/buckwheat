@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.editor
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -32,14 +30,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.runBlocking
-import java.math.BigDecimal
 
-enum class AnimState { FIRST_IDLE, EDITING, COMMIT, IDLE, RESET }
+enum class AnimState { EDITING, COMMIT, IDLE, RESET }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -59,50 +55,12 @@ fun Editor(
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     var stage by remember { mutableStateOf(AnimState.IDLE) }
 
-    var budgetValue by remember { mutableStateOf(BigDecimal(0)) }
-    var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var spentValue by remember { mutableStateOf("0") }
-    var budgetPerDaySplit by remember { mutableStateOf("") }
-    var overdaft by remember { mutableStateOf(false) }
-    var endBudget by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     var requestFocus by remember { mutableStateOf(false) }
 
-    fun calculateValues(
-        budget: Boolean = true,
-        restBudget: Boolean = true,
-        spent: Boolean = true
-    ) {
-        val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
-        val dailyBudget = spendsViewModel.dailyBudget.value!!
-
-        if (budget) budgetValue = (dailyBudget - spentFromDailyBudget).coerceAtLeast(
-            BigDecimal(0)
-        )
-
-        if (restBudget) {
-            val newBudget = dailyBudget - spentFromDailyBudget - spendsViewModel.currentSpent
-
-            overdaft = newBudget < BigDecimal(0)
-
-            restBudgetValue = newBudget.coerceAtLeast(BigDecimal(0))
-
-            val newPerDayBudget = spendsViewModel.calcBudgetPerDaySplit(
-                applyCurrentSpent = true,
-                excludeCurrentDay = true,
-            )
-
-            endBudget = newPerDayBudget < BigDecimal(0)
-
-            budgetPerDaySplit = prettyCandyCanes(
-                newPerDayBudget.coerceAtLeast(BigDecimal(0)),
-                currency = currency,
-            )
-        }
-
-        if (spent) {
-            spentValue = spendsViewModel.rawSpentValue.value!!
-        }
+    fun calculateValues() {
+        spentValue = spendsViewModel.rawSpentValue.value!!
     }
 
     observeLiveData(spendsViewModel.dailyBudget) {
@@ -110,7 +68,7 @@ fun Editor(
     }
 
     observeLiveData(spendsViewModel.spentFromDailyBudget) {
-        calculateValues(budget = currState !== AnimState.EDITING, restBudget = false)
+        calculateValues()
     }
 
     observeLiveData(spendsViewModel.stage) {
@@ -120,15 +78,14 @@ fun Editor(
                     stage = AnimState.RESET
                 }
                 focusManager.clearFocus()
-                //calculateValues(budget = false)
             }
             SpendsViewModel.Stage.CREATING_SPENT -> {
-                calculateValues(budget = false)
+                calculateValues()
 
                 stage = AnimState.EDITING
             }
             SpendsViewModel.Stage.EDIT_SPENT -> {
-                calculateValues(budget = false)
+                calculateValues()
 
                 stage = AnimState.EDITING
             }
@@ -146,64 +103,7 @@ fun Editor(
     Box(modifier = modifier.fillMaxSize()) {
         Column(Modifier.fillMaxHeight()) {
             EditorToolbar(onOpenHistory = onOpenHistory)
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                val alpha: Float by animateFloatAsState(
-                    if (restBudgetValue > 0.toBigDecimal()) 1f else 0f,
-                    tween(
-                        durationMillis = 150,
-                        easing = EaseInOutQuad,
-                    ),
-                )
-
-                if (stage != AnimState.IDLE) {
-                    TextWithLabel(
-                        modifier = Modifier
-                            .padding(top = 16.dp, bottom = 16.dp)
-                            .alpha(alpha)
-                            .offset(x = (-30).dp * (1f - alpha)),
-                        value = prettyCandyCanes(
-                            restBudgetValue,
-                            currency = currency,
-                        ),
-                        label = stringResource(id = R.string.rest_budget_for_today),
-                        fontSizeValue = MaterialTheme.typography.headlineSmall.fontSize,
-                        fontSizeLabel = MaterialTheme.typography.labelMedium.fontSize,
-                        horizontalAlignment = Alignment.End,
-                    )
-                } else {
-                    TextWithLabel(
-                        modifier = Modifier
-                            .padding(top = 16.dp, bottom = 16.dp)
-                            .alpha(alpha)
-                            .offset(x = (-30).dp * (1f - alpha)),
-                        value = prettyCandyCanes(
-                            budgetValue,
-                            currency = currency,
-                        ),
-                        label = stringResource(id = R.string.budget_for_today),
-                        fontSizeValue = MaterialTheme.typography.headlineSmall.fontSize,
-                        fontSizeLabel = MaterialTheme.typography.labelMedium.fontSize,
-                        horizontalAlignment = Alignment.End,
-                    )
-                }
-                BudgetEndWarn(
-                    overdaft = overdaft,
-                    forceShow = restBudgetValue <= 0.toBigDecimal() || currState == AnimState.EDITING,
-                    endBudget = endBudget,
-                    budgetPerDaySplit = budgetPerDaySplit,
-                    modifier = Modifier.padding(start = 32.dp, end = 32.dp),
-                    onClick = {
-                        if (endBudget) {
-                            appViewModel.openSheet(PathState(BUDGET_IS_OVER_DESCRIPTION_SHEET))
-                        } else {
-                            appViewModel.openSheet(PathState(NEW_DAY_BUDGET_DESCRIPTION_SHEET))
-                        }
-                    }
-                )
-            }
+            RestBudget()
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -213,7 +113,7 @@ fun Editor(
                         indication = null
                     ) {
                         requestFocus = true
-                        calculateValues(budget = false)
+                        calculateValues()
 
                         spendsViewModel.createSpent()
                         spendsViewModel.editSpent(0.toBigDecimal())
@@ -356,7 +256,7 @@ fun Editor(
                                     style = MaterialTheme.typography.displayLarge,
                                     fontSize = MaterialTheme.typography.displaySmall.fontSize,
                                     fontWeight = FontWeight.W600,
-                                    color = textColor.copy(alpha = 0.8f),
+                                    color = textColor.copy(alpha = 0.9f),
                                     overflow = TextOverflow.Visible,
                                     softWrap = false,
                                     modifier = Modifier
