@@ -1,7 +1,7 @@
 package com.danilkinkin.buckwheat.util
 
-import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -10,20 +10,21 @@ import kotlin.math.ceil
 
 const val DAY = 24 * 60 * 60 * 1000
 
-val monthFormat = SimpleDateFormat("MMMM")
-val monthShortFormat = SimpleDateFormat("MM")
-val yearFormat = SimpleDateFormat("yyyy")
-val dateFormat = SimpleDateFormat("dd MMMM")
-val timeFormat = SimpleDateFormat("HH:mm")
-
-var yearMonthFormatterCurrYaer = DateTimeFormatter.ofPattern("MMMM")
-var yearMonthFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
+val yearOnlyFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy")
+val monthWithYearFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("LLLL yyyy")
+val monthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("LLLL")
+val dateWithMonthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM")
+val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
 fun LocalDate.toDate(): Date = Date(this.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000)
 
 fun Date.toLocalDate(): LocalDate = this.toInstant()
     .atZone(ZoneId.systemDefault())
-    .toLocalDate();
+    .toLocalDate()
+
+fun Date.toLocalDateTime(): LocalDateTime = this.toInstant()
+    .atZone(ZoneId.systemDefault())
+    .toLocalDateTime()
 
 fun countDays(toDate: Date, fromDate: Date = Date()): Int {
     val fromDateRound = roundToDay(fromDate)
@@ -46,35 +47,39 @@ fun prettyDate(
     forceHideDate: Boolean = false,
     forceShowYear: Boolean = false,
 ): String {
-    val currentYear = yearFormat.format(Date().time)
-    val currentDate = dateFormat.format(Date().time)
+    val currentYear = yearOnlyFormatter.format(LocalDate.now())
+    val currentDate = dateWithMonthFormatter.format(LocalDate.now())
 
-    val yearStr = yearFormat.format(date.time).toString()
-    val dateStr = dateFormat.format(date.time).toString()
-    val timeStr = timeFormat.format(date.time).toString()
+    val convertedYear = yearOnlyFormatter.format(date.toLocalDate())
+    val convertedDate = dateWithMonthFormatter.format(date.toLocalDate())
+    val convertedTime = timeFormatter.format(date.toLocalDateTime())
 
     var final = ""
 
-    if ((dateStr != currentDate || !showTime || forceShowDate) && !forceHideDate) {
-        final += " $dateStr"
+    if ((convertedDate != currentDate || !showTime || forceShowDate) && !forceHideDate) {
+        final += " $convertedDate"
     }
 
-    if (yearStr != currentYear || forceShowYear) {
-        final += " $yearStr"
+    if (convertedYear != currentYear || forceShowYear) {
+        final += " $convertedYear"
     }
 
     if (showTime) {
-        final += " $timeStr"
+        final += " $convertedTime"
     }
 
     return final
 }
 
 fun prettyYearMonth(yearMonth: YearMonth): String {
-    return if (yearMonth.year.toString() == yearFormat.format(Date().time)) {
-        yearMonth.format(yearMonthFormatterCurrYaer)
+    return if (yearMonth.year.toString() == yearOnlyFormatter.format(LocalDate.now())) {
+        yearMonth.format(monthFormatter)
     } else {
-        yearMonth.format(yearMonthFormatter)
+        yearMonth.format(monthWithYearFormatter)
+    }.replaceFirstChar {
+        if (it.isLowerCase()) it.titlecase(
+            Locale.getDefault()
+        ) else it.toString()
     }
 }
 
