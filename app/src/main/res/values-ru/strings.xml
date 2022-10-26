@@ -124,4 +124,6 @@
     <string name="copy_in_clipboard">Скопировано в буфер обмена</string>
     <string name="cancel">Отменить</string>
     <string name="accept">Применить</string>
+    <string name="today">Сегодня</string>
+    <string name="yesterday">Вчера</string>
 </resources>

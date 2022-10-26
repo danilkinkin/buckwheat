@@ -1,5 +1,8 @@
 package com.danilkinkin.buckwheat.util
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.danilkinkin.buckwheat.R
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -14,6 +17,7 @@ val yearOnlyFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy")
 val monthWithYearFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("LLLL yyyy")
 val monthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("LLLL")
 val dateWithMonthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM")
+val dateWithMonthAndYearFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
 fun LocalDate.toDate(): Date = Date(this.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000)
@@ -40,35 +44,44 @@ fun isSameDay(timestampA: Long, timestampB: Long): Boolean {
     return roundToDay(Date(timestampA)) == roundToDay(Date(timestampB))
 }
 
+@Composable
 fun prettyDate(
     date: Date,
     showTime: Boolean = true,
     forceShowDate: Boolean = false,
     forceHideDate: Boolean = false,
     forceShowYear: Boolean = false,
+    human: Boolean = false,
 ): String {
+    val currentFullDate = dateWithMonthAndYearFormatter.format(LocalDate.now())
     val currentYear = yearOnlyFormatter.format(LocalDate.now())
-    val currentDate = dateWithMonthFormatter.format(LocalDate.now())
 
+    val convertedFullDate = dateWithMonthAndYearFormatter.format(date.toLocalDate())
     val convertedYear = yearOnlyFormatter.format(date.toLocalDate())
     val convertedDate = dateWithMonthFormatter.format(date.toLocalDate())
     val convertedTime = timeFormatter.format(date.toLocalDateTime())
 
     var final = ""
 
-    if ((convertedDate != currentDate || !showTime || forceShowDate) && !forceHideDate) {
-        final += " $convertedDate"
+    if (human && convertedFullDate == currentFullDate) {
+        final += stringResource(R.string.today)
     }
 
-    if (convertedYear != currentYear || forceShowYear) {
-        final += " $convertedYear"
+    if (!human || convertedFullDate != currentFullDate) {
+        if ((convertedFullDate != currentFullDate || !showTime || forceShowDate) && !forceHideDate) {
+            final += convertedDate
+        }
+
+        if (convertedYear != currentYear || forceShowYear) {
+            final += " $convertedYear"
+        }
     }
 
     if (showTime) {
         final += " $convertedTime"
     }
 
-    return final
+    return final.trim()
 }
 
 fun prettyYearMonth(yearMonth: YearMonth): String {

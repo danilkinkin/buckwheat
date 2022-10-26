@@ -14,7 +14,7 @@ import java.util.*
 @Composable
 fun HistoryDateDivider(date: Date) {
     Text(
-        text = prettyDate(date, forceShowDate = true, showTime = false),
+        text = prettyDate(date, forceShowDate = true, showTime = false, human = true),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier

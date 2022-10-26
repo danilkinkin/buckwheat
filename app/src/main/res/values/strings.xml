@@ -120,4 +120,6 @@
     <string name="copy_in_clipboard">Copied to clipboard</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 </resources>
