@@ -2,5 +2,9 @@
 
 # buckwheat
 
-Buckwheat is an app that will help you consciously spend your budget. 
-By making every expense, it will be easier to monitor and understand your financial capabilities and not spend money on nonsense
+Buckwheat is an app that helps you spend money wisely. 
+Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.
+
+# Policy
+
+See policy [there](./POLICY.md)
