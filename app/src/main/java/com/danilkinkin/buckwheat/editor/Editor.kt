@@ -264,7 +264,7 @@ fun Editor(
                                         .offset(x = (-2).dp),
                                 )
                                 Text(
-                                    text = stringResource(id = R.string.spent),
+                                    text = stringResource(id = R.string.new_spent),
                                     style = MaterialTheme.typography.labelMedium,
                                     fontSize = MaterialTheme.typography.labelLarge.fontSize,
                                     color = textColor.copy(alpha = 0f),
@@ -281,7 +281,7 @@ fun Editor(
                         ) {
                             EditableTextWithLabel(
                                 value = spentValue,
-                                label = stringResource(id = R.string.spent),
+                                label = stringResource(id = R.string.new_spent),
                                 placeholder = if (currencyShiftWidth != 0) {
                                     "  ${stringResource(R.string.enter_spent_placeholder)}"
                                 } else {

@@ -1,15 +1,14 @@
 <resources>
     <string name="app_name">Buckwheat</string>
-    <string name="action_settings">Settings</string>
 
     <!-- Main -->
     <string name="budget_for_today">Budget for today</string>
     <string name="rest_budget_for_today">Remains for today</string>
-    <string name="new_daily_budget">New budget for the day</string>
-    <string name="new_daily_budget_description">Today you went beyond the daily budget, but it\'s not scary. For subsequent budgets recalculated taking into account the remaining budget</string>
+    <string name="new_daily_budget">New daily budget</string>
+    <string name="new_daily_budget_description">Today you went beyond the daily budget, do not worry, it\'s not scary. For the following days, the budget will be recalculated taking into account the remaining total budget</string>
     <string name="budget_end">The budget is over</string>
-    <string name="budget_end_description">You went over your planned budget, but that\'s okay, spending is never the same. Start tarts further to understand how much you will spend in the end and what budget you need</string>
-    <string name="spent">Spending</string>
+    <string name="budget_end_description">You went beyond the planned budget, do not worry, it\'s not scary, spending is never the same. Start spending further to understand how much you will spend in the end and what budget you need</string>
+    <string name="new_spent">New spending</string>
     <string name="fab_home_desc">Home</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s spent today</item>
@@ -42,14 +41,10 @@
         <item quantity="one">%1$s (%2$s day)</item>
         <item quantity="other">%1$s (%2$s days)</item>
     </plurals>
-    <string name="start_date_label_with_dots">Start:</string>
-    <string name="finish_date_label_with_dots">Finish:</string>
     <string name="finish_date_not_select">No finish date selected</string>
     <string name="in_currency_label">What currency to count</string>
     <string name="currency_from_list">World currency</string>
-    <string name="currency_from_list_selected">World currency (%1$s)</string>
-    <string name="currency_custom">Custom</string>
-    <string name="currency_custom_selected">Custom (%1$s)</string>
+    <string name="currency_custom">Custom currency</string>
     <string name="currency_none">No currency</string>
     <string name="per_day">%1$s per day</string>
     <string name="total_title">Total</string>
@@ -64,9 +59,9 @@
     <string name="select_currency_hint">Input your currency</string>
     <string name="currency_custom_title">Enter your currency</string>
     <string name="confirm_change_budget_title">Budget change</string>
-    <string name="confirm_change_budget_description">Please note that when you change the budget, the spending history is reset.</string>
+    <string name="confirm_change_budget_description">Please note that when you change the budget, the current spending history will be deleted and the countdown will start over</string>
     <string name="confirm_change_budget">Change budget</string>
-    <string name="use_last">Last</string>
+    <string name="use_last">Use last</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -76,14 +71,14 @@
     <string name="theme_system">System</string>
     <string name="version">Version: %1$s</string>
     <string name="about">About app</string>
-    <string name="description">Buckwheat is an app that will help you consciously spend your budget. By making every expense, it will be easier to monitor and understand your financial capabilities and not spend money on nonsense</string>
+    <string name="description">Buckwheat is an app that helps you spend money wisely. Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.</string>
     <string name="site">Developer site</string>
     <string name="report_bug">Report a bug</string>
-    <string name="developer">Developer &amp; designer: @danilkinkin</string>
+    <string name="developer">Development &amp; design: @danilkinkin</string>
 
     <!-- New day -->
     <string name="new_day_title">Congratulations! You saved</string>
-    <string name="recalc_budget">Now specify how to recalc the budget</string>
+    <string name="recalc_budget">Find out how to budget</string>
     <string name="split_rest_days_title">Split by remaining days</string>
     <string name="split_rest_days_description">Get %1$s per day</string>
     <string name="add_current_day_title">Leave for Today</string>
@@ -101,7 +96,7 @@
     <string name="count_spends">Total spending</string>
     <string name="average_spent">Average spend</string>
     <string name="advice_title">You are doing well</string>
-    <string name="advice_description">Write down all your expenses and don\'t worry about going over budget, it\'s not a big deal</string>
+    <string name="advice_description">Write down all your expenses and don\'t worry about going over budget, spending is not a constant thing.</string>
     <string name="overspending_value">on %1$s</string>
     <string name="overspending_never_exceeded_daily_budget">You have never exceeded your daily budget</string>
     <string name="overspending_first_time">You exceeded your daily budget for the first time</string>
@@ -115,15 +110,14 @@
     <string name="onboarding_title">Welcome to Buckwheat, let\'s save money together</string>
     <string name="set_period_title">Set up a budget</string>
     <string name="help_set_budget_title">Establish a budget</string>
-    <string name="help_set_budget_description">Calculate approximately how much money you need for a certain period, such as a month, and enter it in the application. You can specify it very roughly, over time you will specify it more and more accurately.</string>
+    <string name="help_set_budget_description">Calculate approximately how much money you need for a certain period, such as a month, and enter it in the application. If you can’t calculate, indicate it very approximately, for example, half of the salary, over time you will indicate it more and more accurately</string>
     <string name="help_record_spends_title">Record every expense</string>
+    <string name="help_record_spends_description">The application will calculate how much you need to spend per day to fit into the budget, write down the expenses and keep track of the budget</string>
     <string name="help_good_luck_title">Spend wisely</string>
-    <string name="help_good_luck_description">Over time, you will learn to feel the value of money and will not spend it on trifles. Good luck!</string>
+    <string name="help_good_luck_description">Over time, you will learn to feel how much you really spend and how much you need. Learn to understand whether you can spend money on a trinket right now</string>
 
     <!-- Common -->
     <string name="copy_in_clipboard">Copied to clipboard</string>
-    <string name="search">Search</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
-    <string name="help_record_spends_description">The application will calculate how much you need to spend per day to fit into the budget, write down the expenses and keep track of the budget</string>
 </resources>

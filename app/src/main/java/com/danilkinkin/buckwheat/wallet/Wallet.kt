@@ -151,10 +151,7 @@ fun Wallet(
                     text = if (currency.type !== CurrencyType.FROM_LIST) {
                         stringResource(R.string.currency_from_list)
                     } else {
-                        stringResource(
-                            id = R.string.currency_from_list_selected,
-                            Currency.getInstance(currency.value).symbol
-                        )
+                        "${stringResource(R.string.currency_from_list)} (${Currency.getInstance(currency.value).symbol})"
                     },
                 )
                 CheckedRow(
@@ -163,10 +160,7 @@ fun Wallet(
                     text = if (currency.type !== CurrencyType.CUSTOM) {
                         stringResource(R.string.currency_custom)
                     } else {
-                        stringResource(
-                            id = R.string.currency_custom_selected,
-                            currency.value!!
-                        )
+                        "${stringResource(R.string.currency_custom)} (${currency.value!!})"
                     },
                 )
                 CheckedRow(
