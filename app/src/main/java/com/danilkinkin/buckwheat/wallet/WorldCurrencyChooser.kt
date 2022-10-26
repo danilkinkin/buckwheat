@@ -1,7 +1,6 @@
 package com.danilkinkin.buckwheat.wallet
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -13,7 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
@@ -137,7 +135,11 @@ private fun LazyListScope.itemsCurrency(
                 .padding(start = 24.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         ) {
             Text(
-                text = currency.displayName,
+                text = currency.displayName.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(
+                        Locale.getDefault()
+                    ) else it.toString()
+                },
                 overflow = TextOverflow.Ellipsis,
                 softWrap = false,
                 modifier = Modifier.weight(1f)
