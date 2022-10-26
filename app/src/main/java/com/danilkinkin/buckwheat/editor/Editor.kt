@@ -254,8 +254,8 @@ fun Editor(
                                 Text(
                                     text = stringResource(R.string.enter_spent_placeholder),
                                     style = MaterialTheme.typography.displayLarge,
-                                    fontSize = MaterialTheme.typography.displaySmall.fontSize,
-                                    fontWeight = FontWeight.W600,
+                                    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                                    fontWeight = FontWeight.W700,
                                     color = textColor.copy(alpha = 0.9f),
                                     overflow = TextOverflow.Visible,
                                     softWrap = false,
@@ -305,9 +305,9 @@ fun Editor(
                                 fontSizeLabel = MaterialTheme.typography.labelLarge.fontSize,
                                 focusRequester = focusRequester,
                                 placeholderStyle = SpanStyle(
-                                    fontSize = MaterialTheme.typography.displaySmall.fontSize,
-                                    fontWeight = FontWeight.W600,
-                                    baselineShift = BaselineShift(0.23f)
+                                    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                                    fontWeight = FontWeight.W700,
+                                    baselineShift = BaselineShift(0.25f)
                                 ),
                             )
 

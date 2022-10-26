@@ -83,7 +83,7 @@ fun RestBudget(
 
     DisposableEffect(currency) {
         calculateValues()
-        
+
         onDispose {  }
     }
 
