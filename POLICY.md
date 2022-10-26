@@ -12,7 +12,7 @@ This policy is not applicable to any information collected offline or via channe
 
 By using my app, you hereby consent to my Privacy Policy and agree to its terms.
 
-## Information we collect
+## Information i collect
 
 My app and i don't collect any personal information.
 If you contact me directly, i may receive additional information about you such as your name, email address, phone model,
