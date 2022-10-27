@@ -76,9 +76,8 @@
     <string name="version">Версия: %1$s</string>
     <string name="about">О приложении</string>
     <string name="description">Buckwheat - это приложение, которое помогает осознанно тратить деньги. Записывание каждой траты отрезвляет ум и дает понимание сколько и как вы можете тратить</string>
-    <string name="site">Сайт разработчика</string>
     <string name="report_bug">Сообщить об ошибке</string>
-    <string name="developer">Разработка и дизайн: @danilkinkin</string>
+    <string name="developer">Разработка и дизайн:</string>
 
     <!-- New day -->
     <string name="new_day_title">Поздравляем! Вы сэкономили</string>

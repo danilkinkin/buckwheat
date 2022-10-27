@@ -72,9 +72,8 @@
     <string name="version">Version: %1$s</string>
     <string name="about">About app</string>
     <string name="description">Buckwheat is an app that helps you spend money wisely. Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.</string>
-    <string name="site">Developer site</string>
     <string name="report_bug">Report a bug</string>
-    <string name="developer">Development &amp; design: @danilkinkin</string>
+    <string name="developer">Development &amp; design:</string>
 
     <!-- New day -->
     <string name="new_day_title">Congratulations! You saved</string>
