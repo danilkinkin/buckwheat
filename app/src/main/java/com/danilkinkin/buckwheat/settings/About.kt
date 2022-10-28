@@ -72,8 +72,8 @@ fun About(modifier: Modifier = Modifier) {
                         )
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.ic_open_in_browser),
                             tint = MaterialTheme.colorScheme.primary,
+                            painter = painterResource(R.drawable.ic_open_in_browser_small),
                             contentDescription = null,
                         )
                     }
