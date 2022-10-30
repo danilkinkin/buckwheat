@@ -27,10 +27,12 @@ import kotlin.random.Random
 
 @Composable
 fun generateColors() = listOf(
-    harmonize(Color.Red),
-    harmonize(Color.Green),
-    harmonize(Color.Blue),
-    harmonize(Color.Yellow),
+    harmonize(Color(0xFFD14BE9)),
+    harmonize(Color(0xFF5AC25E)),
+    harmonize(Color(0xFFE4467B)),
+    harmonize(Color(0xFFF5C537)),
+    harmonize(Color(0xFF34B2EB)),
+    harmonize(Color(0xFFEB5F54)),
 )
 
 val textPaint = Paint().asFrameworkPaint().apply {
@@ -74,6 +76,7 @@ fun spawn(
     windage: Pair<Float, Float>,
     ejectForceCoefficient: Float,
     lifetime: Pair<Long, Long>,
+    shiftXCoefficient: Float,
 ): List<Particle> {
     val spawnCount = Random.nextInt(count.first, count.second)
 
@@ -116,9 +119,10 @@ fun spawn(
                     windage.first.toDouble(),
                     windage.second.toDouble(),
                 ).toFloat(),
-                rotateAngleY = Random.nextDouble(0.0, 360.0).toFloat(),
-                rotateAngleX = Random.nextDouble(20.0, 85.0).toFloat(),
+                rotateAngleGlobalZ = Random.nextDouble(-360.0, 360.0).toFloat(),
+                rotateAngleX = Random.nextDouble(0.0, 360.0).toFloat(),
                 lifetime = Random.nextLong(lifetime.first, lifetime.second),
+                shiftXCoefficient = Random.nextDouble(-shiftXCoefficient.toDouble(), shiftXCoefficient.toDouble()).toFloat(),
             )
         )
     }
@@ -137,6 +141,7 @@ class ConfettiController {
         particleSize: Pair<Int, Int>,
         windage: Pair<Float, Float>,
         lifetime: Pair<Long, Long>,
+        shiftXCoefficient: Float,
     ) -> Unit)?> = mutableStateOf(null)
 
     fun spawn(
@@ -149,6 +154,7 @@ class ConfettiController {
         particleSize: Pair<Int, Int> = 30 to 50,
         windage: Pair<Float, Float> = 0.01f to 15f,
         lifetime: Pair<Long, Long> = 3000L to 8000L,
+        shiftXCoefficient: Float = 0.5f,
     ) {
         if (onSpawn.value !== null) {
             onSpawn.value!!(
@@ -161,6 +167,7 @@ class ConfettiController {
                 particleSize,
                 windage,
                 lifetime,
+                shiftXCoefficient,
             )
         }
     }
@@ -192,6 +199,7 @@ fun Confetti(
                 particleSize: Pair<Int, Int>,
                 windage: Pair<Float, Float>,
                 lifetime: Pair<Long, Long>,
+                shiftXCoefficient: Float,
             ->
             particles.addAll(
                 spawn(
@@ -204,6 +212,7 @@ fun Confetti(
                     ejectAngle = ejectAngle,
                     ejectForceCoefficient = ejectForceCoefficient,
                     lifetime = lifetime,
+                    shiftXCoefficient = shiftXCoefficient,
                 )
             )
 
@@ -230,8 +239,10 @@ fun Confetti(
         particles.forEach {
             drawParticle(it)
 
+            val shiftX = sin(timeStamp * timeSpeed * abs(it.shiftXCoefficient)) * it.shiftXCoefficient
+
             it.position = PointF(
-                it.position.x + it.vectorAcceleration.x * diffTimestamp * timeSpeed,
+                it.position.x + it.vectorAcceleration.x * diffTimestamp * timeSpeed + shiftX,
                 it.position.y + it.vectorAcceleration.y * diffTimestamp * timeSpeed,
             )
 
@@ -259,12 +270,28 @@ fun Confetti(
                 } else it.vectorAcceleration.y,
             )
 
-            it.rotateAngleY = it.rotateAngleY + 10f * diffTimestamp * timeSpeed
-
-            it.rotateAngleY = if (it.rotateAngleY > 360f) {
-                it.rotateAngleY - 360f
+            it.rotateAngleGlobalZ = if (it.rotateAngleGlobalZ > 0) {
+                it.rotateAngleGlobalZ + 10f * diffTimestamp * timeSpeed
             } else {
-                it.rotateAngleY
+                it.rotateAngleGlobalZ - 10f * diffTimestamp * timeSpeed
+            }
+
+            it.rotateAngleGlobalZ = if (it.rotateAngleGlobalZ > 360f) {
+                it.rotateAngleGlobalZ - 360f
+            } else if (it.rotateAngleGlobalZ < -360f) {
+                it.rotateAngleGlobalZ + 360f
+            } else {
+                it.rotateAngleGlobalZ
+            }
+
+            it.rotateAngleZ = it.rotateAngleGlobalZ
+
+            it.rotateAngleX = it.rotateAngleX + 10f * diffTimestamp * timeSpeed
+
+            it.rotateAngleX = if (it.rotateAngleX > 360f) {
+                it.rotateAngleX - 360f
+            } else {
+                it.rotateAngleX
             }
 
             it.lifetime = it.lifetime?.minus(diffTimestamp)
@@ -295,36 +322,21 @@ fun Confetti(
 
         if (debug) {
             drawIntoCanvas {
-                it.nativeCanvas.drawText(
+                listOf(
                     "timeStamp = $timeStamp",
-                    0f,
-                    24.sp.value,
-                    textPaint
-                )
-                it.nativeCanvas.drawText(
                     "diffTimestamp = $diffTimestamp",
-                    0f,
-                    24.sp.value * 2,
-                    textPaint
-                )
-                it.nativeCanvas.drawText(
                     "timeSpeed = $timeSpeed",
-                    0f,
-                    24.sp.value * 3,
-                    textPaint
-                )
-                it.nativeCanvas.drawText(
                     "gravity = $gravity",
-                    0f,
-                    24.sp.value * 4,
-                    textPaint
-                )
-                it.nativeCanvas.drawText(
                     "count = ${particles.size}",
-                    0f,
-                    24.sp.value * 5,
-                    textPaint
-                )
+                    "shiftX = ${sin(timeStamp * timeSpeed * 0.5f)}",
+                ).forEachIndexed { index, string ->
+                    it.nativeCanvas.drawText(
+                        string,
+                        0f,
+                        24.sp.value * (index + 1),
+                        textPaint
+                    )
+                }
             }
         }
     }
@@ -349,7 +361,8 @@ private fun Preview() {
                                 ejectVector = PointF(-100f, -100f),
                                 ejectAngle = 140,
                                 ejectForceCoefficient = 7f,
-                                count = 30 to 60,
+                                count = 60 to 90,
+                                particleSize = 30 to 50,
                                 colors = colors,
                             )
 
@@ -358,7 +371,8 @@ private fun Preview() {
                                 ejectVector = PointF(100f, -100f),
                                 ejectAngle = 140,
                                 ejectForceCoefficient = 7f,
-                                count = 30 to 60,
+                                count = 60 to 90,
+                                particleSize = 30 to 50,
                                 colors = colors,
                             )
                         }

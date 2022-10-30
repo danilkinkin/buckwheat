@@ -29,41 +29,61 @@ data class Particle(
     val bSideColor: Color,
     val path: List<PointF>,
     val hitBox: Size,
-    var rotateAngleY: Float = 0f,
     var rotateAngleX: Float = 0f,
+    var rotateAngleY: Float = 0f,
+    var rotateAngleZ: Float = 0f,
+    var rotateAngleGlobalX: Float = 0f,
+    var rotateAngleGlobalY: Float = 0f,
+    var rotateAngleGlobalZ: Float = 0f,
     var position: PointF,
     var vectorAcceleration: PointF,
     val windage: Float,
     var mustDestroy: Boolean = false,
     var alpha: Float = 1f,
     var lifetime: Long? = null,
+    var shiftXCoefficient: Float = 0f,
 )
 
 fun DrawScope.drawParticle(particle: Particle, debug: Boolean = false) {
     val halfWidth = particle.hitBox.width / 2
     val halfHeight = particle.hitBox.height / 2
-
-    val perspective = 1f
+    val centerX = particle.position.x
+    val centerY = particle.position.y
     val radianX = particle.rotateAngleX * (PI / 180f)
     val radianY = particle.rotateAngleY * (PI / 180f)
+    val radianZ = particle.rotateAngleZ * (PI / 180f)
+    val radianGlobalX = particle.rotateAngleGlobalX * (PI / 180f)
+    val radianGlobalY = particle.rotateAngleGlobalY * (PI / 180f)
+    val radianGlobalZ = particle.rotateAngleGlobalZ * (PI / 180f)
     val rotateX = cos(radianX).toFloat()
     val rotateY = cos(radianY).toFloat()
+    val rotateZ = cos(radianZ).toFloat()
+    val rotateGlobalX = cos(radianGlobalX).toFloat()
+    val rotateGlobalY = cos(radianGlobalY).toFloat()
+    val rotateGlobalZ = cos(radianGlobalZ).toFloat()
     val rotateAltX = sin(radianX).toFloat()
     val rotateAltY = sin(radianY).toFloat()
+    val rotateAltZ= sin(radianZ).toFloat()
+    val rotateAltGlobalX = sin(radianGlobalX).toFloat()
+    val rotateAltGlobalY = sin(radianGlobalY).toFloat()
+    val rotateAltGlobalZ = sin(radianGlobalZ).toFloat()
 
     drawPath(
-        color = (if (rotateY > 0f && rotateX > 0f) particle.color else particle.bSideColor)
+        color = (if (rotateY > 0f && rotateX > 0f && rotateGlobalY > 0f && rotateGlobalX > 0f) particle.color else particle.bSideColor)
             .copy(alpha = particle.alpha),
         path = Path().apply {
-            val centerX = particle.position.x
-            val centerY = particle.position.y
-
             particle.path.forEachIndexed { index, point ->
                 val xRaw = (point.x - halfWidth)
                 val yRaw = (point.y - halfHeight)
 
-                val x = centerX + xRaw * rotateY + yRaw * rotateAltX * rotateAltY
-                val y = centerY + yRaw * rotateX
+                val xRRaw = xRaw * rotateZ + yRaw * rotateAltZ
+                val yRRaw = yRaw * rotateZ - xRaw * rotateAltZ
+
+                val xRel = xRRaw * rotateY * rotateGlobalY + yRRaw * rotateAltX * rotateAltGlobalY
+                val yRel = yRRaw * rotateX * rotateGlobalX  + xRRaw * rotateAltY * rotateAltGlobalX
+
+                val x = centerX + xRel * rotateGlobalZ + yRel * rotateAltGlobalZ
+                val y = centerY + yRel * rotateGlobalZ - xRel * rotateAltGlobalZ
 
                 if (index == 0) moveTo(x, y) else lineTo(x, y)
 
@@ -75,9 +95,15 @@ fun DrawScope.drawParticle(particle: Particle, debug: Boolean = false) {
                     )
                     drawIntoCanvas { canvas ->
                         canvas.nativeCanvas.drawText(
-                            "yRaw = $yRaw",
+                            "xRaw = $xRaw",
                             x,
                             y + 24.sp.value,
+                            textPaint
+                        )
+                        canvas.nativeCanvas.drawText(
+                            "yRaw = $yRaw",
+                            x,
+                            y + 24.sp.value * 2,
                             textPaint
                         )
                     }
@@ -90,55 +116,30 @@ fun DrawScope.drawParticle(particle: Particle, debug: Boolean = false) {
 
     if (debug) {
         drawIntoCanvas {
-            it.nativeCanvas.drawText(
-                "rotateAngleY = ${particle.rotateAngleY}",
-                0f,
-                24.sp.value,
-                textPaint
-            )
-            it.nativeCanvas.drawText(
+            listOf(
                 "rotateAngleX = ${particle.rotateAngleX}",
-                0f,
-                24.sp.value * 2,
-                textPaint
-            )
-            it.nativeCanvas.drawText(
+                "rotateAngleY = ${particle.rotateAngleY}",
+                "rotateAngleGlobalX = ${particle.rotateAngleGlobalX}",
+                "rotateAngleGlobalY = ${particle.rotateAngleGlobalY}",
+                "rotateAngleGlobalZ = ${particle.rotateAngleGlobalZ}",
                 "rotateX = $rotateX",
-                0f,
-                24.sp.value * 3,
-                textPaint
-            )
-            it.nativeCanvas.drawText(
                 "rotateY = $rotateY",
-                0f,
-                24.sp.value * 4,
-                textPaint
-            )
-            it.nativeCanvas.drawText(
+                "rotateGlobalX = $rotateGlobalX",
+                "rotateGlobalY = $rotateGlobalY",
+                "rotateGlobalZ = $rotateGlobalZ",
                 "rotateAltX = $rotateAltX",
-                0f,
-                24.sp.value * 6,
-                textPaint
-            )
-            it.nativeCanvas.drawText(
                 "rotateAltY = $rotateAltY",
-                0f,
-                24.sp.value * 7,
-                textPaint
-            )
-            it.nativeCanvas.drawText(
-                "perspective = $perspective",
-                0f,
-                24.sp.value * 9,
-                textPaint
-            )
-            it.nativeCanvas.drawText(
-                "rtr = ${(1f - abs(rotateAltX)) * sign(rotateAltX)}",
-                0f,
-                24.sp.value * 10,
-                textPaint
-            )
-
+                "rotateAltGlobalX = $rotateAltGlobalX",
+                "rotateAltGlobalY = $rotateAltGlobalY",
+                "rotateAltGlobalZ = $rotateAltGlobalZ",
+            ).forEachIndexed { index, string ->
+                it.nativeCanvas.drawText(
+                    string,
+                    0f,
+                    24.sp.value * (index + 1),
+                    textPaint
+                )
+            }
         }
     }
 }
@@ -205,12 +206,12 @@ private fun PreviewParticle() {
                         color = color,
                         bSideColor = bSideColor,
                         path = listOf(
-                            PointF(15f, 20f),
-                            PointF(75f, 0f),
-                            PointF(60f, 150f),
-                            PointF(0f, 100f),
+                            PointF(20f, 15f),
+                            PointF(0f, 75f),
+                            PointF(150f, 60f),
+                            PointF(100f, 0f),
                         ),
-                        hitBox = Size(75f, 150f),
+                        hitBox = Size(150f, 75f),
                         position = PointF(400f, 1200f),
                         vectorAcceleration = PointF(0f, 0f),
                         windage = 0f,
@@ -249,19 +250,32 @@ private fun PreviewParticle() {
 
         val infiniteTransition = rememberInfiniteTransition()
 
-        val angle by infiniteTransition.animateFloat(
+        val angleY by infiniteTransition.animateFloat(
             initialValue = 0f,
             targetValue = 360f,
             animationSpec = infiniteRepeatable(
-                animation = tween(14000, easing = LinearEasing),
+                animation = tween(4000, easing = LinearEasing),
                 repeatMode = RepeatMode.Restart
+            )
+        )
+
+        val angleX by infiniteTransition.animateFloat(
+            initialValue = 70f,
+            targetValue = 120f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(4000, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
             )
         )
 
         Canvas(Modifier.fillMaxSize()) {
             particles.forEach {
                 drawParticle(
-                    it.copy(rotateAngleY = angle, rotateAngleX = 45f),
+                    it.copy(
+                        rotateAngleGlobalZ = angleY,
+                        rotateAngleX = angleX,
+                        rotateAngleZ = angleY,
+                    ),
                     debug = true,
                 )
             }
