@@ -94,18 +94,17 @@ fun DrawScope.drawParticle(particle: Particle, debug: Boolean = false) {
                         center = Offset(centerX + xRaw, centerY)
                     )
                     drawIntoCanvas { canvas ->
-                        canvas.nativeCanvas.drawText(
+                        listOf(
                             "xRaw = $xRaw",
-                            x,
-                            y + 24.sp.value,
-                            textPaint
-                        )
-                        canvas.nativeCanvas.drawText(
                             "yRaw = $yRaw",
-                            x,
-                            y + 24.sp.value * 2,
-                            textPaint
-                        )
+                        ).forEachIndexed { index, string ->
+                            canvas.nativeCanvas.drawText(
+                                string,
+                                x,
+                                y + 24.sp.value * (index + 1),
+                                textPaint
+                            )
+                        }
                     }
                 }
             }
