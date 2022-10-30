@@ -9,6 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,10 +20,10 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.effects.generateColors
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import kotlin.math.abs
 
@@ -33,7 +35,9 @@ fun RecalcBudget(
     appViewModel: AppViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val localDensity = LocalDensity.current
     val isDebug = appViewModel.isDebug.observeAsState(false)
+    val coroutineScope = rememberCoroutineScope()
 
     val restDays = countDays(spendsViewModel.finishDate.value!!)
     val skippedDays = abs(countDays(spendsViewModel.lastReCalcBudgetDate!!))
@@ -54,125 +58,150 @@ fun RecalcBudget(
         .calculateBottomPadding()
         .coerceAtLeast(16.dp)
 
+    var contentHeight by remember { mutableStateOf(0f) }
+    var isSpawned by remember { mutableStateOf(false) }
+
     BoxWithConstraints(Modifier.fillMaxWidth()) {
-        LaunchedEffect(Unit) {
-            delay(300)
+        val rootHeight = constraints.maxHeight.toFloat()
 
-            appViewModel.confettiController.spawn(
-                ejectPoint = PointF(constraints.maxWidth.toFloat(), constraints.maxHeight * 0.4f),
-                ejectVector = PointF(-100f, -100f),
-                ejectAngle = 140,
-                ejectForceCoefficient = 7f,
-                count = 120 to 150,
-                lifetime = Pair(1000L, 3000L),
-            )
-
-            appViewModel.confettiController.spawn(
-                ejectPoint = PointF(0f, constraints.maxHeight * 0.4f),
-                ejectVector = PointF(100f, -100f),
-                ejectAngle = 140,
-                ejectForceCoefficient = 7f,
-                count = 120 to 150,
-                lifetime = Pair(1000L, 3000L),
-            )
-        }
-    }
-
-    Surface {
-        Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(start = 24.dp, end = 24.dp, bottom = navigationBarHeight),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Surface(
+            Modifier.onGloballyPositioned {
+                contentHeight = it.size.height.toFloat() - with(localDensity) { 90.dp.toPx() }
+            }
         ) {
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = stringResource(R.string.new_day_title),
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = prettyCandyCanes(
-                    requireDistributeBudget,
-                    currency = spendsViewModel.currency.value!!,
-                ),
-                style = MaterialTheme.typography.displayLarge,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = stringResource(R.string.recalc_budget),
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-            )
-            /* if (isDebug.value) {
-                Spacer(Modifier.height(48.dp))
+            DisposableEffect(contentHeight) {
+                if (contentHeight != 0f && !isSpawned) {
+                    isSpawned = true
+
+                    val top = (rootHeight - contentHeight).coerceAtLeast(rootHeight * 0.3f)
+
+                    coroutineScope.launch {
+                        delay(300)
+
+                        appViewModel.confettiController.spawn(
+                            ejectPoint = PointF(constraints.maxWidth.toFloat(), top),
+                            ejectVector = PointF(-100f, -100f),
+                            ejectAngle = 140,
+                            ejectForceCoefficient = 7f,
+                            count = 120 to 150,
+                            lifetime = Pair(1000L, 3000L),
+                        )
+
+                        appViewModel.confettiController.spawn(
+                            ejectPoint = PointF(0f, top),
+                            ejectVector = PointF(100f, -100f),
+                            ejectAngle = 140,
+                            ejectForceCoefficient = 7f,
+                            count = 120 to 150,
+                            lifetime = Pair(1000L, 3000L),
+                        )
+                    }
+                }
+
+                onDispose {}
+            }
+
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .padding(start = 24.dp, end = 24.dp, bottom = navigationBarHeight),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(Modifier.height(24.dp))
                 Text(
-                    text = "Осталось дней = $restDays " +
-                            "\nПрошло дней с последнего пересчета = $skippedDays " +
-                            "\nНачало = ${spendsViewModel.startDate} " +
-                            "\nПоследний пересчет = ${spendsViewModel.lastReCalcBudgetDate} " +
-                            "\nКонец = ${spendsViewModel.finishDate} " +
-                            "\nВесь бюджет = ${spendsViewModel.budget.value!!}" +
-                            "\nПотрачено из бюджета = ${spendsViewModel.spent.value!!}" +
-                            "\nБюджет на сегодня = ${spendsViewModel.dailyBudget.value!!}" +
-                            "\nПотрачено из дневного бюджета = ${spendsViewModel.spentFromDailyBudget.value!!}" +
-                            "\nОставшийся бюджет = $restBudget" +
-                            "\nОставшийся бюджет на по дням = $perDayBudget",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.fillMaxWidth()
+                    text = stringResource(R.string.new_day_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    textAlign = TextAlign.Center,
                 )
-            }*/
-            Spacer(Modifier.height(48.dp))
-            DescriptionButton(
-                title = { Text(stringResource(R.string.split_rest_days_title)) },
-                description = {
-                    Text(stringResource(
-                        R.string.split_rest_days_description,
-                        prettyCandyCanes(
-                            budgetPerDaySplit,
-                            currency = spendsViewModel.currency.value!!,
-                        ),
-                    ))
-                },
-                secondDescription = if (isDebug.value) {
-                    { Text("($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit") }
-                } else null,
-                onClick = {
-                    spendsViewModel.reCalcDailyBudget(budgetPerDaySplit)
+                Spacer(Modifier.height(24.dp))
+                Text(
+                    text = prettyCandyCanes(
+                        requireDistributeBudget,
+                        currency = spendsViewModel.currency.value!!,
+                    ),
+                    style = MaterialTheme.typography.displayLarge,
+                    textAlign = TextAlign.Center,
+                )
+                Spacer(Modifier.height(24.dp))
+                Text(
+                    text = stringResource(R.string.recalc_budget),
+                    style = MaterialTheme.typography.bodyLarge,
+                    textAlign = TextAlign.Center,
+                )
+                if (isDebug.value) {
+                    Spacer(Modifier.height(48.dp))
+                    Text(
+                        text = "Осталось дней = $restDays " +
+                                "\nПрошло дней с последнего пересчета = $skippedDays " +
+                                "\nНачало = ${spendsViewModel.startDate} " +
+                                "\nПоследний пересчет = ${spendsViewModel.lastReCalcBudgetDate} " +
+                                "\nКонец = ${spendsViewModel.finishDate} " +
+                                "\nВесь бюджет = ${spendsViewModel.budget.value!!}" +
+                                "\nПотрачено из бюджета = ${spendsViewModel.spent.value!!}" +
+                                "\nБюджет на сегодня = ${spendsViewModel.dailyBudget.value!!}" +
+                                "\nПотрачено из дневного бюджета = ${spendsViewModel.spentFromDailyBudget.value!!}" +
+                                "\nОставшийся бюджет = $restBudget" +
+                                "\nОставшийся бюджет на по дням = $perDayBudget",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Spacer(Modifier.height(48.dp))
+                DescriptionButton(
+                    title = { Text(stringResource(R.string.split_rest_days_title)) },
+                    description = {
+                        Text(
+                            stringResource(
+                                R.string.split_rest_days_description,
+                                prettyCandyCanes(
+                                    budgetPerDaySplit,
+                                    currency = spendsViewModel.currency.value!!,
+                                ),
+                            )
+                        )
+                    },
+                    secondDescription = if (isDebug.value) {
+                        { Text("($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit") }
+                    } else null,
+                    onClick = {
+                        spendsViewModel.reCalcDailyBudget(budgetPerDaySplit)
 
-                    onClose()
-                },
-            )
-            Spacer(Modifier.height(16.dp))
-            DescriptionButton(
-                title = { Text(stringResource(R.string.add_current_day_title)) },
-                description = {
-                    Text(stringResource(
-                        R.string.add_current_day_description,
-                        prettyCandyCanes(
-                            requireDistributeBudget + budgetPerDayAdd,
-                            currency = spendsViewModel.currency.value!!,
-                        ),
-                        prettyCandyCanes(
-                            budgetPerDayAdd,
-                            currency = spendsViewModel.currency.value!!,
-                        ),
-                    ))
-                },
-                secondDescription = if (isDebug.value) {
-                    { Text(
-                        "$restBudget / $restDays = $budgetPerDayAdd " +
-                            "\n${budgetPerDayAdd} + $requireDistributeBudget = $budgetPerDayAddDailyBudget"
-                    ) }
-                } else null,
-                onClick = {
-                    spendsViewModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
+                        onClose()
+                    },
+                )
+                Spacer(Modifier.height(16.dp))
+                DescriptionButton(
+                    title = { Text(stringResource(R.string.add_current_day_title)) },
+                    description = {
+                        Text(
+                            stringResource(
+                                R.string.add_current_day_description,
+                                prettyCandyCanes(
+                                    requireDistributeBudget + budgetPerDayAdd,
+                                    currency = spendsViewModel.currency.value!!,
+                                ),
+                                prettyCandyCanes(
+                                    budgetPerDayAdd,
+                                    currency = spendsViewModel.currency.value!!,
+                                ),
+                            )
+                        )
+                    },
+                    secondDescription = if (isDebug.value) {
+                        {
+                            Text(
+                                "$restBudget / $restDays = $budgetPerDayAdd " +
+                                        "\n${budgetPerDayAdd} + $requireDistributeBudget = $budgetPerDayAddDailyBudget"
+                            )
+                        }
+                    } else null,
+                    onClick = {
+                        spendsViewModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
 
-                    onClose()
-                },
-            )
+                        onClose()
+                    },
+                )
+            }
         }
     }
 }
