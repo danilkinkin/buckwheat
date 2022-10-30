@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
+import android.graphics.PointF
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -8,6 +9,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -19,6 +23,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.effects.colors
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.countDays
 
@@ -34,6 +39,7 @@ fun FinishPeriod(
     val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
     val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+    var confettiButtonPosition by remember { mutableStateOf(Offset(0f, 0f)) }
 
     val navigationBarHeight = WindowInsets.systemBars
         .asPaddingValues()
@@ -80,7 +86,25 @@ fun FinishPeriod(
                         currency = spendsViewModel.currency.value!!,
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    FillCircleStub()
+                    FillCircleStub(
+                        modifier = Modifier
+                            .onGloballyPositioned {
+                                confettiButtonPosition = Offset(
+                                    x = it.positionInWindow().x + it.size.width / 2,
+                                    y = it.positionInWindow().y + it.size.height / 2,
+                                )
+                            },
+                        onClick = {
+                            appViewModel.confettiController.spawn(
+                                ejectPoint = PointF(confettiButtonPosition.x, confettiButtonPosition.y),
+                                accelerationVector = PointF(-100f, -100f),
+                                angle = 80,
+                                forceCoefficient = 7f,
+                                count = 30 to 60,
+                                colors = colors,
+                            )
+                        }
+                    )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(Modifier.fillMaxWidth()) {

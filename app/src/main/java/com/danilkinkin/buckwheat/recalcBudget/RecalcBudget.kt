@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.recalcBudget
 
+import android.graphics.PointF
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,8 +18,10 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.effects.colors
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
+import kotlinx.coroutines.delay
 import java.math.RoundingMode
 import kotlin.math.abs
 
@@ -51,6 +54,30 @@ fun RecalcBudget(
         .calculateBottomPadding()
         .coerceAtLeast(16.dp)
 
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        LaunchedEffect(Unit) {
+            delay(300)
+
+            appViewModel.confettiController.spawn(
+                ejectPoint = PointF(constraints.maxWidth.toFloat(), constraints.maxHeight * 0.4f),
+                accelerationVector = PointF(-100f, -100f),
+                angle = 140,
+                forceCoefficient = 7f,
+                count = 30 to 60,
+                colors = colors,
+            )
+
+            appViewModel.confettiController.spawn(
+                ejectPoint = PointF(0f, constraints.maxHeight * 0.4f),
+                accelerationVector = PointF(100f, -100f),
+                angle = 140,
+                forceCoefficient = 7f,
+                count = 30 to 60,
+                colors = colors,
+            )
+        }
+    }
+
     Surface {
         Column(
             modifier = Modifier
@@ -79,7 +106,7 @@ fun RecalcBudget(
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
             )
-            if (isDebug.value) {
+            /* if (isDebug.value) {
                 Spacer(Modifier.height(48.dp))
                 Text(
                     text = "Осталось дней = $restDays " +
@@ -96,7 +123,7 @@ fun RecalcBudget(
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
+            }*/
             Spacer(Modifier.height(48.dp))
             DescriptionButton(
                 title = { Text(stringResource(R.string.split_rest_days_title)) },

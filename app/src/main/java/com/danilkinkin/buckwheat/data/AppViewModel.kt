@@ -9,6 +9,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.danilkinkin.buckwheat.data.entities.Storage
 import com.danilkinkin.buckwheat.di.DatabaseRepository
+import com.danilkinkin.buckwheat.effects.ConfettiController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -33,6 +34,9 @@ class AppViewModel @Inject constructor(
     private val storage = db.storageDao()
 
     var snackbarHostState = SnackbarHostState()
+        private set
+
+    var confettiController = ConfettiController()
         private set
 
     var lockSwipeable: MutableState<Boolean> = mutableStateOf(false)

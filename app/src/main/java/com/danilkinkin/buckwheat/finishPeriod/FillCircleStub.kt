@@ -18,7 +18,11 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FillCircleStub(icon: Painter? = null, onClick: () -> Unit = {}) {
+fun FillCircleStub(
+    modifier: Modifier = Modifier,
+    icon: Painter? = null,
+    onClick: () -> Unit = {},
+) {
     var size by remember { mutableStateOf(0.dp) }
     val localDensity = LocalDensity.current
 
@@ -32,7 +36,7 @@ fun FillCircleStub(icon: Painter? = null, onClick: () -> Unit = {}) {
     ) {
         Card(
             onClick = onClick,
-            modifier = Modifier.size(size),
+            modifier = modifier.size(size),
             shape = CircleShape,
         ) {
             Box(

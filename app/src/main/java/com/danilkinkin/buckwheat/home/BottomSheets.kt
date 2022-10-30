@@ -1,18 +1,19 @@
 package com.danilkinkin.buckwheat.home
 
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.*
+import com.danilkinkin.buckwheat.effects.Confetti
 import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.finishPeriod.FinishPeriod
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
@@ -162,5 +163,12 @@ fun BottomSheets(
                 },
             )
         }
+    }
+
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        Confetti(
+            modifier = Modifier.fillMaxSize(),
+            controller = appViewModel.confettiController,
+        )
     }
 }
