@@ -5,14 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.finishPeriod.FillCircleStub
 import com.danilkinkin.buckwheat.finishPeriod.RestBudgetCard
 import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
-import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.util.ExtendCurrency
 
 @Composable
@@ -45,10 +42,7 @@ fun BudgetSummary(
                 currency = currency!!,
             )
             Spacer(modifier = Modifier.width(16.dp))
-            FillCircleStub(
-                icon = painterResource(R.drawable.ic_edit),
-                onClick = { onEdit() }
-            )
+            EditButton(onClick = { onEdit() })
         }
     }
 }
