@@ -14,18 +14,14 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.effects.colors
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.util.countDays
 
 const val FINISH_PERIOD_SHEET = "finishPeriod"
 
@@ -97,11 +93,10 @@ fun FinishPeriod(
                         onClick = {
                             appViewModel.confettiController.spawn(
                                 ejectPoint = PointF(confettiButtonPosition.x, confettiButtonPosition.y),
-                                accelerationVector = PointF(-100f, -100f),
-                                angle = 80,
-                                forceCoefficient = 7f,
+                                ejectVector = PointF(-100f, -100f),
+                                ejectAngle = 80,
+                                ejectForceCoefficient = 7f,
                                 count = 30 to 60,
-                                colors = colors,
                             )
                         }
                     )

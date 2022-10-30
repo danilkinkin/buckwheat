@@ -18,7 +18,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.effects.colors
+import com.danilkinkin.buckwheat.effects.generateColors
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.delay
@@ -60,20 +60,20 @@ fun RecalcBudget(
 
             appViewModel.confettiController.spawn(
                 ejectPoint = PointF(constraints.maxWidth.toFloat(), constraints.maxHeight * 0.4f),
-                accelerationVector = PointF(-100f, -100f),
-                angle = 140,
-                forceCoefficient = 7f,
-                count = 30 to 60,
-                colors = colors,
+                ejectVector = PointF(-100f, -100f),
+                ejectAngle = 140,
+                ejectForceCoefficient = 7f,
+                count = 120 to 150,
+                lifetime = Pair(1000L, 3000L),
             )
 
             appViewModel.confettiController.spawn(
                 ejectPoint = PointF(0f, constraints.maxHeight * 0.4f),
-                accelerationVector = PointF(100f, -100f),
-                angle = 140,
-                forceCoefficient = 7f,
-                count = 30 to 60,
-                colors = colors,
+                ejectVector = PointF(100f, -100f),
+                ejectAngle = 140,
+                ejectForceCoefficient = 7f,
+                count = 120 to 150,
+                lifetime = Pair(1000L, 3000L),
             )
         }
     }
