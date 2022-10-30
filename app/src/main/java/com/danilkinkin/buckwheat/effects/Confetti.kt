@@ -29,9 +29,9 @@ import kotlin.random.Random
 fun generateColors() = listOf(
     harmonize(Color(0xFFD14BE9)),
     harmonize(Color(0xFF5AC25E)),
-    harmonize(Color(0xFFE4467B)),
-    harmonize(Color(0xFFF5C537)),
-    harmonize(Color(0xFF34B2EB)),
+    harmonize(Color(0xFFF54580)),
+    harmonize(Color(0xFFCCBE42)),
+    harmonize(Color(0xFF3ABDF8)),
     harmonize(Color(0xFFEB5F54)),
 )
 
@@ -97,7 +97,7 @@ fun spawn(
         val chroma = hct.chroma
         val tone = hct.tone
 
-        val bSideColor = Color(TonalPalette.fromHueAndChroma(hue, chroma).tone(tone / 1.5))
+        val bSideColor = Color(TonalPalette.fromHueAndChroma(hue, chroma).tone(tone * 1.2f))
 
         list.add(
             Particle(
