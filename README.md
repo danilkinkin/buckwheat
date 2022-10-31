@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="150" src="/screenshots/logo.png" alt="Buckwheat logo">
+  <img width="150" src="/screenshots/logo.svg" alt="Buckwheat logo">
 </p>
 
 # buckwheat
