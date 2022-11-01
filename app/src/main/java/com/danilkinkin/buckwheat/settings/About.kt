@@ -107,7 +107,7 @@ fun About(modifier: Modifier = Modifier) {
                 onClick = {
                     copyLinkToClipboard(
                         context,
-                        "https://github.com/danilkinkin/buckweat/issues",
+                        "https://github.com/danilkinkin/buckwheat/issues",
                     )
                 },
             )
