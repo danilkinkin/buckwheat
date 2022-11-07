@@ -52,8 +52,8 @@
     <string name="currency_none">Без валюты</string>
     <string name="per_day">%1$s в день</string>
     <string name="select_currency_title">Выберете валюту</string>
-    <string name="select_currency_hint">Введите вашу валюту</string>
     <string name="currency_custom_title">Укажите свою валюту</string>
+    <string name="currency_custom_description">Например, трата в 150 условных единиц будет отображаться вот так:</string>
     <string name="total_title">Итого</string>
     <string name="unable_calc_budget">Не получается рассчитать бюджет</string>
     <string name="budget_must_greater_zero">Укажите бюджет</string>

@@ -54,6 +54,14 @@ fun CustomCurrencyEditorContent(
                 modifier = Modifier.padding(24.dp).fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
+            Text(
+                text = stringResource(R.string.currency_custom_description),
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 16.dp)
+                    .fillMaxWidth(),
+            )
             BasicTextField(
                 modifier = Modifier
                     .focusRequester(focusRequester)
@@ -84,9 +92,9 @@ fun CustomCurrencyEditorContent(
                 ),
                 decorationBox = { input ->
                     Row(
-                        Modifier.padding(horizontal = 16.dp),
+                        Modifier.padding(horizontal = 24.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
+                        horizontalArrangement = Arrangement.Start,
                     ) {
                         Text(
                             text = "150",
