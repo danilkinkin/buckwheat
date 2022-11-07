@@ -6,12 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import kotlin.math.max
 import kotlin.math.min
@@ -111,7 +110,7 @@ private fun visualTransformationAsCurrency(
             val currOffset = if (startWithCurr) currSymbol.length else 0
             val shift = calcShift(input.text.replace(".", floatDivider), output, offset)
 
-            return (offset - shift).coerceIn(currOffset, output.length)
+            return (offset - shift).coerceIn(currOffset, input.length)
         }
     }
 
@@ -129,10 +128,16 @@ private fun visualTransformationAsCurrency(
         ""
     }
 
+    val heightFixer = if (currSymbol.isEmpty()) " " else ""
+
     return if (input.text.isEmpty()) {
         TransformedText(
             getAnnotatedString(
-                if (startWithCurr) currSymbol + placeholder else placeholder + currSymbol,
+                if (startWithCurr) {
+                    currSymbol + placeholder + heightFixer
+                } else {
+                    placeholder + currSymbol + heightFixer
+                },
                 listOf(
                     if (startWithCurr) Pair(
                         currSymbol.length,
@@ -241,7 +246,12 @@ fun Preview() {
                 getAnnotatedString("", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.none(),
                 Color.Green,
-                placeholder = "PLCHDR"
+                placeholder = "PLCHDR",
+                placeholderStyle = SpanStyle(
+                    fontSize = 6.sp,
+                    fontWeight = FontWeight.W700,
+                    baselineShift = BaselineShift(0.25f)
+                ),
             ).text
         )
         Text(
@@ -249,7 +259,12 @@ fun Preview() {
                 getAnnotatedString("", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.getInstance("EUR"),
                 Color.Green,
-                placeholder = "PLCHDR"
+                placeholder = "PLCHDR",
+                placeholderStyle = SpanStyle(
+                    fontSize = 6.sp,
+                    fontWeight = FontWeight.W700,
+                    baselineShift = BaselineShift(0.25f)
+                ),
             ).text
         )
         Text(

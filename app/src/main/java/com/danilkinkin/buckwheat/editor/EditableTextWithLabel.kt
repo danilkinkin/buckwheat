@@ -78,6 +78,7 @@ fun EditableTextWithLabel(
                         placeholderStyle = placeholderStyle,
                     ),
                     focusRequester = focusRequester,
+                    contentPadding = contentPaddingValues,
                 )
             }
         }

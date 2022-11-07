@@ -143,7 +143,7 @@ fun Editor(
 
                     val startWithCurr = output.startsWith(currSymbol)
 
-                    if (!startWithCurr) {
+                    if (!startWithCurr || currSymbol.isEmpty()) {
                         return@remember mutableStateOf(0)
                     }
 
@@ -260,8 +260,7 @@ fun Editor(
                                     overflow = TextOverflow.Visible,
                                     softWrap = false,
                                     modifier = Modifier
-                                        .padding(start = 36.dp, end = 36.dp)
-                                        .offset(x = (-2).dp),
+                                        .padding(start = 36.dp, end = 36.dp),
                                 )
                                 Text(
                                     text = stringResource(id = R.string.new_spent),
@@ -307,7 +306,7 @@ fun Editor(
                                 placeholderStyle = SpanStyle(
                                     fontSize = MaterialTheme.typography.headlineMedium.fontSize,
                                     fontWeight = FontWeight.W700,
-                                    baselineShift = BaselineShift(0.25f)
+                                    baselineShift = BaselineShift(0.26f)
                                 ),
                             )
 
