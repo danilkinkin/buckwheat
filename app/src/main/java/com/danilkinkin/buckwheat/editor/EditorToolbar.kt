@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,7 +34,7 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EditorToolbar(
     spendsViewModel: SpendsViewModel = hiltViewModel(),

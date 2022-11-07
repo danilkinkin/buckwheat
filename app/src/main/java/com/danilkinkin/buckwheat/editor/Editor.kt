@@ -92,7 +92,6 @@ fun Editor(
             SpendsViewModel.Stage.COMMITTING_SPENT -> {
                 stage = AnimState.COMMIT
 
-                spendsViewModel.resetSpent()
                 focusManager.clearFocus()
             }
         }
