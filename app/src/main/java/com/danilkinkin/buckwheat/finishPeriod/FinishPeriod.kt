@@ -31,6 +31,7 @@ fun FinishPeriod(
     val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
     val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+    val scrollState = rememberScrollState()
 
     val navigationBarHeight = WindowInsets.systemBars
         .asPaddingValues()
@@ -40,7 +41,7 @@ fun FinishPeriod(
     Surface {
         Column(
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -120,7 +121,15 @@ fun FinishPeriod(
                 Spacer(modifier = Modifier.height(16.dp))
                 AdviceCard(Modifier.fillMaxWidth())
             }
-            Spacer(Modifier.height(48.dp))
+            Spacer(Modifier.height(120.dp))
+        }
+
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight),
+            contentAlignment = Alignment.BottomCenter,
+        ) {
             DescriptionButton(
                 title = { Text(stringResource(R.string.new_period_title)) },
                 contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
@@ -128,6 +137,7 @@ fun FinishPeriod(
                     onCreateNewPeriod()
                     onClose()
                 },
+                elevation = CardDefaults.cardElevation(if (scrollState.maxValue - scrollState.value != 0) 6.0.dp else 0.dp),
             )
         }
     }

@@ -23,12 +23,14 @@ fun DescriptionButton(
     onClick: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
     colors: CardColors = CardDefaults.cardColors(),
+    elevation: CardElevation = CardDefaults.cardElevation(),
 ){
     Card(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.extraLarge,
         colors = colors,
+        elevation = elevation,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
