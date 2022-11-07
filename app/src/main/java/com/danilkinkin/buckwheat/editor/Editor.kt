@@ -170,22 +170,22 @@ fun Editor(
                         when(targetState) {
                             AnimState.EDITING -> slideInHorizontally(
                                 tween(
-                                    durationMillis = 150,
+                                    durationMillis = 80,
                                     easing = EaseInOutQuad,
                                 )
                             ) {
                                 -currencyShiftWidth
                             } + fadeIn(
-                                tween(durationMillis = 150)
+                                tween(durationMillis = 80)
                             ) with slideOutHorizontally(
                                 tween(
-                                    durationMillis = 150,
+                                    durationMillis = 80,
                                     easing = EaseInOutQuad,
                                 )
                             ) {
                                 currencyShiftWidth
                             } + fadeOut(
-                                tween(durationMillis = 150)
+                                tween(durationMillis = 80)
                             )
                             AnimState.COMMIT -> slideInVertically(
                                 tween(
