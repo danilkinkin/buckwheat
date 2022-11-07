@@ -12,8 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +39,7 @@ fun getCurrencies(): MutableList<Currency> {
     return currencies
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorldCurrencyChooserContent(
     defaultCurrency: Currency? = null,
@@ -44,6 +49,7 @@ fun WorldCurrencyChooserContent(
     val coroutineScope = rememberCoroutineScope()
     val list = remember { getCurrencies() }
     val selectCurrency = remember { mutableStateOf(defaultCurrency) }
+    var searchValue by remember { mutableStateOf("") }
     val scrollState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
@@ -68,22 +74,87 @@ fun WorldCurrencyChooserContent(
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(24.dp)
             )
-            Divider()
-            Box(Modifier.weight(1F)) {
-                LazyColumn(
-                    state = scrollState,
-                    verticalArrangement = Arrangement.spacedBy(0.dp),
-                    modifier = Modifier.fillMaxSize(),
-                ) {
-                    list.forEach {
-                        itemsCurrency(
-                            currency = it,
-                            selected = selectCurrency.value?.currencyCode === it.currencyCode,
-                            onClick = {
-                                selectCurrency.value = it
-                            },
-                        )
+            TextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = searchValue,
+                onValueChange = {
+                    searchValue = it
+                },
+                placeholder = {
+                    Text(
+                        text = stringResource(R.string.search_currency_placeholder),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        modifier = Modifier.padding(start = 24.dp, end = 8.dp),
+                        painter = painterResource(R.drawable.ic_search),
+                        contentDescription = null,
+                    )
+                },
+                trailingIcon = {
+                    if (searchValue.isEmpty()) return@TextField
+
+                   IconButton(
+                       modifier = Modifier.padding(end = 8.dp),
+                       onClick = { searchValue = "" },
+                   ) {
+                       Icon(
+                           painter = painterResource(R.drawable.ic_close),
+                           contentDescription = null,
+                       )
+                   }
+                },
+                textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600),
+                singleLine = true,
+                shape = RectangleShape,
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent,
+                ),
+            )
+
+            val filteredList = list
+                .filter {
+                    it.currencyCode.lowercase().contains(searchValue.lowercase())
+                            || it.displayName.lowercase().contains(searchValue.lowercase())
+                }
+
+            if (filteredList.isNotEmpty()) {
+                Box(Modifier.weight(1F)) {
+                    LazyColumn(
+                        state = scrollState,
+                        verticalArrangement = Arrangement.spacedBy(0.dp),
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        filteredList.forEach {
+                            itemsCurrency(
+                                currency = it,
+                                selected = selectCurrency.value?.currencyCode === it.currencyCode,
+                                onClick = {
+                                    selectCurrency.value = it
+                                },
+                            )
+                        }
                     }
+                }
+            } else {
+                Box(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.currency_not_found),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = LocalContentColor.current.copy(alpha = 0.8f),
+                    )
                 }
             }
             Divider()

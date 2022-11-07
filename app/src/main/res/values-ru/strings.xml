@@ -52,6 +52,8 @@
     <string name="currency_none">Без валюты</string>
     <string name="per_day">%1$s в день</string>
     <string name="select_currency_title">Выберете валюту</string>
+    <string name="search_currency_placeholder">Код валюты или название</string>
+    <string name="currency_not_found">Нет подходящих валют</string>
     <string name="currency_custom_title">Укажите свою валюту</string>
     <string name="currency_custom_description">Например, трата в 150 условных единиц будет отображаться вот так:</string>
     <string name="total_title">Итого</string>
