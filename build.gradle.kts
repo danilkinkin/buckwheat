@@ -6,7 +6,7 @@ buildscript {
         maven { url=uri("https://androidx.dev/snapshots/builds/-/artifacts/repository") }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.2.2")
+        classpath("com.android.tools.build:gradle:7.3.1")
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.44")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
         classpath("com.diffplug.spotless:spotless-plugin-gradle:6.11.0")
@@ -32,6 +32,5 @@ subprojects {
     }
 }
 plugins {
-    id("com.github.ben-manes.versions") version "0.41.0"
-    id("nl.littlerobots.version-catalog-update") version "0.6.0"
+    id("com.github.ben-manes.versions") version "0.43.0"
 }

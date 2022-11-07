@@ -12,6 +12,5 @@ import com.danilkinkin.buckwheat.data.entities.Storage
 @TypeConverters(RoomConverters::class)
 abstract class DatabaseModule : RoomDatabase() {
     abstract fun spentDao(): SpentDao
-
     abstract fun storageDao(): StorageDao
 }
