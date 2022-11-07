@@ -20,6 +20,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
+                arguments["room.schemaLocation"] = "$projectDir/schemas"
             }
         }
     }
