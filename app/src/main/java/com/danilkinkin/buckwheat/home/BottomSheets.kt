@@ -20,6 +20,8 @@ import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.onboarding.Onboarding
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
+import com.danilkinkin.buckwheat.settings.BUG_REPORTER_SHEET
+import com.danilkinkin.buckwheat.settings.BugReporter
 import com.danilkinkin.buckwheat.settings.SETTINGS_SHEET
 import com.danilkinkin.buckwheat.settings.Settings
 import com.danilkinkin.buckwheat.wallet.FINISH_DATE_SELECTOR_SHEET
@@ -163,6 +165,17 @@ fun BottomSheets(
                 },
             )
         }
+    }
+
+    BottomSheetWrapper(
+        name = BUG_REPORTER_SHEET,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
+        BugReporter(
+            onClose = {
+                coroutineScope.launch { state.hide() }
+            },
+        )
     }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {

@@ -14,13 +14,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
+import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.util.copyLinkToClipboard
+import com.danilkinkin.buckwheat.util.openInBrowser
 
 @Composable
-fun About(modifier: Modifier = Modifier) {
+fun About(
+    modifier: Modifier = Modifier,
+    appViewModel: AppViewModel = hiltViewModel(),
+) {
     val context = LocalContext.current
 
     Card(
@@ -85,7 +91,7 @@ fun About(modifier: Modifier = Modifier) {
                         start = offset,
                         end = offset,
                     ).firstOrNull()?.let {
-                        copyLinkToClipboard(
+                        openInBrowser(
                             context,
                             "https://danilkinkin.com",
                         )
@@ -105,10 +111,7 @@ fun About(modifier: Modifier = Modifier) {
                     end = 12.dp,
                 ),
                 onClick = {
-                    copyLinkToClipboard(
-                        context,
-                        "https://github.com/danilkinkin/buckwheat/issues",
-                    )
+                    appViewModel.openSheet(PathState(BUG_REPORTER_SHEET))
                 },
             )
         }

@@ -77,6 +77,11 @@
     <string name="report_bug">Report a bug</string>
     <string name="developer">Development &amp; design:</string>
 
+    <!-- Bug reporting -->
+    <string name="report_bug_title">Report a bug</string>
+    <string name="report_via_github">Via GitHub issue</string>
+    <string name="report_via_email">Via email</string>
+
     <!-- New day -->
     <string name="new_day_title">Congratulations! You saved</string>
     <string name="recalc_budget">Find out how to budget</string>
@@ -119,6 +124,7 @@
 
     <!-- Common -->
     <string name="copy_in_clipboard">Copied to clipboard</string>
+    <string name="not_found_email_clients">No email clients found</string>
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
     <string name="today">Today</string>

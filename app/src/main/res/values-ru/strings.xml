@@ -81,6 +81,11 @@
     <string name="report_bug">Сообщить об ошибке</string>
     <string name="developer">Разработка и дизайн:</string>
 
+    <!-- Bug reporting -->
+    <string name="report_bug_title">Сообщить об ошибке</string>
+    <string name="report_via_github">Через GitHub issue</string>
+    <string name="report_via_email">Через почту</string>
+
     <!-- New day -->
     <string name="new_day_title">Поздравляем! Вы сэкономили</string>
     <string name="recalc_budget">Уточните как пересчитать бюджет</string>
@@ -123,6 +128,7 @@
 
     <!-- Common -->
     <string name="copy_in_clipboard">Скопировано в буфер обмена</string>
+    <string name="not_found_email_clients">Не найдено почтовых клиентов</string>
     <string name="cancel">Отменить</string>
     <string name="accept">Применить</string>
     <string name="today">Сегодня</string>
