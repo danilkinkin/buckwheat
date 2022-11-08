@@ -28,9 +28,13 @@ val colorButton
     @Composable
     @ReadOnlyComposable
     get() = combineColors(
-        MaterialTheme.colorScheme.surfaceVariant,
+        combineColors(
+            MaterialTheme.colorScheme.secondaryContainer,
+            MaterialTheme.colorScheme.surfaceVariant,
+            0.76F
+        ),
         MaterialTheme.colorScheme.surface,
-        0.56F
+        0.68F
     )
 
 val colorOnButton
@@ -47,7 +51,7 @@ val colorEditor
     get() = combineColors(
         MaterialTheme.colorScheme.surface,
         MaterialTheme.colorScheme.surfaceVariant,
-        0.96F,
+        0.56F,
     )
 
 val colorOnEditor
