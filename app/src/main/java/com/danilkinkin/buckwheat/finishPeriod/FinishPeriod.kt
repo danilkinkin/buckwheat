@@ -1,5 +1,8 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -8,13 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -125,20 +129,103 @@ fun FinishPeriod(
         }
 
         Box(
-            Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight),
+            Modifier.fillMaxSize(),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            DescriptionButton(
+            Footer(
                 title = { Text(stringResource(R.string.new_period_title)) },
-                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
                 onClick = {
                     onCreateNewPeriod()
                     onClose()
                 },
-                elevation = CardDefaults.cardElevation(if (scrollState.maxValue - scrollState.value != 0) 6.0.dp else 0.dp),
+                detached = scrollState.maxValue - scrollState.value != 0,
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@Composable
+fun Footer(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+    title: @Composable () -> Unit,
+    detached: Boolean,
+) {
+    val colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+    )
+    val content = @Composable {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(
+                Modifier
+                    .padding(horizontal = 24.dp, vertical = 32.dp)
+                    .weight(weight = 1F, fill = true)
+            ) {
+                ProvideTextStyle(MaterialTheme.typography.titleMedium) {
+                    title()
+                }
+            }
+            Icon(
+                modifier = Modifier
+                    .width(48.dp)
+                    .padding(end = 8.dp),
+                painter = painterResource(R.drawable.ic_arrow_right),
+                contentDescription = null,
+            )
+        }
+    }
+
+    val navigationBarHeight = WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+        .coerceAtLeast(16.dp)
+
+    AnimatedContent(
+        targetState = detached,
+        transitionSpec = {
+            if (targetState && !initialState) {
+                fadeIn(
+                    tween(durationMillis = 250)
+                ) with fadeOut(
+                    snap(delayMillis = 250)
+                )
+            } else {
+                fadeIn(
+                    snap()
+                ) with fadeOut(
+                    tween(durationMillis = 250)
+                )
+            }.using(
+                SizeTransform(clip = false)
+            )
+        }
+    ) { targetDetached ->
+        if (targetDetached) {
+            Card(
+                onClick = onClick,
+                modifier = modifier.fillMaxWidth(),
+                shape = RectangleShape,
+                colors = colors,
+            ) {
+                Box(Modifier.padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight)) {
+                    content()
+                }
+            }
+        } else {
+            Card(
+                onClick = onClick,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight),
+                shape = MaterialTheme.shapes.extraLarge,
+                colors = colors,
+            ) {
+                content()
+            }
         }
     }
 }
