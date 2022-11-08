@@ -110,7 +110,7 @@ private fun visualTransformationAsCurrency(
             val currOffset = if (startWithCurr) currSymbol.length else 0
             val shift = calcShift(input.text.replace(".", floatDivider), output, offset)
 
-            return (offset - shift).coerceIn(currOffset, input.length)
+            return (offset - shift).coerceIn(min(currOffset, input.length), input.length)
         }
     }
 
