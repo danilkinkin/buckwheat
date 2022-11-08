@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -34,9 +35,13 @@ fun Editor(
             EditorToolbar(onOpenHistory = onOpenHistory)
             RestBudget()
             CurrentSpendEditor(
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 focusController = focusController,
             )
+            TaggingSpent()
+            Spacer(Modifier.height(24.dp))
         }
     }
 }
