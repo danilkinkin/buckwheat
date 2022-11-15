@@ -9,7 +9,6 @@
     <string name="budget_end">The budget is over</string>
     <string name="budget_end_description">You went beyond the planned budget, do not worry, it\'s not scary, spending is never the same. Start spending further to understand how much you will spend in the end and what budget you need</string>
     <string name="new_spent">New spending</string>
-    <string name="fab_home_desc">Home</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s spent today</item>
         <item quantity="other">%1$s spends today</item>
@@ -21,7 +20,6 @@
     <string name="enter_spent_placeholder">Enter spent</string>
 
     <!-- History -->
-    <string name="new_budget">Budget set</string>
     <string name="label_start_date">Start</string>
     <string name="label_finish_date">Finish</string>
     <string name="remove_spent">Expenditure returned to budget</string>
@@ -53,7 +51,6 @@
     <string name="days_must_greater_zero">Calculate the budget for at least one day</string>
     <string name="apply">Apply</string>
     <string name="done">Got it</string>
-    <string name="change_currency">Change currency</string>
     <string name="change_budget">Change budget</string>
     <string name="select_currency_title">Select currency</string>
     <string name="search_currency_placeholder">Currency code or name</string>
@@ -128,5 +125,4 @@
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
     <string name="today">Today</string>
-    <string name="yesterday">Yesterday</string>
 </resources>

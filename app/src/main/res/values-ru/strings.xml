@@ -9,7 +9,6 @@
     <string name="budget_end">Бюджет закончился</string>
     <string name="budget_end_description">Вы вышли за рамки запланированного бюджета, не беспокойтесь, это не страшно, траты никогда не бывают одинаковыми. Заводите траты дальше, чтобы понимать сколько в итоге вы потратите и какой бюджет вам нужен</string>
     <string name="new_spent">Новая трата</string>
-    <string name="fab_home_desc">Домой</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s тарта сегодня</item>
         <item quantity="few">%1$s траты сегодня</item>
@@ -23,7 +22,6 @@
     <string name="enter_spent_placeholder">Введите трату</string>
 
     <!-- History -->
-    <string name="new_budget">Бюджет установлен</string>
     <string name="label_start_date">Начало</string>
     <string name="label_finish_date">Конец</string>
     <string name="remove_spent">Трата возвращена в бюджет</string>
@@ -62,7 +60,6 @@
     <string name="days_must_greater_zero">Посчитатйте бюджет хотя-бы на один день</string>
     <string name="apply">Применить</string>
     <string name="done">Понятно</string>
-    <string name="change_currency">Изменить валюту</string>
     <string name="change_budget">Изменить бюджет</string>
     <string name="confirm_change_budget_title">Изменение бюджета</string>
     <string name="confirm_change_budget_description">Обратите внимание, что при изменении бюджета, текущая история трат удалится и отсчет начнется сначала</string>
@@ -132,5 +129,4 @@
     <string name="cancel">Отменить</string>
     <string name="accept">Применить</string>
     <string name="today">Сегодня</string>
-    <string name="yesterday">Вчера</string>
 </resources>

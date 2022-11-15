@@ -10,21 +10,17 @@
     <string name="budget_end">Budgeten avslutad</string>
     <string name="budget_end_description">Du har slut på budget, oroa dig inte, det är okej, utgifterna är aldrig desamma. Börja spendera ytterligare för att förstå hur mycket du kommer att spendera i slutändan och vilken budget du behöver</string>
     <string name="new_spent">Nya utgifter</string>
-    <string name="fab_home_desc">Hem</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s tårta idag</item>
-        <item quantity="few">%1$s spenderade idag</item>
-        <item quantity="many">%1$s spenderade idag</item>
+        <item quantity="other">%1$s spenderade idag</item>
     </plurals>
     <plurals name="day">
         <item quantity="one">%1$s dag</item>
-        <item quantity="few">%1$s dagar</item>
-        <item quantity="many">%1$s dagar</item>
+        <item quantity="other">%1$s dagar</item>
     </plurals>
     <string name="enter_spent_placeholder">Ange utgifter</string>
 
     <!-- Historia -->
-    <string name="new_budget">Budgetuppsättning</string>
     <string name="label_start_date">Starta</string>
     <string name="label_finish_date">Slut</string>
     <string name="remove_spent">Utgifterna återfördes till budgeten</string>
@@ -38,13 +34,11 @@
     <string name="select_finish_date_title">Välj ett slutdatum</string>
     <plurals name="finish_date_label">
         <item quantity="one">Upp till %1$s (%2$s dagar)</item>
-        <item quantity="few">Upp till %1$s (%2$s dagar)</item>
-        <item quantity="many">Upp till %1$s (%2$s dagar)</item>
+        <item quantity="other">Upp till %1$s (%2$s dagar)</item>
     </plurals>
     <plurals name="finish_date">
         <item quantity="one">%1$s (%2$s dag)</item>
-        <item quantity="few">%1$s (%2$s dagar)</item>
-        <item quantity="many">%1$s (%2$s dagar)</item>
+        <item quantity="other">%1$s (%2$s dagar)</item>
     </plurals>
     <string name="finish_date_not_select">Inget slutdatum valt</string>
     <string name="in_currency_label">I vilken valuta som ska räknas</string>
@@ -63,7 +57,6 @@
     <string name="days_must_greater_zero">Beräkna din budget för minst en dag</string>
     <string name="apply">Ansök</string>
     <string name="done">Förstår</string>
-    <string name="change_currency">Ändra valuta</string>
     <string name="change_budget">Ändra budget</string>
     <string name="confirm_change_budget_title">Ändra budget</string>
     <string name="confirm_change_budget_description">Observera att när du ändrar din budget kommer din nuvarande utgiftshistorik att raderas och nedräkningen börjar om</string>
@@ -133,5 +126,4 @@
     <string name="cancel">Avbryt</string>
     <string name="accept">Ansök</string>
     <string name="today">Idag</string>
-    <string name="yesterday">Igår</string>
 </resources>
