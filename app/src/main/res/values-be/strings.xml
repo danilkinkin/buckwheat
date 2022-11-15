@@ -10,7 +10,6 @@
     <string name="budget_end">Бюджэт скончыўся</string>
     <string name="budget_end_description">Вы выйшлі за рамкі запланаванага бюджэту, не хвалюйцеся, гэта не страшна, марнаванні ніколі не бываюць аднолькавымі. Заводзіце марнаванні далей, каб разумець колькі ў выніку вы выдаткуеце і які бюджэт вам патрэбен</string>
     <string name="new_spent">Новае марнаванне</string>
-    <string name="fab_home_desc">Дадому</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s тарта сёння</item>
         <item quantity="few">%1$s марнаванні сёння</item>
@@ -24,7 +23,6 @@
     <string name="enter_spent_placeholder">Увядзіце марнаванне</string>
 
     <!-- History -->
-    <string name="new_budget">Бюджэт усталяваны</string>
     <string name="label_start_date">Пачатак</string>
     <string name="label_finish_date">Канец</string>
     <string name="remove_spent">Трата вернутая ў бюджэт</string>
@@ -63,7 +61,6 @@
     <string name="days_must_greater_zero">Палічыце бюджэт хоць бы на адзін дзень</string>
     <string name="apply">Ужыць</string>
     <string name="done">Зразумела</string>
-    <string name="change_currency">Змяніць валюту</string>
     <string name="change_budget">Змяніць бюджэт</string>
     <string name="confirm_change_budget_title">Змяненне бюджэту</string>
     <string name="confirm_change_budget_description">Звярніце ўвагу, што пры змене бюджэту, бягучая гісторыя марнаванняў выдаліцца і адлік пачнецца спачатку</string>
@@ -133,5 +130,4 @@
     <string name="cancel">Адмяніць</string>
     <string name="accept">Ужыць</string>
     <string name="today">Сёння</string>
-    <string name="yesterday">Учора</string>
 </resources>
