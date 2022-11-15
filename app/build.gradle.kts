@@ -35,7 +35,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
         }
     }
@@ -49,7 +49,6 @@ android {
 
     buildFeatures {
         compose = true
-
     }
 
     composeOptions {
@@ -71,31 +70,30 @@ dependencies {
 
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("androidx.activity:activity-compose:1.6.1")
-    implementation("androidx.compose.runtime:runtime:1.3.0")
-    implementation("androidx.compose.foundation:foundation:1.3.0")
-    implementation("androidx.compose.foundation:foundation-layout:1.3.0")
-    implementation("androidx.compose.ui:ui-util:1.3.0")
-    implementation("androidx.compose.material3:material3-window-size-class:1.0.0")
-    implementation("androidx.compose.animation:animation:1.3.0")
-    implementation("androidx.compose.material:material-icons-extended:1.3.0")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.3.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.3.0")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.3.0")
-    implementation("androidx.compose.material3:material3:1.0.0")
-    implementation("androidx.compose.material:material:1.3.0")
+    implementation("androidx.compose.runtime:runtime:1.3.1")
+    implementation("androidx.compose.foundation:foundation:1.3.1")
+    implementation("androidx.compose.foundation:foundation-layout:1.3.1")
+    implementation("androidx.compose.ui:ui-util:1.3.1")
+    implementation("androidx.compose.material3:material3-window-size-class:1.0.1")
+    implementation("androidx.compose.animation:animation:1.3.1")
+    implementation("androidx.compose.material:material-icons-extended:1.3.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.3.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.3.1")
+    implementation("androidx.compose.material3:material3:1.0.1")
+    implementation("androidx.compose.material:material:1.3.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.1")
 
-    implementation("androidx.room:room-runtime:2.5.0-beta01")
-    kapt("androidx.room:room-compiler:2.5.0-beta01")
-    implementation("androidx.room:room-ktx:2.5.0-beta01")
+    implementation("androidx.room:room-runtime:2.5.0-beta02")
+    kapt("androidx.room:room-compiler:2.5.0-beta02")
+    implementation("androidx.room:room-ktx:2.5.0-beta02")
 
     implementation("androidx.room:room-paging:2.4.3")
 
     implementation("com.google.dagger:dagger:2.44")
     kapt("com.google.dagger:dagger-compiler:2.44")
-
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
 
@@ -110,18 +108,17 @@ dependencies {
 
     implementation("io.sentry:sentry-android:6.5.0")
     implementation("io.sentry:sentry-compose-android:6.5.0")
-
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.0")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.1")
 
     androidTestImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test:core:1.4.0")
-    androidTestImplementation("androidx.test:runner:1.4.0")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.test:rules:1.4.0")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation("androidx.test:core:1.5.0")
+    androidTestImplementation("androidx.test:runner:1.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.4")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.3.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.0")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.3.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.1")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
