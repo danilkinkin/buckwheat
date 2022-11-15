@@ -66,6 +66,12 @@ fun DebugMenu(
                     onClose()
                 },
             )
+            ButtonRow(
+                text = "Force crash app",
+                onClick = {
+                    throw Error("Test crash app")
+                },
+            )
         }
     }
 }
