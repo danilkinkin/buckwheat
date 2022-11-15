@@ -38,17 +38,6 @@ android {
                 "proguard-rules.pro",
             )
         }
-
-        create("benchmark") {
-            initWith(getByName("release"))
-            signingConfig = signingConfigs.getByName("debug")
-            matchingFallbacks.add("release")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-benchmark-rules.pro",
-            )
-            isDebuggable = false
-        }
     }
 
     compileOptions {
