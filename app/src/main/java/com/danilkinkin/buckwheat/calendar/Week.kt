@@ -41,7 +41,6 @@ internal fun Week(
                         calendarState = calendarUiState,
                         day = currentDay,
                         onDayClicked = onDayClicked,
-                        month = week.yearMonth
                     )
                 } else {
                     Box(modifier = Modifier.size(CELL_SIZE).weight(1f))

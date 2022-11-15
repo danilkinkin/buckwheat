@@ -30,6 +30,8 @@ import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.NumberFormat
+import java.util.*
 import kotlin.math.ceil
 
 @Composable
@@ -42,7 +44,7 @@ fun RestBudgetCard(
     val percent = remember { rest.divide(budget, 5, RoundingMode.HALF_EVEN) }
 
     val percentFormatted = remember {
-        val formatter = numberFormat
+        val formatter = NumberFormat.getNumberInstance(Locale.getDefault())
         formatter.maximumFractionDigits = 2
         formatter.minimumFractionDigits = 0
 
