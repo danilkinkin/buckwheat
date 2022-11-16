@@ -88,7 +88,7 @@ fun BottomSheetWrapper(
             statusBarHeight - state.offset.value.roundToInt().toDp(),
             0.toDp(),
         ) } / statusBarHeight
-    }
+    }.coerceIn(0f, 1f)
 
     val focusManager = LocalFocusManager.current
 
