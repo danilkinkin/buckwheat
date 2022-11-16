@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("io.sentry.android.gradle")
 }
 
 android {
@@ -67,7 +68,6 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-
     implementation("androidx.appcompat:appcompat:1.5.1")
     implementation("androidx.activity:activity-compose:1.6.1")
     implementation("androidx.compose.runtime:runtime:1.3.1")
@@ -83,33 +83,21 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.0.1")
     implementation("androidx.compose.material:material:1.3.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.1")
-
     implementation("androidx.room:room-runtime:2.5.0-beta02")
     kapt("androidx.room:room-compiler:2.5.0-beta02")
     implementation("androidx.room:room-ktx:2.5.0-beta02")
-
     implementation("androidx.room:room-paging:2.4.3")
-
     implementation("com.google.dagger:dagger:2.44")
     kapt("com.google.dagger:dagger-compiler:2.44")
-
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
-
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
-
     implementation("io.coil-kt:coil-compose:2.2.2")
-
     implementation("androidx.core:core-splashscreen:1.0.0")
-
-    implementation("io.sentry:sentry-android:6.5.0")
-    implementation("io.sentry:sentry-compose-android:6.5.0")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.3.1")
-
     androidTestImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.1")
@@ -122,6 +110,32 @@ dependencies {
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
+}
+
+// For more info see: https://docs.sentry.io/platforms/android/gradle/
+sentry {
+    includeProguardMapping.set(true)
+    autoUploadProguardMapping.set(true)
+    experimentalGuardsquareSupport.set(true)
+    uploadNativeSymbols.set(true)
+    includeNativeSources.set(true)
+    tracingInstrumentation {
+        enabled.set(true)
+        features.set(
+            setOf(
+                io.sentry.android.gradle.extensions.InstrumentationFeature.DATABASE,
+                io.sentry.android.gradle.extensions.InstrumentationFeature.FILE_IO,
+                io.sentry.android.gradle.extensions.InstrumentationFeature.OKHTTP,
+                io.sentry.android.gradle.extensions.InstrumentationFeature.COMPOSE,
+            )
+        )
+    }
+    autoInstallation {
+        enabled.set(true)
+        sentryVersion.set("6.6.0")
+    }
+    includeDependenciesReport.set(true)
+    ignoredBuildTypes.set(setOf("debug"))
 }
 
 secrets {
