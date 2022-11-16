@@ -115,7 +115,7 @@
 
     <!-- Onboarding -->
     <string name="hello">Привіт!</string>
-    <string name="onboarding_title">Ласкаво просимо до buckwheat, давай вчиться економити разом</string>
+    <string name="onboarding_title">Ласкаво просимо до гречки, давай вчиться економити разом</string>
     <string name="set_period_title">Налаштувати бюджет</string>
     <string name="help_set_budget_title">Встановіть бюджет</string>
     <string name="help_set_budget_description">Порахуйте приблизно скільки потрібно грошей на певний період, наприклад місяць і вкажіть його в додатку. Якщо не можете порахувати вкажіть його дуже приблизно, наприклад половину зарплати, згодом ви вказуватимете його все точніше і точніше</string>
