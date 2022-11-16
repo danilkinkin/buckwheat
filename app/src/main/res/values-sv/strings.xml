@@ -111,7 +111,7 @@
 
     <!-- Onboarding -->
     <string name="hello">Hej!</string>
-    <string name="onboarding_title">Välkommen till bovete, låt oss lära oss hur man sparar tillsammans</string>
+    <string name="onboarding_title">Välkommen till bovete, låt oss lära oss spara tillsammans</string>
     <string name="set_period_title">Ställ in budget</string>
     <string name="help_set_budget_title">Ställ in en budget</string>
     <string name="help_set_budget_description">Uppskatta ungefär hur mycket pengar du behöver för en viss period, till exempel en månad, och ange det i appen. Om du inte kan beräkna, ange det väldigt ungefär, till exempel hälften av lönen, med tiden kommer du att ange det mer och mer exakt</string>
