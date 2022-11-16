@@ -59,7 +59,9 @@ fun MinMaxSpentCard(
             combineColors(
                 colorMin,
                 colorMax,
-                if (maxValue != BigDecimal(0)) {
+                if (maxValue - minValue == BigDecimal(0)) {
+                    if (isMin) 0f else 1f
+                } else if (maxValue != BigDecimal(0)) {
                     ((currValue - minValue) / (maxValue - minValue)).toFloat()
                 } else {
                     0f
@@ -208,6 +210,47 @@ private fun PreviewMaxNightMode() {
                 Spent(value = BigDecimal(15), date = Date()),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
+        )
+    }
+}
+
+@Preview(name = "Same spends")
+@Composable
+private fun PreviewWithSameSpends() {
+    BuckwheatTheme {
+        MinMaxSpentCard(
+            isMin = false,
+            currency = ExtendCurrency(type = CurrencyType.NONE),
+            spends = listOf(
+                Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(1).toDate()),
+                Spent(value = BigDecimal(42), date = Date()),
+            ),
+        )
+    }
+}
+
+@Preview(name = "One spent")
+@Composable
+private fun PreviewWithOneSpent() {
+    BuckwheatTheme {
+        MinMaxSpentCard(
+            isMin = false,
+            currency = ExtendCurrency(type = CurrencyType.NONE),
+            spends = listOf(
+                Spent(value = BigDecimal(42), date = Date()),
+            ),
+        )
+    }
+}
+
+@Preview(name = "No spends")
+@Composable
+private fun PreviewWithZeroSpends() {
+    BuckwheatTheme {
+        MinMaxSpentCard(
+            isMin = false,
+            currency = ExtendCurrency(type = CurrencyType.NONE),
+            spends = listOf(),
         )
     }
 }
