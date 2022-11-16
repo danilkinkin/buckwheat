@@ -1,3 +1,3 @@
 /*
- * Copyright $YEAR, Danil Zakhvatkin (Danilkinkin), All rights reserved.
+ * Copyright 2022, Danil Zakhvatkin (Danilkinkin), All rights reserved.
  */
