@@ -90,16 +90,20 @@ fun SpendsChart(
         val height = this.size.height
         val heightWithPaddings = height - topOffset - bottomOffset
         val widthWithPaddings = width - startOffset - endOffset
-        val size = (lastShowIndex - firstShowIndex - 1).toFloat()
+        val size = (lastShowIndex - firstShowIndex - 1).toFloat().coerceAtLeast(1f)
 
         val trianglePath = Path().let {
             var lastY = 0f
 
             spends.subList(firstShowIndex, lastShowIndex).forEachIndexed { index, spent ->
-                val scale = spent.value
-                    .minus(minSpentValue)
-                    .divide(range, 5, RoundingMode.HALF_EVEN)
-                    .toFloat()
+                val scale = if (range == BigDecimal(0)) {
+                    0.5f
+                } else {
+                    spent.value
+                        .minus(minSpentValue)
+                        .divide(range, 5, RoundingMode.HALF_EVEN)
+                        .toFloat()
+                }
 
                 if (index == 0) {
                     lastY = topOffset + heightWithPaddings * (1 - scale)
@@ -132,10 +136,14 @@ fun SpendsChart(
 
 
         val chartColors = if (markedSpent != null) {
-            val scale = 1f - markedSpent.value
-                .minus(minSpentValue)
-                .divide(range, 5, RoundingMode.HALF_EVEN)
-                .toFloat()
+            val scale = if (range == BigDecimal(0)) {
+                0.5f
+            } else {
+                1f - markedSpent.value
+                    .minus(minSpentValue)
+                    .divide(range, 5, RoundingMode.HALF_EVEN)
+                    .toFloat()
+            }
 
             colors.mapIndexed { index, color ->
                 color.copy(alpha = 0.3f - abs(scale - (index / (colors.size - 1))) * 0.25f)
@@ -153,10 +161,14 @@ fun SpendsChart(
         )
 
         if (markedSpent != null) {
-            val scale = markedSpent.value
-                .minus(minSpentValue)
-                .divide(range, 5, RoundingMode.HALF_EVEN)
-                .toFloat()
+            val scale = if (range == BigDecimal(0)) {
+                0.5f
+            } else {
+                markedSpent.value
+                    .minus(minSpentValue)
+                    .divide(range, 5, RoundingMode.HALF_EVEN)
+                    .toFloat()
+            }
 
             val color = combineColors(
                 harmonizeColorMin,
@@ -164,22 +176,19 @@ fun SpendsChart(
                 scale,
             )
 
+            val x = startOffset + widthWithPaddings * ((indexMarked!! - firstShowIndex) / size)
+            val y = topOffset + heightWithPaddings * (1 - scale)
+
             drawCircle(
                 color = color.copy(0.2f),
                 radius = with(localDensity) { 8.dp.toPx() },
-                center = Offset(
-                    startOffset + widthWithPaddings * ((indexMarked!! - firstShowIndex) / size),
-                    topOffset + heightWithPaddings * (1 - scale),
-                )
+                center = Offset(x, y)
             )
 
             drawCircle(
                 color = color,
                 radius = with(localDensity) { 3.dp.toPx() },
-                center = Offset(
-                    startOffset + widthWithPaddings * ((indexMarked - firstShowIndex) / size),
-                    topOffset + heightWithPaddings * (1 - scale),
-                )
+                center = Offset(x, y)
             )
         }
     }
@@ -204,6 +213,43 @@ private fun PreviewChart() {
                 Spent(value = BigDecimal(15), date = Date()),
                 Spent(value = BigDecimal(42), date = Date()),
                 Spent(value = BigDecimal(62), date = Date()),
+            ),
+            markedSpent = markedSpent,
+            chartPadding = PaddingValues(vertical = 16.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewChartWithSameSpends() {
+    BuckwheatTheme {
+        val markedSpent = Spent(value = BigDecimal(30), date = Date())
+
+        SpendsChart(
+            modifier = Modifier.size(100.dp),
+            spends = listOf(
+                Spent(value = BigDecimal(30), date = LocalDate.now().minusDays(1).toDate()),
+                Spent(value = BigDecimal(30), date = LocalDate.now().minusDays(1).toDate()),
+                markedSpent,
+                Spent(value = BigDecimal(30), date = Date()),
+            ),
+            markedSpent = markedSpent,
+            chartPadding = PaddingValues(vertical = 16.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewChartWithOneSpent() {
+    BuckwheatTheme {
+        val markedSpent = Spent(value = BigDecimal(30), date = Date())
+
+        SpendsChart(
+            modifier = Modifier.size(100.dp),
+            spends = listOf(
+                markedSpent,
             ),
             markedSpent = markedSpent,
             chartPadding = PaddingValues(vertical = 16.dp)
