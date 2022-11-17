@@ -21,6 +21,7 @@
         <item quantity="many">%1$s днів</item>
     </plurals>
     <string name="enter_spent_placeholder">Введіть витрати</string>
+    <string name="add_comment">Коментар</string>
 
     <!-- History -->
     <string name="label_start_date">Початок</string>

@@ -19,6 +19,7 @@
         <item quantity="other">%1$s dagar</item>
     </plurals>
     <string name="enter_spent_placeholder">Ange utgifter</string>
+    <string name="add_comment">Kommentar</string>
 
     <!-- Historia -->
     <string name="label_start_date">Starta</string>

@@ -18,6 +18,7 @@
         <item quantity="other">%1$s days</item>
     </plurals>
     <string name="enter_spent_placeholder">Enter spent</string>
+    <string name="add_comment">Comment</string>
 
     <!-- History -->
     <string name="label_start_date">Start</string>

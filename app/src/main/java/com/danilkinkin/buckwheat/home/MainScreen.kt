@@ -1,5 +1,10 @@
 package com.danilkinkin.buckwheat.home
 
+import android.util.Log
+import androidx.compose.animation.*
+import androidx.compose.animation.core.EaseInOutQuad
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,7 +39,7 @@ import com.danilkinkin.buckwheat.util.setSystemStyle
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun MainScreen(
     windowSizeClass: WindowWidthSizeClass,
@@ -52,6 +57,11 @@ fun MainScreen(
     val isNightModeM = remember { mutableStateOf(false) }
 
     isNightModeM.value = isNightMode()
+
+    val isShowSystemKeyboard = WindowInsets.isImeVisible
+    val systemKeyboardHeight = with(localDensity) {
+        WindowInsets.ime.asPaddingValues().calculateBottomPadding().toPx()
+    }
 
     setSystemStyle(
         style = {
@@ -106,7 +116,17 @@ fun MainScreen(
         }
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
-        val editorHeight = contentHeight - keyboardHeight - with(localDensity) { keyboardAdditionalOffset.toPx() }
+        val currentKeyboardHeight by animateFloatAsState(
+            targetValue = if (isShowSystemKeyboard && appViewModel.showSystemKeyboard.value) {
+                systemKeyboardHeight
+            } else {
+                keyboardHeight
+            }
+        )
+        val editorHeight = contentHeight - currentKeyboardHeight - with(localDensity) { keyboardAdditionalOffset.toPx() }
+
+        Log.d("currentKeyboardHeight", currentKeyboardHeight.toString())
+        Log.d("editorHeight", editorHeight.toString())
 
         Row {
             if (windowSizeClass != WindowWidthSizeClass.Compact) {
@@ -123,24 +143,52 @@ fun MainScreen(
                         SnackbarHost()
                     }
                 }
-                Spacer(modifier = Modifier.fillMaxHeight().width(16.dp))
+                Spacer(modifier = Modifier
+                    .fillMaxHeight()
+                    .width(16.dp))
             }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(1f)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = keyboardAdditionalOffset),
-                    contentAlignment = Alignment.BottomCenter,
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = !isShowSystemKeyboard,
+                    enter = fadeIn(
+                        tween(
+                            durationMillis = 150,
+                            easing = EaseInOutQuad,
+                        )
+                    ) + slideInVertically(
+                        tween(
+                            durationMillis = 150,
+                            easing = EaseInOutQuad,
+                        )
+                    ) { with(localDensity) { 10.dp.toPx().toInt() } },
+                    exit = fadeOut(
+                        tween(
+                            durationMillis = 150,
+                            easing = EaseInOutQuad,
+                        )
+                    ) + slideOutVertically(
+                        tween(
+                            durationMillis = 150,
+                            easing = EaseInOutQuad,
+                        )
+                    ) { with(localDensity) { 10.dp.toPx().toInt() } },
                 ) {
-                    Keyboard(
+                    Box(
                         modifier = Modifier
-                            .height(with(localDensity) { keyboardHeight.toDp() })
-                            .fillMaxWidth()
-                    )
+                            .fillMaxSize()
+                            .padding(bottom = keyboardAdditionalOffset),
+                        contentAlignment = Alignment.BottomCenter,
+                    ) {
+                        Keyboard(
+                            modifier = Modifier
+                                .height(with(localDensity) { keyboardHeight.toDp() })
+                                .fillMaxWidth()
+                        )
+                    }
                 }
 
                 if (windowSizeClass == WindowWidthSizeClass.Compact) {

@@ -14,6 +14,9 @@ data class Spent(
     @ColumnInfo(name = "date")
     val date: Date,
 
+    @ColumnInfo(name = "comment", defaultValue = "")
+    val comment: String = "",
+
     @ColumnInfo(name = "deleted")
     var deleted: Boolean = false,
 ) {

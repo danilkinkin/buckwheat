@@ -21,6 +21,7 @@
         <item quantity="many">%1$s дзён</item>
     </plurals>
     <string name="enter_spent_placeholder">Увядзіце марнаванне</string>
+    <string name="add_comment">каментар</string>
 
     <!-- History -->
     <string name="label_start_date">Пачатак</string>

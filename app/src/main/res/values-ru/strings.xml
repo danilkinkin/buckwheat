@@ -20,6 +20,7 @@
         <item quantity="many">%1$s дней</item>
     </plurals>
     <string name="enter_spent_placeholder">Введите трату</string>
+    <string name="add_comment">Комментарий</string>
 
     <!-- History -->
     <string name="label_start_date">Начало</string>
