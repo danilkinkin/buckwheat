@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.editor
+package com.danilkinkin.buckwheat.editor.restBudget
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

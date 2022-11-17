@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.editor
+package com.danilkinkin.buckwheat.editor.restBudget
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
-const val NEW_DAY_BUDGET_DESCRIPTION_SHEET = "newDayBudgetDescription"
+const val BUDGET_IS_OVER_DESCRIPTION_SHEET = "budgetIsOverDescription"
 
 @Composable
-fun NewDayBudgetDescription(onClose: () -> Unit = {}) {
+fun BudgetIsOverDescription(onClose: () -> Unit = {}) {
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
@@ -32,18 +32,18 @@ fun NewDayBudgetDescription(onClose: () -> Unit = {}) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.new_daily_budget),
+                    text = stringResource(R.string.budget_end),
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
 
             Text(
                 modifier = Modifier.padding(horizontal = 24.dp).fillMaxWidth(),
-                text = stringResource(R.string.new_daily_budget_description),
+                text = stringResource(R.string.budget_end_description),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium,
             )
-            
+
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
@@ -53,6 +53,6 @@ fun NewDayBudgetDescription(onClose: () -> Unit = {}) {
 @Composable
 private fun PreviewDefault() {
     BuckwheatTheme {
-        NewDayBudgetDescription()
+        BudgetIsOverDescription()
     }
 }

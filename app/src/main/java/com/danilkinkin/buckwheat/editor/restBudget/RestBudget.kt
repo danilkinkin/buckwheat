@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.editor
+package com.danilkinkin.buckwheat.editor.restBudget
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOutQuad

@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.editor
+package com.danilkinkin.buckwheat.editor.toolbar
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
