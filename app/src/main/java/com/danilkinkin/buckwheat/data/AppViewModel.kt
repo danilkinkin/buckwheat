@@ -41,6 +41,8 @@ class AppViewModel @Inject constructor(
 
     var lockSwipeable: MutableState<Boolean> = mutableStateOf(false)
 
+    var showSystemKeyboard: MutableState<Boolean> = mutableStateOf(false)
+
     var statusBarStack: MutableList<() -> SystemBarState> = emptyList<() -> SystemBarState>().toMutableList()
 
     var sheetStates: MutableLiveData<Map<String, PathState>> = MutableLiveData(emptyMap())

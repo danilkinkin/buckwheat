@@ -56,20 +56,37 @@ fun Spent(
             Row(
                 modifier = modifier.fillMaxWidth()
             ) {
-                Text(
-                    text = prettyCandyCanes(spent.value, currency = currency),
-                    style = MaterialTheme.typography.displaySmall,
-                    color = colorOnEditor,
-                    softWrap = false,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
+                Column(
+                    Modifier
                         .padding(
                             start = 32.dp,
                             top = 16.dp,
                             bottom = 16.dp,
                         )
-                        .weight(1F),
-                )
+                        .weight(1F)
+                ) {
+                    Text(
+                        text = prettyCandyCanes(spent.value, currency = currency),
+                        style = MaterialTheme.typography.displaySmall,
+                        color = colorOnEditor,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier,
+                    )
+                    if (spent.comment.isNotEmpty()) {
+                        Text(
+                            text = spent.comment,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = colorOnEditor,
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                .padding(
+                                    top = 4.dp,
+                                ),
+                        )
+                    }
+                }
                 Box(Modifier) {
                     Text(
                         modifier = Modifier
@@ -104,7 +121,18 @@ private fun PreviewDefault() {
 private fun PreviewNightMode() {
     BuckwheatTheme {
         Spent(
-            Spent(value = BigDecimal(12340), date = Date()),
+            Spent(value = BigDecimal(12340), date = Date(), comment = "Comment for spent"),
+            ExtendCurrency(type = CurrencyType.NONE)
+        )
+    }
+}
+
+@Preview(name = "With big spent and long comment (Night mode)", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewWithBigSpentAndLongCommentNightMode() {
+    BuckwheatTheme {
+        Spent(
+            Spent(value = BigDecimal(123456789009876543), date = Date(), comment = "Comment for spent"),
             ExtendCurrency(type = CurrencyType.NONE)
         )
     }

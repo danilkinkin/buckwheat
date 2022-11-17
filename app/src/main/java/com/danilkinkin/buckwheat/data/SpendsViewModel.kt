@@ -88,6 +88,7 @@ class SpendsViewModel @Inject constructor(
     }
 
     var currentSpent: BigDecimal = 0.0.toBigDecimal()
+    var currentComment: String = ""
 
     var requireReCalcBudget: MutableLiveData<Boolean> = MutableLiveData(false)
     var requireSetBudget: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -219,7 +220,7 @@ class SpendsViewModel @Inject constructor(
 
         if (fSpent == "0") return
 
-        this.spentDao.insert(Spent(currentSpent, Date()))
+        this.spentDao.insert(Spent(currentSpent, Date(), currentComment))
 
         spentFromDailyBudget.value = spentFromDailyBudget.value?.plus(currentSpent)
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
@@ -232,6 +233,7 @@ class SpendsViewModel @Inject constructor(
 
     fun resetSpent() {
         currentSpent = 0.0.toBigDecimal()
+        currentComment = ""
         rawSpentValue.value = ""
 
         stage.value = Stage.IDLE
