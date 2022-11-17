@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.editor
+package com.danilkinkin.buckwheat.editor.toolbar
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
