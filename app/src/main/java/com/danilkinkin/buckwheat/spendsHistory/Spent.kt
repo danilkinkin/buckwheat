@@ -1,12 +1,12 @@
 package com.danilkinkin.buckwheat.spendsHistory
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.*
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,7 +63,7 @@ fun Spent(
                             top = 16.dp,
                             bottom = 16.dp,
                         )
-                        .weight(1F)
+                        .weight(1f)
                 ) {
                     Text(
                         text = prettyCandyCanes(spent.value, currency = currency),
@@ -78,8 +78,7 @@ fun Spent(
                             text = spent.comment,
                             style = MaterialTheme.typography.bodySmall,
                             color = colorOnEditor,
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
+                            softWrap = true,
                             modifier = Modifier
                                 .padding(
                                     top = 4.dp,
@@ -101,8 +100,6 @@ fun Spent(
             }
         }
     }
-
-
 }
 
 @Preview(name = "Default")
@@ -132,7 +129,11 @@ private fun PreviewNightMode() {
 private fun PreviewWithBigSpentAndLongCommentNightMode() {
     BuckwheatTheme {
         Spent(
-            Spent(value = BigDecimal(123456789009876543), date = Date(), comment = "Comment for spent"),
+            Spent(
+                value = BigDecimal(123456789009876543),
+                date = Date(),
+                comment = "Very loooong comment for veryyy loooooooooooooooooong spent. And yet row for more length",
+            ),
             ExtendCurrency(type = CurrencyType.NONE)
         )
     }
