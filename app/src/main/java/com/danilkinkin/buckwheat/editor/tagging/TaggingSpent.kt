@@ -3,7 +3,6 @@ package com.danilkinkin.buckwheat.editor.tagging
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -12,7 +11,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
@@ -22,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -41,11 +38,7 @@ import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.editor.calcFontHeight
 import com.danilkinkin.buckwheat.util.observeLiveData
 
-enum class CommittingState { EMPTY, EDIT, EXIST }
-
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class
-)
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TaggingSpent(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
@@ -54,12 +47,10 @@ fun TaggingSpent(
 ) {
     val localDensity = LocalDensity.current
     val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     var showAddComment by remember { mutableStateOf(false) }
-    var value by remember { mutableStateOf(TextFieldValue("", TextRange(0))) }
-    var state by remember { mutableStateOf(CommittingState.EMPTY) }
-    val focusRequester = remember { FocusRequester() }
+    var isEdit by remember { mutableStateOf(false) }
+    var value by remember { mutableStateOf("") }
     val height = calcFontHeight(style = MaterialTheme.typography.bodyMedium).coerceAtLeast(24.dp) + 12.dp
 
     observeLiveData(spendsViewModel.stage) {
@@ -105,41 +96,25 @@ fun TaggingSpent(
                 contentColor = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .clip(CircleShape)
-                    .then(if (state === CommittingState.EDIT) {
+                    .then(if (isEdit) {
                         Modifier
                     } else {
                         Modifier.clickable {
                             editorFocusController.blur()
                             focusManager.clearFocus()
-                            state = CommittingState.EDIT
+                            isEdit = true
                             appViewModel.showSystemKeyboard.value = true
                         }
                     })
             ) {
-                val doneEdit = {
-                    state = if (value.text.isEmpty()) CommittingState.EMPTY else CommittingState.EXIST
-                    appViewModel.showSystemKeyboard.value = false
-                    spendsViewModel.currentComment = value.text
-                }
-
                 Row(
                     modifier = Modifier.padding(start = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     AnimatedVisibility(
-                        visible = state == CommittingState.EDIT,
-                        enter = scaleIn(
-                            tween(
-                                durationMillis = 150,
-                                easing = EaseInOutQuad,
-                            )
-                        ),
-                        exit = scaleOut(
-                            tween(
-                                durationMillis = 150,
-                                easing = EaseInOutQuad,
-                            )
-                        ),
+                        visible = isEdit,
+                        enter = scaleIn(tween(durationMillis = 150)),
+                        exit = scaleOut(tween(durationMillis = 150)),
                     ) {
                         Spacer(Modifier.width(6.dp))
                     }
@@ -149,134 +124,106 @@ fun TaggingSpent(
                         contentDescription = null,
                     )
                     Spacer(Modifier.width(8.dp))
-
                     AnimatedContent(
-                        targetState = state,
+                        targetState = isEdit,
                         transitionSpec = {
-                            when(targetState) {
-                                CommittingState.EMPTY -> slideInVertically(
-                                    tween(durationMillis = 250)
-                                ) { height -> height } + fadeIn(
-                                    tween(durationMillis = 250)
-                                ) with slideOutVertically(
-                                    tween(durationMillis = 250)
-                                ) { height -> -height } + fadeOut(
-                                    tween(durationMillis = 250)
-                                )
-                                CommittingState.EDIT -> slideInVertically(
-                                    tween(durationMillis = 250)
-                                ) { height -> height } + fadeIn(
-                                    tween(durationMillis = 250)
-                                ) with slideOutVertically(
-                                    tween(durationMillis = 250)
-                                ) { height -> -height } + fadeOut(
-                                    tween(durationMillis = 250)
-                                )
-                                CommittingState.EXIST -> slideInVertically(
-                                    tween(durationMillis = 250)
-                                ) { height -> height } + fadeIn(
-                                    tween(durationMillis = 250)
-                                ) with slideOutVertically(
-                                    tween(durationMillis = 250)
-                                ) { height -> -height } + fadeOut(
-                                    tween(durationMillis = 250)
-                                )
-                            }.using(
+                            (fadeIn(
+                                tween(durationMillis = 250)
+                            ) with fadeOut(
+                                tween(durationMillis = 250)
+                            )).using(
                                 SizeTransform(clip = false)
                             )
                         }
-                    ) { targetState -> when (targetState) {
-                        CommittingState.EMPTY -> {
-                            Text(
-                                modifier = Modifier.padding(top = 6.dp, bottom = 6.dp, end = 16.dp),
-                                text = stringResource(R.string.add_comment),
-                                softWrap = false,
-                                overflow = TextOverflow.Ellipsis,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                        CommittingState.EDIT -> {
-                            var focusIsTracking by remember { mutableStateOf(false) }
-
-                            TextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .focusRequester(focusRequester)
-                                    .onFocusChanged { focusState ->
-                                        if (!focusState.hasFocus && focusIsTracking) {
-                                            doneEdit()
-                                        }
-                                    },
-                                value = value,
-                                onValueChange = { value = it },
-                                trailingIcon = {
-                                    if (value.text.isEmpty()) return@TextField
-
-                                    FilledIconButton(
-                                        modifier = Modifier.padding(end = 4.dp),
-                                        colors = IconButtonDefaults.filledIconButtonColors(
-                                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        ),
-                                        onClick = {
-                                            doneEdit()
-                                        },
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.ic_apply),
-                                            contentDescription = null,
-                                        )
-                                    }
-                                },
-                                textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600),
-                                singleLine = true,
-                                shape = RectangleShape,
-                                colors = TextFieldDefaults.textFieldColors(
-                                    containerColor = MaterialTheme.colorScheme.surface,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    focusedIndicatorColor = Color.Transparent,
-                                    disabledIndicatorColor = Color.Transparent,
-                                    errorIndicatorColor = Color.Transparent,
-                                ),
-                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                                keyboardActions = KeyboardActions(
-                                    onDone = {
-                                        doneEdit()
-                                    }
-                                ),
-                            )
-
-                            LaunchedEffect(Unit) {
-                                focusRequester.requestFocus()
-                                focusIsTracking = true
-
-                                value = TextFieldValue(value.text, TextRange(value.text.length))
+                    ) { targetIsEdit -> if (targetIsEdit) {
+                        CommentEditor(
+                            defaultValue = value,
+                            onApply = { comment ->
+                                value = comment
+                                isEdit = false
+                                appViewModel.showSystemKeyboard.value = false
+                                spendsViewModel.currentComment = comment
                             }
-                        }
-                        CommittingState.EXIST -> {
-                            Row(
-                                Modifier.padding(top = 6.dp, bottom = 6.dp, end = 16.dp),
-                            ) {
-                                Text(
-                                    text = value.text,
-                                    softWrap = false,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                )
-                            }
-                        }
+                        )
+                    } else {
+                        Text(
+                            modifier = Modifier.padding(top = 6.dp, bottom = 6.dp, end = 16.dp),
+                            text = value.ifEmpty { stringResource(R.string.add_comment) },
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     } }
                 }
-
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CommentEditor(defaultValue: String, onApply: (comment: String) -> Unit) {
+    var value by remember { mutableStateOf(TextFieldValue(
+        defaultValue,
+        TextRange(defaultValue.length),
+    )) }
+    var focusIsTracking by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+
+    TextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester)
+            .onFocusChanged { focusState ->
+                if (!focusState.hasFocus && focusIsTracking) {
+                    onApply(value.text)
+                }
+            },
+        value = value,
+        onValueChange = { value = it },
+        trailingIcon = {
+            FilledIconButton(
+                modifier = Modifier.padding(end = 4.dp),
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
+                onClick = { onApply(value.text) },
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_apply),
+                    contentDescription = null,
+                )
+            }
+        },
+        textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600),
+        singleLine = true,
+        shape = RectangleShape,
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            unfocusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(
+            onDone = { onApply(value.text) }
+        ),
+    )
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        focusIsTracking = true
+
+        value = TextFieldValue(value.text, TextRange(value.text.length))
     }
 }
 
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme() {
+    BuckwheatTheme {
         TaggingSpent(editorFocusController = FocusController())
     }
 }
