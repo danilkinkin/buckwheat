@@ -19,10 +19,12 @@ fun Collapse(
     onHide: () -> Unit = {},
     content: @Composable () -> Unit,
 ) {
+    var isAnimated by remember(show) { mutableStateOf(false) }
     val height by animateFloatAsState(
         targetValue = if (show) 1f else 0f,
         animationSpec = TweenSpec(),
         finishedListener = {
+            isAnimated = false
             if (it == 0f) {
                 onHide()
             }
@@ -30,13 +32,15 @@ fun Collapse(
     )
     val maxHeight = remember { mutableStateOf<Float?>(null) }
 
+    isAnimated = height != 1f && height != 0f
+
     Box(
         modifier = Modifier
             .onGloballyPositioned {
                 if (height == 1f) maxHeight.value = it.size.height.toFloat()
             }
             .collapse(
-                if (maxHeight.value !== null) {
+                if (isAnimated) {
                     with(LocalDensity.current) { (maxHeight.value!! * height).toDp() }
                 } else if (height == 0f) {
                     0.dp
@@ -45,7 +49,13 @@ fun Collapse(
                 }
             )
     ) {
-        Box(Modifier.then(if(maxHeight.value !== null) { Modifier.requiredHeight(with(LocalDensity.current) { maxHeight.value!!.toDp() }) } else { Modifier })) {
+        Box(
+            Modifier.then(if(isAnimated) {
+                Modifier.requiredHeight(with(LocalDensity.current) { maxHeight.value!!.toDp() })
+            } else {
+                Modifier
+            })
+        ) {
             content()
         }
     }
