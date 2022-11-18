@@ -43,7 +43,7 @@ fun Editor(
                     .weight(1f),
                 focusController = focusController,
             )
-            TaggingSpent()
+            TaggingSpent(editorFocusController = focusController)
             Spacer(Modifier.height(24.dp))
         }
     }

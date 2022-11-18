@@ -35,6 +35,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.editor.calcFontHeight
 import com.danilkinkin.buckwheat.util.observeLiveData
 
@@ -47,6 +48,7 @@ enum class CommittingState { EMPTY, EDIT, EXIST }
 fun TaggingSpent(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    editorFocusController: FocusController,
 ) {
     val localDensity = LocalDensity.current
     val focusManager = LocalFocusManager.current
@@ -105,6 +107,8 @@ fun TaggingSpent(
                         Modifier
                     } else {
                         Modifier.clickable {
+                            editorFocusController.blur()
+                            focusManager.clearFocus()
                             state = CommittingState.EDIT
                             appViewModel.showSystemKeyboard.value = true
                         }
@@ -113,7 +117,6 @@ fun TaggingSpent(
                 val doneEdit = {
                     state = if (value.isEmpty()) CommittingState.EMPTY else CommittingState.EXIST
                     appViewModel.showSystemKeyboard.value = false
-                    focusManager.clearFocus()
                     spendsViewModel.currentComment = value
                 }
 
@@ -268,6 +271,6 @@ fun TaggingSpent(
 @Composable
 private fun Preview() {
     BuckwheatTheme() {
-        TaggingSpent()
+        TaggingSpent(editorFocusController = FocusController())
     }
 }
