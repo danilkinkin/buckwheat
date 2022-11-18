@@ -103,6 +103,11 @@ fun MainScreen(
 
     val keyboardAdditionalOffset = (WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() - 16.dp).coerceAtLeast(0.dp)
 
+    val navigationBarHeight = androidx.compose.ui.unit.max(
+        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        16.dp,
+    )
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -121,7 +126,7 @@ fun MainScreen(
                 systemKeyboardHeight
             } else {
                 keyboardHeight
-            }
+            }.coerceAtLeast(with(LocalDensity.current) { navigationBarHeight.toPx() - 16.dp.toPx() })
         )
         val editorHeight = contentHeight - currentKeyboardHeight - with(localDensity) { keyboardAdditionalOffset.toPx() }
 
