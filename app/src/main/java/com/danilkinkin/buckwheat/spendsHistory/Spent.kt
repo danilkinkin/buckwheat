@@ -49,52 +49,47 @@ fun Spent(
             modifier = Modifier.fillMaxWidth(),
             swipeableState = swipeableState,
             contentColor = colorEditor,
-            onSwiped = {
-                onDelete()
-            }
+            onSwiped = { onDelete() }
         ) {
-            Row(
-                modifier = modifier.fillMaxWidth()
-            ) {
-                Column(
-                    Modifier
-                        .padding(
-                            start = 32.dp,
-                            top = 16.dp,
-                            bottom = 16.dp,
-                        )
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = prettyCandyCanes(spent.value, currency = currency),
-                        style = MaterialTheme.typography.displaySmall,
-                        color = colorOnEditor,
-                        softWrap = false,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier,
-                    )
-                    if (spent.comment.isNotEmpty()) {
+            Column(Modifier.padding(bottom = 14.dp)) {
+                Row(modifier.fillMaxWidth()) {
+                    Column(
+                        Modifier
+                            .padding( start = 32.dp, top = 14.dp)
+                            .weight(1f)
+                    ) {
                         Text(
-                            text = spent.comment,
-                            style = MaterialTheme.typography.bodySmall,
+                            text = prettyCandyCanes(spent.value, currency = currency),
+                            style = MaterialTheme.typography.headlineSmall,
                             color = colorOnEditor,
-                            softWrap = true,
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier,
+                        )
+                    }
+                    Box {
+                        Text(
                             modifier = Modifier
+                                .align(Alignment.TopEnd)
                                 .padding(
-                                    top = 4.dp,
+                                    start = 16.dp,
+                                    top = 16.dp,
+                                    end = 32.dp,
                                 ),
+                            text = prettyDate(spent.date),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = colorOnEditor,
+                            softWrap = false,
                         )
                     }
                 }
-                Box(Modifier) {
+                if (spent.comment.isNotEmpty()) {
                     Text(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(horizontal = 32.dp, vertical = 16.dp),
-                        text = prettyDate(spent.date),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = colorOnEditor,
-                        softWrap = false,
+                        modifier = Modifier.padding( horizontal = 32.dp),
+                        text = spent.comment,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = colorOnEditor.copy(alpha = 0.7f),
+                        softWrap = true,
                     )
                 }
             }
