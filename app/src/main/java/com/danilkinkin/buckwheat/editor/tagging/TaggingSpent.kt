@@ -25,8 +25,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,7 +57,7 @@ fun TaggingSpent(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     var showAddComment by remember { mutableStateOf(false) }
-    var value by remember { mutableStateOf("") }
+    var value by remember { mutableStateOf(TextFieldValue("", TextRange(0))) }
     var state by remember { mutableStateOf(CommittingState.EMPTY) }
     val focusRequester = remember { FocusRequester() }
     val height = calcFontHeight(style = MaterialTheme.typography.bodyMedium).coerceAtLeast(24.dp) + 12.dp
@@ -115,9 +117,9 @@ fun TaggingSpent(
                     })
             ) {
                 val doneEdit = {
-                    state = if (value.isEmpty()) CommittingState.EMPTY else CommittingState.EXIST
+                    state = if (value.text.isEmpty()) CommittingState.EMPTY else CommittingState.EXIST
                     appViewModel.showSystemKeyboard.value = false
-                    spendsViewModel.currentComment = value
+                    spendsViewModel.currentComment = value.text
                 }
 
                 Row(
@@ -206,14 +208,16 @@ fun TaggingSpent(
                                         }
                                     },
                                 value = value,
-                                onValueChange = {
-                                    value = it
-                                },
+                                onValueChange = { value = it },
                                 trailingIcon = {
-                                    if (value.isEmpty()) return@TextField
+                                    if (value.text.isEmpty()) return@TextField
 
-                                    IconButton(
-                                        modifier = Modifier.padding(end = 6.dp),
+                                    FilledIconButton(
+                                        modifier = Modifier.padding(end = 4.dp),
+                                        colors = IconButtonDefaults.filledIconButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        ),
                                         onClick = {
                                             doneEdit()
                                         },
@@ -245,6 +249,8 @@ fun TaggingSpent(
                             LaunchedEffect(Unit) {
                                 focusRequester.requestFocus()
                                 focusIsTracking = true
+
+                                value = TextFieldValue(value.text, TextRange(value.text.length))
                             }
                         }
                         CommittingState.EXIST -> {
@@ -252,7 +258,7 @@ fun TaggingSpent(
                                 Modifier.padding(top = 6.dp, bottom = 6.dp, end = 16.dp),
                             ) {
                                 Text(
-                                    text = value,
+                                    text = value.text,
                                     softWrap = false,
                                     overflow = TextOverflow.Ellipsis,
                                     style = MaterialTheme.typography.bodyMedium,
