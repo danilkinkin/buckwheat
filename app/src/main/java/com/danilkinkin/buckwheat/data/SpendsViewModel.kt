@@ -223,6 +223,7 @@ class SpendsViewModel @Inject constructor(
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
 
         currentSpent = 0.0.toBigDecimal()
+        currentComment = ""
         rawSpentValue.value = ""
 
         stage.value = Stage.COMMITTING_SPENT
