@@ -110,11 +110,36 @@ fun TaggingSpent(
                         }
                     })
             ) {
+                val doneEdit = {
+                    state = if (value.isEmpty()) CommittingState.EMPTY else CommittingState.EXIST
+                    appViewModel.showSystemKeyboard.value = false
+                    focusManager.clearFocus()
+                    spendsViewModel.currentComment = value
+                }
+
                 Row(
                     modifier = Modifier.padding(start = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    AnimatedVisibility(
+                        visible = state == CommittingState.EDIT,
+                        enter = scaleIn(
+                            tween(
+                                durationMillis = 150,
+                                easing = EaseInOutQuad,
+                            )
+                        ),
+                        exit = scaleOut(
+                            tween(
+                                durationMillis = 150,
+                                easing = EaseInOutQuad,
+                            )
+                        ),
+                    ) {
+                        Spacer(Modifier.width(6.dp))
+                    }
                     Icon(
+                        modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_comment),
                         contentDescription = null,
                     )
@@ -174,9 +199,7 @@ fun TaggingSpent(
                                     .focusRequester(focusRequester)
                                     .onFocusChanged { focusState ->
                                         if (!focusState.hasFocus && focusIsTracking) {
-                                            state =
-                                                if (value.isEmpty()) CommittingState.EMPTY else CommittingState.EXIST
-                                            appViewModel.showSystemKeyboard.value = false
+                                            doneEdit()
                                         }
                                     },
                                 value = value,
@@ -187,16 +210,13 @@ fun TaggingSpent(
                                     if (value.isEmpty()) return@TextField
 
                                     IconButton(
-                                        modifier = Modifier.padding(end = 8.dp),
+                                        modifier = Modifier.padding(end = 6.dp),
                                         onClick = {
-                                            state = CommittingState.EXIST
-                                            appViewModel.showSystemKeyboard.value = false
-                                            focusManager.clearFocus()
-                                            spendsViewModel.currentComment = value
+                                            doneEdit()
                                         },
                                     ) {
                                         Icon(
-                                            painter = painterResource(R.drawable.ic_arrow_forward),
+                                            painter = painterResource(R.drawable.ic_apply),
                                             contentDescription = null,
                                         )
                                     }
@@ -214,9 +234,7 @@ fun TaggingSpent(
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                                 keyboardActions = KeyboardActions(
                                     onDone = {
-                                        state = CommittingState.EXIST
-                                        appViewModel.showSystemKeyboard.value = false
-                                        focusManager.clearFocus()
+                                        doneEdit()
                                     }
                                 ),
                             )
@@ -235,11 +253,6 @@ fun TaggingSpent(
                                     softWrap = false,
                                     overflow = TextOverflow.Ellipsis,
                                     style = MaterialTheme.typography.bodyMedium,
-                                )
-                                Spacer(Modifier.width(8.dp))
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_edit),
-                                    contentDescription = null,
                                 )
                             }
                         }
