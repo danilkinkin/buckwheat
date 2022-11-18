@@ -62,7 +62,7 @@ fun TopSheetLayout(
         val halfHeight = customHalfHeight ?: (fullHeight / 2)
         val expandHeight = with(LocalDensity.current) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
         val currOffset = swipeableState.offset.value
-        val maxOffset = -(expandHeight - halfHeight)
+        val maxOffset = (-(expandHeight - halfHeight)).coerceAtMost(0f)
         val progress = (1f - (currOffset / maxOffset)).coerceIn(0f, 1f)
 
         val connection = remember {
@@ -136,7 +136,7 @@ fun TopSheetLayout(
                     IntOffset(
                         x = 0,
                         y = swipeableState.offset.value
-                            .coerceIn(-(expandHeight - halfHeight), 0f)
+                            .coerceIn((-(expandHeight - halfHeight)).coerceAtMost(0f), 0f)
                             .roundToInt(),
                     )
                 }
