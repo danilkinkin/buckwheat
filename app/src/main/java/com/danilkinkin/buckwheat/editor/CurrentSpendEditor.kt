@@ -34,11 +34,14 @@ import kotlinx.coroutines.runBlocking
 
 class FocusController {
     var onFocus: MutableState<(() -> Unit)?> = mutableStateOf(null)
+    var onBlur: MutableState<(() -> Unit)?> = mutableStateOf(null)
 
     fun focus() {
-        if (onFocus.value !== null) {
-            onFocus.value!!()
-        }
+        onFocus.value?.let { it() }
+    }
+
+    fun blur() {
+        onBlur.value?.let { it() }
     }
 }
 
@@ -112,6 +115,9 @@ fun CurrentSpendEditor(
                 spendsViewModel.createSpent()
                 spendsViewModel.editSpent(0.toBigDecimal())
             }
+        }
+        focusController.onBlur.value = {
+            focusManager.clearFocus()
         }
     }
 
