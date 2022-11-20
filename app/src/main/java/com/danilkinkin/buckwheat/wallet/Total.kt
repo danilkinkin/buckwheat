@@ -38,11 +38,7 @@ fun Total(
                 text = stringResource(
                     R.string.per_day,
                     prettyCandyCanes(
-                        if (days != 0) {
-                            (budget / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
-                        } else {
-                            budget
-                        },
+                        (budget / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR),
                         currency,
                     ),
                 ),

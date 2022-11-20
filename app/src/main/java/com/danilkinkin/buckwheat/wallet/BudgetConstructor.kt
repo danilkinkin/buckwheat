@@ -77,7 +77,7 @@ fun BudgetConstructor(
             spendsViewModel.finishDate.value!!,
             spendsViewModel.startDate.value!!,
         )
-        val finishDate = LocalDate.now().plusDays(length.toLong()).toDate()
+        val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
 
         mutableStateOf(
             !isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time)
@@ -185,7 +185,7 @@ fun BudgetConstructor(
                             spendsViewModel.finishDate.value!!,
                             spendsViewModel.startDate.value!!,
                         )
-                        val finishDate = LocalDate.now().plusDays(length.toLong()).toDate()
+                        val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
 
                         dateToValue.value = finishDate
 
