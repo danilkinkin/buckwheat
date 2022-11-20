@@ -77,6 +77,7 @@
     <string name="theme_dark">Цёмная</string>
     <string name="theme_system">Сістэмная</string>
     <string name="locale_label">Мова</string>
+    <string name="locale_system">Сістэмны</string>
     <string name="version">Версія: %1$s</string>
     <string name="about">Аб дадатку</string>
     <string name="description">Грэчка — гэта дадатак, якое дапамагае свядома марнаваць грошы. Запісванне кожнай марнаванні выцвярэжвае розум і дае разуменне колькі і як вы можаце марнаваць</string>
