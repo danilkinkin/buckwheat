@@ -20,7 +20,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.ThemeMode
 import com.danilkinkin.buckwheat.ui.syncTheme
 import com.danilkinkin.buckwheat.util.locScreenOrientation
-import syncLocale
+import syncOverrideLocale
 import java.util.*
 
 val Context.dataStore by preferencesDataStore("settings")
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(Unit) {
                 syncTheme(context)
-                syncLocale(context)
+                syncOverrideLocale(context)
 
                 isDone.value = true
             }
@@ -55,10 +55,12 @@ class MainActivity : ComponentActivity() {
                 locScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             }
 
-            BuckwheatTheme {
-                OverrideLocalize( content = {
-                    MainScreen(widthSizeClass)
-                })
+            if (isDone.value) {
+                BuckwheatTheme {
+                    OverrideLocalize {
+                        MainScreen(widthSizeClass)
+                    }
+                }
             }
         }
     }

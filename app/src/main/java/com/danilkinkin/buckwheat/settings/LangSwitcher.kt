@@ -30,7 +30,7 @@ import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.titleCase
 import kotlinx.coroutines.launch
-import switchLocale
+import switchOverrideLocale
 import java.util.*
 
 const val SETTINGS_CHANGE_LOCALE_SHEET = "settings.changeLocale"
@@ -79,11 +79,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
 
     fun handleSwitchLang(localeCode: String?) {
         coroutineScope.launch {
-            switchLocale(
-                context,
-                configuration,
-                localeCode
-            )
+            switchOverrideLocale(context, localeCode)
             onClose()
         }
     }
