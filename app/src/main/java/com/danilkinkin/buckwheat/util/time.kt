@@ -13,13 +13,6 @@ import kotlin.math.ceil
 
 const val DAY = 24 * 60 * 60 * 1000
 
-val yearOnlyFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy")
-val monthWithYearFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("LLLL yyyy")
-val monthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("LLLL")
-val dateWithMonthFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM")
-val dateWithMonthAndYearFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
 fun LocalDate.toDate(): Date = Date(this.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000)
 
 fun Date.toLocalDate(): LocalDate = this.toInstant()
@@ -53,6 +46,11 @@ fun prettyDate(
     forceShowYear: Boolean = false,
     human: Boolean = false,
 ): String {
+    val yearOnlyFormatter = DateTimeFormatter.ofPattern("yyyy")
+    val dateWithMonthAndYearFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    val dateWithMonthFormatter = DateTimeFormatter.ofPattern("dd MMMM")
+    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+
     val currentFullDate = dateWithMonthAndYearFormatter.format(LocalDate.now())
     val currentYear = yearOnlyFormatter.format(LocalDate.now())
 
@@ -85,6 +83,10 @@ fun prettyDate(
 }
 
 fun prettyYearMonth(yearMonth: YearMonth): String {
+    val yearOnlyFormatter = DateTimeFormatter.ofPattern("yyyy")
+    val monthFormatter = DateTimeFormatter.ofPattern("LLLL")
+    val monthWithYearFormatter = DateTimeFormatter.ofPattern("LLLL yyyy")
+
     return if (yearMonth.year.toString() == yearOnlyFormatter.format(LocalDate.now())) {
         yearMonth.format(monthFormatter)
     } else {
