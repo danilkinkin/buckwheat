@@ -2,7 +2,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.LocaleList
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalConfiguration
@@ -19,27 +18,28 @@ import java.util.Locale
 fun OverrideLocalize(content: @Composable () -> Unit) {
     val systemLocale = LocalContext.current.systemLocale!!
     val overrideLocale = LocalContext.current.appLocale ?: systemLocale
-    Log.d("OverrideLocalize", "Change locale to ${overrideLocale.language}")
 
     val (context, configuration) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         Pair(LocalContext.current, LocalConfiguration.current)
     } else {
         val config = Configuration(LocalConfiguration.current)
 
-        config.setLocales(LocaleList(overrideLocale))
-        config.setLocale(overrideLocale)
+        val locales = listOf(overrideLocale).toMutableList()
 
+        for (index in 0 until config.locales.size()) {
+            if (config.locales[index].language !== overrideLocale.language) {
+                locales.add(config.locales[index])
+            }
+        }
+
+        config.setLocales(LocaleList(*(locales.toTypedArray())))
+        config.setLayoutDirection(overrideLocale)
         Locale.setDefault(overrideLocale)
 
-        val context = LocalContext.current
-
-        context.resources.configuration.setLocales(LocaleList(overrideLocale))
-        context.resources.configuration.setLocale(overrideLocale)
-
-
-        context.resources.updateConfiguration(config, context.resources.displayMetrics)
-
-        Pair(context, config)
+        Pair(
+            LocalContext.current.createConfigurationContext(config),
+            config,
+        )
     }
 
     CompositionLocalProvider(
