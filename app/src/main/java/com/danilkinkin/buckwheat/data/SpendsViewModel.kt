@@ -106,14 +106,9 @@ class SpendsViewModel @Inject constructor(
             } else {
                 reCalcDailyBudget(calcBudgetPerDaySplit())
             }
-        }
-
-
-        if (lastReCalcBudgetDate === null) {
+        } else if (lastReCalcBudgetDate === null) {
             requireSetBudget.value = true
-        }
-
-        if (lastReCalcBudgetDate !== null && finishDate.value!!.time <= Date().time) {
+        } else if (lastReCalcBudgetDate !== null && finishDate.value!!.time <= Date().time) {
             finishPeriod.value = true
         }
     }
@@ -140,7 +135,7 @@ class SpendsViewModel @Inject constructor(
         storageDao.set(Storage("startDate", startDate.time.toString()))
         this.startDate.value = startDate
 
-        val roundedFinishDate = roundToDay(finishDate)
+        val roundedFinishDate = Date(roundToDay(finishDate).time + DAY - 1000)
         storageDao.set(Storage("finishDate", roundedFinishDate.time.toString()))
         this.finishDate.value = roundedFinishDate
 

@@ -37,7 +37,7 @@ fun countDays(toDate: Date, fromDate: Date = Date()): Int {
     val daysFrom = ceil(fromDateRound.time / DAY.toDouble()).toInt()
     val daysTo = ceil(toDateRound.time / DAY.toDouble()).toInt()
 
-    return daysTo - daysFrom
+    return daysTo - daysFrom + 1
 }
 
 fun isSameDay(timestampA: Long, timestampB: Long): Boolean {
