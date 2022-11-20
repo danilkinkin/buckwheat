@@ -47,6 +47,8 @@ fun Settings(onClose: () -> Unit = {}) {
             ) {
                 ThemeSwitcher()
                 Divider()
+                LangSwitcher()
+                Divider()
                 TextRow(
                     text = stringResource(R.string.version, BuildConfig.VERSION_NAME),
                 )

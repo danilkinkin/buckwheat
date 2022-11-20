@@ -73,10 +73,11 @@
 
     <!-- Settings -->
     <string name="settings_title">Налаштування</string>
-    <string name="theme_label">Тема програми</string>
+    <string name="theme_label">Тема</string>
     <string name="theme_light">Світла</string>
     <string name="theme_dark">Темна</string>
     <string name="theme_system">Системна</string>
+    <string name="locale_label">Мова</string>
     <string name="version">Версія: %1$s</string>
     <string name="about">Про програму</string>
     <string name="description">Гречка — це програма, яка допомагає усвідомлено витрачати гроші. Записування кожної витрати протверезить розум і дає розуміння скільки і як ви можете витрачати</string>
