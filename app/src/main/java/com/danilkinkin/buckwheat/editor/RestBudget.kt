@@ -35,6 +35,7 @@ fun RestBudget(
     val localDensity = LocalDensity.current
 
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+    val overspendingWarnHidden by spendsViewModel.overspendingWarnHidden.observeAsState(false)
 
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var restBudgetAbsoluteValue by remember { mutableStateOf(BigDecimal(0)) }
@@ -42,6 +43,7 @@ fun RestBudget(
     var editing by remember { mutableStateOf(false) }
     var overdaft by remember { mutableStateOf(false) }
     var endBudget by remember { mutableStateOf(false) }
+
 
     fun calculateValues() {
         val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
@@ -131,7 +133,7 @@ fun RestBudget(
             )
         }
         AnimatedVisibility(
-            visible = overdaft,
+            visible = overdaft && !overspendingWarnHidden,
             enter = fadeIn(
                 tween(
                     durationMillis = 150,
