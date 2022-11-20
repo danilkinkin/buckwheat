@@ -28,6 +28,7 @@
     <string name="remove_spent">Трата возвращена в бюджет</string>
     <string name="remove_spent_undo">Отменить</string>
     <string name="no_spends">Трат пока не было</string>
+    <string name="total_per_day">Итого:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Бюджет</string>
