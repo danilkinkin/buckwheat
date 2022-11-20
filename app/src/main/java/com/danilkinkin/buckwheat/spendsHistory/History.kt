@@ -59,10 +59,27 @@ fun History(
         animationSpec = TweenSpec(250),
     )
 
+    var lastDate: Date? = null
+    val spendsPerDay = remember(spends) {
+        val list = emptyList<MutableList<Spent>>().toMutableList()
+
+        spends.forEach { spent ->
+            if (lastDate === null || !isSameDay(spent.date.time, lastDate!!.time)) {
+                lastDate = spent.date
+
+                list.add(emptyList<Spent>().toMutableList())
+            }
+
+            list.last().add(spent)
+        }
+
+        return@remember list
+    }
+
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             LazyColumn(state = scrollState) {
-                item("budgetInfo") {
+                item("budget-info") {
                     DisposableEffect(spends.size) {
                         if (spends.isEmpty() || !isFirstRender) return@DisposableEffect onDispose {  }
 
@@ -98,33 +115,47 @@ fun History(
                     )
                 }
 
-                var lastDate: Date? = null
+                spendsPerDay.forEach { spends ->
+                    var spentPerDay = BigDecimal(0)
+                    val date = spends.first().date
+                    val isAllDeleted = spends.find { !it.deleted } === null
 
-                spends.forEach { item ->
-                    if (lastDate === null || !isSameDay(item.date.time, lastDate!!.time)) {
-                        lastDate = item.date
-
-                        item(item.date.time) {
-                            Collapse(show = hasNextSpendsInThisDay(spends, item) || !item.deleted) {
-                                HistoryDateDivider(item.date)
-                            }
+                    item("header-${date.time}") {
+                        Collapse(show = !isAllDeleted) {
+                            HistoryDateDivider(date)
                         }
                     }
 
-                    item(item.uid) {
-                        Spent(
-                            spent = item,
-                            currency = spendsViewModel.currency.value!!,
-                            onDelete = {
-                                spendsViewModel.removeSpent(item)
-                            }
-                        )
+                    spends.forEach { spent ->
+                        item(spent.uid) {
+                            Spent(
+                                spent = spent,
+                                currency = spendsViewModel.currency.value!!,
+                                onDelete = {
+                                    spendsViewModel.removeSpent(spent)
+                                }
+                            )
+                        }
+                        if (!spent.deleted) {
+                            spentPerDay += spent.value
+                        }
+                    }
+
+                    item("total-${date.time}") {
+                        Collapse(show = !isAllDeleted) {
+                            TotalPerDay(
+                                spentPerDay = spentPerDay,
+                                currency = spendsViewModel.currency.value!!,
+                            )
+                        }
                     }
                 }
+
                 item("spacer") {
                     Spacer(modifier = Modifier.height(20.dp))
                 }
-                item("endChecker") {
+
+                item("end-checker") {
                     DisposableEffect(Unit) {
                         appViewModel.lockSwipeable.value = false
 
@@ -165,21 +196,6 @@ fun History(
             }
         }
     }
-}
-
-fun hasNextSpendsInThisDay(spends: List<Spent>, currSpent: Spent): Boolean {
-    var startIndex = -1
-    var hasSpent = false
-
-    spends.forEachIndexed { index, spent ->
-        if (spent.uid == currSpent.uid) startIndex = index
-        else if (startIndex != -1) {
-            if (isSameDay(currSpent.date.time, spent.date.time)) hasSpent = !spent.deleted || hasSpent
-            else return@forEachIndexed            
-        }
-    }
-    
-    return hasSpent
 }
 
 @Preview
