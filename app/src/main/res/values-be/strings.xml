@@ -21,6 +21,8 @@
         <item quantity="many">%1$s дзён</item>
     </plurals>
     <string name="enter_spent_placeholder">Увядзіце марнаванне</string>
+    <string name="hide_overspending_warn">Приховати повідомлення про закінчення бюджету</string>
+    <string name="hide_overspending_warn_description">Паведамленне будзе ўтоена да канца перыяду, каб не адцягваць і не напружваць</string>
     <string name="add_comment">каментар</string>
 
     <!-- History -->

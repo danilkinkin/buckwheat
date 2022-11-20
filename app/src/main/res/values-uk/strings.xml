@@ -21,6 +21,8 @@
         <item quantity="many">%1$s днів</item>
     </plurals>
     <string name="enter_spent_placeholder">Введіть витрати</string>
+    <string name="hide_overspending_warn">Hide budget end message</string>
+    <string name="hide_overspending_warn_description">Повідомлення буде приховано до кінця періоду, щоб не відволікати та не напружувати</string>
     <string name="add_comment">Коментар</string>
 
     <!-- History -->

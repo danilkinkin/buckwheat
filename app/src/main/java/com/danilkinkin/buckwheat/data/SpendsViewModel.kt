@@ -59,6 +59,12 @@ class SpendsViewModel @Inject constructor(
         }
     )
 
+    var overspendingWarnHidden: MutableLiveData<Boolean> = try {
+        MutableLiveData(storageDao.get("overspendingWarnHidden").value.toBoolean())
+    } catch (e: Exception) {
+        MutableLiveData(true)
+    }
+
     var startDate: MutableLiveData<Date> = try {
         MutableLiveData(Date(storageDao.get("startDate").value.toLong()))
     } catch (e: Exception) {
@@ -150,6 +156,8 @@ class SpendsViewModel @Inject constructor(
 
         storageDao.set(Storage("lastReCalcBudgetDate", roundToDay(startDate).time.toString()))
         this.lastReCalcBudgetDate = startDate
+
+        hideOverspendingWarn(false)
 
         this.spentDao.deleteAll()
 
@@ -295,5 +303,12 @@ class SpendsViewModel @Inject constructor(
 
     fun commitDeletedSpends() {
         this.spentDao.commitDeleted()
+    }
+
+    fun hideOverspendingWarn(overspendingWarnHidden: Boolean) {
+        storageDao.set(Storage("overspendingWarnHidden", overspendingWarnHidden.toString()))
+
+        this.overspendingWarnHidden.value = overspendingWarnHidden
+
     }
 }

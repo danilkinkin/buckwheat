@@ -19,6 +19,8 @@
         <item quantity="other">%1$s dagar</item>
     </plurals>
     <string name="enter_spent_placeholder">Ange utgifter</string>
+    <string name="hide_overspending_warn">Dölj budgetslutmeddelande</string>
+    <string name="hide_overspending_warn_description">Meddelandet kommer att döljas till slutet av perioden, för att inte distrahera eller anstränga sig</string>
     <string name="add_comment">Kommentar</string>
 
     <!-- Historia -->

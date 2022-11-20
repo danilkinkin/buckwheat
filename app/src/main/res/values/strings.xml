@@ -18,6 +18,8 @@
         <item quantity="other">%1$s days</item>
     </plurals>
     <string name="enter_spent_placeholder">Enter spent</string>
+    <string name="hide_overspending_warn">Hide budget end message</string>
+    <string name="hide_overspending_warn_description">The message will be hidden until the end of the period, so as not to distract or strain</string>
     <string name="add_comment">Comment</string>
 
     <!-- History -->

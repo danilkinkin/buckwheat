@@ -20,6 +20,8 @@
         <item quantity="many">%1$s дней</item>
     </plurals>
     <string name="enter_spent_placeholder">Введите трату</string>
+    <string name="hide_overspending_warn">Скрыть сообщение об окончании бюджета</string>
+    <string name="hide_overspending_warn_description">Сообщение будет скрыто до конца периода, чтобы не отвлекать и не напрягать</string>
     <string name="add_comment">Комментарий</string>
 
     <!-- History -->
