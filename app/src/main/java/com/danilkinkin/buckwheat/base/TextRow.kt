@@ -87,10 +87,13 @@ fun TextRow(
             Text(
                 text = description,
                 style = descriptionTextStyle,
-                softWrap = false,
-                overflow = TextOverflow.Ellipsis,
+                softWrap = true,
                 modifier = Modifier
-                    .padding(start = (24 + 16 * 2).dp, bottom = 16.dp)
+                    .padding(
+                        start = (24 + 16 * 2).dp,
+                        end = 16.dp,
+                        bottom = 16.dp,
+                    )
             )
         }
     }
@@ -163,7 +166,7 @@ private fun PreviewWithIconsWithChipWithDescription() {
                 )
             },
             text = "Text row loooooooooooooooooooooooooooooooong",
-            description = "Description text",
+            description = "Description looooooooooooooooooooooooooooooooooooong text",
         )
     }
 }
