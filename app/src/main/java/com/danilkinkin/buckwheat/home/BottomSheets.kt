@@ -20,10 +20,7 @@ import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.onboarding.Onboarding
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
-import com.danilkinkin.buckwheat.settings.BUG_REPORTER_SHEET
-import com.danilkinkin.buckwheat.settings.BugReporter
-import com.danilkinkin.buckwheat.settings.SETTINGS_SHEET
-import com.danilkinkin.buckwheat.settings.Settings
+import com.danilkinkin.buckwheat.settings.*
 import com.danilkinkin.buckwheat.wallet.FINISH_DATE_SELECTOR_SHEET
 import com.danilkinkin.buckwheat.wallet.FinishDateSelector
 import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
@@ -175,6 +172,17 @@ fun BottomSheets(
             onClose = {
                 coroutineScope.launch { state.hide() }
             },
+        )
+    }
+
+    BottomSheetWrapper(
+        name = SETTINGS_CHANGE_LOCALE_SHEET,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
+        ThemeSwitcherDialog(
+            onClose = {
+                coroutineScope.launch { state.hide() }
+            }
         )
     }
 
