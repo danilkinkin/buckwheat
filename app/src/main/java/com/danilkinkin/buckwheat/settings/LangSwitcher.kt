@@ -86,8 +86,8 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
 
     val currentLocale = configuration.locales[0]
     val locales = listOf(
-        Locale("ru"),
         Locale("en"),
+        Locale("ru"),
         Locale("uk"),
         Locale("be"),
         Locale("sv"),
