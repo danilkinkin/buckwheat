@@ -31,6 +31,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.base.RenderAdaptivePane
+import com.danilkinkin.buckwheat.util.titleCase
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
 import java.util.*
@@ -216,11 +217,7 @@ private fun LazyListScope.itemsCurrency(
                 .padding(start = 24.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         ) {
             Text(
-                text = currency.displayName.replaceFirstChar {
-                    if (it.isLowerCase()) it.titlecase(
-                        Locale.getDefault()
-                    ) else it.toString()
-                },
+                text = currency.displayName.titleCase(),
                 overflow = TextOverflow.Ellipsis,
                 softWrap = false,
                 modifier = Modifier.weight(1f)

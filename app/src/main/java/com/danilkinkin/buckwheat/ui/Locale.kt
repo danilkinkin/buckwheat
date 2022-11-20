@@ -1,12 +1,15 @@
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
+import android.os.LocaleList
 import android.util.Log
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -15,6 +18,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.danilkinkin.buckwheat.appLocale
 import com.danilkinkin.buckwheat.appTheme
 import com.danilkinkin.buckwheat.dataStore
+import com.danilkinkin.buckwheat.systemLocale
 import com.danilkinkin.buckwheat.ui.*
 import kotlinx.coroutines.flow.first
 import java.util.Locale
@@ -23,38 +27,54 @@ import java.util.Locale
 fun OverrideLocalize(
     content: @Composable () -> Unit,
 ) {
-    val context = LocalContext.current
-    val configuration = LocalConfiguration.current
-    val overrideLocale = LocalContext.current.appLocale
+    val systemLocale = LocalContext.current.systemLocale
+    val overrideLocale = LocalContext.current.appLocale ?: systemLocale
+    Log.d("OverrideLocalize", "Change locale to ${overrideLocale?.language}")
 
-    DisposableEffect(overrideLocale) {
-        Log.d("OverrideLocalize", "Change locale to ${overrideLocale?.language}")
-        if (overrideLocale === null) return@DisposableEffect onDispose {  }
+    val (context, configuration) = if (overrideLocale === null) {
+        Pair(LocalContext.current, LocalConfiguration.current)
+    } else {
+        val config = Configuration(LocalConfiguration.current)
 
-        context.resources.apply {
-            val config = Configuration(configuration)
+        config.setLocales(LocaleList(overrideLocale))
+        config.setLocale(overrideLocale)
 
-            context.createConfigurationContext(configuration)
-            Locale.setDefault(overrideLocale)
-            config.setLocale(overrideLocale)
-            context.resources.updateConfiguration(config, displayMetrics)
-        }
+        Locale.setDefault(overrideLocale)
 
-        onDispose {  }
+        val context = LocalContext.current
+
+        context.resources.configuration.setLocales(LocaleList(overrideLocale))
+        context.resources.configuration.setLocale(overrideLocale)
+
+
+        context.resources.updateConfiguration(config, context.resources.displayMetrics)
+
+        Pair(context, config)
     }
 
-    content()
+    CompositionLocalProvider(
+        LocalConfiguration provides configuration,
+        LocalContext provides context,
+    ) {
+        content()
+    }
 }
 
-suspend fun switchLocale(context: Context, configuration: Configuration, localeCode: String) {
+suspend fun switchLocale(context: Context, configuration: Configuration, localeCode: String?) {
     context.dataStore.edit {
-        it[stringPreferencesKey("locale")] = localeCode
+        if (localeCode != null) {
+            it[stringPreferencesKey("locale")] = localeCode
+        } else {
+            it.minusAssign(stringPreferencesKey("locale"))
+        }
     }
 
-    context.appLocale = Locale(localeCode)
+    context.appLocale = if (localeCode != null) Locale(localeCode) else null
 }
 
 suspend fun syncLocale(context: Context) {
+    context.systemLocale = context.resources.configuration.locales[0]
+
     val currentValue = context.dataStore.data.first()
 
     val localeCode = currentValue[stringPreferencesKey("locale")]

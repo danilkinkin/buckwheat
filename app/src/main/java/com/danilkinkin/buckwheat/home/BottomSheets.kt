@@ -182,10 +182,21 @@ fun BottomSheets(
     }
 
     BottomSheetWrapper(
-        name = SETTINGS_CHANGE_LOCALE_SHEET,
+        name = SETTINGS_CHANGE_THEME_SHEET,
         windowSizeClass = windowSizeClass,
     ) { state ->
         ThemeSwitcherDialog(
+            onClose = {
+                coroutineScope.launch { state.hide() }
+            }
+        )
+    }
+
+    BottomSheetWrapper(
+        name = SETTINGS_CHANGE_LOCALE_SHEET,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
+        LangSwitcherDialog(
             onClose = {
                 coroutineScope.launch { state.hide() }
             }

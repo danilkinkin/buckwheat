@@ -26,6 +26,7 @@ import java.util.*
 val Context.dataStore by preferencesDataStore("settings")
 var Context.appTheme by mutableStateOf(ThemeMode.SYSTEM)
 var Context.appLocale: Locale? by mutableStateOf(null)
+var Context.systemLocale: Locale? by mutableStateOf(null)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

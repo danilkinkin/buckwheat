@@ -74,6 +74,7 @@
     <string name="theme_dark">Mörkt</string>
     <string name="theme_system">System</string>
     <string name="locale_label">Språk</string>
+    <string name="locale_system">Systemisk</string>
     <string name="version">Version: %1$s</string>
     <string name="about">Om</string>
     <string name="description">Grechka är en app som hjälper dig att spendera pengar på ett klokt sätt. Att skriva ner varje utgift nyktrar sinnet och ger dig en uppfattning om hur mycket och hur du kan spendera</string>

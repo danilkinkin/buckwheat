@@ -25,7 +25,7 @@ import com.danilkinkin.buckwheat.base.*
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 
-const val SETTINGS_CHANGE_LOCALE_SHEET = "settings.changeLocale"
+const val SETTINGS_CHANGE_THEME_SHEET = "settings.changeTheme"
 
 @Composable
 fun ThemeSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
@@ -35,10 +35,11 @@ fun ThemeSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
         icon = painterResource(R.drawable.ic_dark_mode),
         text = stringResource(R.string.theme_label),
         onClick = {
-            appViewModel.openSheet(PathState(SETTINGS_CHANGE_LOCALE_SHEET))
+            appViewModel.openSheet(PathState(SETTINGS_CHANGE_THEME_SHEET))
         },
         endContent = {
             Text(
+                modifier = Modifier.padding(end = 8.dp),
                 text = when (context.appTheme) {
                     ThemeMode.LIGHT -> stringResource(R.string.theme_light)
                     ThemeMode.NIGHT -> stringResource(R.string.theme_dark)
