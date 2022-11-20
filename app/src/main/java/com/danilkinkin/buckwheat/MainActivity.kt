@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat
 
+import OverrideLocalize
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -19,9 +20,12 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.ThemeMode
 import com.danilkinkin.buckwheat.ui.syncTheme
 import com.danilkinkin.buckwheat.util.locScreenOrientation
+import syncLocale
+import java.util.*
 
 val Context.dataStore by preferencesDataStore("settings")
 var Context.appTheme by mutableStateOf(ThemeMode.SYSTEM)
+var Context.appLocale: Locale? by mutableStateOf(null)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -39,6 +43,7 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(Unit) {
                 syncTheme(context)
+                syncLocale(context)
 
                 isDone.value = true
             }
@@ -50,7 +55,9 @@ class MainActivity : ComponentActivity() {
             }
 
             BuckwheatTheme {
-                MainScreen(widthSizeClass)
+                OverrideLocalize( content = {
+                    MainScreen(widthSizeClass)
+                })
             }
         }
     }
