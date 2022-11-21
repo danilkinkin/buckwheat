@@ -39,7 +39,6 @@ fun ThemeSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
         },
         endContent = {
             Text(
-                modifier = Modifier.padding(end = 8.dp),
                 text = when (context.appTheme) {
                     ThemeMode.LIGHT -> stringResource(R.string.theme_light)
                     ThemeMode.NIGHT -> stringResource(R.string.theme_dark)
