@@ -46,7 +46,6 @@ fun Settings(onClose: () -> Unit = {}) {
                     .padding(bottom = navigationBarHeight)
             ) {
                 ThemeSwitcher()
-                Divider()
                 LangSwitcher()
                 Divider()
                 TextRow(
