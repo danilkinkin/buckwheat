@@ -78,6 +78,8 @@
     <string name="theme_system">Сістэмная</string>
     <string name="locale_label">Мова</string>
     <string name="locale_system">Сістэмны</string>
+    <string name="not_send_crash_report">Не адпраўляць ананімную інфармацыю аб збоях</string>
+    <string name="not_send_crash_report_description">Інфармацыя аб збоях утрымоўвае толькі месца ў кодзе, дзе ўпала праграма і не ўтрымоўвае ніякіх дадзеных якія могуць вас ідэнтыфікаваць. Гэтыя дадзеныя дапамагаюць палепшыць стабільнасць працы прыкладання </string>
     <string name="version">Версія: %1$s</string>
     <string name="about">Аб дадатку</string>
     <string name="description">Грэчка — гэта дадатак, якое дапамагае свядома марнаваць грошы. Запісванне кожнай марнаванні выцвярэжвае розум і дае разуменне колькі і як вы можаце марнаваць</string>

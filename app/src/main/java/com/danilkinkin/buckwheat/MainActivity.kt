@@ -14,12 +14,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.lifecycle.lifecycleScope
 import com.danilkinkin.buckwheat.home.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.ThemeMode
 import com.danilkinkin.buckwheat.ui.syncTheme
+import com.danilkinkin.buckwheat.util.initSentry
 import com.danilkinkin.buckwheat.util.locScreenOrientation
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import syncOverrideLocale
 import java.util.*
 
@@ -34,17 +38,23 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        val context = this.applicationContext
         WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen().setKeepOnScreenCondition { !isDone.value }
+        lifecycleScope.launch {
+            context.dataStore.data.first()
+        }
+
+        initSentry(context)
 
         super.onCreate(savedInstanceState)
 
         setContent {
-            val context = LocalContext.current
+            val localContext = LocalContext.current
 
             LaunchedEffect(Unit) {
-                syncTheme(context)
-                syncOverrideLocale(context)
+                syncTheme(localContext)
+                syncOverrideLocale(localContext)
 
                 isDone.value = true
             }

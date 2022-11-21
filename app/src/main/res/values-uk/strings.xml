@@ -78,6 +78,8 @@
     <string name="theme_system">Системна</string>
     <string name="locale_label">Мова</string>
     <string name="locale_system">Системний</string>
+    <string name="not_send_crash_report">Не надсилати анонімну інформацію про збої</string>
+    <string name="not_send_crash_report_description">Інформація про збої містить лише місце в коді, де впала програма і не містить жодних даних, які можуть вас ідентифікувати. Ці дані допомагають покращити стабільність роботи програми </string>
     <string name="version">Версія: %1$s</string>
     <string name="about">Про програму</string>
     <string name="description">Гречка — це програма, яка допомагає усвідомлено витрачати гроші. Записування кожної витрати протверезить розум і дає розуміння скільки і як ви можете витрачати</string>

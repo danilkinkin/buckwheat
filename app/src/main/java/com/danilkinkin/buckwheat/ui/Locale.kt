@@ -12,6 +12,7 @@ import com.danilkinkin.buckwheat.appLocale
 import com.danilkinkin.buckwheat.dataStore
 import com.danilkinkin.buckwheat.systemLocale
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 @Composable
@@ -62,10 +63,10 @@ suspend fun switchOverrideLocale(context: Context, localeCode: String?) {
     context.appLocale = if (localeCode != null) Locale(localeCode) else null
 }
 
-suspend fun syncOverrideLocale(context: Context) {
+fun syncOverrideLocale(context: Context) {
     context.systemLocale = context.resources.configuration.locales[0]
 
-    val currentValue = context.dataStore.data.first()
+    val currentValue = runBlocking { context.dataStore.data.first() }
 
     val localeCode = currentValue[stringPreferencesKey("locale")]
 
