@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -6,6 +9,9 @@ plugins {
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("io.sentry.android.gradle")
 }
+
+val sentryProperties = Properties()
+sentryProperties.load(FileInputStream(rootProject.file("sentry.properties")))
 
 android {
     compileSdk = 33
@@ -17,7 +23,6 @@ android {
         versionCode = 8
         versionName = "1.0-beta4"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
-        manifestPlaceholders["sentryDsn"] = ""
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
@@ -29,11 +34,16 @@ android {
     buildTypes {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")
+
+            buildConfigField("String", "SENTRY_DSN", "\"\"")
         }
 
         getByName("release") {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("debug")
+
+            buildConfigField("String", "SENTRY_DSN", "\"" + sentryProperties["auth.dsn"] + "\"")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

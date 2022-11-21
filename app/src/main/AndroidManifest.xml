@@ -13,15 +13,8 @@
         android:localeConfig="@xml/locales_config"
         tools:targetApi="33">
 
-        <meta-data
-            android:name="io.sentry.dsn"
-            android:value="${sentryDsn}" />
-        <meta-data
-            android:name="io.sentry.traces.sample-rate"
-            android:value="0.3" />
-        <meta-data
-            android:name="io.sentry.traces.user-interaction.enable"
-            android:value="true" />
+        <meta-data android:name="io.sentry.auto-init" android:value="false" />
+
         <profileable
             android:shell="true"
             tools:targetApi="q" />
