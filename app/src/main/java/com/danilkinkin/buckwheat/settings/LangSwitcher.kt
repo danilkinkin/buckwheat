@@ -56,7 +56,6 @@ fun LangSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
         },
         endContent = {
             Text(
-                modifier = Modifier.padding(end = 8.dp),
                 text = currentLocale.displayName.titleCase(),
                 style = MaterialTheme.typography.labelMedium,
                 color = LocalContentColor.current.copy(alpha = 0.6f),
