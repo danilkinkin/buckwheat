@@ -31,7 +31,7 @@ fun WholeBudgetCard(
     budget: BigDecimal,
     currency: ExtendCurrency,
     startDate: Date,
-    finishDate: Date,
+    finishDate: Date?,
     colors: CardColors = CardDefaults.cardColors(),
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
 ) {
@@ -82,11 +82,15 @@ fun WholeBudgetCard(
 
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
-                            text = prettyDate(
-                                finishDate,
-                                showTime = false,
-                                forceShowDate = true,
-                            ),
+                            text = if (finishDate !== null) {
+                                prettyDate(
+                                    finishDate,
+                                    showTime = false,
+                                    forceShowDate = true,
+                                )
+                            } else {
+                                "-"
+                            },
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.bodyMedium,
@@ -145,36 +149,44 @@ fun Arrow(
     }
 }
 
-fun growByMiddleChildRowMeasurePolicy(localDensity: Density) = MeasurePolicy { measurables, constraints ->
-    val minMiddleWidth = with(localDensity) { (24 + 32).dp.toPx().toInt() }
+fun growByMiddleChildRowMeasurePolicy(localDensity: Density) =
+    MeasurePolicy { measurables, constraints ->
+        val minMiddleWidth = with(localDensity) { (24 + 32).dp.toPx().toInt() }
 
-    val first = measurables[0]
-        .measure(constraints.copy(
-            maxWidth = (constraints.maxWidth - minMiddleWidth) / 2
-        ))
-    val last = measurables[2]
-        .measure(constraints.copy(
-            maxWidth = (constraints.maxWidth - minMiddleWidth) / 2
-        ))
+        val first = measurables[0]
+            .measure(
+                constraints.copy(
+                    maxWidth = (constraints.maxWidth - minMiddleWidth) / 2
+                )
+            )
+        val last = measurables[2]
+            .measure(
+                constraints.copy(
+                    maxWidth = (constraints.maxWidth - minMiddleWidth) / 2
+                )
+            )
 
-    val height = listOf(first, last).minOf { it.height }
+        val height = listOf(first, last).minOf { it.height }
 
-    layout(constraints.maxWidth, height) {
-        first.placeRelative(0, 0, 0f)
+        layout(constraints.maxWidth, height) {
+            first.placeRelative(0, 0, 0f)
 
-        val middleWidth = (constraints.maxWidth - first.width - last.width).coerceAtLeast(minMiddleWidth)
+            val middleWidth =
+                (constraints.maxWidth - first.width - last.width).coerceAtLeast(minMiddleWidth)
 
-        val middle = measurables[1]
-            .measure(constraints.copy(
-                maxWidth = middleWidth,
-                minWidth = middleWidth,
-            ))
+            val middle = measurables[1]
+                .measure(
+                    constraints.copy(
+                        maxWidth = middleWidth,
+                        minWidth = middleWidth,
+                    )
+                )
 
-        middle.placeRelative(first.width, 0, 0f)
+            middle.placeRelative(first.width, 0, 0f)
 
-        last.placeRelative(constraints.maxWidth - last.width, 0, 0f)
+            last.placeRelative(constraints.maxWidth - last.width, 0, 0f)
+        }
     }
-}
 
 @Preview
 @Composable

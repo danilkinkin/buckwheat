@@ -68,7 +68,7 @@ fun BottomSheets(
         windowSizeClass = windowSizeClass,
     ) { state ->
         FinishDateSelector(
-            selectDate = state.args["initialDate"] as Date,
+            selectDate = state.args["initialDate"] as Date?,
             onBackPressed = {
                 coroutineScope.launch {
                     state.hide()

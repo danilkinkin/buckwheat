@@ -38,7 +38,7 @@ fun Wallet(
     onClose: () -> Unit = {},
 ) {
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
-    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value!!) }
+    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
     var currency by remember { mutableStateOf(spendsViewModel.currency.value!!) }
     val spends by spendsViewModel.getSpends().observeAsState()
     val restBudget =
@@ -57,12 +57,12 @@ fun Wallet(
 
     val isChange = (
             budget != spendsViewModel.budget.value
-                    || dateToValue.value != spendsViewModel.finishDate.value!!
+                    || dateToValue.value != spendsViewModel.finishDate.value
             )
 
     var isEdit by remember(spendsViewModel.startDate, spendsViewModel.finishDate, forceChange) {
         mutableStateOf(
-            isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time)
+            (spendsViewModel.finishDate.value !== null && isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time))
                     || forceChange
         )
     }
@@ -71,7 +71,11 @@ fun Wallet(
 
     Surface {
         Column {
-            val days = countDays(dateToValue.value)
+            val days = if (dateToValue.value !== null) {
+                countDays(dateToValue.value!!)
+            } else {
+                0
+            }
 
             Box(
                 modifier = Modifier
@@ -205,7 +209,7 @@ fun Wallet(
                                     openConfirmChangeBudgetDialog.value = true
                                 } else {
                                     spendsViewModel.changeCurrency(currency)
-                                    spendsViewModel.changeBudget(budget, dateToValue.value)
+                                    spendsViewModel.changeBudget(budget, dateToValue.value!!)
 
                                     onClose()
                                 }
@@ -213,7 +217,7 @@ fun Wallet(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            enabled = countDays(dateToValue.value) > 0 && budget > BigDecimal(0)
+                            enabled = dateToValue.value !== null && countDays(dateToValue.value!!) > 0 && budget > BigDecimal(0)
                         ) {
                             Text(
                                 text = if (spends!!.isNotEmpty() && !forceChange) {
@@ -268,7 +272,7 @@ fun Wallet(
             windowSizeClass = windowSizeClass,
             onConfirm = {
                 spendsViewModel.changeCurrency(currency)
-                spendsViewModel.changeBudget(budget, dateToValue.value)
+                spendsViewModel.changeBudget(budget, dateToValue.value!!)
 
                 onClose()
             },

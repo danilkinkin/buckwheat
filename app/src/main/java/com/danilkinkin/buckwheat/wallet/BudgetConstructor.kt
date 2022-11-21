@@ -39,7 +39,7 @@ import java.util.*
 fun BudgetConstructor(
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
-    onChange: (budget: BigDecimal, finishDate: Date) -> Unit = { _, _ -> },
+    onChange: (budget: BigDecimal, finishDate: Date?) -> Unit = { _, _ -> },
 ) {
     var rawBudget by remember {
         val restBudget =
@@ -65,7 +65,7 @@ fun BudgetConstructor(
 
         mutableStateOf(BigDecimal(restBudget))
     }
-    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value!!) }
+    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
     var showUseBudgetSuggestion by remember {
         mutableStateOf(
             budget != spendsViewModel.budget.value!!
@@ -73,22 +73,27 @@ fun BudgetConstructor(
         )
     }
     var showUseLifetimeSuggestion by remember {
-        val length = countDays(
-            spendsViewModel.finishDate.value!!,
-            spendsViewModel.startDate.value!!,
-        )
+        val length = if (spendsViewModel.finishDate.value !== null) {
+            countDays(
+                spendsViewModel.finishDate.value!!,
+                spendsViewModel.startDate.value!!,
+            )
+        } else {
+            0
+        }
         val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
 
         mutableStateOf(
-            !isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time)
-                    && !isSameDay(finishDate.time, spendsViewModel.finishDate.value!!.time)
+            length != 0
+                    && (spendsViewModel.finishDate.value == null || !isSameDay(finishDate.time, spendsViewModel.finishDate.value!!.time))
         )
     }
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column {
-        val days = countDays(dateToValue.value)
+        val days = if (dateToValue.value != null) countDays(dateToValue.value!!) else 0
+
         BasicTextField(
             value = rawBudget,
             onValueChange = {
@@ -157,7 +162,7 @@ fun BudgetConstructor(
             text = if (days > 0) {
                 String.format(
                     pluralStringResource(R.plurals.finish_date_label, days),
-                    prettyDate(dateToValue.value, showTime = false, forceShowDate = true),
+                    prettyDate(dateToValue.value!!, showTime = false, forceShowDate = true),
                     days,
                 )
             } else {
