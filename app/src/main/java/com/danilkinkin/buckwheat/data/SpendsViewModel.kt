@@ -70,10 +70,10 @@ class SpendsViewModel @Inject constructor(
     } catch (e: Exception) {
         MutableLiveData(Date())
     }
-    var finishDate: MutableLiveData<Date> = try {
+    var finishDate: MutableLiveData<Date?> = try {
         MutableLiveData(Date(storageDao.get("finishDate").value.toLong()))
     } catch (e: Exception) {
-        MutableLiveData(Date())
+        MutableLiveData(null)
     }
     var lastReCalcBudgetDate: Date? = try {
         Date(storageDao.get("lastReCalcBudgetDate").value.toLong())

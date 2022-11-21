@@ -22,8 +22,8 @@ data class SystemBarState (
 
 data class PathState (
     val name: String,
-    val args: Map<String, Any> = emptyMap(),
-    val callback: (result: Map<String, Any>) -> Unit = {},
+    val args: Map<String, Any?> = emptyMap(),
+    val callback: (result: Map<String, Any?>) -> Unit = {},
 )
 
 @HiltViewModel

@@ -48,8 +48,8 @@ class ModalBottomSheetState(
     confirmStateChange = confirmStateChange
 ) {
     var render: Boolean by mutableStateOf(render)
-    var args: Map<String, Any> by mutableStateOf(emptyMap())
-    var callback: (result: Map<String, Any>) -> Unit by mutableStateOf({})
+    var args: Map<String, Any?> by mutableStateOf(emptyMap())
+    var callback: (result: Map<String, Any?>) -> Unit by mutableStateOf({})
 
     val isVisible: Boolean
         get() = currentValue != ModalBottomSheetValue.Hidden
@@ -81,7 +81,7 @@ class ModalBottomSheetState(
         animateTo(targetValue = targetValue)
     }
 
-    suspend fun show(args: Map<String, Any>) {
+    suspend fun show(args: Map<String, Any?>) {
         this.args = args
         this.render = true
     }
@@ -90,7 +90,7 @@ class ModalBottomSheetState(
         show(emptyMap())
     }
 
-    fun bindCallback(callback: (result: Map<String, Any>) -> Unit) {
+    fun bindCallback(callback: (result: Map<String, Any?>) -> Unit) {
         this.callback = callback
     }
 
@@ -103,7 +103,7 @@ class ModalBottomSheetState(
 
     internal suspend fun expand() = animateTo(ModalBottomSheetValue.Expanded)
 
-    suspend fun hide(result: Map<String, Any>) {
+    suspend fun hide(result: Map<String, Any?>) {
         callback(result)
         animateTo(ModalBottomSheetValue.Hidden)
     }

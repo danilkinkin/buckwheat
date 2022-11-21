@@ -46,6 +46,8 @@ fun RestBudget(
 
 
     fun calculateValues() {
+        if (spendsViewModel.finishDate.value === null) return
+
         val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
         val dailyBudget = spendsViewModel.dailyBudget.value!!
         val currentSpent = spendsViewModel.currentSpent
