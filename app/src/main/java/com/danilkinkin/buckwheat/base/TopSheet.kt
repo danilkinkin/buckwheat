@@ -11,6 +11,7 @@ import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.material3.Card
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -46,13 +47,15 @@ fun TopSheetLayout(
     sheetContentHalfExpand: @Composable () -> Unit,
     sheetContentExpand: @Composable () -> Unit,
 ) {
-    val navigationBarHeight = androidx.compose.ui.unit.max(
-        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-        16.dp,
-    )
+    val localDensity = LocalDensity.current
 
     var lock by remember { mutableStateOf(false) }
     var scroll by remember { mutableStateOf(false) }
+
+    val navigationBarHeight = WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+        .coerceAtLeast(16.dp)
 
     BoxWithConstraints(
         modifier = modifier,
@@ -60,7 +63,7 @@ fun TopSheetLayout(
     ) {
         val fullHeight = constraints.maxHeight.toFloat()
         val halfHeight = customHalfHeight ?: (fullHeight / 2)
-        val expandHeight = with(LocalDensity.current) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
+        val expandHeight = with(localDensity) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
         val currOffset = swipeableState.offset.value
         val maxOffset = (-(expandHeight - halfHeight)).coerceAtMost(0f)
         val progress = (1f - (currOffset / maxOffset)).coerceIn(0f, 1f)
@@ -122,7 +125,7 @@ fun TopSheetLayout(
             )
         }
 
-        androidx.compose.material3.Card(
+        Card(
             shape = RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp),
             colors = CardDefaults.cardColors(
                 containerColor = colorEditor,
@@ -130,13 +133,18 @@ fun TopSheetLayout(
             ),
             modifier = modifier
                 .fillMaxWidth()
-                .height(with(LocalDensity.current) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()).toDp() })
+                .height(with(localDensity) {
+                    (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()).toDp()
+                })
                 .nestedScroll(connection)
                 .offset {
                     IntOffset(
                         x = 0,
                         y = swipeableState.offset.value
-                            .coerceIn((-(expandHeight - halfHeight)).coerceAtMost(0f), 0f)
+                            .coerceIn(
+                                (-(expandHeight - halfHeight)).coerceAtMost(0f),
+                                0f,
+                            )
                             .roundToInt(),
                     )
                 }
@@ -144,7 +152,7 @@ fun TopSheetLayout(
                     state = swipeableState,
                     orientation = Orientation.Vertical,
                     anchors = mapOf(
-                        -(expandHeight - halfHeight) to TopSheetValue.HalfExpanded,
+                        (-(expandHeight - halfHeight)).coerceAtMost(0f) to TopSheetValue.HalfExpanded,
                         0f to TopSheetValue.Expanded
                     ),
                 )
@@ -155,7 +163,8 @@ fun TopSheetLayout(
                     Box(
                         Modifier
                             .fillMaxSize()
-                            .alpha(max(progress * 2f - 1f, 0f))) {
+                            .alpha(max(progress * 2f - 1f, 0f))
+                    ) {
                         sheetContentExpand()
                     }
                 }
@@ -170,7 +179,8 @@ fun TopSheetLayout(
                             Modifier
                                 .fillMaxWidth()
                                 .weight(1F)
-                                .background(colorEditor))
+                                .background(colorEditor)
+                        )
                         sheetContentHalfExpand()
                     }
                 }
