@@ -27,6 +27,7 @@ fun initSentry(context: Context) {
     SentryAndroid.init(context) { options ->
         options.dsn = BuildConfig.SENTRY_DSN
         options.sampleRate = 0.2
+        options.tracesSampleRate = 0.2
         options.isEnableUserInteractionTracing = true
         options.isEnableUserInteractionBreadcrumbs = true
 
