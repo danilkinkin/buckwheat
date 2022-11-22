@@ -13,6 +13,11 @@ Writing down each spending sobers the mind and gives you an idea of how much and
     />
 </a>
 
+## Links
+
+- [GooglePlay](https://play.google.com/store/apps/details?id=com.danilkinkin.buckwheat)
+- [Landing](https://buckwheat.app/)
+
 ## Policy
 
 See policy [there](./POLICY.md)
