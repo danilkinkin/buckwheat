@@ -75,7 +75,7 @@
     <string name="theme_system">System</string>
     <string name="locale_label">Språk</string>
     <string name="locale_system">Systemisk</string>
-    <string name="not_send_crash_report">Skicka inte anonyma kraschrapporter</string>
+    <string name="not_send_crash_report">Skicka anonym kraschinformation</string>
     <string name="not_send_crash_report_description">Krashinformation innehåller endast den plats i koden där programmet kraschade och innehåller ingen data som kan identifiera dig. Dessa data hjälper till att förbättra stabiliteten för programmet </string>
     <string name="version">Version: %1$s</string>
     <string name="about">Om</string>

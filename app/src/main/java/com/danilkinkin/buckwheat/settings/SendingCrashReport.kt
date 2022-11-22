@@ -47,7 +47,7 @@ fun SendingCrashReport() {
         },
         endContent = {
             Switch(
-                checked = !sendCrashReport.value,
+                checked = sendCrashReport.value,
                 onCheckedChange = {
                     handleSwitchCrashReportDisable(!sendCrashReport.value)
                 },
