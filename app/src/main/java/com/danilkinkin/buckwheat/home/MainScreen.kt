@@ -58,7 +58,7 @@ fun MainScreen(
 
     isNightModeM.value = isNightMode()
 
-    val isShowSystemKeyboard = WindowInsets.isImeVisible
+    val isShowSystemKeyboard = WindowInsets.isImeVisible && appViewModel.showSystemKeyboard.value
     val systemKeyboardHeight = with(localDensity) {
         WindowInsets.ime.asPaddingValues().calculateBottomPadding().toPx()
     }
@@ -101,12 +101,16 @@ fun MainScreen(
         if (it) appViewModel.openSheet(PathState(FINISH_PERIOD_SHEET))
     }
 
-    val keyboardAdditionalOffset = (WindowInsets.systemBars.asPaddingValues().calculateBottomPadding() - 16.dp).coerceAtLeast(0.dp)
+    val keyboardAdditionalOffset = WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+        .minus(16.dp)
+        .coerceAtLeast(0.dp)
 
-    val navigationBarHeight = androidx.compose.ui.unit.max(
-        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-        16.dp,
-    )
+    val navigationBarHeight = WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()
+        .coerceAtLeast(16.dp)
 
     BoxWithConstraints(
         modifier = Modifier
@@ -122,16 +126,14 @@ fun MainScreen(
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
         val currentKeyboardHeight by animateFloatAsState(
-            targetValue = if (isShowSystemKeyboard && appViewModel.showSystemKeyboard.value) {
-                systemKeyboardHeight
+            targetValue = if (isShowSystemKeyboard) {
+                systemKeyboardHeight + with(localDensity) { 16.dp.toPx() }
             } else {
-                keyboardHeight
-            }.coerceAtLeast(with(LocalDensity.current) { navigationBarHeight.toPx() - 16.dp.toPx() })
+                keyboardHeight + with(localDensity) { keyboardAdditionalOffset.toPx() }
+            }.coerceAtLeast(0f)
         )
-        val editorHeight = contentHeight - currentKeyboardHeight - with(localDensity) { keyboardAdditionalOffset.toPx() }
-
-        Log.d("currentKeyboardHeight", currentKeyboardHeight.toString())
-        Log.d("editorHeight", editorHeight.toString())
+        val editorHeight = (contentHeight - currentKeyboardHeight)
+            .coerceAtMost(contentHeight - with(localDensity) { navigationBarHeight.toPx() + 96.dp.toPx()  })
 
         Row {
             if (windowSizeClass != WindowWidthSizeClass.Compact) {
@@ -148,15 +150,15 @@ fun MainScreen(
                         SnackbarHost()
                     }
                 }
-                Spacer(modifier = Modifier
-                    .fillMaxHeight()
-                    .width(16.dp))
+                Spacer(
+                    Modifier
+                        .fillMaxHeight()
+                        .width(16.dp))
             }
             Box(
-                modifier = Modifier
+                Modifier
                     .fillMaxSize()
-                    .weight(1f)
-            ) {
+                    .weight(1f)) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = !isShowSystemKeyboard,
                     enter = fadeIn(
@@ -211,9 +213,7 @@ fun MainScreen(
                                 },
                             )
                         }
-                    ) {
-                        History()
-                    }
+                    ) { History() }
 
                     StatusBarStub()
 
