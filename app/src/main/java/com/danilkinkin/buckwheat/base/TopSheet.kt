@@ -66,7 +66,19 @@ fun TopSheetLayout(
         val expandHeight = with(localDensity) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
         val currOffset = swipeableState.offset.value
         val maxOffset = (-(expandHeight - halfHeight)).coerceAtMost(0f)
-        val progress = (1f - (currOffset / maxOffset)).coerceIn(0f, 1f)
+
+        val prevHalfHeight = remember { mutableStateOf(halfHeight) }
+        val isLockProgress = remember(swipeableState.isAnimationRunning) {
+            mutableStateOf(prevHalfHeight.value != halfHeight && swipeableState.isAnimationRunning)
+        }
+
+        val progress = if (isLockProgress.value) {
+            if (swipeableState.currentValue === TopSheetValue.HalfExpanded) 0f else 1f
+        } else {
+            (1f - (currOffset / maxOffset)).coerceIn(0f, 1f)
+        }
+
+        prevHalfHeight.value = halfHeight
 
         val connection = remember {
             object : NestedScrollConnection {
