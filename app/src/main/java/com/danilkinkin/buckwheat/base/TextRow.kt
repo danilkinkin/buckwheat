@@ -44,21 +44,26 @@ fun TextRow(
                     .heightIn(56.dp)
                     .padding(horizontal = 16.dp)
                     .height(IntrinsicSize.Min),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = text,
-                    style = textStyle,
-                    softWrap = wrapMainText,
-                    overflow = if (wrapMainText) TextOverflow.Visible else TextOverflow.Ellipsis,
-                    modifier = Modifier
+                Box(
+                    Modifier
                         .padding(
                             start = (24 + 16).dp,
                             top = 16.dp,
                             bottom = if (description !== null) 4.dp else 16.dp,
                         )
-                        .weight(1f)
-                )
+                        .heightIn(24.dp)
+                        .weight(1f),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Text(
+                        text = text,
+                        style = textStyle,
+                        softWrap = wrapMainText,
+                        overflow = if (wrapMainText) TextOverflow.Visible else TextOverflow.Ellipsis,
+                    )
+                }
 
                 if (endContent !== null || endIcon !== null) {
                     Box(
@@ -212,7 +217,7 @@ private fun PreviewWithIconsWithChipWithWrapText() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(name = "With icon, end content, end icon and description")
 @Composable
-private fun PreviewWithIconsWithChipWithDescription() {
+private fun PreviewWithIconsWithChipWithDescriptionWithEndContentAndEnIcon() {
     BuckwheatTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
@@ -225,6 +230,27 @@ private fun PreviewWithIconsWithChipWithDescription() {
             },
             wrapMainText = true,
             text = "Text row loooooooooooooooooooooooooooooooong",
+            description = "Description looooooooooooooooooooooooooooooooooooong text",
+        )
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(name = "With icon, end content, end icon and description")
+@Composable
+private fun PreviewWithIconsWithChipWithDescriptionWithEndContent() {
+    BuckwheatTheme {
+        TextRow(
+            icon = painterResource(R.drawable.ic_home),
+            endContent = {
+                SuggestionChip(
+                    label = { Text(text = "Suggestion") },
+                    onClick = { /*TODO*/ },
+                )
+            },
+            wrapMainText = true,
+            text = "Text row",
             description = "Description looooooooooooooooooooooooooooooooooooong text",
         )
     }
