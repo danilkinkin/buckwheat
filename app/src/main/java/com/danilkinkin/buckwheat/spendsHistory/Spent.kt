@@ -87,7 +87,7 @@ fun Spent(
                     Text(
                         modifier = Modifier.padding( horizontal = 32.dp),
                         text = spent.comment,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = colorOnEditor.copy(alpha = 0.7f),
                         softWrap = true,
                     )
