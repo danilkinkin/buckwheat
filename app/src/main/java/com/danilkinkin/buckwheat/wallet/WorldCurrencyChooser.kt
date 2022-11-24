@@ -31,6 +31,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.base.RenderAdaptivePane
+import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.titleCase
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
@@ -118,7 +119,11 @@ fun WorldCurrencyChooserContent(
                 singleLine = true,
                 shape = RectangleShape,
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = combineColors(
+                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        0.5f,
+                    ),
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
