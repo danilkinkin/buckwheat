@@ -36,10 +36,11 @@ import com.danilkinkin.buckwheat.spendsHistory.History
 import com.danilkinkin.buckwheat.ui.*
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterialApi::class, FlowPreview::class)
 @Composable
 fun MainScreen(
     windowSizeClass: WindowWidthSizeClass,
@@ -58,10 +59,28 @@ fun MainScreen(
 
     isNightModeM.value = isNightMode()
 
-    val isShowSystemKeyboard = WindowInsets.isImeVisible && appViewModel.showSystemKeyboard.value
-    val systemKeyboardHeight = with(localDensity) {
+    val systemKeyboardHeightFlow: MutableStateFlow<Float> = remember { MutableStateFlow(0f) }
+    var systemKeyboardHeight by remember { mutableStateOf(0f) }
+
+    with(localDensity) {
         WindowInsets.ime.asPaddingValues().calculateBottomPadding().toPx()
+    }.let {
+        if (systemKeyboardHeight != it) {
+            coroutineScope.launch {
+                systemKeyboardHeightFlow.value = it
+            }
+        }
     }
+
+    LaunchedEffect(Unit) {
+        systemKeyboardHeightFlow
+            .debounce(50L)
+            .collectLatest {
+                systemKeyboardHeight = it
+            }
+    }
+
+    val isShowSystemKeyboard = systemKeyboardHeight != 0f && appViewModel.showSystemKeyboard.value
 
     setSystemStyle(
         style = {
@@ -112,12 +131,17 @@ fun MainScreen(
         .calculateBottomPadding()
         .coerceAtLeast(16.dp)
 
+    Log.d("MainScreen", "bottom padding = ${WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()}")
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
             .background(colorBackground),
     ) {
         val contentHeight = constraints.maxHeight.toFloat()
+
         val keyboardHeight = if (windowSizeClass == WindowWidthSizeClass.Compact) {
             constraints.maxWidth.toFloat()
         } else {
@@ -125,12 +149,27 @@ fun MainScreen(
         }
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
-        val currentKeyboardHeight = if (isShowSystemKeyboard) {
-            systemKeyboardHeight + with(localDensity) { 16.dp.toPx() }
-        } else {
-            keyboardHeight + with(localDensity) { keyboardAdditionalOffset.toPx() }
-        }.coerceAtLeast(0f)
-        val editorHeight = (contentHeight - currentKeyboardHeight)
+
+        val currentKeyboardHeight by animateFloatAsState(
+            targetValue = if (isShowSystemKeyboard) {
+                systemKeyboardHeight
+            } else {
+                keyboardHeight
+            },
+        )
+
+        val editorHeight = contentHeight
+            .minus(
+                currentKeyboardHeight
+                    .plus(with(localDensity) {
+                        if (isShowSystemKeyboard) {
+                            16.dp.toPx()
+                        } else {
+                            keyboardAdditionalOffset.toPx()
+                        }
+                    })
+                    .coerceAtLeast(0f)
+            )
             .coerceAtMost(contentHeight - with(localDensity) { navigationBarHeight.toPx() + 96.dp.toPx()  })
 
         Row {
