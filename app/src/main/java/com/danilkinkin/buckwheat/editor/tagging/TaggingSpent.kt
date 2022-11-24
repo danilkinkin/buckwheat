@@ -55,6 +55,10 @@ fun TaggingSpent(
     val height = calcFontHeight(style = MaterialTheme.typography.bodyMedium).coerceAtLeast(24.dp) + 12.dp
 
     observeLiveData(spendsViewModel.stage) {
+        if (it === SpendsViewModel.Stage.CREATING_SPENT) {
+            value = ""
+        }
+
         showAddComment = it === SpendsViewModel.Stage.EDIT_SPENT
     }
 
