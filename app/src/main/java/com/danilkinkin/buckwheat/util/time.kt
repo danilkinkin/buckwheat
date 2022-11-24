@@ -45,10 +45,19 @@ fun prettyDate(
     forceHideDate: Boolean = false,
     forceShowYear: Boolean = false,
     human: Boolean = false,
+    shortMonth: Boolean = false,
 ): String {
     val yearOnlyFormatter = DateTimeFormatter.ofPattern("yyyy")
-    val dateWithMonthAndYearFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-    val dateWithMonthFormatter = DateTimeFormatter.ofPattern("dd MMMM")
+    val dateWithMonthAndYearFormatter = if (shortMonth) {
+        DateTimeFormatter.ofPattern("dd MMM yyyy")
+    } else {
+        DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    }
+    val dateWithMonthFormatter = if (shortMonth) {
+        DateTimeFormatter.ofPattern("dd MMM")
+    } else {
+        DateTimeFormatter.ofPattern("dd MMMM")
+    }
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
     val currentFullDate = dateWithMonthAndYearFormatter.format(LocalDate.now())
