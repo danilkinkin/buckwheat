@@ -125,13 +125,11 @@ fun MainScreen(
         }
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
-        val currentKeyboardHeight by animateFloatAsState(
-            targetValue = if (isShowSystemKeyboard) {
-                systemKeyboardHeight + with(localDensity) { 16.dp.toPx() }
-            } else {
-                keyboardHeight + with(localDensity) { keyboardAdditionalOffset.toPx() }
-            }.coerceAtLeast(0f)
-        )
+        val currentKeyboardHeight = if (isShowSystemKeyboard) {
+            systemKeyboardHeight + with(localDensity) { 16.dp.toPx() }
+        } else {
+            keyboardHeight + with(localDensity) { keyboardAdditionalOffset.toPx() }
+        }.coerceAtLeast(0f)
         val editorHeight = (contentHeight - currentKeyboardHeight)
             .coerceAtMost(contentHeight - with(localDensity) { navigationBarHeight.toPx() + 96.dp.toPx()  })
 
