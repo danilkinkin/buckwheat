@@ -23,6 +23,7 @@ import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.time.LocalDateTime
 import java.util.*
 
 
@@ -76,7 +77,7 @@ fun Spent(
                                     top = 16.dp,
                                     end = 32.dp,
                                 ),
-                            text = prettyDate(spent.date),
+                            text = prettyDate(spent.date, shortMonth = true),
                             style = MaterialTheme.typography.labelSmall,
                             color = colorOnEditor,
                             softWrap = false,
@@ -113,7 +114,11 @@ private fun PreviewDefault() {
 private fun PreviewNightMode() {
     BuckwheatTheme {
         Spent(
-            Spent(value = BigDecimal(12340), date = Date(), comment = "Comment for spent"),
+            Spent(
+                value = BigDecimal(12340),
+                date = LocalDateTime.now().minusMonths(2).toLocalDate().toDate(),
+                comment = "Comment for spent",
+            ),
             ExtendCurrency(type = CurrencyType.NONE)
         )
     }
