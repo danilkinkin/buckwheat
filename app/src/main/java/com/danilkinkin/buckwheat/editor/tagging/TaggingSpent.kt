@@ -117,14 +117,20 @@ fun TaggingSpent(
                         enter = scaleIn(tween(durationMillis = 150)),
                         exit = scaleOut(tween(durationMillis = 150)),
                     ) {
-                        Spacer(Modifier.width(6.dp))
+                        Spacer(Modifier.width(8.dp))
                     }
                     Icon(
                         modifier = Modifier.size(20.dp),
                         painter = painterResource(R.drawable.ic_comment),
                         contentDescription = null,
                     )
-                    Spacer(Modifier.width(8.dp))
+                    AnimatedVisibility(
+                        visible = !isEdit,
+                        enter = scaleIn(tween(durationMillis = 150)),
+                        exit = scaleOut(tween(durationMillis = 150)),
+                    ) {
+                        Spacer(Modifier.width(8.dp))
+                    }
                     AnimatedContent(
                         targetState = isEdit,
                         transitionSpec = {
@@ -148,11 +154,10 @@ fun TaggingSpent(
                         )
                     } else {
                         Text(
-                            modifier = Modifier.padding(top = 6.dp, bottom = 6.dp, end = 16.dp),
+                            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
                             text = value.ifEmpty { stringResource(R.string.add_comment) },
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium,
                         )
                     } }
                 }
