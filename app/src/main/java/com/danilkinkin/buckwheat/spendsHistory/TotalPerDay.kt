@@ -28,7 +28,7 @@ fun TotalPerDay(
             .fillMaxWidth()
             .padding(
                 start = 32.dp,
-                end = 48.dp,
+                end = 32.dp,
                 top = 16.dp,
                 bottom = 16.dp,
             ),
