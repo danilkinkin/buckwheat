@@ -133,9 +133,6 @@ sentry {
         enabled.set(true)
         features.set(
             setOf(
-                io.sentry.android.gradle.extensions.InstrumentationFeature.DATABASE,
-                io.sentry.android.gradle.extensions.InstrumentationFeature.FILE_IO,
-                io.sentry.android.gradle.extensions.InstrumentationFeature.OKHTTP,
                 io.sentry.android.gradle.extensions.InstrumentationFeature.COMPOSE,
             )
         )
