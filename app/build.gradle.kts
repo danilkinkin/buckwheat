@@ -20,8 +20,8 @@ android {
         applicationId = "com.danilkinkin.buckwheat"
         minSdk = 26
         targetSdk = 33
-        versionCode = 8
-        versionName = "1.0-beta4"
+        versionCode = 9
+        versionName = "1.1"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
         javaCompileOptions {
             annotationProcessorOptions {
