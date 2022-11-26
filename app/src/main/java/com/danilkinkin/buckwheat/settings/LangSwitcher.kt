@@ -90,6 +90,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
         Locale("uk"),
         Locale("be"),
         Locale("sv"),
+        Locale("it")
     )
 
     Surface {
