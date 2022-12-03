@@ -6,6 +6,7 @@ import com.danilkinkin.buckwheat.data.entities.Storage
 import com.danilkinkin.buckwheat.di.DatabaseRepository
 import com.danilkinkin.buckwheat.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -111,11 +112,37 @@ class SpendsViewModel @Inject constructor(
         }
 
         // Bug fix https://github.com/danilkinkin/buckwheat/issues/28
-        val spentFromDailyBudget = this.spentFromDailyBudget.value!!
-        val dailyBudget = this.dailyBudget.value!!
-        val currentSpent = this.currentSpent
-        if (dailyBudget - spentFromDailyBudget - currentSpent > BigDecimal(0)) {
+        if (this.dailyBudget.value!! - this.spentFromDailyBudget.value!! - this.currentSpent > BigDecimal(0)) {
             hideOverspendingWarn(false)
+        }
+
+        var initAppDate = Date().time
+
+        viewModelScope.launch {
+            while (true) {
+                delay(5000L)
+
+                if (isSameDay(initAppDate, Date().time)) {
+                    continue
+                }
+
+                initAppDate = Date().time
+                if (
+                    lastReCalcBudgetDate !== null
+                    && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)
+                    && countDays(finishDate.value!!) > 0
+                ) {
+                    if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value ?: BigDecimal(0)) > BigDecimal(0))) {
+                        requireReCalcBudget.value = true
+                    } else {
+                        reCalcDailyBudget(calcBudgetPerDaySplit())
+                    }
+                } else if (lastReCalcBudgetDate === null) {
+                    requireSetBudget.value = true
+                } else if (lastReCalcBudgetDate !== null && finishDate.value!!.time <= Date().time) {
+                    finishPeriod.value = true
+                }
+            }
         }
     }
 
