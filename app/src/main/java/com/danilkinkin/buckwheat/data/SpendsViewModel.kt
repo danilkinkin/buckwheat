@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.data
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.data.entities.Storage
@@ -9,12 +8,10 @@ import com.danilkinkin.buckwheat.util.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 import javax.inject.Inject
-import kotlin.math.abs
 
 @HiltViewModel
 class SpendsViewModel @Inject constructor(
@@ -62,7 +59,7 @@ class SpendsViewModel @Inject constructor(
     var overspendingWarnHidden: MutableLiveData<Boolean> = try {
         MutableLiveData(storageDao.get("overspendingWarnHidden").value.toBoolean())
     } catch (e: Exception) {
-        MutableLiveData(true)
+        MutableLiveData(false)
     }
 
     var startDate: MutableLiveData<Date> = try {
@@ -111,6 +108,14 @@ class SpendsViewModel @Inject constructor(
             requireSetBudget.value = true
         } else if (lastReCalcBudgetDate !== null && finishDate.value!!.time <= Date().time) {
             finishPeriod.value = true
+        }
+
+        // Bug fix https://github.com/danilkinkin/buckwheat/issues/28
+        val spentFromDailyBudget = this.spentFromDailyBudget.value!!
+        val dailyBudget = this.dailyBudget.value!!
+        val currentSpent = this.currentSpent
+        if (dailyBudget - spentFromDailyBudget - currentSpent > BigDecimal(0)) {
+            hideOverspendingWarn(false)
         }
     }
 
