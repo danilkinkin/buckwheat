@@ -192,6 +192,20 @@ fun isNumber(char: Char): Boolean {
 
 fun Triple<String, String, String>.join(third: Boolean = true): String = this.first + this.second + if (third) this.third else ""
 
+fun fixedNumberString(input: String): String {
+    val floatDivider = getFloatDivider()
+
+    val before = input.substringBefore(floatDivider)
+    val after = input.substringAfter(floatDivider, "")
+
+    val beforeFiltered = before.replace("\\D".toRegex(), "")
+    val afterFiltered = after.replace("\\D".toRegex(), "")
+
+    if (beforeFiltered.isEmpty() && afterFiltered.isEmpty()) return ""
+
+    return "$beforeFiltered.$afterFiltered"
+}
+
 fun tryConvertStringToNumber(input: String): Triple<String, String, String> {
     val afterDot = input.dropWhile { it != '.' }
     val beforeDot = input.substring(0, input.length - afterDot.length)

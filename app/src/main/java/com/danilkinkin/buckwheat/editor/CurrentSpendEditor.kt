@@ -291,13 +291,13 @@ fun CurrentSpendEditor(
                             stringResource(R.string.enter_spent_placeholder)
                         },
                         onChangeValue = {
-                            val converted = tryConvertStringToNumber(it)
+                            val fixed = fixedNumberString(it)
+                            val converted = tryConvertStringToNumber(fixed)
 
-                            spendsViewModel.rawSpentValue.value = it
-
+                            spendsViewModel.rawSpentValue.value = fixed
                             spendsViewModel.editSpent(converted.join().toBigDecimal())
 
-                            if (it === "") {
+                            if (fixed === "") {
                                 runBlocking {
                                     spendsViewModel.resetSpent()
                                 }
