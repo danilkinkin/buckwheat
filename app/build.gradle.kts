@@ -119,7 +119,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.3.1")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.44")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.44")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.2.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 }
 
 // For more info see: https://docs.sentry.io/platforms/android/gradle/
