@@ -98,6 +98,7 @@
     <!-- Finish period -->
     <string name="finish_period_title">Period ended</string>
     <string name="period_summary_title">Here are the statistics for this period</string>
+    <string name="period_summary_no_spends_title">Wow, you haven\'t spent anything in this period</string>
     <string name="new_period_title">Set up a new budget</string>
     <string name="whole_budget">Starting budget</string>
     <string name="rest_budget">Left</string>

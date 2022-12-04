@@ -103,6 +103,7 @@
     <!-- Finish period -->
     <string name="finish_period_title">Перыяд скончыўся</string>
     <string name="period_summary_title">Вось такая статыстыка гэтага перыяду атрымалася</string>
+    <string name="period_summary_no_spends_title">Ого, вы нічога не патрацілі ў гэтым перыядзе</string>
     <string name="new_period_title">Наладзіць новы бюджэт</string>
     <string name="whole_budget">Стартавы бюджэт</string>
     <string name="rest_budget">Засталося</string>

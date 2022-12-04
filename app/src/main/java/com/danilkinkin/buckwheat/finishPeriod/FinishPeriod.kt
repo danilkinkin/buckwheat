@@ -42,7 +42,7 @@ fun FinishPeriod(
         .calculateBottomPadding()
         .coerceAtLeast(16.dp)
     
-    Surface {
+    Surface(Modifier.height(IntrinsicSize.Min)) {
         Column(
             modifier = Modifier
                 .verticalScroll(scrollState)
@@ -56,11 +56,19 @@ fun FinishPeriod(
                 textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.period_summary_title),
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-            )
+            if (spends.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.period_summary_no_spends_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                )
+            } else {
+                Text(
+                    text = stringResource(R.string.period_summary_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                )
+            }
             Spacer(Modifier.height(24.dp))
             Column(Modifier.fillMaxWidth()) {
                 WholeBudgetCard(
@@ -70,60 +78,62 @@ fun FinishPeriod(
                     finishDate = spendsViewModel.finishDate.value!!,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Min)
-                ) {
-                    RestBudgetCard(
-                        modifier = Modifier.weight(1f),
-                        rest = restBudget,
+                if (spends.isNotEmpty()) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(IntrinsicSize.Min)
+                    ) {
+                        RestBudgetCard(
+                            modifier = Modifier.weight(1f),
+                            rest = restBudget,
+                            budget = wholeBudget,
+                            currency = spendsViewModel.currency.value!!,
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        FillCircleStub()
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(Modifier.fillMaxWidth()) {
+                        MinMaxSpentCard(
+                            modifier = Modifier.weight(1f),
+                            isMin = true,
+                            spends = spends,
+                            currency = spendsViewModel.currency.value!!,
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        MinMaxSpentCard(
+                            modifier = Modifier.weight(1f),
+                            isMin = false,
+                            spends = spends,
+                            currency = spendsViewModel.currency.value!!,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(Modifier.fillMaxWidth()) {
+                        SpendsCountCard(
+                            modifier = Modifier,
+                            count = spends.size,
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        AverageSpendCard(
+                            modifier = Modifier.weight(1f),
+                            spends = spends,
+                            currency = spendsViewModel.currency.value!!,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OverspendingInfoCard(
+                        modifier = Modifier.fillMaxWidth(),
                         budget = wholeBudget,
-                        currency = spendsViewModel.currency.value!!,
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    FillCircleStub()
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(Modifier.fillMaxWidth()) {
-                    MinMaxSpentCard(
-                        modifier = Modifier.weight(1f),
-                        isMin = true,
                         spends = spends,
+                        startDate = spendsViewModel.startDate.value!!,
+                        finishDate = spendsViewModel.finishDate.value!!,
                         currency = spendsViewModel.currency.value!!,
                     )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    MinMaxSpentCard(
-                        modifier = Modifier.weight(1f),
-                        isMin = false,
-                        spends = spends,
-                        currency = spendsViewModel.currency.value!!,
-                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    AdviceCard(Modifier.fillMaxWidth())
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(Modifier.fillMaxWidth()) {
-                    SpendsCountCard(
-                        modifier = Modifier,
-                        count = spends.size,
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    AverageSpendCard(
-                        modifier = Modifier.weight(1f),
-                        spends = spends,
-                        currency = spendsViewModel.currency.value!!,
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                OverspendingInfoCard(
-                    modifier = Modifier.fillMaxWidth(),
-                    budget = wholeBudget,
-                    spends = spends,
-                    startDate = spendsViewModel.startDate.value!!,
-                    finishDate = spendsViewModel.finishDate.value!!,
-                    currency = spendsViewModel.currency.value!!,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                AdviceCard(Modifier.fillMaxWidth())
             }
             Spacer(Modifier.height(120.dp))
         }

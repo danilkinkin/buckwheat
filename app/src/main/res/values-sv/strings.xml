@@ -99,6 +99,7 @@
     <!-- Slutperiod -->
     <string name="finish_period_title">Perioden slutade</string>
     <string name="period_summary_title">Här är statistiken för denna period</string>
+    <string name="period_summary_no_spends_title">Wow, du har inte spenderat något under den här perioden</string>
     <string name="new_period_title">Ställ in en ny budget</string>
     <string name="whole_budget">Startbudget</string>
     <string name="rest_budget">Återstående</string>
