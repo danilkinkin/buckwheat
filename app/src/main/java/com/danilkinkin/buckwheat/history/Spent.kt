@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.spendsHistory
+package com.danilkinkin.buckwheat.history
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.*

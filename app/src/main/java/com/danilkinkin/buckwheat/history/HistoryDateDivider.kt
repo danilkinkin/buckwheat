@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.spendsHistory
+package com.danilkinkin.buckwheat.history
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme

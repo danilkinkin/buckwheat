@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.spendsHistory
+package com.danilkinkin.buckwheat.history
 
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState

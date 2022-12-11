@@ -32,7 +32,7 @@ import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.keyboard.Keyboard
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
-import com.danilkinkin.buckwheat.spendsHistory.History
+import com.danilkinkin.buckwheat.history.History
 import com.danilkinkin.buckwheat.ui.*
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
