@@ -15,8 +15,6 @@ import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import java.math.BigDecimal
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.data.entities.Spent
-import java.util.Date
 
 @Composable
 fun TotalPerDay(

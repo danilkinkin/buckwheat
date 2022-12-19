@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,7 +50,9 @@ fun BudgetIsOverDescription(
             }
 
             Text(
-                modifier = Modifier.padding(horizontal = 24.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .fillMaxWidth(),
                 text = stringResource(R.string.budget_end_description),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium,
@@ -58,8 +61,14 @@ fun BudgetIsOverDescription(
             Spacer(modifier = Modifier.height(32.dp))
 
             ButtonRow(
+                icon = if (overspendingWarnHidden) {
+                    painterResource(R.drawable.ic_do_not_disturb)
+                } else {
+                    painterResource(R.drawable.ic_do_disturb)
+                },
                 text = stringResource(R.string.hide_overspending_warn),
                 description = stringResource(R.string.hide_overspending_warn_description),
+                wrapMainText = true,
                 onClick = {
                     spendsViewModel.hideOverspendingWarn(!overspendingWarnHidden)
                 },
