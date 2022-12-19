@@ -262,6 +262,8 @@ class SpendsViewModel @Inject constructor(
         rawSpentValue.value = ""
 
         stage.value = Stage.COMMITTING_SPENT
+
+        resetSpent()
     }
 
     fun resetSpent() {
