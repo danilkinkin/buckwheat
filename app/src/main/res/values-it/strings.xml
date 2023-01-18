@@ -78,14 +78,14 @@
     <string name="not_send_crash_report_description">Le informazioni di errore contengono solo la porzione di codice che ha causato il crash e non contengono alcuna informazione che può identificarti. Questi dati contribuiscono a migliorare la stabilità dell\'applicazione.</string>
     <string name="version">Versione: %1$s</string>
     <string name="about">Informazioni sull\'app</string>
-    <string name="description">Buckwheat è un\'app che ti aiuta a spendere più saggiamente. Annotare ogni spesa fa riflettere la mente e ti dà un\'idea di quanto e come puoi spendere.</string>
+    <string name="description">Buckwheat è un\'app che ti aiuta a spendere più saggiamente. Annotare ogni spesa fa riflettere e dà un\'idea di quanto e come si può spendere.</string>
     <string name="report_bug">Segnala un bug</string>
     <string name="developer">Sviluppo &amp; design:</string>
 
     <!-- Bug reporting -->
     <string name="report_bug_title">Segnala un bug</string>
-    <string name="report_via_github">Attraverso issue GitHub</string>
-    <string name="report_via_email">Attraverso email</string>
+    <string name="report_via_github">Tramite issue GitHub</string>
+    <string name="report_via_email">Tramite email</string>
 
     <!-- New day -->
     <string name="new_day_title">Congratulazioni! Hai risparmiato</string>
@@ -122,7 +122,7 @@
     <string name="onboarding_title">Ti diamo il benvenuto a Buckwheat, risparmiamo soldi insieme!</string>
     <string name="set_period_title">Imposta un budget</string>
     <string name="help_set_budget_title">Imposta un budget</string>
-    <string name="help_set_budget_description">Calcola approssimativamente quanti soldi ti servono per un periodo, come un mese, e inseriscilo nell\'applicazione. Se non riesci a stimarlo, indicalo molto approssimativamente, per esempio metà dello stipendio, col passare del tempo lo indicherai sempre più precisamente.</string>
+    <string name="help_set_budget_description">Calcola approssimativamente quanti soldi ti servono per un periodo, come un mese, e inseriscilo nell\'applicazione. Se non riesci a stimarlo, indicalo molto approssimativamente, per esempio metà dello stipendio. Col passare del tempo lo indicherai sempre più precisamente.</string>
     <string name="help_record_spends_title">Registra ogni spesa</string>
     <string name="help_record_spends_description">L\'applicazione calcolerà quanto puoi spendere al giorno per rientrare nel budget, registre le spese e tieni d\'occhio il budget</string>
     <string name="help_good_luck_title">Spendi saggiamente</string>
