@@ -1,5 +1,7 @@
 package com.danilkinkin.buckwheat.data
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.*
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.data.entities.Storage
@@ -9,10 +11,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 import javax.inject.Inject
+
+
 
 @HiltViewModel
 class SpendsViewModel @Inject constructor(
@@ -100,7 +106,9 @@ class SpendsViewModel @Inject constructor(
             && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)
             && countDays(finishDate.value!!) > 0
         ) {
-            if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value ?: BigDecimal(0)) > BigDecimal(0))) {
+            if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value
+                    ?: BigDecimal(0)) > BigDecimal(0))
+            ) {
                 requireReCalcBudget.value = true
             } else {
                 reCalcDailyBudget(calcBudgetPerDaySplit())
@@ -112,7 +120,10 @@ class SpendsViewModel @Inject constructor(
         }
 
         // Bug fix https://github.com/danilkinkin/buckwheat/issues/28
-        if (this.dailyBudget.value!! - this.spentFromDailyBudget.value!! - this.currentSpent > BigDecimal(0)) {
+        if (this.dailyBudget.value!! - this.spentFromDailyBudget.value!! - this.currentSpent > BigDecimal(
+                0
+            )
+        ) {
             hideOverspendingWarn(false)
         }
 
@@ -132,7 +143,9 @@ class SpendsViewModel @Inject constructor(
                     && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)
                     && countDays(finishDate.value!!) > 0
                 ) {
-                    if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value ?: BigDecimal(0)) > BigDecimal(0))) {
+                    if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value
+                            ?: BigDecimal(0)) > BigDecimal(0))
+                    ) {
                         requireReCalcBudget.value = true
                     } else {
                         reCalcDailyBudget(calcBudgetPerDaySplit())
@@ -311,7 +324,7 @@ class SpendsViewModel @Inject constructor(
         if (!isSameDay(spent.date.time, Date().time)) {
             val restDays = countDays(finishDate.value!!)
             val spentPerDay = spent.value / restDays.toBigDecimal()
-            
+
             dailyBudget.value = dailyBudget.value!! - spentPerDay
             this.spent.value = this.spent.value!! + (spent.value - spentPerDay)
 
@@ -339,5 +352,22 @@ class SpendsViewModel @Inject constructor(
 
         this.overspendingWarnHidden.value = overspendingWarnHidden
 
+    }
+
+    fun exportAsCsv(context: Context, uri: Uri) {
+        val stream = context.contentResolver.openOutputStream(uri)
+
+        val printer = CSVPrinter(
+            stream?.writer(),
+            CSVFormat.DEFAULT.withHeader("amount", "comment", "date")
+        )
+
+        this.spentDao.getAllSync().forEach {
+            printer.printRecord(it.value, it.comment, it.date)
+        }
+
+        printer.flush()
+        printer.close()
+        stream?.close()
     }
 }

@@ -43,6 +43,7 @@
         <item quantity="one">%1$s (%2$s giorno)</item>
         <item quantity="other">%1$s (%2$s giorni)</item>
     </plurals>
+    <string name="export_to_csv">Carica in CSV</string>
     <string name="finish_date_not_select">Nessuna data di fine selezionata </string>
     <string name="in_currency_label">Quale valuta da usare</string>
     <string name="currency_from_list">Valuta mondiale</string>
@@ -134,4 +135,6 @@
     <string name="cancel">Annulla</string>
     <string name="accept">Accetta</string>
     <string name="today">Oggi</string>
+    <string name="export_to_csv_success">Spesa esportata</string>
+    <string name="export_to_csv_failed">Impossibile esportare le spese</string>
 </resources>

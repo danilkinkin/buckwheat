@@ -253,8 +253,6 @@ fun MainScreen(
                     ) { History() }
 
                     StatusBarStub()
-
-                    SnackbarHost()
                 } else {
                     Card(
                         shape = RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp),
@@ -272,6 +270,10 @@ fun MainScreen(
         }
 
         BottomSheets(windowSizeClass)
+
+        if (windowSizeClass == WindowWidthSizeClass.Compact) {
+            SnackbarHost()
+        }
     }
 }
 

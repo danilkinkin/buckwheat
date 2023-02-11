@@ -44,6 +44,7 @@
         <item quantity="one">%1$s (%2$s dag)</item>
         <item quantity="other">%1$s (%2$s dagar)</item>
     </plurals>
+    <string name="export_to_csv">Ladda upp till CSV</string>
     <string name="finish_date_not_select">Inget slutdatum valt</string>
     <string name="in_currency_label">I vilken valuta som ska räknas</string>
     <string name="currency_from_list">Världsvaluta</string>
@@ -135,4 +136,6 @@
     <string name="cancel">Avbryt</string>
     <string name="accept">Ansök</string>
     <string name="today">Idag</string>
+    <string name="export_to_csv_success">Utgifterna exporteras</string>
+    <string name="export_to_csv_failed">Det gick inte att exportera utgifter</string>
 </resources>

@@ -43,6 +43,7 @@
         <item quantity="one">%1$s (%2$s day)</item>
         <item quantity="other">%1$s (%2$s days)</item>
     </plurals>
+    <string name="export_to_csv">Export to CSV</string>
     <string name="finish_date_not_select">No finish date selected</string>
     <string name="in_currency_label">What currency to count</string>
     <string name="currency_from_list">World currency</string>
@@ -134,4 +135,6 @@
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
     <string name="today">Today</string>
+    <string name="export_to_csv_success">Spending exported</string>
+    <string name="export_to_csv_failed">Failed to export expenses</string>
 </resources>

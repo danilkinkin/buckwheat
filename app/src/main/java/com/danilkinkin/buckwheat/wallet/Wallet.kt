@@ -1,5 +1,7 @@
 package com.danilkinkin.buckwheat.wallet
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -11,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -18,14 +21,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.CheckedRow
-import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.base.Divider
+import com.danilkinkin.buckwheat.base.TextRow
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.time.format.DateTimeFormatter
 import java.util.*
+
 
 const val WALLET_SHEET = "wallet"
 
@@ -34,12 +42,17 @@ const val WALLET_SHEET = "wallet"
 fun Wallet(
     forceChange: Boolean = false,
     windowSizeClass: WindowWidthSizeClass,
+    appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
     var currency by remember { mutableStateOf(spendsViewModel.currency.value!!) }
+    val startDate by remember { mutableStateOf(spendsViewModel.startDate.value) }
+    val finishDate by remember { mutableStateOf(spendsViewModel.finishDate.value) }
     val spends by spendsViewModel.getSpends().observeAsState()
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
@@ -47,6 +60,21 @@ fun Wallet(
     val openCurrencyChooserDialog = remember { mutableStateOf(false) }
     val openCustomCurrencyEditorDialog = remember { mutableStateOf(false) }
     val openConfirmChangeBudgetDialog = remember { mutableStateOf(false) }
+    val snackBarExportToCSVSuccess = stringResource(R.string.export_to_csv_success)
+    val snackBarExportToCSVFailed = stringResource(R.string.export_to_csv_failed)
+
+    val createHistoryFileLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/csv")
+    ) {
+        coroutineScope.launch {
+            if (it !== null) {
+                spendsViewModel.exportAsCsv(context, it)
+                appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVSuccess)
+            } else {
+                appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVFailed)
+            }
+        }
+    }
 
     if (spends === null) return
 
@@ -62,7 +90,10 @@ fun Wallet(
 
     var isEdit by remember(spendsViewModel.startDate, spendsViewModel.finishDate, forceChange) {
         mutableStateOf(
-            (spendsViewModel.finishDate.value !== null && isSameDay(spendsViewModel.startDate.value!!.time, spendsViewModel.finishDate.value!!.time))
+            (spendsViewModel.finishDate.value !== null && isSameDay(
+                spendsViewModel.startDate.value!!.time,
+                spendsViewModel.finishDate.value!!.time
+            ))
                     || forceChange
         )
     }
@@ -155,7 +186,11 @@ fun Wallet(
                     text = if (currency.type !== CurrencyType.FROM_LIST) {
                         stringResource(R.string.currency_from_list)
                     } else {
-                        "${stringResource(R.string.currency_from_list)} (${Currency.getInstance(currency.value).symbol})"
+                        "${stringResource(R.string.currency_from_list)} (${
+                            Currency.getInstance(
+                                currency.value
+                            ).symbol
+                        })"
                     },
                 )
                 CheckedRow(
@@ -178,6 +213,49 @@ fun Wallet(
                     },
                     text = stringResource(R.string.currency_none),
                 )
+                AnimatedVisibility(
+                    visible = !isChange && !isEdit,
+                    enter = fadeIn(
+                        tween(durationMillis = 350)
+                    ) + expandVertically(
+                        expandFrom = Alignment.Bottom,
+                        animationSpec = tween(durationMillis = 350)
+                    ),
+                    exit = fadeOut(
+                        tween(durationMillis = 350)
+                    ) + shrinkVertically(
+                        shrinkTowards = Alignment.Bottom,
+                        animationSpec = tween(durationMillis = 350)
+                    ),
+                ) {
+                    Column {
+                        Divider()
+                        ButtonRow(
+                            icon = painterResource(R.drawable.ic_file_download),
+                            text = stringResource(R.string.export_to_csv),
+                            onClick = {
+                                val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
+
+                                val from =
+                                    if (yearFormatter.format(startDate!!.toLocalDate()) == yearFormatter.format(
+                                            finishDate!!.toLocalDate()
+                                        )
+                                    ) {
+                                        DateTimeFormatter.ofPattern("dd-MM").format(startDate!!.toLocalDate())
+                                    } else {
+                                        DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                                            .format(startDate!!.toLocalDate())
+                                    }
+                                val to =
+                                    DateTimeFormatter.ofPattern("dd-MM-yyyy").format(finishDate!!.toLocalDate())
+
+                                spendsViewModel.finishDate
+
+                                createHistoryFileLauncher.launch("spends (from $from to $to).csv")
+                            }
+                        )
+                    }
+                }
                 AnimatedVisibility(
                     visible = isChange || isEdit,
                     enter = fadeIn(
@@ -217,7 +295,9 @@ fun Wallet(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            enabled = dateToValue.value !== null && countDays(dateToValue.value!!) > 0 && budget > BigDecimal(0)
+                            enabled = dateToValue.value !== null && countDays(dateToValue.value!!) > 0 && budget > BigDecimal(
+                                0
+                            )
                         ) {
                             Text(
                                 text = if (spends!!.isNotEmpty() && !forceChange) {

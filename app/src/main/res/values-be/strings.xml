@@ -48,6 +48,7 @@
         <item quantity="few">%1$s (%2$s дня)</item>
         <item quantity="many">%1$s (%2$s дзён)</item>
     </plurals>
+    <string name="export_to_csv">Выгрузіць у CSV</string>
     <string name="finish_date_not_select">Дата заканчэння не выбрана</string>
     <string name="in_currency_label">У якой валюце лічыць</string>
     <string name="currency_from_list">Сусветная валюта</string>
@@ -139,4 +140,6 @@
     <string name="cancel">Адмяніць</string>
     <string name="accept">Ужыць</string>
     <string name="today">Сёння</string>
+    <string name="export_to_csv_success">Выдаткі экспартаваны</string>
+    <string name="export_to_csv_failed">Не ўдалося экспартаваць марнаванні</string>
 </resources>
