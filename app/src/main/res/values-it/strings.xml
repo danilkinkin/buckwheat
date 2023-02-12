@@ -137,4 +137,5 @@
     <string name="today">Oggi</string>
     <string name="export_to_csv_success">Spesa esportata</string>
     <string name="export_to_csv_failed">Impossibile esportare le spese</string>
+    <string name="add_spent">Aggiungi rifiuti</string>
 </resources>

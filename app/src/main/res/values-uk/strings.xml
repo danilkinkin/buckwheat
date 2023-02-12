@@ -142,4 +142,5 @@
     <string name="today">Сьогодні</string>
     <string name="export_to_csv_success">Витрати експортовані</string>
     <string name="export_to_csv_failed">Не вдалося експортувати витрати</string>
+    <string name="add_spent">Додати витрату</string>
 </resources>

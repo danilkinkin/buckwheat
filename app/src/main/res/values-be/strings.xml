@@ -142,4 +142,5 @@
     <string name="today">Сёння</string>
     <string name="export_to_csv_success">Выдаткі экспартаваны</string>
     <string name="export_to_csv_failed">Не ўдалося экспартаваць марнаванні</string>
+    <string name="add_spent">Дадаць марнаванне</string>
 </resources>

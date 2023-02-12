@@ -138,4 +138,5 @@
     <string name="today">Idag</string>
     <string name="export_to_csv_success">Utgifterna exporteras</string>
     <string name="export_to_csv_failed">Det gick inte att exportera utgifter</string>
+    <string name="add_spent">Lägg till avfall</string>
 </resources>
