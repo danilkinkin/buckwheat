@@ -182,7 +182,7 @@ fun Wallet(
                             text = when (currency?.type) {
                                 CurrencyType.FROM_LIST -> "${Currency.getInstance(
                                     currency!!.value
-                                ).displayName} (${Currency.getInstance(
+                                ).displayName.titleCase()} (${Currency.getInstance(
                                     currency!!.value
                                 ).symbol})"
                                 CurrencyType.CUSTOM -> currency!!.value!!
