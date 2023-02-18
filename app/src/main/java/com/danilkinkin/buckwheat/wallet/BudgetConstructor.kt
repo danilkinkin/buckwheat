@@ -66,13 +66,10 @@ fun BudgetConstructor(
         mutableStateOf(BigDecimal(restBudget))
     }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
-    var showUseBudgetSuggestion by remember {
-        mutableStateOf(
-            budget != spendsViewModel.budget.value!!
-                    && spendsViewModel.budget.value!! != BigDecimal(0)
-        )
-    }
-    var showUseLifetimeSuggestion by remember {
+    var showUseSuggestion by remember {
+        val useBudget = budget != spendsViewModel.budget.value!!
+                && spendsViewModel.budget.value!! != BigDecimal(0)
+
         val length = if (spendsViewModel.finishDate.value !== null) {
             countDays(
                 spendsViewModel.finishDate.value!!,
@@ -83,9 +80,11 @@ fun BudgetConstructor(
         }
         val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
 
+        val useDate = length != 0
+                && (spendsViewModel.finishDate.value == null || !isSameDay(finishDate.time, spendsViewModel.finishDate.value!!.time))
+
         mutableStateOf(
-            length != 0
-                    && (spendsViewModel.finishDate.value == null || !isSameDay(finishDate.time, spendsViewModel.finishDate.value!!.time))
+            useBudget || useDate
         )
     }
 
@@ -94,6 +93,39 @@ fun BudgetConstructor(
     Column {
         val days = if (dateToValue.value != null) countDays(dateToValue.value!!) else 0
 
+        Row(modifier = Modifier.padding(start = 8.dp)) {
+            UseLastSuggestionChip(
+                visible = showUseSuggestion,
+                icon = painterResource(R.drawable.ic_calendar),
+                onClick = {
+                    rawBudget =
+                        if (spendsViewModel.budget.value!! !== BigDecimal(0)) {
+                            tryConvertStringToNumber(spendsViewModel.budget.value!!.toString()).join(
+                                third = false
+                            )
+                        } else {
+                            Triple("", "0", "").join(third = false)
+                        }
+
+                    budget = spendsViewModel.budget.value!!
+
+                    val length = countDays(
+                        spendsViewModel.finishDate.value!!,
+                        spendsViewModel.startDate.value!!,
+                    )
+                    val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
+
+                    dateToValue.value = finishDate
+
+                    onChange(
+                        budget,
+                        finishDate,
+                    )
+
+                    showUseSuggestion = false
+                }
+            )
+        }
         BasicTextField(
             value = rawBudget,
             onValueChange = {
@@ -124,31 +156,6 @@ fun BudgetConstructor(
                     TextRow(
                         icon = painterResource(R.drawable.ic_money),
                         text = stringResource(R.string.label_budget),
-                        endContent = {
-                            UseLastSuggestionChip(
-                                visible = showUseBudgetSuggestion,
-                                icon = painterResource(R.drawable.ic_money),
-                                onClick = {
-                                    rawBudget =
-                                        if (spendsViewModel.budget.value!! !== BigDecimal(0)) {
-                                            tryConvertStringToNumber(spendsViewModel.budget.value!!.toString()).join(
-                                                third = false
-                                            )
-                                        } else {
-                                            Triple("", "0", "").join(third = false)
-                                        }
-
-                                    budget = spendsViewModel.budget.value!!
-
-                                    onChange(
-                                        budget,
-                                        dateToValue.value,
-                                    )
-
-                                    showUseBudgetSuggestion = false
-                                }
-                            )
-                        },
                     )
                     Box(Modifier.padding(start = 56.dp, bottom = 12.dp, end = 16.dp)) {
                         input()
@@ -181,28 +188,6 @@ fun BudgetConstructor(
                     }
                 ))
             },
-            endContent = {
-                UseLastSuggestionChip(
-                    visible = showUseLifetimeSuggestion,
-                    icon = painterResource(R.drawable.ic_calendar),
-                    onClick = {
-                        val length = countDays(
-                            spendsViewModel.finishDate.value!!,
-                            spendsViewModel.startDate.value!!,
-                        )
-                        val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
-
-                        dateToValue.value = finishDate
-
-                        onChange(
-                            budget,
-                            finishDate,
-                        )
-
-                        showUseLifetimeSuggestion = false
-                    }
-                )
-            }
         )
     }
 }
