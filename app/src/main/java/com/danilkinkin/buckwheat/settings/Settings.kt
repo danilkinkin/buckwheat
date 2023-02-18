@@ -39,7 +39,6 @@ fun Settings(onClose: () -> Unit = {}) {
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            Divider()
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
@@ -48,7 +47,6 @@ fun Settings(onClose: () -> Unit = {}) {
                 ThemeSwitcher()
                 LangSwitcher()
                 SendingCrashReport()
-                Divider()
                 TextRow(
                     text = stringResource(R.string.version, BuildConfig.VERSION_NAME),
                 )

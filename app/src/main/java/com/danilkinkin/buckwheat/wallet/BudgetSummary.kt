@@ -20,9 +20,10 @@ fun BudgetSummary(
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
 
     val wholeBudget = spendsViewModel.budget.value!!
-    val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+    val restBudget =
+        (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
-    Column(Modifier.padding(16.dp)) {
+    Column(Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 16.dp)) {
         WholeBudgetCard(
             budget = wholeBudget,
             currency = currency!!,

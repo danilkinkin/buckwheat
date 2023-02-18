@@ -53,7 +53,6 @@ fun CurrencyEditor(
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            Divider()
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())

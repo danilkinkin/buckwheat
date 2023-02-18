@@ -120,7 +120,6 @@ fun Wallet(
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            Divider()
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
@@ -172,7 +171,6 @@ fun Wallet(
                         )
                     }
                 }
-                Divider()
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_currency),
                     text = stringResource(R.string.in_currency_label),
@@ -211,7 +209,6 @@ fun Wallet(
                     ),
                 ) {
                     Column {
-                        Divider()
                         ButtonRow(
                             icon = painterResource(R.drawable.ic_file_download),
                             text = stringResource(R.string.export_to_csv),

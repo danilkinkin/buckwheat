@@ -2,14 +2,17 @@ package com.danilkinkin.buckwheat.wallet
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -18,6 +21,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
@@ -93,39 +97,37 @@ fun BudgetConstructor(
     Column {
         val days = if (dateToValue.value != null) countDays(dateToValue.value!!) else 0
 
-        Row(modifier = Modifier.padding(start = 8.dp)) {
-            UseLastSuggestionChip(
-                visible = showUseSuggestion,
-                icon = painterResource(R.drawable.ic_calendar),
-                onClick = {
-                    rawBudget =
-                        if (spendsViewModel.budget.value!! !== BigDecimal(0)) {
-                            tryConvertStringToNumber(spendsViewModel.budget.value!!.toString()).join(
-                                third = false
-                            )
-                        } else {
-                            Triple("", "0", "").join(third = false)
-                        }
+        UseLastSuggestionChip(
+            visible = showUseSuggestion,
+            icon = painterResource(R.drawable.ic_calendar),
+            onClick = {
+                rawBudget =
+                    if (spendsViewModel.budget.value!! !== BigDecimal(0)) {
+                        tryConvertStringToNumber(spendsViewModel.budget.value!!.toString()).join(
+                            third = false
+                        )
+                    } else {
+                        Triple("", "0", "").join(third = false)
+                    }
 
-                    budget = spendsViewModel.budget.value!!
+                budget = spendsViewModel.budget.value!!
 
-                    val length = countDays(
-                        spendsViewModel.finishDate.value!!,
-                        spendsViewModel.startDate.value!!,
-                    )
-                    val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
+                val length = countDays(
+                    spendsViewModel.finishDate.value!!,
+                    spendsViewModel.startDate.value!!,
+                )
+                val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
 
-                    dateToValue.value = finishDate
+                dateToValue.value = finishDate
 
-                    onChange(
-                        budget,
-                        finishDate,
-                    )
+                onChange(
+                    budget,
+                    finishDate,
+                )
 
-                    showUseSuggestion = false
-                }
-            )
-        }
+                showUseSuggestion = false
+            }
+        )
         BasicTextField(
             value = rawBudget,
             onValueChange = {
@@ -136,8 +138,9 @@ fun BudgetConstructor(
 
                 onChange(budget, dateToValue.value)
             },
-            textStyle = MaterialTheme.typography.displaySmall.copy(
+            textStyle = MaterialTheme.typography.displayLarge.copy(
                 color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
             ),
             visualTransformation = visualTransformationAsCurrency(
                 currency = ExtendCurrency(type = CurrencyType.NONE),
@@ -153,17 +156,17 @@ fun BudgetConstructor(
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { input ->
                 Column {
-                    TextRow(
-                        icon = painterResource(R.drawable.ic_money),
-                        text = stringResource(R.string.label_budget),
-                    )
-                    Box(Modifier.padding(start = 56.dp, bottom = 12.dp, end = 16.dp)) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 48.dp, bottom = 64.dp),
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
                         input()
                     }
                 }
             },
         )
-        Divider()
         ButtonRow(
             icon = painterResource(R.drawable.ic_calendar),
             text = if (days > 0) {
@@ -212,21 +215,23 @@ fun UseLastSuggestionChip(
             animationSpec = tween(durationMillis = 350)
         ),
     ) {
-        SuggestionChip(
-            icon = {
-                Icon(
-                    painter = icon,
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = null,
-                )
-            },
-            label = {
-                Text(text = stringResource(R.string.use_last))
-            },
-            onClick = {
-                onClick()
-            }
-        )
+        Row(modifier = Modifier.padding(start = 8.dp)) {
+            SuggestionChip(
+                icon = {
+                    Icon(
+                        painter = icon,
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = null,
+                    )
+                },
+                label = {
+                    Text(text = stringResource(R.string.use_last))
+                },
+                onClick = {
+                    onClick()
+                }
+            )
+        }
     }
 }
 

@@ -81,7 +81,6 @@ fun ThemeSwitcherDialog(onClose: () -> Unit) {
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            Divider()
             CheckedRow(
                 checked = context.appTheme == ThemeMode.LIGHT,
                 onValueChange = { handleSwitchTheme(ThemeMode.LIGHT) },
