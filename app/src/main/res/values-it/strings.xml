@@ -45,7 +45,7 @@
     </plurals>
     <string name="export_to_csv">Carica in CSV</string>
     <string name="finish_date_not_select">Nessuna data di fine selezionata </string>
-    <string name="in_currency_label">Quale valuta da usare</string>
+    <string name="in_currency_label">Valuta  (%1$s)</string>
     <string name="currency_from_list">Valuta mondiale</string>
     <string name="currency_custom">Valuta personalizzata</string>
     <string name="currency_none">Nessuna valuta</string>
@@ -116,7 +116,7 @@
     <string name="overspending_after_not_go_out_budget">Non sei andato/a oltre il budget </string>
     <string name="overspending_after_few_times_out_budget">Dopo quello, hai avuto %1$s dei %2$s rimanenti del budget</string>
     <string name="overspending_after_many_times_out_budget">Dopo solo %1$s dei %2$s rimanenti, eri nel budget</string>
-    <string name="overspending_after_all_times_out_budget">Dopp tutti dei %1$s rimanenti non hai superato il budget</string>
+    <string name="overspending_after_all_times_out_budget">in_currency_label</string>
 
     <!-- Onboarding -->
     <string name="hello">Ciao!</string>
