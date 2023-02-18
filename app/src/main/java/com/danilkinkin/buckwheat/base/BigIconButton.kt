@@ -48,7 +48,7 @@ fun BigIconButton(
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            modifier = Modifier.size(36.dp),
+            modifier = Modifier.size(32.dp),
             painter = icon,
             tint = if (enabled) contentColor else disabledContentColor,
             contentDescription = contentDescription,
