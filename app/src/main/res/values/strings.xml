@@ -45,7 +45,7 @@
     </plurals>
     <string name="export_to_csv">Export to CSV</string>
     <string name="finish_date_not_select">No finish date selected</string>
-    <string name="in_currency_label">What currency to count</string>
+    <string name="in_currency_label">Currency (%1$s)</string>
     <string name="currency_from_list">World currency</string>
     <string name="currency_custom">Custom currency</string>
     <string name="currency_none">No currency</string>

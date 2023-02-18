@@ -27,10 +27,7 @@ import com.danilkinkin.buckwheat.onboarding.Onboarding
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.*
-import com.danilkinkin.buckwheat.wallet.FINISH_DATE_SELECTOR_SHEET
-import com.danilkinkin.buckwheat.wallet.FinishDateSelector
-import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
-import com.danilkinkin.buckwheat.wallet.Wallet
+import com.danilkinkin.buckwheat.wallet.*
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -54,6 +51,20 @@ fun BottomSheets(
     ) { state ->
         Wallet(
             forceChange = finishPeriod || requireSetBudget,
+            windowSizeClass = windowSizeClass,
+            onClose = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            }
+        )
+    }
+
+    BottomSheetWrapper(
+        name = CURRENCY_EDITOR,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
+        CurrencyEditor(
             windowSizeClass = windowSizeClass,
             onClose = {
                 coroutineScope.launch {
