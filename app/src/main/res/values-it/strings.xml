@@ -45,7 +45,7 @@
     </plurals>
     <string name="export_to_csv">Carica in CSV</string>
     <string name="finish_date_not_select">Nessuna data di fine selezionata </string>
-    <string name="in_currency_label">Valuta  (%1$s)</string>
+    <string name="in_currency_label">Valuta</string>
     <string name="currency_from_list">Valuta mondiale</string>
     <string name="currency_custom">Valuta personalizzata</string>
     <string name="currency_none">Nessuna valuta</string>

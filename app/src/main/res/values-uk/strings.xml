@@ -50,7 +50,7 @@
     </plurals>
     <string name="export_to_csv">Вивантажити у CSV</string>
     <string name="finish_date_not_select">Дату закінчення не вибрано</string>
-    <string name="in_currency_label">Валюті  (%1$s)</string>
+    <string name="in_currency_label">"Валюті "</string>
     <string name="currency_from_list">Світова валюта</string>
     <string name="currency_custom">Своя валюта</string>
     <string name="currency_none">Без валюти</string>

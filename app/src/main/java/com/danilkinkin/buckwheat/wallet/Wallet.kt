@@ -175,18 +175,24 @@ fun Wallet(
                 Divider()
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_currency),
-                    text = stringResource(
-                        R.string.in_currency_label,
-                        when (currency?.type) {
-                            CurrencyType.FROM_LIST -> Currency.getInstance(
-                                currency!!.value
-                            ).symbol
-                            CurrencyType.CUSTOM -> currency!!.value!!
-                            else -> "None"
-                        }
-                    ),
+                    text = stringResource(R.string.in_currency_label),
                     onClick = {
                         appViewModel.openSheet(PathState(CURRENCY_EDITOR))
+                    },
+                    endContent = {
+                        Text(
+                            text = when (currency?.type) {
+                                CurrencyType.FROM_LIST -> "${Currency.getInstance(
+                                    currency!!.value
+                                ).displayName} (${Currency.getInstance(
+                                    currency!!.value
+                                ).symbol})"
+                                CurrencyType.CUSTOM -> currency!!.value!!
+                                else -> ""
+                            },
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = LocalContentColor.current.copy(alpha = 0.6f),
+                        )
                     }
                 )
                 AnimatedVisibility(
