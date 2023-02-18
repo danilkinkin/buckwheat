@@ -44,7 +44,7 @@ fun ThemeSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
                     ThemeMode.NIGHT -> stringResource(R.string.theme_dark)
                     ThemeMode.SYSTEM -> stringResource(R.string.theme_system)
                 },
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 color = LocalContentColor.current.copy(alpha = 0.6f),
             )
         }
