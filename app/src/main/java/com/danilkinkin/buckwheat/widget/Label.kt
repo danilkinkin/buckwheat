@@ -11,7 +11,7 @@ import com.danilkinkin.buckwheat.R
 
 @Composable
 fun Label(modifier: GlanceModifier = GlanceModifier, text: String) {
-    val color = R.color.material_dynamic_primary40
+    val color = R.color.material_dynamic_secondary70
 
     Text(
         modifier = modifier,

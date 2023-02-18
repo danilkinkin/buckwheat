@@ -55,7 +55,7 @@ data class HarmonizedColorPalette(
     val onSurfaceVariant: Color,
 )
 
-private fun lightFromCorePalette(color: Color): HarmonizedColorPalette {
+fun lightFromCorePalette(color: Color): HarmonizedColorPalette {
     val contentOfPalette = CorePalette.contentOf(color.toArgb())
     val ofPalette = CorePalette.of(color.toArgb())
 

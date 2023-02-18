@@ -27,14 +27,14 @@ fun AddSpentButton() {
         modifier = GlanceModifier.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
+        /* Text(
             text = context.resources.getString(R.string.add_spent), style = TextStyle(
                 color = ColorProvider(color),
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
             )
         )
-        Spacer(modifier = GlanceModifier.width(8.dp))
+        Spacer(modifier = GlanceModifier.width(8.dp)) */
 
         val drawable = ResourcesCompat.getDrawable(
             context.resources,

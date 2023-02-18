@@ -3,28 +3,70 @@ package com.danilkinkin.buckwheat
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.graphics.*
+import android.graphics.Paint.Align
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.glance.*
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.*
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.unit.ColorProvider
 import androidx.glance.layout.*
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
-import com.danilkinkin.buckwheat.util.ExtendCurrency
-import com.danilkinkin.buckwheat.util.prettyCandyCanes
-import com.danilkinkin.buckwheat.widget.AddSpentButton
-import com.danilkinkin.buckwheat.widget.Label
+import com.danilkinkin.buckwheat.ui.colorBad
+import com.danilkinkin.buckwheat.ui.colorGood
+import com.danilkinkin.buckwheat.ui.colorNotGood
+import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
+import java.util.*
 
+
+val Context.isNightMode: Boolean
+    get() =
+        resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+                Configuration.UI_MODE_NIGHT_YES
+
+data class HarmonizedColorProviderPalette(
+    val main: ColorProvider,
+    val onMain: ColorProvider,
+    val container: ColorProvider,
+    val onContainer: ColorProvider,
+    val surface: ColorProvider,
+    val onSurface: ColorProvider,
+    val surfaceVariant: ColorProvider,
+    val onSurfaceVariant: ColorProvider,
+)
+
+fun buildUpdate(context: Context, time: String): Bitmap {
+    val myBitmap: Bitmap = Bitmap.createBitmap(160, 84, Bitmap.Config.ARGB_4444)
+    val myCanvas = Canvas(myBitmap)
+    val paint = Paint()
+    val clock: Typeface = ResourcesCompat.getFont(context, R.font.manrope_bold)!!
+    paint.isAntiAlias = true
+    paint.isSubpixelText = true
+    paint.typeface = clock
+    paint.style = Paint.Style.FILL
+    paint.color = if (context.isNightMode) Color.Black.toArgb() else Color.White.toArgb()
+    paint.textSize = 65F
+    paint.textAlign = Align.CENTER
+    myCanvas.drawText(time, 80F, 60F, paint)
+    return myBitmap
+}
 
 class AppWidget : GlanceAppWidget() {
     companion object {
@@ -33,7 +75,7 @@ class AppWidget : GlanceAppWidget() {
         private val smallMode = DpSize(200.dp, 100.dp)
         private val mediumMode = DpSize(200.dp, 130.dp)
         private val largeMode = DpSize(200.dp, 190.dp)
-        private val hugeMode = DpSize(200.dp, 320.dp)
+        private val hugeMode = DpSize(200.dp, 280.dp)
         private val superHugeMode = DpSize(200.dp, 460.dp)
     }
 
@@ -50,32 +92,93 @@ class AppWidget : GlanceAppWidget() {
         val intent = Intent(context, MainActivity::class.java)
         //actionStartActivity(intent)
 
-        val isTiny = size == superTinyMode || size == tinyMode
-        val isHugeAndUpSize = size == hugeMode || size == superHugeMode
+        val harmonizedColor = harmonize(
+            combineColors(
+                listOf(
+                    colorBad,
+                    colorNotGood,
+                    colorGood,
+                ),
+                0.3f,
+            ),
+            Color(ContextCompat.getColor(context, R.color.material_dynamic_primary40))
+        )
 
-        val verticalPadding = if (size == superTinyMode) 0.dp else 12.dp
+        val dayPalette = toPalette(harmonizedColor, darkTheme = false)
+        val nightPalette = toPalette(harmonizedColor, darkTheme = true)
 
-        Column(
-            modifier = GlanceModifier.clickable(actionRunCallback<AddSpendActionCallback>())
-                .fillMaxSize().background(R.color.material_dynamic_secondary95).cornerRadius(24.dp)
+        val harmonizedPalette = HarmonizedColorProviderPalette(
+            main = ColorProvider(dayPalette.main, nightPalette.main),
+            onMain = ColorProvider(dayPalette.onMain, nightPalette.onMain),
+            container = ColorProvider(dayPalette.container, nightPalette.container),
+            onContainer = ColorProvider(dayPalette.onContainer, nightPalette.onContainer),
+            surface = ColorProvider(dayPalette.surface, nightPalette.surface),
+            onSurface = ColorProvider(dayPalette.onSurface, nightPalette.onSurface),
+            surfaceVariant = ColorProvider(dayPalette.surfaceVariant, nightPalette.surfaceVariant),
+            onSurfaceVariant = ColorProvider(
+                dayPalette.onSurfaceVariant,
+                nightPalette.onSurfaceVariant
+            ),
+        )
+
+        Box(
+            modifier = GlanceModifier.appWidgetBackground().cornerRadius(24.dp).fillMaxSize()
+                .background(harmonizedPalette.container)
+                .clickable(actionRunCallback<AddSpendActionCallback>())
         ) {
-            Box(
-                modifier = GlanceModifier.fillMaxWidth()
-                    .then(if (isHugeAndUpSize) GlanceModifier.wrapContentHeight() else GlanceModifier.fillMaxHeight())
+            Row(
+                modifier = GlanceModifier
+
             ) {
+                Box(
+                    modifier = GlanceModifier.fillMaxHeight().width(60.dp)
+                        .background(harmonizedPalette.main)
+                ) {}
+
+                val waveDrawable = ResourcesCompat.getDrawable(
+                    context.resources,
+                    R.drawable.wave,
+                    null,
+                )!!
+
+                val waveColor = harmonizedPalette.main.getColor(context).toArgb()
+                waveDrawable.colorFilter = LightingColorFilter(waveColor, waveColor)
+
+                Box(
+                    modifier = GlanceModifier.fillMaxHeight().background(harmonizedPalette.main)
+                        .background(
+                            ImageProvider(waveDrawable.toBitmap()), contentScale = ContentScale.Crop
+                        )
+                ) {
+
+                }
+            }
+            Column(modifier = GlanceModifier.fillMaxSize()) {
+                Text(
+                    modifier = GlanceModifier.padding(
+                        24.dp, 16.dp, 24.dp, 0.dp
+                    ),
+                    text = context.resources.getString(R.string.budget_for_today),
+                    style = TextStyle(
+                        color = ColorProvider(
+                            dayPalette.onContainer.copy(alpha = 0.6f),
+                            nightPalette.onContainer.copy(alpha = 0.6f)
+                        ),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.sp,
+                    )
+                )
                 Column(
-                    modifier = GlanceModifier.fillMaxWidth()
-                        .then(if (isHugeAndUpSize) GlanceModifier.wrapContentHeight() else GlanceModifier.fillMaxHeight())
-                        .padding(12.dp, 0.dp),
-                    verticalAlignment = if (isTiny) Alignment.CenterVertically else Alignment.Top
+                    modifier = GlanceModifier.defaultWeight().padding(bottom = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        modifier = GlanceModifier.padding(8.dp, verticalPadding, 8.dp, 0.dp),
+                        modifier = GlanceModifier.padding(24.dp, 0.dp),
                         text = prettyCandyCanes(
-                            BigDecimal("10000"), ExtendCurrency.getInstance("USD")
+                            BigDecimal("52130"), ExtendCurrency.getInstance("USD")
                         ),
                         style = TextStyle(
-                            color = ColorProvider(R.color.material_dynamic_primary40),
+                            color = harmonizedPalette.onContainer,
                             fontWeight = FontWeight.Bold,
                             fontSize = when (size) {
                                 superHugeMode -> 56.sp
@@ -84,67 +187,41 @@ class AppWidget : GlanceAppWidget() {
                             },
                         )
                     )
-                    Label(
-                        modifier = GlanceModifier.padding(8.dp, 0.dp, 8.dp, verticalPadding + 6.dp),
-                        text = context.resources.getString(R.string.budget_for_today),
-                    )
-                    if (size == largeMode || isHugeAndUpSize) {
-                        Text(
-                            modifier = GlanceModifier.padding(8.dp, verticalPadding, 8.dp, 0.dp),
-                            text = prettyCandyCanes(
-                                BigDecimal("698"), ExtendCurrency.getInstance("USD")
-                            ),
-                            style = TextStyle(
-                                color = ColorProvider(R.color.material_dynamic_secondary20),
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 36.sp,
-                            )
-                        )
-                        Label(
-                            modifier = GlanceModifier.padding(
-                                8.dp, 0.dp, 8.dp, verticalPadding + 6.dp
-                            ),
-                            text = context.resources.getString(R.string.today),
-                        )
-                    }
-                }
-                if (!isTiny) {
-                    Column(
-                        modifier = if (!isHugeAndUpSize) GlanceModifier.fillMaxSize() else GlanceModifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.End,
-                        verticalAlignment = Alignment.Bottom,
-                    ) {
-                        AddSpentButton()
-                    }
                 }
             }
-            if (isHugeAndUpSize) {
-                Column(
-                    modifier = GlanceModifier.fillMaxSize().padding(8.dp, 0.dp, 8.dp, 8.dp)
+            Column(
+                modifier = GlanceModifier.fillMaxSize(),
+                horizontalAlignment = Alignment.End,
+                verticalAlignment = Alignment.Bottom,
+            ) {
+                Row(
+                    modifier = GlanceModifier.padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Column(
-                        modifier = GlanceModifier
-                            .then(if (size == superHugeMode) GlanceModifier.fillMaxWidth().height(120.dp) else GlanceModifier.fillMaxSize())
-                            .cornerRadius(20.dp)
-                            .background(R.color.material_dynamic_secondary90)
-                    ) {
-                        Text("History")
-                    }
+                    val drawable = ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.ic_add,
+                        null,
+                    )!!
 
-                    if (size == superHugeMode) {
-                        Spacer(GlanceModifier.height(8.dp))
-                        Column(
-                            modifier = GlanceModifier
-                                .then(if (size == superHugeMode) GlanceModifier.fillMaxWidth().defaultWeight() else GlanceModifier.fillMaxSize())
-                                .cornerRadius(20.dp)
-                                .background(R.color.material_dynamic_secondary90)
-                        ) {
-                            Text("History")
-                        }
-                    }
+                    val iconColor = harmonizedPalette.onContainer.getColor(context).toArgb()
+                    drawable.colorFilter = LightingColorFilter(iconColor, iconColor)
+
+                    Image(
+                        provider = ImageProvider(buildUpdate(context, "TEST 1234")),
+                        contentDescription = null,
+                    )
+
+                    Image(
+                        modifier = GlanceModifier.size(24.dp),
+                        provider = ImageProvider(drawable.toBitmap()),
+                        contentDescription = null,
+                    )
                 }
             }
         }
+
+
     }
 }
 
