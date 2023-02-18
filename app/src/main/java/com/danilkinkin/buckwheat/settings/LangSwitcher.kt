@@ -106,7 +106,6 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            Divider()
             CheckedRow(
                 text = stringResource(R.string.locale_system),
                 checked = overrideLocale === null,
