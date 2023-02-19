@@ -11,6 +11,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -37,6 +39,7 @@ import java.util.*
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BudgetConstructor(
+    forceChange: Boolean = false,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onChange: (budget: BigDecimal, finishDate: Date?) -> Unit = { _, _ -> },
@@ -126,6 +129,9 @@ fun BudgetConstructor(
                 showUseSuggestion = false
             }
         )
+
+        val focusRequester = remember { FocusRequester() }
+
         BasicTextField(
             value = rawBudget,
             onValueChange = {
@@ -151,6 +157,7 @@ fun BudgetConstructor(
             keyboardActions = KeyboardActions(
                 onDone = { keyboardController?.hide() }
             ),
+            modifier = Modifier.focusRequester(focusRequester),
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { input ->
                 Column {
@@ -165,6 +172,11 @@ fun BudgetConstructor(
                 }
             },
         )
+
+        LaunchedEffect(Unit) {
+            if (forceChange) focusRequester.requestFocus()
+        }
+
         ButtonRow(
             icon = painterResource(R.drawable.ic_calendar),
             text = if (days > 0) {

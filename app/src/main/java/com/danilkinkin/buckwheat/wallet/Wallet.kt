@@ -88,7 +88,7 @@ fun Wallet(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                if (isEdit) {
+                if (!forceChange && isEdit) {
                     IconButton(
                         onClick = { isEdit = false },
                     ) {
@@ -151,6 +151,7 @@ fun Wallet(
                 ) { targetIsEdit ->
                     if (targetIsEdit) {
                         BudgetConstructor(
+                            forceChange = forceChange,
                             onChange = { newBudget, finishDate ->
                                 budget = newBudget
                                 dateToValue.value = finishDate
