@@ -15,10 +15,11 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
 @Composable
 fun CheckedRow(
+    modifier: Modifier = Modifier,
     checked: Boolean,
     onValueChange: (isChecked: Boolean) -> Unit,
     text: String,
-    modifier: Modifier = Modifier,
+    endContent: @Composable (() -> Unit)? = null,
 ) {
     TextRow(
         modifier = modifier
@@ -34,6 +35,7 @@ fun CheckedRow(
             fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         ),
+        endContent = endContent,
     )
 }
 
