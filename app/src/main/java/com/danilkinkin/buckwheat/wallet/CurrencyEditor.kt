@@ -3,6 +3,7 @@ package com.danilkinkin.buckwheat.wallet
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,6 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.Divider
+import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.CurrencyType
@@ -58,6 +60,18 @@ fun CurrencyEditor(
                     .verticalScroll(rememberScrollState())
                     .padding(bottom = navigationBarHeight)
             ) {
+                Text(
+                    text = stringResource(R.string.select_currency_description),
+                    style = MaterialTheme.typography.bodyMedium
+                        .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
+                    softWrap = true,
+                    modifier = Modifier
+                        .padding(
+                            start = 24.dp,
+                            end = 24.dp,
+                            bottom = 16.dp,
+                        )
+                )
                 CheckedRow(
                     checked = currency.type === CurrencyType.FROM_LIST,
                     onValueChange = { openCurrencyChooserDialog.value = true },
