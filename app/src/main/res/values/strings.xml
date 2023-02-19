@@ -149,4 +149,5 @@
     <string name="method_split_to_rest_days_description">The restless residue will be distributed on the remaining days</string>
     <string name="method_add_to_current_day_title">Add to the current daily budget</string>
     <string name="method_add_to_current_day_description">The restless residue will be added to the current daily budget</string>
+    <string name="spent_budget">Spent</string>
 </resources>

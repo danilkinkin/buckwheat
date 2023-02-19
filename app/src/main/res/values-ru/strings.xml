@@ -153,4 +153,5 @@
     <string name="method_split_to_rest_days_description">Не потраченный остаток будет распределен на оставшееся дни</string>
     <string name="method_add_to_current_day_title">Добавлять к текущему дневному бюджету</string>
     <string name="method_add_to_current_day_description">Не потраченный остаток будет добавлен к текущему дневному бюджету</string>
+    <string name="spent_budget">Потрачено</string>
 </resources>

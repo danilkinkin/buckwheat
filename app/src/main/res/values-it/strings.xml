@@ -149,4 +149,5 @@
     <string name="method_split_to_rest_days_description">Il residuo irrequieto sarà distribuito nei giorni rimanenti</string>
     <string name="method_add_to_current_day_title">Aggiungi al budget giornaliero attuale</string>
     <string name="method_add_to_current_day_description">Il residuo irrequieto verrà aggiunto al budget giornaliero attuale</string>
+    <string name="spent_budget">Speso</string>
 </resources>

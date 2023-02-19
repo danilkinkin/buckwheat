@@ -150,4 +150,5 @@
     <string name="method_split_to_rest_days_description">Den rastlösa återstoden kommer att fördelas på de återstående dagarna</string>
     <string name="method_add_to_current_day_title">Lägg till den nuvarande dagliga budgeten</string>
     <string name="method_add_to_current_day_description">Den rastlösa återstoden kommer att läggas till den nuvarande dagliga budgeten</string>
+    <string name="spent_budget">Spenderat</string>
 </resources>
