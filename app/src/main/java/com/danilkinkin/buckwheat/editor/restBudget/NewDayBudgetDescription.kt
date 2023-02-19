@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.editor.restBudget
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,14 +37,19 @@ fun NewDayBudgetDescription(onClose: () -> Unit = {}) {
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-
             Text(
-                modifier = Modifier.padding(horizontal = 24.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(
+                        start = 24.dp,
+                        end = 24.dp,
+                        bottom = 16.dp,
+                    )
+                    .fillMaxWidth(),
                 text = stringResource(R.string.new_daily_budget_description),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium
+                    .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
             )
-            
+
             Spacer(modifier = Modifier.height(32.dp))
         }
     }
