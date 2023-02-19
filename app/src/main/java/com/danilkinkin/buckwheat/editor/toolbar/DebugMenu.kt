@@ -44,7 +44,6 @@ fun DebugMenu(
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            Divider()
             ButtonRow(
                 text = "Open daily summary screen",
                 onClick = {
