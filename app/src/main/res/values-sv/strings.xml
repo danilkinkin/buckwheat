@@ -52,6 +52,7 @@
     <string name="currency_none">Ingen valuta</string>
     <string name="per_day">%1$s per dag</string>
     <string name="select_currency_title">Välj valuta</string>
+    <string name="select_currency_description">Valutan påverkar inte beräkningarna på något sätt, det är bara en beteckning för enklare förståelse av siffror.</string>
     <string name="search_currency_placeholder">Valutakod eller namn</string>
     <string name="currency_not_found">Inga matchande valutor</string>
     <string name="currency_custom_title">Ange din valuta</string>

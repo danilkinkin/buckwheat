@@ -56,6 +56,7 @@
     <string name="currency_none">Без валюти</string>
     <string name="per_day">%1$s на день</string>
     <string name="select_currency_title">Виберіть валюту</string>
+    <string name="select_currency_description">Валюта ніяк не впливає на розрахунки, це просто позначення для легшого усвідомлення чисел</string>
     <string name="search_currency_placeholder">Код валюти або назва</string>
     <string name="currency_not_found">Немає відповідних валют</string>
     <string name="currency_custom_title">Вкажіть свою валюту</string>

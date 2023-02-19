@@ -58,6 +58,7 @@
     <string name="done">Fatto</string>
     <string name="change_budget">Cambia budget</string>
     <string name="select_currency_title">Seleziona valuta</string>
+    <string name="select_currency_description">La valuta non influisce in alcun modo sui calcoli, è solo una designazione per una più facile comprensione dei numeri.</string>
     <string name="search_currency_placeholder">Codice o nome valuta</string>
     <string name="currency_not_found">Nessuna valuta corrispondente</string>
     <string name="currency_custom_title">Inserisci la tua valuta</string>

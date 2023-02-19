@@ -138,4 +138,5 @@
     <string name="export_to_csv_success">Spending exported</string>
     <string name="export_to_csv_failed">Failed to export expenses</string>
     <string name="add_spent">Add spent</string>
+    <string name="select_currency_description">The currency does not affect the calculations in any way, it is just a designation for easier understanding of numbers.</string>
 </resources>
