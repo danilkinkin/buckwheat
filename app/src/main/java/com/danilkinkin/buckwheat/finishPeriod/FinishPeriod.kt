@@ -36,8 +36,6 @@ fun FinishPeriod(
 ) {
     val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
-    val restBudget =
-        (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
     val scrollState = rememberScrollState()
 
     Surface(Modifier.height(IntrinsicSize.Min)) {
