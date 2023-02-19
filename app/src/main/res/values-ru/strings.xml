@@ -70,7 +70,7 @@
     <string name="confirm_change_budget_title">Изменение бюджета</string>
     <string name="confirm_change_budget_description">Обратите внимание, что при изменении бюджета, текущая история трат удалится и отсчет начнется сначала</string>
     <string name="confirm_change_budget">Изменить бюджет</string>
-    <string name="use_last">Предыдущий</string>
+    <string name="use_last">Предыдущие значения</string>
 
     <!-- Settings -->
     <string name="settings_title">Настройки</string>
