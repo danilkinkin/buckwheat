@@ -42,7 +42,6 @@ fun BugReporter(onClose: () -> Unit = {}) {
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            Divider()
             ButtonRow(
                 icon = painterResource(R.drawable.ic_github),
                 text = stringResource(R.string.report_via_github),
