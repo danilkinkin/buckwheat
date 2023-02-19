@@ -17,7 +17,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
 import javax.inject.Inject
-
+import kotlin.math.abs
 
 
 @HiltViewModel
@@ -27,6 +27,7 @@ class SpendsViewModel @Inject constructor(
 ) : ViewModel() {
     enum class Stage { IDLE, CREATING_SPENT, EDIT_SPENT, COMMITTING_SPENT }
     enum class Action { PUT_NUMBER, SET_DOT, REMOVE_LAST }
+    enum class RecalcRestBudgetMethod { REST, ADD_TODAY, ASK }
 
     private val spentDao = db.spentDao()
     private val storageDao = db.storageDao()
@@ -60,6 +61,14 @@ class SpendsViewModel @Inject constructor(
             storageDao.get("spentFromDailyBudget").value.toBigDecimal()
         } catch (e: Exception) {
             0.0.toBigDecimal()
+        }
+    )
+
+    var recalcRestBudgetMethod: MutableLiveData<RecalcRestBudgetMethod> = MutableLiveData(
+        try {
+            RecalcRestBudgetMethod.valueOf(storageDao.get("recalcRestBudgetMethod").value)
+        } catch (e: Exception) {
+            RecalcRestBudgetMethod.ASK
         }
     )
 
@@ -109,7 +118,11 @@ class SpendsViewModel @Inject constructor(
             if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value
                     ?: BigDecimal(0)) > BigDecimal(0))
             ) {
-                requireReCalcBudget.value = true
+                when (recalcRestBudgetMethod.value) {
+                    RecalcRestBudgetMethod.ASK, null -> requireReCalcBudget.value = true
+                    RecalcRestBudgetMethod.REST -> reCalcDailyBudget(calcBudgetPerDaySplit())
+                    RecalcRestBudgetMethod.ADD_TODAY -> reCalcDailyBudget(calcBudgetPerDay() + calcRequireDistributeBudget())
+                }
             } else {
                 reCalcDailyBudget(calcBudgetPerDaySplit())
             }
@@ -173,6 +186,12 @@ class SpendsViewModel @Inject constructor(
         this.currency.value = currency
     }
 
+    fun changeRecalcRestBudgetMethod(method: RecalcRestBudgetMethod) {
+        storageDao.set(Storage("recalcRestBudgetMethod", method.toString()))
+
+        this.recalcRestBudgetMethod.value = method
+    }
+
     fun changeBudget(budget: BigDecimal, finishDate: Date) {
         storageDao.set(Storage("budget", budget.toString()))
         this.budget.value = budget
@@ -224,11 +243,42 @@ class SpendsViewModel @Inject constructor(
             splitBudget -= currentSpent
         }
 
+
+
+
+        val budgetPerDayAdd = (restBudget / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
+
+
+
         return (splitBudget / restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)))
             .setScale(
                 0,
                 RoundingMode.FLOOR
             )
+    }
+    fun calcBudgetPerDay(
+        excludeCurrentDay: Boolean = false,
+    ): BigDecimal {
+        val restDays = countDays(finishDate.value!!) - if (excludeCurrentDay) 1 else 0
+        val restBudget = (budget.value!! - spent.value!!) - dailyBudget.value!!
+
+        return (restBudget / restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)))
+            .setScale(
+                0,
+                RoundingMode.FLOOR
+            )
+    }
+
+    fun calcRequireDistributeBudget(): BigDecimal {
+        val restDays = countDays(finishDate.value!!)
+        val skippedDays = abs(countDays(lastReCalcBudgetDate!!))
+
+        val restBudget =
+            (budget.value!! - spent.value!!) - dailyBudget.value!!
+        val perDayBudget = restBudget / (restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal()
+
+        return perDayBudget * (skippedDays - 1).coerceAtLeast(0)
+            .toBigDecimal() + dailyBudget.value!! - spentFromDailyBudget.value!!
     }
 
     fun reCalcDailyBudget(dailyBudget: BigDecimal) {

@@ -143,4 +143,14 @@
     <string name="export_to_csv_success">Траты экспортированы</string>
     <string name="export_to_csv_failed">Не удалось экспортировать траты</string>
     <string name="add_spent">Добавить трату</string>
+    <string name="remember_choice_reacalc_budget_description">Позже можно поменять в кошельке</string>
+    <string name="remember_choice">Запомнить выбор</string>
+    <string name="rest_label">Остаток</string>
+    <string name="choose_recalc_budget_method_label">Выберете метод распределения остатка</string>
+    <string name="choose_recalc_budget_method_description">Вы можете выбрать как распределять остаток бюджета по истечению дня. \n\nНапример, у вас бюджет на день 500, вчера вы потратили 400, сегодня вы можете либо распределить 100 на оставшиеся дни, либо потратить сегодня 600 (500 + 100)</string>
+    <string name="always_ask">Всегда спрашивать</string>
+    <string name="method_split_to_rest_days_title">Распределять на оставшиеся дни</string>
+    <string name="method_split_to_rest_days_description">Не потраченный остаток будет распределен на оставшееся дни</string>
+    <string name="method_add_to_current_day_title">Добавлять к текущему дневному бюджету</string>
+    <string name="method_add_to_current_day_description">Не потраченный остаток будет добавлен к текущему дневному бюджету</string>
 </resources>

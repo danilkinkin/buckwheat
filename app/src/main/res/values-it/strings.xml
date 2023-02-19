@@ -139,4 +139,14 @@
     <string name="export_to_csv_success">Spesa esportata</string>
     <string name="export_to_csv_failed">Impossibile esportare le spese</string>
     <string name="add_spent">Aggiungi rifiuti</string>
+    <string name="remember_choice_reacalc_budget_description">Più tardi puoi cambiare nel portafoglio</string>
+    <string name="remember_choice">Ricorda la scelta</string>
+    <string name="rest_label">Resto</string>
+    <string name="choose_recalc_budget_method_label">Scegli un metodo di distribuzione dei residui</string>
+    <string name="choose_recalc_budget_method_description">Puoi scegliere come distribuire il saldo del budget dopo la giornata. \n\nAd esempio, hai un budget per 500 giorni, ieri hai speso 400, oggi puoi distribuire 100 nei giorni rimanenti o spendere 600 (500 + 100) oggi</string>
+    <string name="always_ask">Chiedi sempre</string>
+    <string name="method_split_to_rest_days_title">Distribuire</string>
+    <string name="method_split_to_rest_days_description">Il residuo irrequieto sarà distribuito nei giorni rimanenti</string>
+    <string name="method_add_to_current_day_title">Aggiungi al budget giornaliero attuale</string>
+    <string name="method_add_to_current_day_description">Il residuo irrequieto verrà aggiunto al budget giornaliero attuale</string>
 </resources>

@@ -61,6 +61,20 @@ fun BottomSheets(
     }
 
     BottomSheetWrapper(
+        name = DEFAULT_RECALC_BUDGET_CHOOSER,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
+        DefaultRecalcBudgetChooser(
+            windowSizeClass = windowSizeClass,
+            onClose = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            }
+        )
+    }
+
+    BottomSheetWrapper(
         name = CURRENCY_EDITOR,
         windowSizeClass = windowSizeClass,
     ) { state ->
