@@ -81,12 +81,27 @@ fun Wallet(
                 0
             }
 
-            Box(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
-                contentAlignment = Alignment.Center
+                    .padding(vertical = 8.dp, horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
+                if (isEdit) {
+                    IconButton(
+                        onClick = { isEdit = false },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_arrow_back),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                } else {
+                    Spacer(Modifier.size(48.dp))
+                }
+                Spacer(Modifier.weight(1F))
                 Text(
                     text = if (isChange || isEdit) {
                         stringResource(R.string.wallet_edit_title)
@@ -95,6 +110,8 @@ fun Wallet(
                     },
                     style = MaterialTheme.typography.titleLarge,
                 )
+                Spacer(Modifier.weight(1F))
+                Spacer(Modifier.size(48.dp))
             }
             Column(
                 modifier = Modifier
