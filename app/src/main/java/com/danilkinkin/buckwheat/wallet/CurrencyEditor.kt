@@ -22,6 +22,7 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.CurrencyType
 import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.util.titleCase
 import java.util.*
 
 const val CURRENCY_EDITOR = "currencyEditor"
@@ -75,24 +76,42 @@ fun CurrencyEditor(
                 CheckedRow(
                     checked = currency.type === CurrencyType.FROM_LIST,
                     onValueChange = { openCurrencyChooserDialog.value = true },
-                    text = if (currency.type !== CurrencyType.FROM_LIST) {
-                        stringResource(R.string.currency_from_list)
-                    } else {
-                        "${stringResource(R.string.currency_from_list)} (${
-                            Currency.getInstance(
-                                currency.value
-                            ).symbol
-                        })"
-                    },
+                    text = stringResource(R.string.currency_from_list),
+                    endContent = {
+                        Text(
+                            text = if (currency.type === CurrencyType.FROM_LIST) {
+                                "${
+                                    Currency.getInstance(
+                                        currency.value
+                                    ).displayName.titleCase()
+                                } (${
+                                    Currency.getInstance(
+                                        currency.value
+                                    ).symbol
+                                })"
+                            } else {
+                                ""
+                            },
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = LocalContentColor.current.copy(alpha = 0.6f),
+                        )
+                    }
                 )
                 CheckedRow(
                     checked = currency.type === CurrencyType.CUSTOM,
                     onValueChange = { openCustomCurrencyEditorDialog.value = true },
-                    text = if (currency.type !== CurrencyType.CUSTOM) {
-                        stringResource(R.string.currency_custom)
-                    } else {
-                        "${stringResource(R.string.currency_custom)} (${currency.value!!})"
-                    },
+                    text = stringResource(R.string.currency_custom),
+                    endContent = {
+                        Text(
+                            text = if (currency.type === CurrencyType.CUSTOM) {
+                                currency.value!!
+                            } else {
+                                ""
+                            },
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = LocalContentColor.current.copy(alpha = 0.6f),
+                        )
+                    }
                 )
                 CheckedRow(
                     checked = currency.type === CurrencyType.NONE,
