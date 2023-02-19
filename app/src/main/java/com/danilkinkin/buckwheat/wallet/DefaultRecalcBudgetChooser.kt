@@ -71,6 +71,7 @@ fun DefaultRecalcBudgetChooser(
                     checked = recalcRestBudgetMethod === SpendsViewModel.RecalcRestBudgetMethod.ASK,
                     onValueChange = {
                         spendsViewModel.changeRecalcRestBudgetMethod(SpendsViewModel.RecalcRestBudgetMethod.ASK)
+                        onClose()
                     },
                     text = stringResource(R.string.always_ask),
                 )
@@ -78,6 +79,7 @@ fun DefaultRecalcBudgetChooser(
                     checked = recalcRestBudgetMethod === SpendsViewModel.RecalcRestBudgetMethod.REST,
                     onValueChange = {
                         spendsViewModel.changeRecalcRestBudgetMethod(SpendsViewModel.RecalcRestBudgetMethod.REST)
+                        onClose()
                     },
                     text = stringResource(R.string.method_split_to_rest_days_title),
                     description = stringResource(R.string.method_split_to_rest_days_description),
@@ -86,6 +88,7 @@ fun DefaultRecalcBudgetChooser(
                     checked = recalcRestBudgetMethod === SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY,
                     onValueChange = {
                         spendsViewModel.changeRecalcRestBudgetMethod(SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY)
+                        onClose()
                     },
                     text = stringResource(R.string.method_add_to_current_day_title),
                     description = stringResource(R.string.method_add_to_current_day_description),
