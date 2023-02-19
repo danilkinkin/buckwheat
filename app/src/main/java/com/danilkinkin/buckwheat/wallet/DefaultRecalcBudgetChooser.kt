@@ -13,6 +13,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
@@ -46,7 +47,7 @@ fun DefaultRecalcBudgetChooser(
             ) {
                 Text(
                     text = stringResource(R.string.choose_recalc_budget_method_label),
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleLarge.copy(textAlign = TextAlign.Center),
                 )
             }
             Column(

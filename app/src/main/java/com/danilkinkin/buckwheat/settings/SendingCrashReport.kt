@@ -42,6 +42,7 @@ fun SendingCrashReport() {
         text = stringResource(R.string.not_send_crash_report),
         description = stringResource(R.string.not_send_crash_report_description),
         wrapMainText = true,
+        denseDescriptionOffset = false,
         onClick = {
             handleSwitchCrashReportDisable(!sendCrashReport.value)
         },
