@@ -83,12 +83,7 @@ fun FinishPeriod(
                                 .fillMaxWidth()
                                 .height(IntrinsicSize.Min)
                         ) {
-                            RestBudgetCard(
-                                modifier = Modifier.weight(1f),
-                                rest = restBudget,
-                                budget = wholeBudget,
-                                currency = spendsViewModel.currency.value!!,
-                            )
+                            RestAndSpentBudgetCard(modifier = Modifier.weight(1f))
                             Spacer(modifier = Modifier.width(16.dp))
                             FillCircleStub()
                         }

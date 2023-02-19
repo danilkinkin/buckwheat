@@ -53,6 +53,18 @@ class AppViewModel @Inject constructor(
         false
     })
 
+    var showRestBudgetCardByDefault: MutableLiveData<Boolean> = MutableLiveData(try {
+        storage.get("showRestBudgetCardByDefault").value.toBoolean()
+    } catch (e: Exception) {
+        true
+    })
+
+    fun setShowRestBudgetCardByDefault(showByDefault: Boolean) {
+        storage.set(Storage("showRestBudgetCardByDefault", showByDefault.toString()))
+
+        showRestBudgetCardByDefault.value = showByDefault
+    }
+
     fun setIsDebug(debug: Boolean) {
         storage.set(Storage("isDebug", debug.toString()))
 

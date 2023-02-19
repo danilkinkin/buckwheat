@@ -153,4 +153,5 @@
     <string name="method_split_to_rest_days_description">Неспокійний залишок буде розповсюджений у решту днів</string>
     <string name="method_add_to_current_day_title">Додайте до поточного щоденного бюджету</string>
     <string name="method_add_to_current_day_description">Несподіваний залишок буде доданий до поточного щоденного бюджету</string>
+    <string name="spent_budget">Витрачено</string>
 </resources>

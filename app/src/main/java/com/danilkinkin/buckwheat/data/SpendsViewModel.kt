@@ -243,13 +243,6 @@ class SpendsViewModel @Inject constructor(
             splitBudget -= currentSpent
         }
 
-
-
-
-        val budgetPerDayAdd = (restBudget / restDays.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
-
-
-
         return (splitBudget / restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)))
             .setScale(
                 0,
