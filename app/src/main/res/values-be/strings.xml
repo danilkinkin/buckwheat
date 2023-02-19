@@ -143,4 +143,14 @@
     <string name="today">Сёння</string>
     <string name="export_to_csv_success">Выдаткі экспартаваны</string>
     <string name="export_to_csv_failed">Не ўдалося экспартаваць марнаванні</string>
+    <string name="remember_choice_reacalc_budget_description">Пазней вы можаце змяніцца ў кашальку</string>
+    <string name="remember_choice">Памятайце выбар</string>
+    <string name="rest_label">Рэшта</string>
+    <string name="choose_recalc_budget_method_label">Выберыце метад размеркавання рэшткаў</string>
+    <string name="choose_recalc_budget_method_description">Вы можаце выбраць, як распаўсюджваць баланс бюджэту пасля дня. \n\nНапрыклад, у вас ёсць бюджэт на 500 дзён, учора вы патрацілі 400, сёння вы можаце альбо распаўсюджваць 100 у астатнія дні, альбо выдаткаваць 600 (500 + 100) сёння</string>
+    <string name="always_ask">Заўсёды пытайцеся</string>
+    <string name="method_split_to_rest_days_title">Падзяліце бюджэт на астатнія дні</string>
+    <string name="method_split_to_rest_days_description">Неспакойныя рэшткі будуць размеркаваны ў астатнія дні</string>
+    <string name="method_add_to_current_day_title">Дадайце да бягучага штодзённага бюджэту</string>
+    <string name="method_add_to_current_day_description">Да бягучага штодзённага бюджэту будзе дададзена неспакойныя рэшткі</string>
 </resources>

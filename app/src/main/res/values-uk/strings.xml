@@ -143,4 +143,14 @@
     <string name="today">Сьогодні</string>
     <string name="export_to_csv_success">Витрати експортовані</string>
     <string name="export_to_csv_failed">Не вдалося експортувати витрати</string>
+    <string name="remember_choice_reacalc_budget_description">Пізніше ви можете змінитися в гаманці</string>
+    <string name="remember_choice">Запам’ятайте вибір</string>
+    <string name="rest_label">Залишок</string>
+    <string name="choose_recalc_budget_method_label">Виберіть метод розподілу залишків</string>
+    <string name="choose_recalc_budget_method_description">Ви можете вибрати, як розподілити баланс бюджету після дня. \n\nНаприклад, у вас є бюджет на 500 днів, вчора ви витратили 400, сьогодні ви можете або розповсюдити 100 в інші дні, або витратити 600 (500 + 100) сьогодні</string>
+    <string name="always_ask">Завжди запитувати</string>
+    <string name="method_split_to_rest_days_title">Розподіляти</string>
+    <string name="method_split_to_rest_days_description">Неспокійний залишок буде розповсюджений у решту днів</string>
+    <string name="method_add_to_current_day_title">Додайте до поточного щоденного бюджету</string>
+    <string name="method_add_to_current_day_description">Несподіваний залишок буде доданий до поточного щоденного бюджету</string>
 </resources>

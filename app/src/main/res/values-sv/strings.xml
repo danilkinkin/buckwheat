@@ -139,4 +139,14 @@
     <string name="today">Idag</string>
     <string name="export_to_csv_success">Utgifterna exporteras</string>
     <string name="export_to_csv_failed">Det gick inte att exportera utgifter</string>
+    <string name="remember_choice_reacalc_budget_description">Senare kan du byta plånbok</string>
+    <string name="remember_choice">Kom ihåg valet</string>
+    <string name="rest_label">Återstod</string>
+    <string name="choose_recalc_budget_method_label">Välj en restfördelningsmetod</string>
+    <string name="choose_recalc_budget_method_description">Du kan välja hur du distribuerar balansen i budgeten efter dagen. \n\nTill exempel har du en budget för 500 dagar, igår tillbringade du 400, idag kan du antingen distribuera 100 på de återstående dagarna eller spendera 600 (500 + 100) idag</string>
+    <string name="always_ask">Fråga alltid</string>
+    <string name="method_split_to_rest_days_title">Distribuera</string>
+    <string name="method_split_to_rest_days_description">Den rastlösa återstoden kommer att fördelas på de återstående dagarna</string>
+    <string name="method_add_to_current_day_title">Lägg till den nuvarande dagliga budgeten</string>
+    <string name="method_add_to_current_day_description">Den rastlösa återstoden kommer att läggas till den nuvarande dagliga budgeten</string>
 </resources>

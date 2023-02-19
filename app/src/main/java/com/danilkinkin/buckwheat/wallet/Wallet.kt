@@ -44,6 +44,7 @@ fun Wallet(
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
     val currency by spendsViewModel.currency.observeAsState()
     val spends by spendsViewModel.getSpends().observeAsState()
+    val recalcRestBudgetMethod by spendsViewModel.recalcRestBudgetMethod.observeAsState()
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
@@ -166,6 +167,30 @@ fun Wallet(
                     }
                 }
                 ButtonRow(
+                    icon = painterResource(R.drawable.ic_choice),
+                    text = stringResource(R.string.rest_label),
+                    onClick = {
+                        appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
+                    },
+                    endContent = {
+                        Text(
+                            text = when (recalcRestBudgetMethod) {
+                                SpendsViewModel.RecalcRestBudgetMethod.ASK, null -> stringResource(
+                                    R.string.always_ask
+                                )
+                                SpendsViewModel.RecalcRestBudgetMethod.REST -> stringResource(
+                                    R.string.method_split_to_rest_days_title
+                                )
+                                SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY -> stringResource(
+                                    R.string.method_add_to_current_day_title
+                                )
+                            },
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = LocalContentColor.current.copy(alpha = 0.6f),
+                        )
+                    }
+                )
+                ButtonRow(
                     icon = painterResource(R.drawable.ic_currency),
                     text = stringResource(R.string.in_currency_label),
                     onClick = {
@@ -174,11 +199,15 @@ fun Wallet(
                     endContent = {
                         Text(
                             text = when (currency?.type) {
-                                CurrencyType.FROM_LIST -> "${Currency.getInstance(
-                                    currency!!.value
-                                ).displayName.titleCase()} (${Currency.getInstance(
-                                    currency!!.value
-                                ).symbol})"
+                                CurrencyType.FROM_LIST -> "${
+                                    Currency.getInstance(
+                                        currency!!.value
+                                    ).displayName.titleCase()
+                                } (${
+                                    Currency.getInstance(
+                                        currency!!.value
+                                    ).symbol
+                                })"
                                 CurrencyType.CUSTOM -> currency!!.value!!
                                 else -> ""
                             },

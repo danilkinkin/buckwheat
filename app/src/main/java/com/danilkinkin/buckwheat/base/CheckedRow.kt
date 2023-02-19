@@ -19,6 +19,7 @@ fun CheckedRow(
     checked: Boolean,
     onValueChange: (isChecked: Boolean) -> Unit,
     text: String,
+    description: String? = null,
     endContent: @Composable (() -> Unit)? = null,
 ) {
     TextRow(
@@ -31,6 +32,7 @@ fun CheckedRow(
         icon = if (checked) painterResource(R.drawable.ic_apply) else null,
         iconTint = MaterialTheme.colorScheme.primary,
         text = text,
+        description = description,
         textStyle = MaterialTheme.typography.bodyMedium.copy(
             fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
