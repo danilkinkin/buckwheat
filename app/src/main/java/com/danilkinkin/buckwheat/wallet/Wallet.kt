@@ -1,7 +1,5 @@
 package com.danilkinkin.buckwheat.wallet
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -13,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,9 +25,7 @@ import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
-import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -45,33 +40,14 @@ fun Wallet(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
     val currency by spendsViewModel.currency.observeAsState()
-    val startDate by remember { mutableStateOf(spendsViewModel.startDate.value) }
-    val finishDate by remember { mutableStateOf(spendsViewModel.finishDate.value) }
     val spends by spendsViewModel.getSpends().observeAsState()
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
     val openConfirmChangeBudgetDialog = remember { mutableStateOf(false) }
-    val snackBarExportToCSVSuccess = stringResource(R.string.export_to_csv_success)
-    val snackBarExportToCSVFailed = stringResource(R.string.export_to_csv_failed)
-
-    val createHistoryFileLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("text/csv")
-    ) {
-        coroutineScope.launch {
-            if (it !== null) {
-                spendsViewModel.exportAsCsv(context, it)
-                appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVSuccess)
-            } else {
-                appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVFailed)
-            }
-        }
-    }
 
     if (spends === null) return
 
@@ -209,31 +185,12 @@ fun Wallet(
                     ),
                 ) {
                     Column {
+                        val exportCSVLaunch = rememberExportCSV()
+
                         ButtonRow(
                             icon = painterResource(R.drawable.ic_file_download),
                             text = stringResource(R.string.export_to_csv),
-                            onClick = {
-                                val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
-
-                                val from =
-                                    if (yearFormatter.format(startDate!!.toLocalDate()) == yearFormatter.format(
-                                            finishDate!!.toLocalDate()
-                                        )
-                                    ) {
-                                        DateTimeFormatter.ofPattern("dd-MM")
-                                            .format(startDate!!.toLocalDate())
-                                    } else {
-                                        DateTimeFormatter.ofPattern("dd-MM-yyyy")
-                                            .format(startDate!!.toLocalDate())
-                                    }
-                                val to =
-                                    DateTimeFormatter.ofPattern("dd-MM-yyyy")
-                                        .format(finishDate!!.toLocalDate())
-
-                                spendsViewModel.finishDate
-
-                                createHistoryFileLauncher.launch("spends (from $from to $to).csv")
-                            }
+                            onClick = { exportCSVLaunch() }
                         )
                     }
                 }

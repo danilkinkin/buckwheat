@@ -19,9 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.wallet.rememberExportCSV
 
 const val FINISH_PERIOD_SHEET = "finishPeriod"
 
@@ -34,107 +36,113 @@ fun FinishPeriod(
 ) {
     val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
-    val restBudget = (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+    val restBudget =
+        (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
     val scrollState = rememberScrollState()
 
-    val navigationBarHeight = WindowInsets.systemBars
-        .asPaddingValues()
-        .calculateBottomPadding()
-        .coerceAtLeast(16.dp)
-    
     Surface(Modifier.height(IntrinsicSize.Min)) {
         Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.verticalScroll(scrollState)
         ) {
-            Spacer(Modifier.height(24.dp))
-            Text(
-                text = stringResource(R.string.finish_period_title),
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-            )
-            Spacer(Modifier.height(16.dp))
-            if (spends.isEmpty()) {
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(Modifier.height(24.dp))
                 Text(
-                    text = stringResource(R.string.period_summary_no_spends_title),
-                    style = MaterialTheme.typography.titleMedium,
+                    text = stringResource(R.string.finish_period_title),
+                    style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
                 )
-            } else {
-                Text(
-                    text = stringResource(R.string.period_summary_title),
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Center,
-                )
-            }
-            Spacer(Modifier.height(24.dp))
-            Column(Modifier.fillMaxWidth()) {
-                WholeBudgetCard(
-                    budget = wholeBudget,
-                    currency = spendsViewModel.currency.value!!,
-                    startDate = spendsViewModel.startDate.value!!,
-                    finishDate = spendsViewModel.finishDate.value!!,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                if (spends.isNotEmpty()) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min)
-                    ) {
-                        RestBudgetCard(
-                            modifier = Modifier.weight(1f),
-                            rest = restBudget,
-                            budget = wholeBudget,
-                            currency = spendsViewModel.currency.value!!,
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        FillCircleStub()
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(Modifier.fillMaxWidth()) {
-                        MinMaxSpentCard(
-                            modifier = Modifier.weight(1f),
-                            isMin = true,
-                            spends = spends,
-                            currency = spendsViewModel.currency.value!!,
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        MinMaxSpentCard(
-                            modifier = Modifier.weight(1f),
-                            isMin = false,
-                            spends = spends,
-                            currency = spendsViewModel.currency.value!!,
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row(Modifier.fillMaxWidth()) {
-                        SpendsCountCard(
-                            modifier = Modifier,
-                            count = spends.size,
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                        AverageSpendCard(
-                            modifier = Modifier.weight(1f),
-                            spends = spends,
-                            currency = spendsViewModel.currency.value!!,
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    OverspendingInfoCard(
-                        modifier = Modifier.fillMaxWidth(),
+                Spacer(Modifier.height(16.dp))
+                if (spends.isEmpty()) {
+                    Text(
+                        text = stringResource(R.string.period_summary_no_spends_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.period_summary_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Spacer(Modifier.height(24.dp))
+                Column(Modifier.fillMaxWidth()) {
+                    WholeBudgetCard(
                         budget = wholeBudget,
-                        spends = spends,
+                        currency = spendsViewModel.currency.value!!,
                         startDate = spendsViewModel.startDate.value!!,
                         finishDate = spendsViewModel.finishDate.value!!,
-                        currency = spendsViewModel.currency.value!!,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    AdviceCard(Modifier.fillMaxWidth())
+                    if (spends.isNotEmpty()) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(IntrinsicSize.Min)
+                        ) {
+                            RestBudgetCard(
+                                modifier = Modifier.weight(1f),
+                                rest = restBudget,
+                                budget = wholeBudget,
+                                currency = spendsViewModel.currency.value!!,
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            FillCircleStub()
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(Modifier.fillMaxWidth()) {
+                            MinMaxSpentCard(
+                                modifier = Modifier.weight(1f),
+                                isMin = true,
+                                spends = spends,
+                                currency = spendsViewModel.currency.value!!,
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            MinMaxSpentCard(
+                                modifier = Modifier.weight(1f),
+                                isMin = false,
+                                spends = spends,
+                                currency = spendsViewModel.currency.value!!,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(Modifier.fillMaxWidth()) {
+                            SpendsCountCard(
+                                modifier = Modifier,
+                                count = spends.size,
+                            )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            AverageSpendCard(
+                                modifier = Modifier.weight(1f),
+                                spends = spends,
+                                currency = spendsViewModel.currency.value!!,
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                        OverspendingInfoCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            budget = wholeBudget,
+                            spends = spends,
+                            startDate = spendsViewModel.startDate.value!!,
+                            finishDate = spendsViewModel.finishDate.value!!,
+                            currency = spendsViewModel.currency.value!!,
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
+
+            val exportCSVLaunch = rememberExportCSV()
+
+            ButtonRow(
+                icon = painterResource(R.drawable.ic_file_download),
+                text = stringResource(R.string.export_to_csv),
+                onClick = { exportCSVLaunch() },
+            )
+
             Spacer(Modifier.height(120.dp))
         }
 
@@ -189,31 +197,26 @@ fun Footer(
         }
     }
 
-    val navigationBarHeight = WindowInsets.systemBars
-        .asPaddingValues()
-        .calculateBottomPadding()
-        .coerceAtLeast(16.dp)
+    val navigationBarHeight =
+        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().coerceAtLeast(16.dp)
 
-    AnimatedContent(
-        targetState = detached,
-        transitionSpec = {
-            if (targetState && !initialState) {
-                fadeIn(
-                    tween(durationMillis = 250)
-                ) with fadeOut(
-                    snap(delayMillis = 250)
-                )
-            } else {
-                fadeIn(
-                    snap()
-                ) with fadeOut(
-                    tween(durationMillis = 250)
-                )
-            }.using(
-                SizeTransform(clip = false)
+    AnimatedContent(targetState = detached, transitionSpec = {
+        if (targetState && !initialState) {
+            fadeIn(
+                tween(durationMillis = 250)
+            ) with fadeOut(
+                snap(delayMillis = 250)
             )
-        }
-    ) { targetDetached ->
+        } else {
+            fadeIn(
+                snap()
+            ) with fadeOut(
+                tween(durationMillis = 250)
+            )
+        }.using(
+            SizeTransform(clip = false)
+        )
+    }) { targetDetached ->
         if (targetDetached) {
             Card(
                 onClick = onClick,
