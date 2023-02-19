@@ -20,6 +20,7 @@ fun ButtonRow(
     text: String,
     wrapMainText: Boolean = false,
     description: String? = null,
+    denseDescriptionOffset: Boolean = true,
     onClick: () -> Unit,
     endContent: @Composable (() -> Unit)? = null,
 ) {
@@ -36,6 +37,7 @@ fun ButtonRow(
         wrapMainText = wrapMainText,
         text = text,
         description = description,
+        denseDescriptionOffset = denseDescriptionOffset,
         endContent = endContent,
     )
 }

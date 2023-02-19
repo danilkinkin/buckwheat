@@ -32,16 +32,17 @@ fun TextRow(
     text: String,
     wrapMainText: Boolean = false,
     description: String? = null,
+    denseDescriptionOffset: Boolean = true,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     descriptionTextStyle: TextStyle = MaterialTheme.typography.bodyMedium
         .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
 ) {
     Column(modifier) {
-        Box {
+        Box(Modifier.padding(top = 16.dp)) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .heightIn(56.dp)
+                    .heightIn(24.dp)
                     .padding(horizontal = 16.dp)
                     .height(IntrinsicSize.Min),
                 verticalAlignment = Alignment.Top
@@ -50,8 +51,8 @@ fun TextRow(
                     Modifier
                         .padding(
                             start = (24 + 16).dp,
-                            top = 16.dp,
-                            bottom = if (description !== null) 4.dp else 16.dp,
+                            top = 0.dp,
+                            bottom = if (description !== null) 0.dp else 16.dp,
                         )
                         .heightIn(24.dp)
                         .weight(1f),
@@ -71,7 +72,9 @@ fun TextRow(
                         contentAlignment = Alignment.TopEnd,
                     ) {
                         Row(
-                            Modifier.height(56.dp).padding(start = 16.dp),
+                            Modifier
+                                .height(24.dp)
+                                .padding(start = 16.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             if (endContent !== null) {
@@ -95,7 +98,7 @@ fun TextRow(
             if (icon !== null) {
                 Box(
                     Modifier
-                        .height(56.dp)
+                        .height(24.dp)
                         .width(56.dp)
                         .padding(horizontal = 16.dp),
                     contentAlignment = Alignment.CenterStart
@@ -116,6 +119,7 @@ fun TextRow(
                 modifier = Modifier
                     .padding(
                         start = (24 + 16 * 2).dp,
+                        top = if (denseDescriptionOffset) 0.dp else 8.dp,
                         end = 24.dp,
                         bottom = 16.dp,
                     )
@@ -134,6 +138,17 @@ private fun Preview() {
     }
 }
 
+@Preview
+@Composable
+private fun PreviewWithDescription() {
+    BuckwheatTheme {
+        TextRow(
+            text = "Text row",
+            description = "Description of text row",
+        )
+    }
+}
+
 @Preview()
 @Composable
 private fun PreviewTWithIcon() {
@@ -141,6 +156,18 @@ private fun PreviewTWithIcon() {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             text = "Text row",
+        )
+    }
+}
+
+@Preview()
+@Composable
+private fun PreviewWithDescriptionWithIcon() {
+    BuckwheatTheme {
+        TextRow(
+            icon = painterResource(R.drawable.ic_home),
+            text = "Text row",
+            description = "Description of text row",
         )
     }
 }
@@ -251,7 +278,7 @@ private fun PreviewWithIconsWithChipWithDescriptionWithEndContent() {
             },
             wrapMainText = true,
             text = "Text row",
-            description = "Description looooooooooooooooooooooooooooooooooooong text",
+            description = "Description loooooooooooooooooooooong text",
         )
     }
 }
