@@ -77,41 +77,29 @@ fun CurrencyEditor(
                     checked = currency.type === CurrencyType.FROM_LIST,
                     onValueChange = { openCurrencyChooserDialog.value = true },
                     text = stringResource(R.string.currency_from_list),
-                    endContent = {
-                        Text(
-                            text = if (currency.type === CurrencyType.FROM_LIST) {
-                                "${
-                                    Currency.getInstance(
-                                        currency.value
-                                    ).displayName.titleCase()
-                                } (${
-                                    Currency.getInstance(
-                                        currency.value
-                                    ).symbol
-                                })"
-                            } else {
-                                ""
-                            },
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = LocalContentColor.current.copy(alpha = 0.6f),
-                        )
-                    }
+                    endCaption = if (currency.type === CurrencyType.FROM_LIST) {
+                        "${
+                            Currency.getInstance(
+                                currency.value
+                            ).displayName.titleCase()
+                        } (${
+                            Currency.getInstance(
+                                currency.value
+                            ).symbol
+                        })"
+                    } else {
+                        ""
+                    },
                 )
                 CheckedRow(
                     checked = currency.type === CurrencyType.CUSTOM,
                     onValueChange = { openCustomCurrencyEditorDialog.value = true },
                     text = stringResource(R.string.currency_custom),
-                    endContent = {
-                        Text(
-                            text = if (currency.type === CurrencyType.CUSTOM) {
-                                currency.value!!
-                            } else {
-                                ""
-                            },
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = LocalContentColor.current.copy(alpha = 0.6f),
-                        )
-                    }
+                    endCaption = if (currency.type === CurrencyType.CUSTOM) {
+                        currency.value!!
+                    } else {
+                        ""
+                    },
                 )
                 CheckedRow(
                     checked = currency.type === CurrencyType.NONE,
