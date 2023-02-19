@@ -1,20 +1,18 @@
 package com.danilkinkin.buckwheat.wallet
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -26,8 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
-import com.danilkinkin.buckwheat.base.Divider
-import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -85,7 +81,10 @@ fun BudgetConstructor(
         val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
 
         val useDate = length != 0
-                && (spendsViewModel.finishDate.value == null || !isSameDay(finishDate.time, spendsViewModel.finishDate.value!!.time))
+                && (spendsViewModel.finishDate.value == null || !isSameDay(
+            finishDate.time,
+            spendsViewModel.finishDate.value!!.time
+        ))
 
         mutableStateOf(
             useBudget || useDate
@@ -99,7 +98,6 @@ fun BudgetConstructor(
 
         UseLastSuggestionChip(
             visible = showUseSuggestion,
-            icon = painterResource(R.drawable.ic_calendar),
             onClick = {
                 rawBudget =
                     if (spendsViewModel.budget.value!! !== BigDecimal(0)) {
@@ -159,7 +157,7 @@ fun BudgetConstructor(
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(top = 48.dp, bottom = 64.dp),
+                            .padding(top = 56.dp, bottom = 80.dp),
                         horizontalArrangement = Arrangement.Center,
                     ) {
                         input()
@@ -195,31 +193,42 @@ fun BudgetConstructor(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UseLastSuggestionChip(
     visible: Boolean,
-    icon: Painter,
     onClick: () -> Unit
 ) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(
-            tween(durationMillis = 350)
-        ) + scaleIn(
-            animationSpec = tween(durationMillis = 350)
-        ),
-        exit = fadeOut(
-            tween(durationMillis = 350)
-        ) + scaleOut(
-            animationSpec = tween(durationMillis = 350)
-        ),
+    val localDensity = LocalDensity.current
+
+    Row(
+        modifier = Modifier
+            .padding(start = 16.dp)
+            .height(32.dp)
     ) {
-        Row(modifier = Modifier.padding(start = 8.dp)) {
+        AnimatedVisibility(
+            visible = visible,
+            enter = fadeIn(
+                tween(durationMillis = 150)
+            ) + slideInHorizontally(
+                tween(
+                    durationMillis = 150,
+                    easing = EaseInOutQuad,
+                )
+            ) { with(localDensity) { 10.dp.toPx().toInt() } },
+            exit = fadeOut(
+                tween(durationMillis = 150)
+            ) + slideOutHorizontally(
+                tween(
+                    durationMillis = 150,
+                    easing = EaseInOutQuad,
+                )
+            ) { with(localDensity) { 10.dp.toPx().toInt() } },
+        ) {
             SuggestionChip(
                 icon = {
                     Icon(
-                        painter = icon,
+                        painter = painterResource(R.drawable.ic_autorenew),
                         tint = MaterialTheme.colorScheme.primary,
                         contentDescription = null,
                     )

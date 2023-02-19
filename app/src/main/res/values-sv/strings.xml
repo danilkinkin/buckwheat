@@ -67,7 +67,7 @@
     <string name="confirm_change_budget_title">Ändra budget</string>
     <string name="confirm_change_budget_description">Observera att när du ändrar din budget kommer din nuvarande utgiftshistorik att raderas och nedräkningen börjar om</string>
     <string name="confirm_change_budget">Ändra budget</string>
-    <string name="use_last">Föregående</string>
+    <string name="use_last">Föregående värden</string>
 
     <!-- Inställningar -->
     <string name="settings_title">Inställningar</string>
