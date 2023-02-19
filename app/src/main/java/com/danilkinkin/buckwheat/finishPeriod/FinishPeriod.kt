@@ -130,13 +130,15 @@ fun FinishPeriod(
                 }
             }
 
-            val exportCSVLaunch = rememberExportCSV()
+            if (spends.isNotEmpty()) {
+                val exportCSVLaunch = rememberExportCSV()
 
-            ButtonRow(
-                icon = painterResource(R.drawable.ic_file_download),
-                text = stringResource(R.string.export_to_csv),
-                onClick = { exportCSVLaunch() },
-            )
+                ButtonRow(
+                    icon = painterResource(R.drawable.ic_file_download),
+                    text = stringResource(R.string.export_to_csv),
+                    onClick = { exportCSVLaunch() },
+                )
+            }
 
             Spacer(Modifier.height(120.dp))
         }
