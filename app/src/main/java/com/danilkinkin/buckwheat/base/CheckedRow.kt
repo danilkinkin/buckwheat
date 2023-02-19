@@ -21,6 +21,7 @@ fun CheckedRow(
     text: String,
     description: String? = null,
     endContent: @Composable (() -> Unit)? = null,
+    endCaption: String? = null,
 ) {
     TextRow(
         modifier = modifier
@@ -38,6 +39,7 @@ fun CheckedRow(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         ),
         endContent = endContent,
+        endCaption = endCaption,
     )
 }
 

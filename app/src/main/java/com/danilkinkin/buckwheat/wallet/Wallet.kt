@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -172,23 +173,17 @@ fun Wallet(
                     onClick = {
                         appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
                     },
-                    endContent = {
-                        Text(
-                            text = when (recalcRestBudgetMethod) {
-                                SpendsViewModel.RecalcRestBudgetMethod.ASK, null -> stringResource(
-                                    R.string.always_ask
-                                )
-                                SpendsViewModel.RecalcRestBudgetMethod.REST -> stringResource(
-                                    R.string.method_split_to_rest_days_title
-                                )
-                                SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY -> stringResource(
-                                    R.string.method_add_to_current_day_title
-                                )
-                            },
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = LocalContentColor.current.copy(alpha = 0.6f),
+                    endCaption = when (recalcRestBudgetMethod) {
+                        SpendsViewModel.RecalcRestBudgetMethod.ASK, null -> stringResource(
+                            R.string.always_ask
                         )
-                    }
+                        SpendsViewModel.RecalcRestBudgetMethod.REST -> stringResource(
+                            R.string.method_split_to_rest_days_title
+                        )
+                        SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY -> stringResource(
+                            R.string.method_add_to_current_day_title
+                        )
+                    },
                 )
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_currency),
@@ -196,25 +191,19 @@ fun Wallet(
                     onClick = {
                         appViewModel.openSheet(PathState(CURRENCY_EDITOR))
                     },
-                    endContent = {
-                        Text(
-                            text = when (currency?.type) {
-                                CurrencyType.FROM_LIST -> "${
-                                    Currency.getInstance(
-                                        currency!!.value
-                                    ).displayName.titleCase()
-                                } (${
-                                    Currency.getInstance(
-                                        currency!!.value
-                                    ).symbol
-                                })"
-                                CurrencyType.CUSTOM -> currency!!.value!!
-                                else -> ""
-                            },
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = LocalContentColor.current.copy(alpha = 0.6f),
-                        )
-                    }
+                    endCaption = when (currency?.type) {
+                        CurrencyType.FROM_LIST -> "${
+                            Currency.getInstance(
+                                currency!!.value
+                            ).displayName.titleCase()
+                        } (${
+                            Currency.getInstance(
+                                currency!!.value
+                            ).symbol
+                        })"
+                        CurrencyType.CUSTOM -> currency!!.value!!
+                        else -> ""
+                    },
                 )
                 AnimatedVisibility(
                     visible = !isChange && !isEdit,

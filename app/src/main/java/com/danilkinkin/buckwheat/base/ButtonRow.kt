@@ -23,6 +23,7 @@ fun ButtonRow(
     denseDescriptionOffset: Boolean = true,
     onClick: () -> Unit,
     endContent: @Composable (() -> Unit)? = null,
+    endCaption: String? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -39,6 +40,7 @@ fun ButtonRow(
         description = description,
         denseDescriptionOffset = denseDescriptionOffset,
         endContent = endContent,
+        endCaption = endCaption,
     )
 }
 

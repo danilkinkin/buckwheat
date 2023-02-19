@@ -29,6 +29,7 @@ fun TextRow(
     ),
     endIcon: Painter? = null,
     endContent: @Composable (() -> Unit)? = null,
+    endCaption: String? = null,
     text: String,
     wrapMainText: Boolean = false,
     description: String? = null,
@@ -55,6 +56,7 @@ fun TextRow(
                             bottom = if (description !== null) 0.dp else 16.dp,
                         )
                         .heightIn(24.dp)
+                        .widthIn(min = 100.dp)
                         .weight(1f),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -63,6 +65,17 @@ fun TextRow(
                         style = textStyle,
                         softWrap = wrapMainText,
                         overflow = if (wrapMainText) TextOverflow.Visible else TextOverflow.Ellipsis,
+                    )
+                }
+
+                if (endCaption !== null) {
+                    Text(
+                        modifier = Modifier.widthIn(max = 200.dp),
+                        text = endCaption,
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = LocalContentColor.current.copy(alpha = 0.6f),
                     )
                 }
 
@@ -168,6 +181,30 @@ private fun PreviewWithDescriptionWithIcon() {
             icon = painterResource(R.drawable.ic_home),
             text = "Text row",
             description = "Description of text row",
+        )
+    }
+}
+
+@Preview()
+@Composable
+private fun PreviewTWithIconWithEndContent() {
+    BuckwheatTheme {
+        TextRow(
+            icon = painterResource(R.drawable.ic_home),
+            text = "Text row",
+            endCaption = "Very looooooooooooong end content as text"
+        )
+    }
+}
+
+@Preview()
+@Composable
+private fun PreviewWithIconWithEndContentWithLongTitle() {
+    BuckwheatTheme {
+        TextRow(
+            icon = painterResource(R.drawable.ic_home),
+            text = "Text row loooooooooooooooooooooooooooooooong",
+            endCaption = "Very looooooooooooong end content as text"
         )
     }
 }

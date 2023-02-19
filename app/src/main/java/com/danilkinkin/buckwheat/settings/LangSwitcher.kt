@@ -54,13 +54,7 @@ fun LangSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
                 appViewModel.openSheet(PathState(SETTINGS_CHANGE_LOCALE_SHEET))
             }
         },
-        endContent = {
-            Text(
-                text = currentLocale.displayName.titleCase(),
-                style = MaterialTheme.typography.bodyLarge,
-                color = LocalContentColor.current.copy(alpha = 0.6f),
-            )
-        }
+        endCaption = currentLocale.displayName.titleCase(),
     )
 }
 
