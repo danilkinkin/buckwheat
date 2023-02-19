@@ -1,10 +1,7 @@
 package com.danilkinkin.buckwheat.editor.restBudget
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -51,11 +48,15 @@ fun BudgetIsOverDescription(
 
             Text(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp)
+                    .padding(
+                        start = 24.dp,
+                        end = 24.dp,
+                        bottom = 16.dp,
+                    )
                     .fillMaxWidth(),
                 text = stringResource(R.string.budget_end_description),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium
+                    .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
             )
 
             Spacer(modifier = Modifier.height(32.dp))
