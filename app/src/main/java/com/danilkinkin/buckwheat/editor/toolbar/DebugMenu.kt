@@ -17,6 +17,8 @@ import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
+import com.danilkinkin.buckwheat.util.countDays
+import kotlin.math.abs
 
 const val DEBUG_MENU_SHEET = "debugMenu"
 
@@ -70,6 +72,31 @@ fun DebugMenu(
                 onClick = {
                     throw Error("Test crash app")
                 },
+            )
+            Divider()
+
+
+            val restBudget =
+                (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!) - spendsViewModel.dailyBudget.value!!
+            val restDays = countDays(spendsViewModel.finishDate.value!!)
+            val skippedDays = abs(countDays(spendsViewModel.lastReCalcBudgetDate!!))
+
+            val perDayBudget = restBudget / (restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal()
+
+            Text(
+                text = "Осталось дней = $restDays " +
+                        "\nПрошло дней с последнего пересчета = $skippedDays " +
+                        "\nНачало = ${spendsViewModel.startDate.value!!} " +
+                        "\nПоследний пересчет = ${spendsViewModel.lastReCalcBudgetDate} " +
+                        "\nКонец = ${spendsViewModel.finishDate.value!!} " +
+                        "\nВесь бюджет = ${spendsViewModel.budget.value!!}" +
+                        "\nПотрачено из бюджета = ${spendsViewModel.spent.value!!}" +
+                        "\nБюджет на сегодня = ${spendsViewModel.dailyBudget.value!!}" +
+                        "\nПотрачено из дневного бюджета = ${spendsViewModel.spentFromDailyBudget.value!!}" +
+                        "\nОставшийся бюджет = $restBudget" +
+                        "\nОставшийся бюджет на по дням = $perDayBudget",
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth().padding(24.dp)
             )
         }
     }
