@@ -314,6 +314,25 @@ class SpendsViewModel @Inject constructor(
         if (editedSpent !== null) {
             this.spentDao.delete(editedSpent!!)
             this.spentDao.insert(editedSpent!!.copy(value = currentSpent, comment = currentComment))
+
+            if (!isSameDay(editedSpent!!.date.time, Date().time)) {
+                val restDays = countDays(finishDate.value!!)
+                val spentPerDay = (editedSpent!!.value - currentSpent) / restDays.toBigDecimal()
+
+                dailyBudget.value = dailyBudget.value!! + spentPerDay
+                this.spent.value = this.spent.value!! - editedSpent!!.value + currentSpent
+
+                storageDao.set(
+                    Storage("dailyBudget", dailyBudget.value.toString())
+                )
+                storageDao.set(
+                    Storage("spent", this.spent.value.toString())
+                )
+            } else {
+                spentFromDailyBudget.value = spentFromDailyBudget.value!! - editedSpent!!.value + currentSpent
+
+                storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+            }
         } else {
             this.spentDao.insert(Spent(currentSpent, Date(), currentComment))
 
