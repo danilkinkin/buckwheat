@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,6 +46,7 @@ fun EditorToolbar(
     val isDebug = appViewModel.isDebug.observeAsState(false)
 
     val lastDaySpends by spendsViewModel.getCountLastDaySpends().observeAsState(0)
+    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
 
     val spendsCountScale = remember { Animatable(1f) }
 
@@ -77,7 +79,38 @@ fun EditorToolbar(
             .padding(start = 24.dp, end = 24.dp)
             .statusBarsPadding(),
     ) {
-        if (lastDaySpends != 0) {
+
+        if (mode === SpendsViewModel.Mode.ADD) {
+            if (lastDaySpends != 0) {
+                Box(Modifier.weight(1f)) {
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .scale(spendsCountScale.value)
+                            .clip(CircleShape)
+                            .then(
+                                if (onOpenHistory !== null) Modifier.clickable { onOpenHistory() }
+                                else Modifier
+                            )
+
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
+                            text = String.format(
+                                pluralStringResource(R.plurals.spends_today, count = lastDaySpends),
+                                lastDaySpends,
+                            ),
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+        } else if (mode === SpendsViewModel.Mode.EDIT) {
             Box(Modifier.weight(1f)) {
                 Surface(
                     shape = CircleShape,
@@ -86,18 +119,11 @@ fun EditorToolbar(
                     modifier = Modifier
                         .scale(spendsCountScale.value)
                         .clip(CircleShape)
-                        .then(
-                            if (onOpenHistory !== null) Modifier.clickable { onOpenHistory() }
-                            else Modifier
-                        )
-
+                        .clickable { spendsViewModel.resetSpent() }
                 ) {
                     Text(
                         modifier = Modifier.padding(vertical = 6.dp, horizontal = 16.dp),
-                        text = String.format(
-                            pluralStringResource(R.plurals.spends_today, count = lastDaySpends),
-                            lastDaySpends,
-                        ),
+                        text = stringResource(R.string.cancel_editing),
                         softWrap = false,
                         overflow = TextOverflow.Ellipsis,
                     )

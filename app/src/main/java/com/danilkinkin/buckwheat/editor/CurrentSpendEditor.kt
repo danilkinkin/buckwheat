@@ -59,6 +59,7 @@ fun CurrentSpendEditor(
 
     val typography = MaterialTheme.typography
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
 
     var spentValue by remember { mutableStateOf("0") }
     var stage by remember { mutableStateOf(AnimState.IDLE) }
@@ -267,7 +268,11 @@ fun CurrentSpendEditor(
                                 .padding(start = 36.dp, end = 36.dp),
                         )
                         Text(
-                            text = stringResource(id = R.string.new_spent),
+                            text = if (mode === SpendsViewModel.Mode.ADD) {
+                                stringResource(R.string.new_spent)
+                            } else {
+                                stringResource(R.string.edit_spent)
+                            },
                             style = MaterialTheme.typography.labelMedium,
                             fontSize = MaterialTheme.typography.labelLarge.fontSize,
                             color = textColor.copy(alpha = 0f),
@@ -284,7 +289,11 @@ fun CurrentSpendEditor(
                 ) {
                     EditableTextWithLabel(
                         value = spentValue,
-                        label = stringResource(id = R.string.new_spent),
+                        label = if (mode === SpendsViewModel.Mode.ADD) {
+                            stringResource(R.string.new_spent)
+                        } else {
+                            stringResource(R.string.edit_spent)
+                        },
                         placeholder = if (currencyShiftWidth != 0) {
                             "  ${stringResource(R.string.enter_spent_placeholder)}"
                         } else {
@@ -298,7 +307,7 @@ fun CurrentSpendEditor(
                             spendsViewModel.editSpent(converted.join().toBigDecimal())
 
                             if (fixed === "") {
-                                runBlocking {
+                                if (mode === SpendsViewModel.Mode.ADD) runBlocking {
                                     spendsViewModel.resetSpent()
                                 }
                             }

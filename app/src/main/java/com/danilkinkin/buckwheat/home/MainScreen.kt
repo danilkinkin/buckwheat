@@ -250,7 +250,13 @@ fun MainScreen(
                                 },
                             )
                         }
-                    ) { History() }
+                    ) { History(
+                        onClose = {
+                            coroutineScope.launch {
+                                topSheetState.animateTo(TopSheetValue.HalfExpanded)
+                            }
+                        }
+                    ) }
 
                     StatusBarStub()
                 } else {

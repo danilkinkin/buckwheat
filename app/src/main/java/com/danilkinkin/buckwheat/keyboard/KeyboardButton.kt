@@ -33,7 +33,7 @@ import com.danilkinkin.buckwheat.ui.colorOnButton
 import java.lang.Integer.MAX_VALUE
 import kotlin.math.min
 
-enum class KeyboardButtonType { DEFAULT, PRIMARY, SECONDARY, TERTIARY }
+enum class KeyboardButtonType { DEFAULT, PRIMARY, SECONDARY, TERTIARY, DELETE }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -57,6 +57,7 @@ fun KeyboardButton(
         KeyboardButtonType.PRIMARY -> MaterialTheme.colorScheme.primaryContainer
         KeyboardButtonType.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer
         KeyboardButtonType.TERTIARY -> MaterialTheme.colorScheme.tertiaryContainer
+        KeyboardButtonType.DELETE -> MaterialTheme.colorScheme.errorContainer
     }
 
     val contentColor = when (type) {
@@ -64,6 +65,7 @@ fun KeyboardButton(
         KeyboardButtonType.PRIMARY -> MaterialTheme.colorScheme.onPrimaryContainer
         KeyboardButtonType.SECONDARY -> MaterialTheme.colorScheme.onSecondaryContainer
         KeyboardButtonType.TERTIARY -> MaterialTheme.colorScheme.onTertiaryContainer
+        KeyboardButtonType.DELETE -> MaterialTheme.colorScheme.onErrorContainer
     }
 
     Surface(

@@ -32,7 +32,7 @@ fun Collapse(
     )
     val maxHeight = remember { mutableStateOf<Float?>(null) }
 
-    isAnimated = height != 1f && height != 0f
+    isAnimated = height != 1f && height != 0f && maxHeight.value !== null
 
     Box(
         modifier = Modifier
