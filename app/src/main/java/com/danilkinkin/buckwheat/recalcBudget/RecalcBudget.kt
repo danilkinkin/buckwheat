@@ -129,24 +129,6 @@ fun RecalcBudget(
                         style = MaterialTheme.typography.bodyLarge,
                         textAlign = TextAlign.Center,
                     )
-                    /* if (isDebug.value) {
-                        Spacer(Modifier.height(48.dp))
-                        Text(
-                            text = "Осталось дней = $restDays " +
-                                    "\nПрошло дней с последнего пересчета = $skippedDays " +
-                                    "\nНачало = ${spendsViewModel.startDate.value!!} " +
-                                    "\nПоследний пересчет = ${spendsViewModel.lastReCalcBudgetDate} " +
-                                    "\nКонец = ${spendsViewModel.finishDate.value!!} " +
-                                    "\nВесь бюджет = ${spendsViewModel.budget.value!!}" +
-                                    "\nПотрачено из бюджета = ${spendsViewModel.spent.value!!}" +
-                                    "\nБюджет на сегодня = ${spendsViewModel.dailyBudget.value!!}" +
-                                    "\nПотрачено из дневного бюджета = ${spendsViewModel.spentFromDailyBudget.value!!}" +
-                                    "\nОставшийся бюджет = $restBudget" +
-                                    "\nОставшийся бюджет на по дням = $perDayBudget",
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    } */
                     Spacer(Modifier.height(48.dp))
                 }
                 ButtonRow(
