@@ -3,12 +3,18 @@ package com.danilkinkin.buckwheat.history
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.*
 import androidx.compose.animation.core.TweenSpec
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,12 +33,13 @@ import java.time.LocalDateTime
 import java.util.*
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun Spent(
     spent: Spent,
     currency: ExtendCurrency,
     modifier: Modifier = Modifier,
+    onEdit: () -> Unit = {},
     onDelete: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -47,7 +54,12 @@ fun Spent(
         },
     ) {
         SwipeForDismiss(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .combinedClickable(
+                    onClick = {},
+                    onLongClick = { onEdit() }
+                ),
             swipeableState = swipeableState,
             contentColor = colorEditor,
             onSwiped = { onDelete() }

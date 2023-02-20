@@ -151,4 +151,6 @@
     <string name="method_add_to_current_day_title">Lägg till den nuvarande dagliga budgeten</string>
     <string name="method_add_to_current_day_description">Den rastlösa återstoden kommer att läggas till den nuvarande dagliga budgeten</string>
     <string name="spent_budget">Spenderat</string>
+    <string name="edit_spent">Redigerbart avfall</string>
+    <string name="cancel_editing">Ångra redigering</string>
 </resources>

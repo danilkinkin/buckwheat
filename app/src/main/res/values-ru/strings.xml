@@ -154,4 +154,6 @@
     <string name="method_add_to_current_day_title">Добавлять к текущему дневному бюджету</string>
     <string name="method_add_to_current_day_description">Не потраченный остаток будет добавлен к текущему дневному бюджету</string>
     <string name="spent_budget">Потрачено</string>
+    <string name="edit_spent">Редактируемая трата</string>
+    <string name="cancel_editing">Отменить редактирование</string>
 </resources>

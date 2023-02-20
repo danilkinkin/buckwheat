@@ -155,4 +155,6 @@
     <string name="method_add_to_current_day_title">Додайте до поточного щоденного бюджету</string>
     <string name="method_add_to_current_day_description">Несподіваний залишок буде доданий до поточного щоденного бюджету</string>
     <string name="spent_budget">Витрачено</string>
+    <string name="edit_spent">Редагована витрата</string>
+    <string name="cancel_editing">Скасувати редагування</string>
 </resources>

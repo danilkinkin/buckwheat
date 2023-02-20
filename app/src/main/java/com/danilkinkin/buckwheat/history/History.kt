@@ -32,6 +32,7 @@ fun History(
     modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
+    onClose: () -> Unit = {}
 ) {
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -131,6 +132,11 @@ fun History(
                             Spent(
                                 spent = spent,
                                 currency = spendsViewModel.currency.value!!,
+                                onEdit = {
+                                    spendsViewModel.editSpent(spent)
+
+                                    onClose()
+                                },
                                 onDelete = {
                                     spendsViewModel.removeSpent(spent)
                                 }

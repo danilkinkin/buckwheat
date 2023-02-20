@@ -150,4 +150,6 @@
     <string name="method_add_to_current_day_title">Aggiungi al budget giornaliero attuale</string>
     <string name="method_add_to_current_day_description">Il residuo irrequieto verrà aggiunto al budget giornaliero attuale</string>
     <string name="spent_budget">Speso</string>
+    <string name="edit_spent">Rifiuti modificabili</string>
+    <string name="cancel_editing">Annulla la modifica</string>
 </resources>

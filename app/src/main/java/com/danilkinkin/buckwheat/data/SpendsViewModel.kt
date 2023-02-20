@@ -25,6 +25,7 @@ class SpendsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val db: DatabaseRepository,
 ) : ViewModel() {
+    enum class Mode { ADD, EDIT }
     enum class Stage { IDLE, CREATING_SPENT, EDIT_SPENT, COMMITTING_SPENT }
     enum class Action { PUT_NUMBER, SET_DOT, REMOVE_LAST }
     enum class RecalcRestBudgetMethod { REST, ADD_TODAY, ASK }
@@ -32,6 +33,7 @@ class SpendsViewModel @Inject constructor(
     private val spentDao = db.spentDao()
     private val storageDao = db.storageDao()
 
+    var mode: MutableLiveData<Mode> = MutableLiveData(Mode.ADD)
     var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
     var lastRemoveSpent: MutableSharedFlow<Spent> = MutableSharedFlow()
 
@@ -100,6 +102,7 @@ class SpendsViewModel @Inject constructor(
         MutableLiveData(ExtendCurrency(value = null, type = CurrencyType.NONE))
     }
 
+    var editedSpent: Spent? = null
     var currentSpent: BigDecimal = 0.0.toBigDecimal()
     var currentComment: String = ""
 
@@ -308,10 +311,15 @@ class SpendsViewModel @Inject constructor(
 
         if (fSpent == "0") return
 
-        this.spentDao.insert(Spent(currentSpent, Date(), currentComment))
+        if (editedSpent !== null) {
+            this.spentDao.delete(editedSpent!!)
+            this.spentDao.insert(editedSpent!!.copy(value = currentSpent, comment = currentComment))
+        } else {
+            this.spentDao.insert(Spent(currentSpent, Date(), currentComment))
 
-        spentFromDailyBudget.value = spentFromDailyBudget.value?.plus(currentSpent)
-        storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+            spentFromDailyBudget.value = spentFromDailyBudget.value?.plus(currentSpent)
+            storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+        }
 
         currentSpent = 0.0.toBigDecimal()
         currentComment = ""
@@ -328,6 +336,17 @@ class SpendsViewModel @Inject constructor(
         rawSpentValue.value = ""
 
         stage.value = Stage.IDLE
+        mode.value = Mode.ADD
+    }
+
+    fun editSpent(spent: Spent) {
+        editedSpent = spent
+        currentSpent = spent.value
+        currentComment = spent.comment
+        rawSpentValue.value = tryConvertStringToNumber(spent.value.toString()).join(third = false)
+
+        stage.value = Stage.EDIT_SPENT
+        mode.value = Mode.EDIT
     }
 
     fun removeSpent(spent: Spent) {

@@ -36,6 +36,7 @@ fun RestBudget(
 
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val overspendingWarnHidden by spendsViewModel.overspendingWarnHidden.observeAsState(false)
+    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
 
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var restBudgetAbsoluteValue by remember { mutableStateOf(BigDecimal(0)) }
@@ -96,7 +97,7 @@ fun RestBudget(
         contentAlignment = Alignment.CenterEnd
     ) {
         val alpha: Float by animateFloatAsState(
-            if (restBudgetValue >= 0.toBigDecimal()) 1f else 0f,
+            if (restBudgetValue >= 0.toBigDecimal() && mode === SpendsViewModel.Mode.ADD) 1f else 0f,
             tween(
                 durationMillis = 150,
                 easing = EaseInOutQuad,
@@ -135,7 +136,7 @@ fun RestBudget(
             )
         }
         AnimatedVisibility(
-            visible = overdaft && !overspendingWarnHidden,
+            visible = overdaft && !overspendingWarnHidden && mode === SpendsViewModel.Mode.ADD,
             enter = fadeIn(
                 tween(
                     durationMillis = 150,

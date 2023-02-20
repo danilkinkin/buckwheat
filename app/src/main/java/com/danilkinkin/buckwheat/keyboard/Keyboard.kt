@@ -1,7 +1,11 @@
 package com.danilkinkin.buckwheat.keyboard
 
+import android.util.Log
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,9 +20,11 @@ import com.danilkinkin.buckwheat.util.join
 import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.math.BigDecimal
 
 val BUTTON_GAP = 6.dp
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Keyboard(
     modifier: Modifier = Modifier,
@@ -26,6 +32,8 @@ fun Keyboard(
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
+    val currentRawSpent by spendsViewModel.rawSpentValue.observeAsState("")
     var debugProgress by remember { mutableStateOf(0) }
     val dispatch = rememberAppKeyboardDispatcher { action, value ->
         var isMutate = true
@@ -40,11 +48,15 @@ fun Keyboard(
             }
             SpendsViewModel.Action.REMOVE_LAST -> {
                 newValue = newValue.dropLast(1)
+                Log.d("mode", mode.toString())
+                Log.d("newValue", "'${newValue}'")
 
-                if (newValue == "") runBlocking {
-                    spendsViewModel.resetSpent()
+                if (newValue == "") {
+                    if (mode === SpendsViewModel.Mode.ADD) runBlocking {
+                        spendsViewModel.resetSpent()
 
-                    isMutate = false
+                        isMutate = false
+                    }
                 }
             }
         }
@@ -57,8 +69,14 @@ fun Keyboard(
         }
     }
 
-    Column (modifier.fillMaxSize().padding(14.dp)) {
-        Row (Modifier.fillMaxSize().weight(1F)) {
+    Column (
+        modifier
+            .fillMaxSize()
+            .padding(14.dp)) {
+        Row (
+            Modifier
+                .fillMaxSize()
+                .weight(1F)) {
             for (i in 7..9) {
                 KeyboardButton(
                     modifier = Modifier
@@ -83,14 +101,30 @@ fun Keyboard(
                     debugProgress = 0
                 },
                 onLongClick = {
-                    spendsViewModel.resetSpent()
                     debugProgress = 0
+                    if (mode === SpendsViewModel.Mode.ADD) {
+                        spendsViewModel.resetSpent()
+                    } else {
+                        spendsViewModel.rawSpentValue.value = tryConvertStringToNumber("0").join(third = false)
+
+                        if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
+                        spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
+                    }
                 },
             )
         }
-        Row (Modifier.fillMaxSize().weight(3F)) {
-            Column (Modifier.fillMaxSize().weight(3F)) {
-                Row (Modifier.fillMaxSize().weight(1F)) {
+        Row (
+            Modifier
+                .fillMaxSize()
+                .weight(3F)) {
+            Column (
+                Modifier
+                    .fillMaxSize()
+                    .weight(3F)) {
+                Row (
+                    Modifier
+                        .fillMaxSize()
+                        .weight(1F)) {
                     for (i in 4..6) {
                         KeyboardButton(
                             modifier = Modifier
@@ -105,7 +139,10 @@ fun Keyboard(
                         )
                     }
                 }
-                Row (Modifier.fillMaxSize().weight(1F)) {
+                Row (
+                    Modifier
+                        .fillMaxSize()
+                        .weight(1F)) {
                     for (i in 1..3) {
                         KeyboardButton(
                             modifier = Modifier
@@ -120,7 +157,10 @@ fun Keyboard(
                         )
                     }
                 }
-                Row (Modifier.fillMaxSize().weight(1F)) {
+                Row (
+                    Modifier
+                        .fillMaxSize()
+                        .weight(1F)) {
                     KeyboardButton(
                         modifier = Modifier
                             .weight(2F)
@@ -145,41 +185,82 @@ fun Keyboard(
                     )
                 }
             }
-            Column (Modifier.fillMaxSize().weight(1F)) {
-                KeyboardButton(
-                    modifier = Modifier
-                        .weight(1F)
-                        .padding(BUTTON_GAP),
-                    type = KeyboardButtonType.PRIMARY,
-                    icon = painterResource(R.drawable.ic_apply),
-                    onClick = {
-                        if (debugProgress == -1) {
-                            spendsViewModel.resetSpent()
+            Column (
+                Modifier
+                    .fillMaxSize()
+                    .weight(1F)
+            ) {
+                val fixedSpent = tryConvertStringToNumber(currentRawSpent).join(third = false)
 
-                            appViewModel.setIsDebug(!appViewModel.isDebug.value!!)
-
-                            coroutineScope.launch {
-                                appViewModel.snackbarHostState.showSnackbar(
-                                    "Debug ${
-                                        if (appViewModel.isDebug.value!!) {
-                                            "ON"
-                                        } else {
-                                            "OFF"
-                                        }
-                                    }"
-                                )
-                            }
-
-                            return@KeyboardButton
-                        }
-
-                        debugProgress = 0
-
-                        runBlocking {
-                            spendsViewModel.commitSpent()
-                        }
+                AnimatedContent(
+                    targetState = (fixedSpent == "0" || fixedSpent == "0." || fixedSpent == "0.0") && mode === SpendsViewModel.Mode.EDIT,
+                    transitionSpec = {
+                        if (targetState && !initialState) {
+                            fadeIn(
+                                tween(durationMillis = 250)
+                            ) with fadeOut(
+                                tween(durationMillis = 250)
+                            )
+                        } else {
+                            fadeIn(
+                                tween(durationMillis = 250)
+                            ) with fadeOut(
+                                tween(durationMillis = 250)
+                            )
+                        }.using(
+                            SizeTransform(clip = false)
+                        )
                     }
-                )
+                ) { targetIsDelete ->
+                    if (targetIsDelete) {
+                        KeyboardButton(
+                            modifier = Modifier
+                                .weight(1F)
+                                .padding(BUTTON_GAP),
+                            type = KeyboardButtonType.DELETE,
+                            icon = painterResource(R.drawable.ic_delete_forever),
+                            onClick = {
+                                spendsViewModel.editedSpent?.let { spendsViewModel.removeSpent(it) }
+                                spendsViewModel.resetSpent()
+                            }
+                        )
+                    } else {
+                        KeyboardButton(
+                            modifier = Modifier
+                                .weight(1F)
+                                .padding(BUTTON_GAP),
+                            type = KeyboardButtonType.PRIMARY,
+                            icon = painterResource(R.drawable.ic_apply),
+                            onClick = {
+                                if (debugProgress == -1) {
+                                    spendsViewModel.resetSpent()
+
+                                    appViewModel.setIsDebug(!appViewModel.isDebug.value!!)
+
+                                    coroutineScope.launch {
+                                        appViewModel.snackbarHostState.showSnackbar(
+                                            "Debug ${
+                                                if (appViewModel.isDebug.value!!) {
+                                                    "ON"
+                                                } else {
+                                                    "OFF"
+                                                }
+                                            }"
+                                        )
+                                    }
+
+                                    return@KeyboardButton
+                                }
+
+                                debugProgress = 0
+
+                                runBlocking {
+                                    spendsViewModel.commitSpent()
+                                }
+                            }
+                        )
+                    }
+                }
             }
         }
     }

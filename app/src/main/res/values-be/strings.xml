@@ -155,4 +155,6 @@
     <string name="method_add_to_current_day_title">Дадайце да бягучага штодзённага бюджэту</string>
     <string name="method_add_to_current_day_description">Да бягучага штодзённага бюджэту будзе дададзена неспакойныя рэшткі</string>
     <string name="spent_budget">Выдаткавана</string>
+    <string name="edit_spent">Рэдагуемае марнаванне</string>
+    <string name="cancel_editing">Адмяніць рэдагаванне</string>
 </resources>

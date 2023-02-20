@@ -62,6 +62,12 @@ fun TaggingSpent(
         showAddComment = it === SpendsViewModel.Stage.EDIT_SPENT
     }
 
+    DisposableEffect(spendsViewModel.currentComment) {
+        value = spendsViewModel.currentComment
+
+        onDispose {  }
+    }
+
     Row(
         Modifier
             .fillMaxWidth()
