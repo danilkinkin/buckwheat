@@ -337,6 +337,7 @@ class SpendsViewModel @Inject constructor(
 
         stage.value = Stage.IDLE
         mode.value = Mode.ADD
+        editedSpent = null
     }
 
     fun editSpent(spent: Spent) {
@@ -370,6 +371,7 @@ class SpendsViewModel @Inject constructor(
 
             storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
         }
+        editedSpent = null
 
         viewModelScope.launch {
             lastRemoveSpent.emit(spent)
