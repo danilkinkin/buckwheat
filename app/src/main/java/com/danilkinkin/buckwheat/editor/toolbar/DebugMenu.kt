@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,8 +47,10 @@ fun DebugMenu(
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
+            Header("Actions")
             ButtonRow(
                 text = "Open daily summary screen",
+                iconInset = false,
                 onClick = {
                     appViewModel.openSheet(PathState(RECALCULATE_DAILY_BUDGET_SHEET))
                     onClose()
@@ -55,6 +58,7 @@ fun DebugMenu(
             )
             ButtonRow(
                 text = "Open period summary screen",
+                iconInset = false,
                 onClick = {
                     appViewModel.openSheet(PathState(FINISH_PERIOD_SHEET))
                     onClose()
@@ -62,6 +66,7 @@ fun DebugMenu(
             )
             ButtonRow(
                 text = "Open onboarding screen",
+                iconInset = false,
                 onClick = {
                     appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
                     onClose()
@@ -69,37 +74,71 @@ fun DebugMenu(
             )
             ButtonRow(
                 text = "Force crash app",
+                iconInset = false,
                 onClick = {
                     throw Error("Test crash app")
                 },
             )
-            Divider()
+            Header("Debug budget")
+            Spacer(Modifier.height(16.dp))
+            MonospaceText("Начало --------------- ${spendsViewModel.startDate.value!!}")
+            MonospaceText("Конец ---------------- ${spendsViewModel.finishDate.value!!}")
+            MonospaceText("Последний пересчет --- ${spendsViewModel.lastReCalcBudgetDate}")
+            Spacer(Modifier.height(16.dp))
 
-
-            val restBudget =
-                (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!) - spendsViewModel.dailyBudget.value!!
+            val days = countDays(spendsViewModel.finishDate.value!!, spendsViewModel.startDate.value!!)
             val restDays = countDays(spendsViewModel.finishDate.value!!)
-            val skippedDays = abs(countDays(spendsViewModel.lastReCalcBudgetDate!!))
+            MonospaceText("Всего дней -------------------- $days")
+            MonospaceText("Прошло дней ------------------- ${days - restDays}")
+            MonospaceText("Осталось дней ----------------- $restDays")
+            MonospaceText("Дней с последнего пересчета --- ${abs(countDays(spendsViewModel.lastReCalcBudgetDate!!))}")
+            Spacer(Modifier.height(16.dp))
 
-            val perDayBudget = restBudget / (restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal()
+            val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
 
-            Text(
-                text = "Осталось дней = $restDays " +
-                        "\nПрошло дней с последнего пересчета = $skippedDays " +
-                        "\nНачало = ${spendsViewModel.startDate.value!!} " +
-                        "\nПоследний пересчет = ${spendsViewModel.lastReCalcBudgetDate} " +
-                        "\nКонец = ${spendsViewModel.finishDate.value!!} " +
-                        "\nВесь бюджет = ${spendsViewModel.budget.value!!}" +
-                        "\nПотрачено из бюджета = ${spendsViewModel.spent.value!!}" +
-                        "\nБюджет на сегодня = ${spendsViewModel.dailyBudget.value!!}" +
-                        "\nПотрачено из дневного бюджета = ${spendsViewModel.spentFromDailyBudget.value!!}" +
-                        "\nОставшийся бюджет = $restBudget" +
-                        "\nОставшийся бюджет на по дням = $perDayBudget",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.fillMaxWidth().padding(24.dp)
-            )
+            MonospaceText("Весь бюджет ------------------- ${spendsViewModel.budget.value!!}")
+            MonospaceText("Потрачено из бюджета ---------- ${spendsViewModel.spent.value!! + spentFromDailyBudget}")
+            MonospaceText("Оставшийся бюджет ------------- ${spendsViewModel.calcResetBudget()}")
+            Spacer(Modifier.height(16.dp))
+
+
+            val dailyBudget = spendsViewModel.dailyBudget.value!!
+            val currentSpent = spendsViewModel.currentSpent
+
+            val restTodayBudget = dailyBudget - spentFromDailyBudget - currentSpent
+
+            MonospaceText("Бюджет на сегодня ------------- $dailyBudget")
+            MonospaceText("Потрачено из дн. бюджета ------ $spentFromDailyBudget")
+            MonospaceText("Текущяя трата ----------------- $currentSpent")
+            MonospaceText("Осталось на сегодня ----------- $restTodayBudget")
+            Spacer(Modifier.height(16.dp))
         }
     }
+}
+
+@Composable
+fun Header(title: String) {
+    Divider()
+    Spacer(Modifier.height(16.dp))
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp, 0.dp),
+    )
+}
+
+@Composable
+fun MonospaceText(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp, 0.dp),
+        fontFamily = FontFamily.Monospace
+    )
 }
 
 @Preview

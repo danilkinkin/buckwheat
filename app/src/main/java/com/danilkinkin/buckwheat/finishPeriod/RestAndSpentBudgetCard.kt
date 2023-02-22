@@ -26,8 +26,7 @@ fun RestAndSpentBudgetCard(
     val showRestBudgetCard by appViewModel.showRestBudgetCardByDefault.observeAsState(true)
 
     val wholeBudget = spendsViewModel.budget.value!!
-    val restBudget =
-        (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+    val restBudget = spendsViewModel.calcResetBudget()
 
     Box(
         modifier = modifier
