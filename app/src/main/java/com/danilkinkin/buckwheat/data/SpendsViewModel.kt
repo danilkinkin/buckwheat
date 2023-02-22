@@ -277,6 +277,10 @@ class SpendsViewModel @Inject constructor(
             .toBigDecimal() + dailyBudget.value!! - spentFromDailyBudget.value!!
     }
 
+    fun calcResetBudget(): BigDecimal {
+        return budget.value!! - spent.value!! - spentFromDailyBudget.value!!
+    }
+
     fun reCalcDailyBudget(dailyBudget: BigDecimal) {
         this.dailyBudget.value = dailyBudget
         lastReCalcBudgetDate = roundToDay(Date())
