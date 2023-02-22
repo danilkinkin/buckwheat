@@ -16,6 +16,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 fun ButtonRow(
     modifier: Modifier = Modifier,
     icon: Painter? = null,
+    iconInset: Boolean = true,
     endIcon: Painter? = null,
     text: String,
     wrapMainText: Boolean = false,
@@ -34,6 +35,7 @@ fun ButtonRow(
                 indication = rememberRipple()
             ) { onClick.invoke() },
         icon = icon,
+        iconInset = iconInset,
         endIcon = endIcon,
         wrapMainText = wrapMainText,
         text = text,

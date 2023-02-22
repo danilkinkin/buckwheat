@@ -30,6 +30,7 @@ fun TextRow(
     endIcon: Painter? = null,
     endContent: @Composable (() -> Unit)? = null,
     endCaption: String? = null,
+    iconInset: Boolean = true,
     text: String,
     wrapMainText: Boolean = false,
     description: String? = null,
@@ -51,7 +52,7 @@ fun TextRow(
                 Box(
                     Modifier
                         .padding(
-                            start = (24 + 16).dp,
+                            start = if (iconInset && icon !== null) (24 + 16).dp else 8.dp,
                             top = 0.dp,
                             bottom = if (description !== null) 0.dp else 16.dp,
                         )
