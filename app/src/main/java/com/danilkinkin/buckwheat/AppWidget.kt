@@ -122,9 +122,10 @@ class AppWidget : GlanceAppWidget() {
         )
 
         Box(
-            modifier = GlanceModifier.appWidgetBackground().cornerRadius(24.dp).fillMaxSize()
+            modifier = GlanceModifier
+                .cornerRadius(24.dp)
+                .fillMaxSize()
                 .background(harmonizedPalette.container)
-                .clickable(actionRunCallback<AddSpendActionCallback>())
         ) {
             Row(
                 modifier = GlanceModifier
@@ -221,7 +222,13 @@ class AppWidget : GlanceAppWidget() {
             }
         }
 
-
+        Box(
+            modifier = GlanceModifier
+                .appWidgetBackground()
+                .cornerRadius(24.dp)
+                .fillMaxSize()
+                .clickable(actionRunCallback<AddSpendActionCallback>())
+        ){}
     }
 }
 
