@@ -52,7 +52,7 @@ fun TextRow(
                 Box(
                     Modifier
                         .padding(
-                            start = if (iconInset && icon !== null) (24 + 16).dp else 8.dp,
+                            start = if (!iconInset && icon === null) 8.dp else (24 + 16).dp,
                             top = 0.dp,
                             bottom = if (description !== null) 0.dp else 16.dp,
                         )
@@ -132,7 +132,7 @@ fun TextRow(
                 softWrap = true,
                 modifier = Modifier
                     .padding(
-                        start = (24 + 16 * 2).dp,
+                        start = if (!iconInset && icon === null) 24.dp else (24 + 16 * 2).dp,
                         top = if (denseDescriptionOffset) 0.dp else 8.dp,
                         end = 24.dp,
                         bottom = 16.dp,
