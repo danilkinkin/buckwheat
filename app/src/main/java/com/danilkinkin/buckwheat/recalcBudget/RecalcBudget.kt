@@ -135,6 +135,7 @@ fun RecalcBudget(
                     text = stringResource(R.string.remember_choice),
                     description = stringResource(R.string.remember_choice_reacalc_budget_description),
                     wrapMainText = true,
+                    iconInset = false,
                     onClick = {
                         rememberChoice = !rememberChoice
                     },

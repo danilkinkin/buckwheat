@@ -70,6 +70,7 @@ fun BudgetIsOverDescription(
                 text = stringResource(R.string.hide_overspending_warn),
                 description = stringResource(R.string.hide_overspending_warn_description),
                 wrapMainText = true,
+                denseDescriptionOffset = false,
                 onClick = {
                     spendsViewModel.hideOverspendingWarn(!overspendingWarnHidden)
                 },
