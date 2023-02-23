@@ -15,6 +15,8 @@ import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -446,11 +448,14 @@ class SpendsViewModel @Inject constructor(
 
         val printer = CSVPrinter(
             stream?.writer(),
-            CSVFormat.DEFAULT.withHeader("amount", "comment", "date")
+            CSVFormat.DEFAULT.withHeader("amount", "comment", "commit_time")
         )
 
         this.spentDao.getAllSync().forEach {
-            printer.printRecord(it.value, it.comment, it.date)
+            val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+            val formattedDateTime: String =  it.date.toLocalDateTime().format(dateFormatter)
+
+            printer.printRecord(it.value, it.comment, formattedDateTime)
         }
 
         printer.flush()
