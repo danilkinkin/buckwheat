@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.home
 
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -35,6 +36,7 @@ import java.util.*
 @Composable
 fun BottomSheets(
     windowSizeClass: WindowWidthSizeClass,
+    activityResultRegistryOwner: ActivityResultRegistryOwner?,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
@@ -52,6 +54,7 @@ fun BottomSheets(
         Wallet(
             forceChange = finishPeriod || requireSetBudget,
             windowSizeClass = windowSizeClass,
+            activityResultRegistryOwner = activityResultRegistryOwner,
             onClose = {
                 coroutineScope.launch {
                     state.hide()
@@ -136,6 +139,7 @@ fun BottomSheets(
         cancelable = false,
     ) { state ->
         FinishPeriod(
+            activityResultRegistryOwner = activityResultRegistryOwner,
             onCreateNewPeriod = {
                 appViewModel.openSheet(PathState(WALLET_SHEET))
             },

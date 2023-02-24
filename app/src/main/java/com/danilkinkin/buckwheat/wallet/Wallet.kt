@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.wallet
 
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -37,6 +38,7 @@ const val WALLET_SHEET = "wallet"
 fun Wallet(
     forceChange: Boolean = false,
     windowSizeClass: WindowWidthSizeClass,
+    activityResultRegistryOwner: ActivityResultRegistryOwner? = null,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
@@ -221,7 +223,9 @@ fun Wallet(
                     ),
                 ) {
                     Column {
-                        val exportCSVLaunch = rememberExportCSV()
+                        val exportCSVLaunch = rememberExportCSV(
+                            activityResultRegistryOwner = activityResultRegistryOwner
+                        )
 
                         ButtonRow(
                             icon = painterResource(R.drawable.ic_file_download),

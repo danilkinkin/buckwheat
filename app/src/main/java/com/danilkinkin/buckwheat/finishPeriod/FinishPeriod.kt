@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.animation.*
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
@@ -31,6 +32,7 @@ const val FINISH_PERIOD_SHEET = "finishPeriod"
 fun FinishPeriod(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    activityResultRegistryOwner: ActivityResultRegistryOwner? = null,
     onCreateNewPeriod: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
@@ -129,7 +131,9 @@ fun FinishPeriod(
             }
 
             if (spends.isNotEmpty()) {
-                val exportCSVLaunch = rememberExportCSV()
+                val exportCSVLaunch = rememberExportCSV(
+                    activityResultRegistryOwner = activityResultRegistryOwner
+                )
 
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_file_download),
