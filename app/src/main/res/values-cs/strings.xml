@@ -12,11 +12,13 @@
     <plurals name="spends_today">
         <item quantity="one">%1$s útrata za dnešek</item>
         <item quantity="few">%1$s útraty za dnešek</item>
+        <item quantity="many">%1$s útrat za dnešek</item>
         <item quantity="other">%1$s útrat za dnešek</item>
     </plurals>
     <plurals name="day">
         <item quantity="one">%1$s den</item>
-        <item quantity="one">%1$s dny</item>
+        <item quantity="few">%1$s dny</item>
+        <item quantity="many">%1$s dní</item>
         <item quantity="other">%1$s dní</item>
     </plurals>
     <string name="enter_spent_placeholder">Zadejte útratu</string>
@@ -39,12 +41,14 @@
     <string name="select_finish_date_title">Vyberte datum ukončení</string>
     <plurals name="finish_date_label">
         <item quantity="one">Do %1$s (%2$s den)</item>
-        <item quantity="one">Do %1$s (%2$s dny)</item>
+        <item quantity="few">Do %1$s (%2$s dny)</item>
+        <item quantity="many">Do %1$s (%2$s dní)</item>
         <item quantity="other">Do %1$s (%2$s dní)</item>
     </plurals>
     <plurals name="finish_date">
         <item quantity="one">%1$s (%2$s den)</item>
-        <item quantity="one">%1$s (%2$s dny)</item>
+        <item quantity="few">%1$s (%2$s dny)</item>
+        <item quantity="many">%1$s (%2$s dní)</item>
         <item quantity="other">%1$s (%2$s dní)</item>
     </plurals>
     <string name="export_to_csv">Exportovat do CSV</string>
