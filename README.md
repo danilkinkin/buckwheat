@@ -13,6 +13,10 @@ Writing down each spending sobers the mind and gives you an idea of how much and
     />
 </a>
 
+## Motivation
+
+A couple of years ago, I used the [tzlvt](https://www.fuckgrechka.ru/tzlvt/) app. I liked his idea and it helped me learn how to manage money. After I decided to improve this idea and it inspired me to create buckwheat
+
 ## Links
 
 - [GooglePlay](https://play.google.com/store/apps/details?id=com.danilkinkin.buckwheat)
