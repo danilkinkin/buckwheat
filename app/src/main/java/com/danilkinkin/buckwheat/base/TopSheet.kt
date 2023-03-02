@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.base
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
+import kotlinx.coroutines.launch
 import java.lang.Float.max
 import kotlin.math.roundToInt
 
@@ -48,6 +50,7 @@ fun TopSheetLayout(
     sheetContentExpand: @Composable () -> Unit,
 ) {
     val localDensity = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
 
     var lock by remember { mutableStateOf(false) }
     var scroll by remember { mutableStateOf(false) }
@@ -230,6 +233,12 @@ fun TopSheetLayout(
                     )
                 }
             }
+        }
+    }
+
+    BackHandler(swipeableState.currentValue === TopSheetValue.Expanded) {
+        coroutineScope.launch {
+            swipeableState.animateTo(TopSheetValue.HalfExpanded)
         }
     }
 }
