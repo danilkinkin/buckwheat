@@ -82,6 +82,7 @@
     <string name="about">Informazioni sull\'app</string>
     <string name="description">Buckwheat è un\'app che ti aiuta a spendere più saggiamente. Annotare ogni spesa fa riflettere e dà un\'idea di quanto e come si può spendere.</string>
     <string name="report_bug">Segnala un bug</string>
+    <string name="contribute">Dare un contributo</string>
     <string name="developer">Sviluppo &amp; design:</string>
 
     <!-- Bug reporting -->

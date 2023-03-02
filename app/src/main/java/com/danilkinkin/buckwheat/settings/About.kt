@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,6 +29,7 @@ fun About(
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
 
     Card(
         modifier = modifier,
@@ -100,6 +102,30 @@ fun About(
                 },
             )
             Spacer(modifier = Modifier.height(24.dp))
+            DescriptionButton(
+                title = { Text(stringResource(R.string.contribute)) },
+                icon = painterResource(R.drawable.ic_contribute),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
+                contentPadding = PaddingValues(
+                    start = 20.dp,
+                    top = 12.dp,
+                    bottom = 12.dp,
+                    end = 12.dp,
+                ),
+                onClick = {
+                    val currentLocale = configuration.locales[0].language
+
+                    openInBrowser(
+                        context,
+                        if (currentLocale === "ru") {
+                            "https://buckwheat.app/ru/contribute"
+                        } else {
+                            "https://buckwheat.app/contribute"
+                        },
+                    )
+                },
+            )
+            Spacer(modifier = Modifier.height(8.dp))
             DescriptionButton(
                 title = { Text(stringResource(R.string.report_bug)) },
                 icon = painterResource(R.drawable.ic_bug_report),

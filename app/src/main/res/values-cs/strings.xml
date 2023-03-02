@@ -89,7 +89,8 @@
     <string name="about">O aplikaci</string>
     <string name="description">Buckwheat je aplikace, která vám pomůže rozumně utrácet peníze. Zapisování jednotlivých výdajů vás vystřízliví a dá vám představu o tom, kolik a jak můžete utratit.</string>
     <string name="report_bug">Nahlásit chybu</string>
-    <string name="developer">Vývoj a design:</string>
+     <string name="contribute">Přispět</string>
+     <string name="developer">Vývoj a design:</string>
 
     <!-- Bug reporting -->
     <string name="report_bug_title">Nahlásit chybu</string>
