@@ -28,7 +28,7 @@
     <string name="remove_spent">Expenditure returned to budget</string>
     <string name="remove_spent_undo">Annulla</string>
     <string name="no_spends">Nessuna spesa per ora</string>
-    <string name="total_per_day">Totale:</string>
+    <string name="total_per_day">Totale giornaliero:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Budget</string>

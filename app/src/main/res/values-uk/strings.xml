@@ -31,7 +31,7 @@
     <string name="remove_spent">Трата повернута до бюджету</string>
     <string name="remove_spent_undo">Скасувати</string>
     <string name="no_spends">Трат поки не було</string>
-    <string name="total_per_day">Разом:</string>
+    <string name="total_per_day">Денний результат:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Бюджет</string>

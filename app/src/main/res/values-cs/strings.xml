@@ -32,7 +32,7 @@
     <string name="remove_spent">Výdaje vrácené do rozpočtu</string>
     <string name="remove_spent_undo">Vrátit</string>
     <string name="no_spends">Zatím žádná útrata</string>
-    <string name="total_per_day">Celkem:</string>
+    <string name="total_per_day">Denní součet:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Rozpočet</string>
