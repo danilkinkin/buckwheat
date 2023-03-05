@@ -191,7 +191,11 @@ fun BudgetConstructor(
             onClick = {
                 appViewModel.openSheet(PathState(
                     name = FINISH_DATE_SELECTOR_SHEET,
-                    args = mapOf("initialDate" to dateToValue.value),
+                    args = if (days > 0) {
+                        mapOf("initialDate" to dateToValue.value)
+                    } else {
+                        mapOf("initialDate" to null)
+                    },
                     callback = { result ->
                         if (!result.containsKey("finishDate")) return@PathState
 
