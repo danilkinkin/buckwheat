@@ -16,9 +16,6 @@ data class Spent(
 
     @ColumnInfo(name = "comment", defaultValue = "")
     val comment: String = "",
-
-    @ColumnInfo(name = "deleted")
-    var deleted: Boolean = false,
 ) {
     @PrimaryKey(autoGenerate = true) var uid: Int = 0
 }

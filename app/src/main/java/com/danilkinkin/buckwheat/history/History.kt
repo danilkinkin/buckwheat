@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.history
 
-import android.util.Log
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -61,12 +60,9 @@ fun History(
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
 
-        onDispose { appViewModel.lockSwipeable.value = false }
-    }
-
-    DisposableEffect(Unit) {
         onDispose {
-            spendsViewModel.commitDeletedSpends()
+            appViewModel.lockSwipeable.value = false
+
             if (spends !== null && spends!!.isNotEmpty()) {
                 appViewModel.setBooleanValue("tutorialSwipe", false)
             }
@@ -86,8 +82,6 @@ fun History(
 
         spends!!
             .forEach { spent ->
-                if (spent.deleted) return@forEach
-
                 if (lastSpentDate === null || !isSameDay(
                         spent.date.time,
                         lastSpentDate!!.toDate().time
@@ -300,7 +294,7 @@ fun History(
             }
 
 
-            if (spends !== null && spends!!.none { !it.deleted }) {
+            if (spends !== null) {
                 NoSpends(Modifier.weight(1f))
             }
         }
