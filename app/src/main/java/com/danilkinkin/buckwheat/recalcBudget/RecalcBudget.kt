@@ -9,8 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +36,7 @@ fun RecalcBudget(
     appViewModel: AppViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val haptic = LocalHapticFeedback.current
     val localDensity = LocalDensity.current
     val isDebug = appViewModel.isDebug.observeAsState(false)
     val coroutineScope = rememberCoroutineScope()
@@ -91,6 +94,8 @@ fun RecalcBudget(
                             count = 120 to 150,
                             lifetime = Pair(1000L, 3000L),
                         )
+
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     }
                 }
 

@@ -12,7 +12,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -43,6 +45,8 @@ fun Wallet(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val haptic = LocalHapticFeedback.current
+
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
     val currency by spendsViewModel.currency.observeAsState()
@@ -165,6 +169,7 @@ fun Wallet(
                         BudgetSummary(
                             onEdit = {
                                 isEdit = true
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             }
                         )
                     }
@@ -263,11 +268,13 @@ fun Wallet(
                             onClick = {
                                 if (spends!!.isNotEmpty() && !forceChange) {
                                     openConfirmChangeBudgetDialog.value = true
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 } else {
                                     spendsViewModel.changeCurrency(currency!!)
                                     spendsViewModel.changeBudget(budget, dateToValue.value!!)
 
                                     onClose()
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 }
                             },
                             modifier = Modifier
@@ -299,6 +306,7 @@ fun Wallet(
                 spendsViewModel.changeBudget(budget, dateToValue.value!!)
 
                 onClose()
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             },
             onClose = { openConfirmChangeBudgetDialog.value = false },
         )

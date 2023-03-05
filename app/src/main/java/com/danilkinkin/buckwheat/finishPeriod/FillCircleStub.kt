@@ -19,9 +19,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,6 +38,7 @@ fun FillCircleStub(
     modifier: Modifier = Modifier,
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
+    val haptic = LocalHapticFeedback.current
     val localDensity = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -115,6 +118,7 @@ fun FillCircleStub(
                             ejectForceCoefficient = 9f,
                             count = 30 to 60,
                         )
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     },
                 ),
             shape = CircleShape,
