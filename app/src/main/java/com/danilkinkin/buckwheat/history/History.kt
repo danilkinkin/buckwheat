@@ -49,12 +49,14 @@ fun History(
 ) {
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    var isFirstRender by remember { mutableStateOf(true) }
 
     val spends by spendsViewModel.getSpends().observeAsState(initial = null)
     val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal(0))
     val startDate = spendsViewModel.startDate.observeAsState(initial = Date())
     val finishDate = spendsViewModel.finishDate.observeAsState(initial = Date())
+    val showSwipeTutorial = remember {
+        appViewModel.getBooleanValue("tutorialSwipe", true)
+    }
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
@@ -65,6 +67,9 @@ fun History(
     DisposableEffect(Unit) {
         onDispose {
             spendsViewModel.commitDeletedSpends()
+            if (spends !== null && spends!!.isNotEmpty()) {
+                appViewModel.setBooleanValue("tutorialSwipe", false)
+            }
         }
     }
 
@@ -88,8 +93,6 @@ fun History(
                         lastSpentDate!!.toDate().time
                     )
                 ) {
-                    Log.d("compose", "header $lastSpentDate")
-
                     if (lastSpentDate !== null) {
                         list.add(
                             RowEntity(
@@ -146,9 +149,6 @@ fun History(
     } else {
         null
     }
-
-
-
 
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -220,7 +220,7 @@ fun History(
                                     spendsViewModel.removeSpent(row.spent!!)
                                 }
                             ),
-                            showTutorial = index == animatedList.value.size - 2
+                            showTutorial = index == animatedList.value.size - 2 && showSwipeTutorial
                         ) { state ->
                             val size = with(LocalDensity.current) {
                                 java.lang.Float.max(
@@ -254,7 +254,7 @@ fun History(
                             Box(
                                 modifier = Modifier.height(IntrinsicSize.Min)
                             ) {
-                                androidx.compose.material3.Surface(
+                                Surface(
                                     modifier = Modifier
                                         .fillMaxSize()
                                         .padding(
