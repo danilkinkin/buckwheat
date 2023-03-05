@@ -93,6 +93,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.0.1")
     implementation("androidx.compose.material:material:1.3.1")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.1")
     implementation("androidx.room:room-runtime:2.5.0")
     kapt("androidx.room:room-compiler:2.5.0")

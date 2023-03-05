@@ -1,32 +1,44 @@
 package com.danilkinkin.buckwheat.history
 
 import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DismissDirection
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.Collapse
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.util.isSameDay
+import com.danilkinkin.buckwheat.util.toDate
+import com.danilkinkin.buckwheat.util.toLocalDate
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.time.LocalDate
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun History(
     modifier: Modifier = Modifier,
@@ -36,22 +48,24 @@ fun History(
 ) {
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    var isFirstRender by remember { mutableStateOf(true) }
 
-    val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
+    val spends by spendsViewModel.getSpends().observeAsState(initial = null)
     val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal(0))
     val startDate = spendsViewModel.startDate.observeAsState(initial = Date())
     val finishDate = spendsViewModel.finishDate.observeAsState(initial = Date())
+    val showSwipeTutorial = remember {
+        appViewModel.getBooleanValue("tutorialSwipe", true)
+    }
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
 
-        onDispose { appViewModel.lockSwipeable.value = false }
-    }
-
-    DisposableEffect(Unit) {
         onDispose {
-            spendsViewModel.commitDeletedSpends()
+            appViewModel.lockSwipeable.value = false
+
+            if (spends !== null && spends!!.isNotEmpty()) {
+                appViewModel.setBooleanValue("tutorialSwipe", false)
+            }
         }
     }
 
@@ -60,39 +74,82 @@ fun History(
         animationSpec = TweenSpec(250),
     )
 
-    var lastDate: Date? = null
-    val spendsPerDay = remember(spends) {
-        val list = emptyList<MutableList<Spent>>().toMutableList()
+    val animatedList = if (spends !== null) {
+        val list = emptyList<RowEntity>().toMutableList()
 
-        spends.forEach { spent ->
-            if (lastDate === null || !isSameDay(spent.date.time, lastDate!!.time)) {
-                lastDate = spent.date
+        var lastSpentDate: LocalDate? = null
+        var lastDayTotal: BigDecimal = BigDecimal.ZERO
 
-                list.add(emptyList<Spent>().toMutableList())
+        spends!!
+            .forEach { spent ->
+                if (lastSpentDate === null || !isSameDay(
+                        spent.date.time,
+                        lastSpentDate!!.toDate().time
+                    )
+                ) {
+                    if (lastSpentDate !== null) {
+                        list.add(
+                            RowEntity(
+                                type = RowEntityType.DayTotal,
+                                key = "total-${lastSpentDate}",
+                                contentHash = "$lastDayTotal",
+                                spent = null,
+                                day = lastSpentDate!!,
+                                dayTotal = lastDayTotal,
+                            )
+                        )
+                    }
+
+                    lastSpentDate = spent.date.toLocalDate()
+                    lastDayTotal = BigDecimal.ZERO
+
+                    list.add(
+                        RowEntity(
+                            type = RowEntityType.DayDivider,
+                            key = "header-${lastSpentDate}",
+                            spent = null,
+                            day = lastSpentDate!!,
+                            dayTotal = null,
+                        )
+                    )
+                }
+
+                lastDayTotal += spent.value
+
+                list.add(
+                    RowEntity(
+                        type = RowEntityType.Spent,
+                        key = "spent-${spent.uid}",
+                        spent = spent,
+                        day = lastSpentDate!!,
+                        dayTotal = null,
+                    )
+                )
             }
 
-            list.last().add(spent)
+        if (spends!!.isNotEmpty() && lastSpentDate !== null) {
+            list.add(
+                RowEntity(
+                    type = RowEntityType.DayTotal,
+                    key = "total-${lastSpentDate!!}",
+                    contentHash = "$lastDayTotal",
+                    spent = null,
+                    day = lastSpentDate!!,
+                    dayTotal = lastDayTotal,
+                )
+            )
         }
 
-        return@remember list
+
+        updateAnimatedItemsState(newList = list.toList().map { it })
+    } else {
+        null
     }
 
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             LazyColumn(state = scrollState) {
                 item("budget-info") {
-                    DisposableEffect(spends.size) {
-                        if (spends.isEmpty() || !isFirstRender) return@DisposableEffect onDispose {  }
-
-                        isFirstRender = false
-
-                        coroutineScope.launch {
-                            scrollState.scrollToItem(spends.size + 1)
-                        }
-
-                        onDispose { }
-                    }
-
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -116,43 +173,109 @@ fun History(
                     )
                 }
 
-                spendsPerDay.forEach { spends ->
-                    var spentPerDay = BigDecimal(0)
-                    val date = spends.first().date
-                    val isAllDeleted = spends.find { !it.deleted } === null
-
-                    item("header-${date.time}") {
-                        Collapse(show = !isAllDeleted) {
-                            HistoryDateDivider(date)
+                if (animatedList !== null) animatedItemsIndexed(
+                    state = animatedList.value,
+                    key = { rowItem -> rowItem.key },
+                ) { index, row ->
+                    if (index == 0) {
+                        LaunchedEffect(Unit) {
+                            coroutineScope.launch {
+                                scrollState.scrollToItem(animatedList.value.size + 1)
+                            }
                         }
                     }
-
-                    spends.forEach { spent ->
-                        item(spent.uid) {
-                            Spent(
-                                spent = spent,
-                                currency = spendsViewModel.currency.value!!,
-                                onEdit = {
-                                    spendsViewModel.editSpent(spent)
-
+                    when (row.type) {
+                        RowEntityType.DayDivider -> HistoryDateDivider(row.day)
+                        RowEntityType.DayTotal -> TotalPerDay(
+                            spentPerDay = row.dayTotal!!,
+                            currency = spendsViewModel.currency.value!!,
+                        )
+                        RowEntityType.Spent -> SwipeActions(
+                            startActionsConfig = SwipeActionsConfig(
+                                threshold = 0.4f,
+                                background = MaterialTheme.colorScheme.tertiaryContainer,
+                                backgroundActive = MaterialTheme.colorScheme.tertiary,
+                                iconTint = MaterialTheme.colorScheme.onTertiary,
+                                icon = painterResource(R.drawable.ic_edit),
+                                stayDismissed = true,
+                                onDismiss = {
+                                    spendsViewModel.editSpent(row.spent!!)
                                     onClose()
-                                },
-                                onDelete = {
-                                    spendsViewModel.removeSpent(spent)
+                                }
+                            ),
+                            endActionsConfig = SwipeActionsConfig(
+                                threshold = 0.4f,
+                                background = MaterialTheme.colorScheme.errorContainer,
+                                backgroundActive = MaterialTheme.colorScheme.error,
+                                iconTint = MaterialTheme.colorScheme.onError,
+                                icon = painterResource(R.drawable.ic_delete_forever),
+                                stayDismissed = true,
+                                onDismiss = {
+                                    spendsViewModel.removeSpent(row.spent!!)
+                                }
+                            ),
+                            showTutorial = index == animatedList.value.size - 2 && showSwipeTutorial
+                        ) { state ->
+                            val size = with(LocalDensity.current) {
+                                java.lang.Float.max(
+                                    java.lang.Float.min(
+                                        16.dp.toPx(),
+                                        abs(state.offset.value)
+                                    ), 0f
+                                ).toDp()
+                            }
+
+                            val animateCorners by remember {
+                                derivedStateOf {
+                                    state.offset.value.absoluteValue > 30
+                                }
+                            }
+                            val startCorners by animateDpAsState(
+                                targetValue = when {
+                                    state.dismissDirection == DismissDirection.StartToEnd &&
+                                            animateCorners -> 8.dp
+                                    else -> 0.dp
                                 }
                             )
-                        }
-                        if (!spent.deleted) {
-                            spentPerDay += spent.value
-                        }
-                    }
-
-                    item("total-${date.time}") {
-                        Collapse(show = !isAllDeleted) {
-                            TotalPerDay(
-                                spentPerDay = spentPerDay,
-                                currency = spendsViewModel.currency.value!!,
+                            val endCorners by animateDpAsState(
+                                targetValue = when {
+                                    state.dismissDirection == DismissDirection.EndToStart &&
+                                            animateCorners -> 8.dp
+                                    else -> 0.dp
+                                }
                             )
+
+                            Box(
+                                modifier = Modifier.height(IntrinsicSize.Min)
+                            ) {
+                                Surface(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(
+                                            vertical = min(
+                                                size / 4f,
+                                                4.dp
+                                            )
+                                        )
+                                        .clip(RoundedCornerShape(size)),
+                                    color = colorEditor,
+                                    shape = RoundedCornerShape(
+                                        topStart = startCorners,
+                                        bottomStart = startCorners,
+                                        topEnd = endCorners,
+                                        bottomEnd = endCorners,
+                                    ),
+                                ) {
+                                }
+                                Box(
+                                    modifier = Modifier.padding(vertical = 4.dp)
+                                ) {
+                                    SpentItem(
+                                        spent = row.spent!!,
+                                        currency = spendsViewModel.currency.value!!
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -171,7 +294,7 @@ fun History(
             }
 
 
-            if (spends.none { !it.deleted }) {
+            if (spends !== null && spends!!.isEmpty()) {
                 NoSpends(Modifier.weight(1f))
             }
         }
@@ -189,7 +312,7 @@ fun History(
                     .scale(fapScale),
                 onClick = {
                     coroutineScope.launch {
-                        scrollState.animateScrollToItem(spends.size + 1)
+                        scrollState.animateScrollToItem(animatedList!!.value.size + 1)
                     }
                 },
             ) {

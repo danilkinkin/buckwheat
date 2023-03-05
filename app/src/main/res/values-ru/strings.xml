@@ -30,7 +30,7 @@
     <string name="remove_spent">Трата возвращена в бюджет</string>
     <string name="remove_spent_undo">Отменить</string>
     <string name="no_spends">Трат пока не было</string>
-    <string name="total_per_day">Итого:</string>
+    <string name="total_per_day">Дневной итог:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Бюджет</string>
@@ -86,6 +86,7 @@
     <string name="about">О приложении</string>
     <string name="description">Гречка — это приложение, которое помогает осознанно тратить деньги. Записывание каждой траты отрезвляет ум и дает понимание сколько и как вы можете тратить</string>
     <string name="report_bug">Сообщить об ошибке</string>
+    <string name="contribute">Сделать вклад</string>
     <string name="developer">Разработка и дизайн:</string>
 
     <!-- Bug reporting -->

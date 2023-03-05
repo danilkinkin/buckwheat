@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.wallet
 
+import OverrideLocalize
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -163,12 +164,14 @@ fun CustomCurrencyEditor(
         onDismissRequest = { onClose() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        RenderAdaptivePane(windowSizeClass) {
-            CustomCurrencyEditorContent(
-                defaultCurrency = defaultCurrency,
-                onChange = onChange,
-                onClose = { onClose() }
-            )
+        OverrideLocalize {
+            RenderAdaptivePane(windowSizeClass) {
+                CustomCurrencyEditorContent(
+                    defaultCurrency = defaultCurrency,
+                    onChange = onChange,
+                    onClose = { onClose() }
+                )
+            }
         }
     }
 }

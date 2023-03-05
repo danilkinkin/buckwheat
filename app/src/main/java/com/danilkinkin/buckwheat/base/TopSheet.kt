@@ -1,5 +1,7 @@
 package com.danilkinkin.buckwheat.base
 
+import android.view.MotionEvent
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -13,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.material3.Card
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
@@ -22,12 +25,14 @@ import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
+import kotlinx.coroutines.launch
 import java.lang.Float.max
 import kotlin.math.roundToInt
 
@@ -37,6 +42,7 @@ enum class TopSheetValue {
     HalfExpanded
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 @ExperimentalMaterialApi
 fun TopSheetLayout(
@@ -48,6 +54,7 @@ fun TopSheetLayout(
     sheetContentExpand: @Composable () -> Unit,
 ) {
     val localDensity = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
 
     var lock by remember { mutableStateOf(false) }
     var scroll by remember { mutableStateOf(false) }
@@ -63,7 +70,8 @@ fun TopSheetLayout(
     ) {
         val fullHeight = constraints.maxHeight.toFloat()
         val halfHeight = customHalfHeight ?: (fullHeight / 2)
-        val expandHeight = with(localDensity) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
+        val expandHeight =
+            with(localDensity) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
         val currOffset = swipeableState.offset.value
         val maxOffset = (-(expandHeight - halfHeight)).coerceAtMost(0f)
 
@@ -209,11 +217,25 @@ fun TopSheetLayout(
                                             .toFloat()
                                     ),
                                 ),
-                                startY = 0f,
-                                endY = (6 / 32f) * 100f,
+                                startY = 20f,
+                                endY = 80f,
                             )
                         )
-                        .padding(bottom = 10.dp, top = 16.dp)
+                        .pointerInteropFilter {
+                            when (it.action) {
+                                MotionEvent.ACTION_DOWN -> {
+                                    if (swipeableState.currentValue === TopSheetValue.Expanded) {
+                                        lock = false
+
+                                        true
+                                    } else {
+                                        false
+                                    }
+                                }
+                                else -> false
+                            }
+                        }
+                        .padding(bottom = 10.dp, top = 32.dp)
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
                 ) {
@@ -230,6 +252,12 @@ fun TopSheetLayout(
                     )
                 }
             }
+        }
+    }
+
+    BackHandler(swipeableState.currentValue === TopSheetValue.Expanded) {
+        coroutineScope.launch {
+            swipeableState.animateTo(TopSheetValue.HalfExpanded)
         }
     }
 }

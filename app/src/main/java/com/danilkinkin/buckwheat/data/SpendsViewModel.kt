@@ -376,7 +376,7 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun removeSpent(spent: Spent) {
-        this.spentDao.markAsDeleted(spent.uid, true)
+        this.spentDao.delete(spent)
 
         if (!isSameDay(spent.date.time, Date().time)) {
             val restDays = countDays(finishDate.value!!)
@@ -404,11 +404,7 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun undoRemoveSpent(spent: Spent) {
-        if (this.spentDao.getById(spent.uid) !== null) {
-            this.spentDao.markAsDeleted(spent.uid, false)
-        } else {
-            this.spentDao.insert(spent.copy(deleted = false))
-        }
+        this.spentDao.insert(spent)
 
         if (!isSameDay(spent.date.time, Date().time)) {
             val restDays = countDays(finishDate.value!!)
@@ -430,10 +426,6 @@ class SpendsViewModel @Inject constructor(
                 Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString())
             )
         }
-    }
-
-    fun commitDeletedSpends() {
-        this.spentDao.commitDeleted()
     }
 
     fun hideOverspendingWarn(overspendingWarnHidden: Boolean) {

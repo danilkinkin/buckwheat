@@ -78,4 +78,17 @@ class AppViewModel @Inject constructor(
     fun closeSheet(name: String) {
         sheetStates.value = sheetStates.value!!.minus(name)
     }
+
+    fun getBooleanValue(key: String, defaultValue: Boolean = false): Boolean {
+        return try {
+            val value = storage.get(key).value.toBoolean()
+            value
+        } catch (e: Exception) {
+            defaultValue
+        }
+    }
+
+    fun setBooleanValue(key: String, value: Boolean) {
+        storage.set(Storage(key, value.toString()))
+    }
 }

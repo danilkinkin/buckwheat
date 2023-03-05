@@ -142,7 +142,10 @@ fun FinishPeriod(
                 )
             }
 
-            Spacer(Modifier.height(120.dp))
+            val navigationBarHeight =
+                WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().coerceAtLeast(16.dp)
+
+            Spacer(Modifier.height(120.dp + navigationBarHeight))
         }
 
         Box(

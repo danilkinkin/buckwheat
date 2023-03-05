@@ -28,7 +28,7 @@
     <string name="remove_spent">Expenditure returned to budget</string>
     <string name="remove_spent_undo">Undo</string>
     <string name="no_spends">No spending yet</string>
-    <string name="total_per_day">Total:</string>
+    <string name="total_per_day">Day total:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Budget</string>
@@ -81,6 +81,7 @@
     <string name="about">About app</string>
     <string name="description">Buckwheat is an app that helps you spend money wisely. Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.</string>
     <string name="report_bug">Report a bug</string>
+    <string name="contribute">Contribute</string>
     <string name="developer">Development &amp; design:</string>
 
     <!-- Bug reporting -->

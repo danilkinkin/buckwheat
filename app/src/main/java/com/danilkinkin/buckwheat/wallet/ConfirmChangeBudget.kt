@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.wallet
 
+import OverrideLocalize
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -93,11 +94,13 @@ fun ConfirmChangeBudgetDialog(
         onDismissRequest = { onClose() },
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
-        RenderAdaptivePane(windowSizeClass) {
-            ConfirmChangeBudget(
-                onConfirm = onConfirm,
-                onClose = onClose
-            )
+        OverrideLocalize {
+            RenderAdaptivePane(windowSizeClass) {
+                ConfirmChangeBudget(
+                    onConfirm = onConfirm,
+                    onClose = onClose
+                )
+            }
         }
     }
 }

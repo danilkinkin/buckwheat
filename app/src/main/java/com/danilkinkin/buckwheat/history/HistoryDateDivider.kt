@@ -9,12 +9,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.prettyDate
+import com.danilkinkin.buckwheat.util.toDate
+import com.danilkinkin.buckwheat.util.toLocalDate
+import java.time.LocalDate
 import java.util.*
 
 @Composable
-fun HistoryDateDivider(date: Date) {
+fun HistoryDateDivider(date: LocalDate) {
     Text(
-        text = prettyDate(date, forceShowDate = true, showTime = false, human = true),
+        text = prettyDate(date.toDate(), forceShowDate = true, showTime = false, human = true),
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.primary,
         modifier = Modifier
@@ -26,6 +29,6 @@ fun HistoryDateDivider(date: Date) {
 @Composable
 private fun PreviewDefault() {
     BuckwheatTheme {
-        HistoryDateDivider(Date())
+        HistoryDateDivider(Date().toLocalDate())
     }
 }

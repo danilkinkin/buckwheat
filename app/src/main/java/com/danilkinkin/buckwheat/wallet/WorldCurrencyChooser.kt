@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.wallet
 
+import OverrideLocalize
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -248,12 +249,14 @@ fun WorldCurrencyChooser(
             decorFitsSystemWindows = false,
         )
     ) {
-        RenderAdaptivePane(windowSizeClass) {
-            WorldCurrencyChooserContent(
-                defaultCurrency = defaultCurrency,
-                onSelect = onSelect,
-                onClose = { onClose() }
-            )
+        OverrideLocalize {
+            RenderAdaptivePane(windowSizeClass) {
+                WorldCurrencyChooserContent(
+                    defaultCurrency = defaultCurrency,
+                    onSelect = onSelect,
+                    onClose = { onClose() }
+                )
+            }
         }
     }
 }
