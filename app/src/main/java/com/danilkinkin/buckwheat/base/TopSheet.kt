@@ -217,8 +217,8 @@ fun TopSheetLayout(
                                             .toFloat()
                                     ),
                                 ),
-                                startY = 0f,
-                                endY = 50f,
+                                startY = 20f,
+                                endY = 80f,
                             )
                         )
                         .pointerInteropFilter {
