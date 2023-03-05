@@ -19,7 +19,7 @@ enum class RowEntityType { DayDivider, Spent, DayTotal }
 data class RowEntity(
     val type: RowEntityType,
     val key: String,
-    val contentHash: String? = null,
+    var contentHash: String? = null,
     val day: LocalDate,
     val spent: Spent?,
     var dayTotal: BigDecimal?,
@@ -43,7 +43,6 @@ inline fun LazyListScope.animatedItemsIndexed(
     ) { index ->
 
         val item = state[index]
-        val visibility = item.visibility
 
         key(key?.invoke(item.item)) {
             AnimatedVisibility(
@@ -113,6 +112,7 @@ fun updateAnimatedItemsState(
             override fun onChanged(position: Int, count: Int, payload: Any?) {
                 for (i in 0 until count) {
                     compositeList[position + i].item.dayTotal = (payload as RowEntity).dayTotal
+                    compositeList[position + i].item.contentHash = payload.contentHash
                 }
             }
         })
