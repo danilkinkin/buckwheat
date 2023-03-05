@@ -139,13 +139,14 @@ class AppWidget : GlanceAppWidget() {
 
 class AddSpendActionCallback : ActionCallback {
     override suspend fun onAction(
-        context: Context, glanceId: GlanceId, parameters: ActionParameters
+        context: Context,
+        glanceId: GlanceId,
+        parameters: ActionParameters
     ) {
         Log.d("Buckwheat widget", "add spend...")
     }
 }
 
 class AppWidgetReceiver : GlanceAppWidgetReceiver() {
-
     override val glanceAppWidget = AppWidget()
 }
