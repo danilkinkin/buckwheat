@@ -294,7 +294,7 @@ fun History(
             }
 
 
-            if (spends !== null) {
+            if (spends !== null && spends!!.isEmpty()) {
                 NoSpends(Modifier.weight(1f))
             }
         }
