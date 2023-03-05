@@ -25,7 +25,7 @@ fun SendingCrashReport() {
     val sendCrashReport = remember {
         val currentValue = runBlocking { context.dataStore.data.first() }
 
-        val isSend = (currentValue[stringPreferencesKey("send_crash_report")] ?: "true").toBoolean()
+        val isSend = (currentValue[stringPreferencesKey("send_crash_report")] ?: "false").toBoolean()
 
         mutableStateOf(isSend)
     }
