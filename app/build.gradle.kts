@@ -141,7 +141,7 @@ sentry {
     }
     autoInstallation {
         enabled.set(true)
-        sentryVersion.set("6.6.0")
+        sentryVersion.set("6.15.0")
     }
     includeDependenciesReport.set(true)
     ignoredBuildTypes.set(setOf("debug"))
