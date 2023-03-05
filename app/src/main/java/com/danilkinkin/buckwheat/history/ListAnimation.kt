@@ -1,7 +1,6 @@
 package com.danilkinkin.buckwheat.history
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -20,9 +19,10 @@ enum class RowEntityType { DayDivider, Spent, DayTotal }
 data class RowEntity(
     val type: RowEntityType,
     val key: String,
+    val contentHash: String? = null,
     val day: LocalDate,
     val spent: Spent?,
-    val dayTotal: BigDecimal?,
+    var dayTotal: BigDecimal?,
 )
 
 @Suppress("UpdateTransitionLabel", "TransitionPropertiesLabel")
@@ -71,9 +71,6 @@ fun updateAnimatedItemsState(
         }
         val oldList = state.value.toList()
 
-        Log.d("listAnimation", "old = ${oldList.joinToString { it.item.key }}")
-        Log.d("listAnimation", "new = ${newList.joinToString { it.key }}")
-
         val diffCb = object : DiffUtil.Callback() {
             override fun getOldListSize(): Int = oldList.size
             override fun getNewListSize(): Int = newList.size
@@ -81,8 +78,12 @@ fun updateAnimatedItemsState(
                 oldList[oldItemPosition].item.key == newList[newItemPosition].key
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
-                oldList[oldItemPosition].item.key == newList[newItemPosition].key
+                (oldList[oldItemPosition].item.contentHash
+                    ?: oldList[oldItemPosition].item.key) == (newList[newItemPosition].contentHash
+                    ?: newList[newItemPosition].key)
 
+            override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): RowEntity =
+                newList[newItemPosition]
         }
         val diffResult = calculateDiff(false, diffCb)
         val compositeList = oldList.toMutableList()
@@ -90,7 +91,10 @@ fun updateAnimatedItemsState(
         diffResult.dispatchUpdatesTo(object : ListUpdateCallback {
             override fun onInserted(position: Int, count: Int) {
                 for (i in 0 until count) {
-                    val newItem = AnimatedItem(visibility = MutableTransitionState(firstInject.value), newList[position + i])
+                    val newItem = AnimatedItem(
+                        visibility = MutableTransitionState(firstInject.value),
+                        newList[position + i]
+                    )
                     newItem.visibility.targetState = true
                     compositeList.add(position + i, newItem)
                 }
@@ -107,10 +111,12 @@ fun updateAnimatedItemsState(
             }
 
             override fun onChanged(position: Int, count: Int, payload: Any?) {
-                // irrelevant with compose.
+                for (i in 0 until count) {
+                    compositeList[position + i].item.dayTotal = (payload as RowEntity).dayTotal
+                }
             }
         })
-        Log.d("listAnimation", "compositeList = ${compositeList.joinToString { it.item.key }}")
+
         if (state.value != compositeList) {
             state.value = compositeList
         }
@@ -143,7 +149,6 @@ data class AnimatedItem<T>(
         return true
     }
 }
-
 
 
 suspend fun calculateDiff(

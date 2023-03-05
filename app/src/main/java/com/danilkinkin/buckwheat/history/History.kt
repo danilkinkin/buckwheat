@@ -92,6 +92,7 @@ fun History(
                             RowEntity(
                                 type = RowEntityType.DayTotal,
                                 key = "total-${lastSpentDate}",
+                                contentHash = "$lastDayTotal",
                                 spent = null,
                                 day = lastSpentDate!!,
                                 dayTotal = lastDayTotal,
@@ -131,6 +132,7 @@ fun History(
                 RowEntity(
                     type = RowEntityType.DayTotal,
                     key = "total-${lastSpentDate!!}",
+                    contentHash = "$lastDayTotal",
                     spent = null,
                     day = lastSpentDate!!,
                     dayTotal = lastDayTotal,
@@ -148,8 +150,6 @@ fun History(
         Column(Modifier.fillMaxSize()) {
             LazyColumn(state = scrollState) {
                 item("budget-info") {
-
-
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
