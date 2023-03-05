@@ -129,7 +129,7 @@ fun History(
                 )
             }
 
-        if (spends!!.isNotEmpty()) {
+        if (spends!!.isNotEmpty() && lastSpentDate !== null) {
             list.add(
                 RowEntity(
                     type = RowEntityType.DayTotal,
