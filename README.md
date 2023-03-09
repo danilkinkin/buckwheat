@@ -1,6 +1,4 @@
-<p align="center">
-  <img width="350" height="300" src="/screenshots/logo.svg" alt="Buckwheat logo">
-</p>
+<img width="100%" height="auto" src="/screenshots/en/github-screenshot.png" alt="Buckwheat logo with screenshots">
 
 [![Latest release][release-badge]][github-releases]
 
