@@ -21,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.ThemeMode
 import com.danilkinkin.buckwheat.ui.syncTheme
-import com.danilkinkin.buckwheat.util.initSentry
 import com.danilkinkin.buckwheat.util.locScreenOrientation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -45,8 +44,6 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch {
             context.dataStore.data.first()
         }
-
-        initSentry(context)
 
         super.onCreate(savedInstanceState)
 

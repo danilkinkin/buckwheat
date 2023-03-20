@@ -7,7 +7,6 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("io.sentry.android.gradle")
 }
 
 val sentryProperties = Properties()
@@ -34,15 +33,11 @@ android {
     buildTypes {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("debug")
-
-            buildConfigField("String", "SENTRY_DSN", "\"\"")
         }
 
         getByName("release") {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("debug")
-
-            buildConfigField("String", "SENTRY_DSN", "\"" + sentryProperties["auth.dsn"] + "\"")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -122,29 +117,6 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.45")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.45")
-}
-
-// For more info see: https://docs.sentry.io/platforms/android/gradle/
-sentry {
-    includeProguardMapping.set(true)
-    autoUploadProguardMapping.set(true)
-    experimentalGuardsquareSupport.set(true)
-    uploadNativeSymbols.set(true)
-    includeNativeSources.set(true)
-    tracingInstrumentation {
-        enabled.set(true)
-        features.set(
-            setOf(
-                io.sentry.android.gradle.extensions.InstrumentationFeature.COMPOSE,
-            )
-        )
-    }
-    autoInstallation {
-        enabled.set(true)
-        sentryVersion.set("6.15.0")
-    }
-    includeDependenciesReport.set(true)
-    ignoredBuildTypes.set(setOf("debug"))
 }
 
 secrets {

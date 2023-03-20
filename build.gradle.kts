@@ -41,6 +41,5 @@ subprojects {
 
 plugins {
     id("com.github.ben-manes.versions") version "0.43.0"
-    id("io.sentry.android.gradle") version "3.3.0"
 
 }
