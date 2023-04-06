@@ -30,10 +30,14 @@ import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.RestBudgetPill
 import com.danilkinkin.buckwheat.settings.SETTINGS_SHEET
+import com.danilkinkin.buckwheat.util.CurrencyType
+import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -45,6 +49,7 @@ fun EditorToolbar(
     val coroutineScope = rememberCoroutineScope()
     val isDebug = appViewModel.isDebug.observeAsState(false)
 
+    val overspendingWarnHidden by spendsViewModel.overspendingWarnHidden.observeAsState(false)
     val lastDaySpends by spendsViewModel.getCountLastDaySpends().observeAsState(0)
     val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
 
@@ -140,11 +145,7 @@ fun EditorToolbar(
                 onClick = { appViewModel.openSheet(PathState(DEBUG_MENU_SHEET)) },
             )
         }
-        BigIconButton(
-            icon = painterResource(R.drawable.ic_balance_wallet),
-            contentDescription = null,
-            onClick = { appViewModel.openSheet(PathState(WALLET_SHEET)) },
-        )
+        RestBudgetPill()
         BigIconButton(
             icon = painterResource(R.drawable.ic_settings),
             contentDescription = null,

@@ -36,7 +36,6 @@ fun Editor(
                 ) { focusController.focus() }
         ) {
             EditorToolbar(onOpenHistory = onOpenHistory)
-            RestBudget()
             CurrentSpendEditor(
                 modifier = Modifier
                     .fillMaxWidth()
