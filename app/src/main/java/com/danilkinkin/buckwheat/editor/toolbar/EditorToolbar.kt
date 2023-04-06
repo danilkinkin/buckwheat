@@ -81,11 +81,11 @@ fun EditorToolbar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp)
+            .padding(start = 12.dp, end = 12.dp)
             .statusBarsPadding(),
     ) {
 
-        if (mode === SpendsViewModel.Mode.ADD) {
+        /* if (mode === SpendsViewModel.Mode.ADD) {
             if (lastDaySpends != 0) {
                 Box(Modifier.weight(1f)) {
                     Surface(
@@ -136,7 +136,7 @@ fun EditorToolbar(
             }
 
             Spacer(modifier = Modifier.width(8.dp))
-        }
+        } */
 
         if (isDebug.value) {
             BigIconButton(
@@ -145,7 +145,9 @@ fun EditorToolbar(
                 onClick = { appViewModel.openSheet(PathState(DEBUG_MENU_SHEET)) },
             )
         }
+        Spacer(modifier = Modifier.width(12.dp))
         RestBudgetPill()
+        Spacer(modifier = Modifier.width(12.dp))
         BigIconButton(
             icon = painterResource(R.drawable.ic_settings),
             contentDescription = null,

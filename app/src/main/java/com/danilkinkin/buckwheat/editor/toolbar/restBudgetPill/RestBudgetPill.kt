@@ -63,6 +63,7 @@ fun RowScope.RestBudgetPill(
     var overdaft by remember { mutableStateOf(false) }
     var endBudget by remember { mutableStateOf(false) }
     var percent by remember { mutableStateOf(BigDecimal(0)) }
+    var percentReal by remember { mutableStateOf(BigDecimal(0)) }
 
 
     fun calculateValues() {
@@ -90,12 +91,21 @@ fun RowScope.RestBudgetPill(
             currency = currency,
         )
 
-        percent = restBudgetValue.divide(dailyBudget, 5, RoundingMode.HALF_EVEN)
+        percent = if (dailyBudget > BigDecimal(0)) restBudgetValue.divide(
+            dailyBudget,
+            5,
+            RoundingMode.HALF_EVEN
+        ) else BigDecimal(0)
+        percentReal = if (dailyBudget > BigDecimal(0)) (dailyBudget - spentFromDailyBudget).divide(
+            dailyBudget,
+            5,
+            RoundingMode.HALF_EVEN
+        ) else BigDecimal(0)
 
         if (restBudgetValue >= 0.toBigDecimal()) {
-            finalBudgetValue = restBudgetValue;
+            finalBudgetValue = restBudgetValue
         } else {
-            finalBudgetValue = newPerDayBudget.coerceAtLeast(BigDecimal(0));
+            finalBudgetValue = newPerDayBudget.coerceAtLeast(BigDecimal(0))
         }
     }
 
@@ -183,6 +193,26 @@ fun RowScope.RestBudgetPill(
                     Box(
                         modifier = Modifier
                             .background(
+                                harmonizedColor.main.copy(alpha = 0.5f),
+                                shape = WavyShape(
+                                    period = 30.dp,
+                                    amplitude = 2.dp,
+                                    shift = shift.value,
+                                ),
+                            )
+                            .fillMaxHeight()
+                            .fillMaxWidth(percentReal.toFloat()),
+                    )
+                }
+
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(
                                 harmonizedColor.main,
                                 shape = WavyShape(
                                     period = 30.dp,
@@ -208,15 +238,23 @@ fun RowScope.RestBudgetPill(
                                 .height(44.dp),
                             shape = MaterialTheme.shapes.extraLarge,
                             colors = CardDefaults.cardColors(
-                                containerColor = harmonizedColor.container,
+                                containerColor = harmonizedColor.container.copy(alpha = 0f),
                                 contentColor = harmonizedColor.onContainer,
                             ),
                             onClick = {
 
                                 if (endBudget) {
-                                    appViewModel.openSheet(PathState(BUDGET_IS_OVER_DESCRIPTION_SHEET))
+                                    appViewModel.openSheet(
+                                        PathState(
+                                            BUDGET_IS_OVER_DESCRIPTION_SHEET
+                                        )
+                                    )
                                 } else {
-                                    appViewModel.openSheet(PathState(NEW_DAY_BUDGET_DESCRIPTION_SHEET))
+                                    appViewModel.openSheet(
+                                        PathState(
+                                            NEW_DAY_BUDGET_DESCRIPTION_SHEET
+                                        )
+                                    )
                                 }
                             }
                         ) {
