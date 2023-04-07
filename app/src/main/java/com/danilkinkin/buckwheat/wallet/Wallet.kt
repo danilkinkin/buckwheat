@@ -175,7 +175,7 @@ fun Wallet(
                     }
                 }
                 ButtonRow(
-                    icon = painterResource(R.drawable.ic_choice),
+                    icon = painterResource(R.drawable.ic_directions),
                     text = stringResource(R.string.rest_label),
                     onClick = {
                         appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
