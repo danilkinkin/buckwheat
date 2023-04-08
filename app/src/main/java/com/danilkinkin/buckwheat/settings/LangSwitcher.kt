@@ -46,10 +46,14 @@ fun LangSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
         text = stringResource(R.string.locale_label),
         onClick = {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                val intent = Intent(android.provider.Settings.ACTION_APP_LOCALE_SETTINGS)
-                val uri: Uri = Uri.fromParts("package", context.packageName, null)
-                intent.data = uri
-                startActivity(context, intent, null)
+                try {
+                    val intent = Intent(android.provider.Settings.ACTION_APP_LOCALE_SETTINGS)
+                    val uri: Uri = Uri.fromParts("package", context.packageName, null)
+                    intent.data = uri
+                    startActivity(context, intent, null)
+                } catch (error: Error) {
+                    appViewModel.openSheet(PathState(SETTINGS_CHANGE_LOCALE_SHEET))
+                }
             } else {
                 appViewModel.openSheet(PathState(SETTINGS_CHANGE_LOCALE_SHEET))
             }
