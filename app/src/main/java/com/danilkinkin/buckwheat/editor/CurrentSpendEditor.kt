@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.EaseInQuad
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -284,8 +286,8 @@ fun CurrentSpendEditor(
                 }
             } else {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.CenterStart,
+                    modifier = Modifier.fillMaxSize().background(Color.Green.copy(alpha = 0.3f)),
+                    contentAlignment = Alignment.CenterEnd,
                 ) {
                     EditableTextWithLabel(
                         value = spentValue,
@@ -320,6 +322,11 @@ fun CurrentSpendEditor(
                             fontSize = MaterialTheme.typography.headlineMedium.fontSize,
                             fontWeight = FontWeight.W700,
                             baselineShift = BaselineShift(0.26f)
+                        ),
+                        currencyStyle = SpanStyle(
+                            fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                            fontWeight = FontWeight.W700,
+                            baselineShift = BaselineShift(0f)
                         ),
                     )
 
