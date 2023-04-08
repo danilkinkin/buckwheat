@@ -122,15 +122,6 @@ fun CurrentSpendEditor(
     }
 
     BoxWithConstraints(modifier) {
-        val maxHeight = with(localDensity) {
-            constraints.maxHeight.toDp()
-        }
-
-        val maxFontSize = min(
-            calcMaxFont(with(localDensity) { maxHeight.toPx() * 0.8f }),
-            80.sp,
-        )
-
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.CenterEnd,
@@ -138,12 +129,6 @@ fun CurrentSpendEditor(
             if (!hide) {
                 EditableTextWithLabel(
                     value = spentValue,
-                    label = if (mode === SpendsViewModel.Mode.ADD) {
-                        stringResource(R.string.new_spent)
-                    } else {
-                        stringResource(R.string.edit_spent)
-                    },
-                    placeholder = "",
                     onChangeValue = {
                         val fixed = fixedNumberString(it)
                         val converted = tryConvertStringToNumber(fixed)
@@ -160,19 +145,7 @@ fun CurrentSpendEditor(
                         }
                     },
                     currency = currency,
-                    fontSizeValue = maxFontSize,
-                    fontSizeLabel = MaterialTheme.typography.labelLarge.fontSize,
                     focusRequester = focusRequester,
-                    placeholderStyle = SpanStyle(
-                        fontSize = MaterialTheme.typography.headlineMedium.fontSize,
-                        fontWeight = FontWeight.W700,
-                        baselineShift = BaselineShift(0.26f)
-                    ),
-                    currencyStyle = SpanStyle(
-                        fontSize = MaterialTheme.typography.headlineMedium.fontSize,
-                        fontWeight = FontWeight.W700,
-                        baselineShift = BaselineShift(0f)
-                    ),
                 )
 
                 DisposableEffect(requestFocus) {

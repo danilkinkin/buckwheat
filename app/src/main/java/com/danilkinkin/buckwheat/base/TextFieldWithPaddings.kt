@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -24,17 +25,17 @@ import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.Paragraph
-import androidx.compose.ui.text.ParagraphIntrinsics
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import kotlinx.coroutines.launch
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
+import com.danilkinkin.buckwheat.editor.calcAdaptiveFont
 import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import kotlinx.coroutines.CoroutineStart
@@ -46,8 +47,6 @@ fun TextFieldWithPaddings(
     value: String = "",
     onChangeValue: (output: String) -> Unit,
     contentPadding: PaddingValues = PaddingValues(horizontal = 32.dp),
-    currencyStyle: TextStyle = MaterialTheme.typography.displaySmall,
-    textStyle: TextStyle = MaterialTheme.typography.displayLarge,
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     currency: ExtendCurrency? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -57,6 +56,7 @@ fun TextFieldWithPaddings(
     val textFieldValue = textFieldValueState.copy(text = value)
 
     val scrollState = rememberScrollState()
+    var containerHeight by remember { mutableStateOf(0) }
     var containerWidth by remember { mutableStateOf(0) }
     var inputWidth by remember { mutableStateOf(0) }
     var currencySymbolSize by remember(value) { mutableStateOf(Size(0, 0)) }
@@ -86,6 +86,27 @@ fun TextFieldWithPaddings(
             minimumFractionDigits = 0,
         ).filter { it !='0' }
     }
+
+    val fontSize = calcAdaptiveFont(
+        height = containerHeight.toFloat(),
+        width = (containerWidth - gapStart - gapEnd).toFloat(),
+        maxFontSize = 80.sp,
+        minFontSize = 40.sp,
+        text = (currSymbol ?: "") + textFieldValue.text,
+        style = MaterialTheme.typography.displayLarge.copy(
+            fontWeight = FontWeight.W700,
+        )
+    )
+
+    val textStyle = MaterialTheme.typography.displayLarge.copy(
+        fontSize = fontSize,
+        fontWeight = FontWeight.W700,
+    )
+
+    val currencyStyle = MaterialTheme.typography.displaySmall.copy(
+        fontSize = textStyle.fontSize * 0.5f,
+        fontWeight = FontWeight.W700,
+    )
 
     currencySymbolSize = calculateIntrinsics(
         currSymbol ?: "",
@@ -187,7 +208,10 @@ fun TextFieldWithPaddings(
         Box(
             Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
+                .background(Color.Blue.copy(alpha = 0.4f))
                 .onGloballyPositioned {
+                    containerHeight = it.size.height
                     containerWidth = it.size.width
                 }
         ) {
@@ -225,13 +249,21 @@ fun TextFieldWithPaddings(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .fillMaxHeight()
                             .horizontalScroll(scrollState)
                             .padding(contentPadding)
+                            .background(Color.Green.copy(alpha = 0.4f))
                             .onGloballyPositioned {
                                 inputWidth = it.size.width
-                            }
+                            },
+                        contentAlignment = Alignment.CenterStart
                     ) {
-                        input()
+                        Box(
+                            modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            input()
+                        }
 
                         if (currSymbol !== null && textFieldValue.text.isNotEmpty()) {
                             Text(
@@ -239,7 +271,7 @@ fun TextFieldWithPaddings(
                                 style = currencyStyle,
                                 modifier = Modifier.offset(
                                     with(localDensity) { (inputWidth - valueSize.width - currencySymbolSize.width).toDp() },
-                                    with(localDensity) { (valueSize.height - currencySymbolSize.height - valueSize.height * 0.1f).toDp() },
+                                    with(localDensity) { (valueSize.height - currencySymbolSize.height + valueSize.height * 0.14f - valueSize.height * 0.5f).toDp() },
                                 )
                             )
                         }
