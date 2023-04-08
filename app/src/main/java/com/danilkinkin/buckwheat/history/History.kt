@@ -53,12 +53,14 @@ fun History(
     val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal(0))
     val startDate = spendsViewModel.startDate.observeAsState(initial = Date())
     val finishDate = spendsViewModel.finishDate.observeAsState(initial = Date())
+    val scrollToBottom = remember { mutableStateOf(true) }
     val showSwipeTutorial = remember {
         appViewModel.getBooleanValue("tutorialSwipe", true)
     }
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
+        scrollToBottom.value = true
 
         onDispose {
             appViewModel.lockSwipeable.value = false
@@ -179,8 +181,11 @@ fun History(
                 ) { index, row ->
                     if (index == 0) {
                         LaunchedEffect(Unit) {
-                            coroutineScope.launch {
-                                scrollState.scrollToItem(animatedList.value.size + 1)
+                            if (scrollToBottom.value) {
+                                scrollToBottom.value = false
+                                coroutineScope.launch {
+                                    scrollState.scrollToItem(animatedList.value.size + 1)
+                                }
                             }
                         }
                     }
