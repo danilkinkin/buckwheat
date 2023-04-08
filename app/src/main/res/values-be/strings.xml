@@ -4,8 +4,8 @@
 
     <!-- Main -->
     <string name="budget_for_today">Бюджэт на сёння</string>
-    <string name="rest_budget_for_today">Застанецца на сёння</string>
-    <string name="new_daily_budget">Новы дзённы бюджэт</string>
+    <string name="rest_budget_for_today">На сёння</string>
+    <string name="new_daily_budget">Новы дзённы</string>
     <string name="new_daily_budget_description">Сёння вы выйшлі за рамкі дзённага бюджэту, не хвалюйцеся, гэта не страшна. На наступныя дні бюджэт будзе пералічаны з улікам агульнага бюджэту, які застаўся</string>
     <string name="budget_end">Бюджэт скончыўся</string>
     <string name="budget_end_description">Вы выйшлі за рамкі запланаванага бюджэту, не хвалюйцеся, гэта не страшна, марнаванні ніколі не бываюць аднолькавымі. Заводзіце марнаванні далей, каб разумець колькі ў выніку вы выдаткуеце і які бюджэт вам патрэбен</string>
