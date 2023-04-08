@@ -184,15 +184,17 @@ fun isNumber(char: Char): Boolean {
 fun Triple<String, String, String>.join(third: Boolean = true): String = this.first + this.second + if (third) this.third else ""
 
 fun fixedNumberString(input: String): String {
-    val floatDivider = getFloatDivider()
-
-    val before = input.substringBefore(floatDivider)
-    val after = input.substringAfter(floatDivider, "")
+    val dotExist = input.contains(".")
+    val before = input.substringBefore(".")
+    val after = input.substringAfter(".", "")
 
     val beforeFiltered = before.replace("\\D".toRegex(), "")
-    val afterFiltered = after.replace("\\D".toRegex(), "")
+    var afterFiltered = after.replace("\\D".toRegex(), "")
+    if (afterFiltered.length > 2) afterFiltered = afterFiltered.dropLast(afterFiltered.length - 2)
 
     if (beforeFiltered.isEmpty() && afterFiltered.isEmpty()) return ""
+
+    if (afterFiltered.isEmpty() && !dotExist) return beforeFiltered
 
     return "$beforeFiltered.$afterFiltered"
 }

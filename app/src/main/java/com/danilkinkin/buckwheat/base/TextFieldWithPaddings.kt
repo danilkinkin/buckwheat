@@ -209,7 +209,6 @@ fun TextFieldWithPaddings(
             Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .background(Color.Blue.copy(alpha = 0.4f))
                 .onGloballyPositioned {
                     containerHeight = it.size.height
                     containerWidth = it.size.width
@@ -252,7 +251,6 @@ fun TextFieldWithPaddings(
                             .fillMaxHeight()
                             .horizontalScroll(scrollState)
                             .padding(contentPadding)
-                            .background(Color.Green.copy(alpha = 0.4f))
                             .onGloballyPositioned {
                                 inputWidth = it.size.width
                             },

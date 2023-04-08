@@ -60,6 +60,7 @@ fun CurrentSpendEditor(
 
     fun calculateValues() {
         spentValue = spendsViewModel.rawSpentValue.value!!
+        requestFocus = true
     }
 
     observeLiveData(appViewModel.sheetStates) {
