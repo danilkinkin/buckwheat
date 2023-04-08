@@ -87,7 +87,6 @@ fun calcAdaptiveFont(
     )
 
     while (intrinsics.maxIntrinsicWidth > width && measureFontSize > minFontSize) {
-        Log.d("calcAdaptiveFont", "maxIntrinsicWidth = ${intrinsics.maxIntrinsicWidth} width = $width  measureFontSize = $measureFontSize")
         measureFontSize *= 0.9f
         intrinsics = ParagraphIntrinsics(
             text = text,

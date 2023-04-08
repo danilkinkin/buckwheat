@@ -1,19 +1,14 @@
 package com.danilkinkin.buckwheat.util
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
-import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
-import kotlin.math.max
 import kotlin.math.min
 
 private fun getAnnotatedString(
@@ -159,8 +154,20 @@ fun fixedNumberString(input: String): String {
     val before = input.substringBefore(".")
     val after = input.substringAfter(".", "")
 
-    val beforeFiltered = before.replace("\\D".toRegex(), "")
-    var afterFiltered = after.replace("\\D".toRegex(), "")
+    var addZero = false
+    var beforeFiltered = before
+        .replace("\\D".toRegex(), "")
+        .trimStart { addZero = addZero || it == '0'; it == '0'}
+
+    if (addZero) beforeFiltered = "0$beforeFiltered"
+    addZero = false
+
+    var afterFiltered = after
+        .replace("\\D".toRegex(), "")
+        .trimEnd { addZero = addZero || it == '0'; it == '0' }
+
+    if (addZero) afterFiltered = "${afterFiltered}0"
+
     if (afterFiltered.length > 2) afterFiltered = afterFiltered.dropLast(afterFiltered.length - 2)
 
     if (beforeFiltered.isEmpty() && afterFiltered.isEmpty()) return ""
