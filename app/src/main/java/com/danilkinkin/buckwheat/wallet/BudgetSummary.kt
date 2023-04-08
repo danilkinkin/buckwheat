@@ -20,24 +20,30 @@ fun BudgetSummary(
     val wholeBudget = spendsViewModel.budget.value!!
 
     Column(Modifier.padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 16.dp)) {
-        WholeBudgetCard(
-            budget = wholeBudget,
-            currency = currency!!,
-            startDate = spendsViewModel.startDate.value!!,
-            finishDate = spendsViewModel.finishDate.value!!,
+        RestAndSpentBudgetCard(
+            modifier = Modifier,
+            bigVariant = true
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         Row(
             Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min)
         ) {
-            RestAndSpentBudgetCard(
-                modifier = Modifier
-                    .weight(1f)
+            WholeBudgetCard(
+                modifier = Modifier.weight(1f),
+                bigVariant = false,
+                budget = wholeBudget,
+                currency = currency!!,
+                startDate = spendsViewModel.startDate.value!!,
+                finishDate = spendsViewModel.finishDate.value!!,
             )
-            Spacer(modifier = Modifier.width(16.dp))
-            EditButton(onClick = { onEdit() })
+            DaysLeftCard(
+                startDate = spendsViewModel.startDate.value!!,
+                finishDate = spendsViewModel.finishDate.value!!,
+            )
         }
+        EditButton(onClick = { onEdit() })
     }
 }

@@ -33,17 +33,18 @@ fun WholeBudgetCard(
     startDate: Date,
     finishDate: Date?,
     colors: CardColors = CardDefaults.cardColors(),
+    bigVariant: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
 ) {
     StatCard(
         modifier = modifier.fillMaxWidth(),
         contentPadding = contentPadding,
+        label = stringResource(R.string.whole_budget),
         value = prettyCandyCanes(
             budget,
             currency = currency,
         ),
-        label = stringResource(R.string.whole_budget),
-        valueFontSize = MaterialTheme.typography.displaySmall.fontSize,
+        valueFontSize = if (bigVariant) MaterialTheme.typography.displaySmall.fontSize else MaterialTheme.typography.titleLarge.fontSize,
         colors = colors,
         content = {
             Spacer(modifier = Modifier.height(16.dp))
@@ -59,7 +60,7 @@ fun WholeBudgetCard(
                             ),
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = if (bigVariant) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
                             fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                         )
                     }
@@ -83,7 +84,7 @@ fun WholeBudgetCard(
                             },
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = if (bigVariant) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
                             fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                         )
                     }

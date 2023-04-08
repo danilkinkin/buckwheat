@@ -77,7 +77,8 @@
     <string name="use_last">Předchozí hodnoty</string>
 
     <!-- Settings -->
-    <string name="settings_title">Nastavení</string>
+     <string name="days_left">Zbývající dny</string>
+     <string name="settings_title">Nastavení</string>
     <string name="theme_label">Motiv</string>
     <string name="theme_light">Světlý</string>
     <string name="theme_dark">Tmavý</string>

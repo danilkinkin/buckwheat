@@ -75,6 +75,7 @@
     <string name="use_last">Папярэднія значэнні</string>
 
     <!-- Settings -->
+    <string name="days_left">Дзён засталося</string>
     <string name="settings_title">Налады</string>
     <string name="theme_label">Тэма</string>
     <string name="theme_light">Светлая</string>

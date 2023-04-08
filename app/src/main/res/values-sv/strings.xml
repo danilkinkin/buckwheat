@@ -71,6 +71,7 @@
     <string name="use_last">Föregående värden</string>
 
     <!-- Inställningar -->
+    <string name="days_left">Dagar kvar</string>
     <string name="settings_title">Inställningar</string>
     <string name="theme_label">Apptema</string>
     <string name="theme_light">Ljus</string>

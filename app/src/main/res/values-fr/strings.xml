@@ -78,6 +78,7 @@
     <string name="use_last">Valeurs précédentes</string>
 
     <!-- Settings -->
+    <string name="days_left">Jours restants</string>
     <string name="settings_title">Réglages</string>
     <string name="theme_label">Thème</string>
     <string name="theme_light">Clair</string>

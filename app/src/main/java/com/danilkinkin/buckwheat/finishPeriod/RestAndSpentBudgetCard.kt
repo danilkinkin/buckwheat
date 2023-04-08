@@ -7,9 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -23,11 +21,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathOperation
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
@@ -47,6 +43,7 @@ import kotlin.math.ceil
 @Composable
 fun RestAndSpentBudgetCard(
     modifier: Modifier = Modifier,
+    bigVariant: Boolean = false,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
@@ -60,7 +57,13 @@ fun RestAndSpentBudgetCard(
         if (showRestBudgetCard) {
             restBudget.divide(wholeBudget, 5, RoundingMode.HALF_EVEN)
         } else {
-            BigDecimal(1).minus((wholeBudget - restBudget).divide(wholeBudget, 5, RoundingMode.HALF_EVEN))
+            BigDecimal(1).minus(
+                (wholeBudget - restBudget).divide(
+                    wholeBudget,
+                    5,
+                    RoundingMode.HALF_EVEN
+                )
+            )
         }
     }
 
@@ -112,49 +115,101 @@ fun RestAndSpentBudgetCard(
             .clip(shape = MaterialTheme.shapes.extraLarge)
             .clickable { appViewModel.setShowRestBudgetCardByDefault(!showRestBudgetCard) }
     ) {
-        StatCard(
+        Card(
             modifier = modifier,
+            shape = MaterialTheme.shapes.extraLarge,
             colors = CardDefaults.cardColors(
                 containerColor = harmonizedColor.container,
                 contentColor = harmonizedColor.onContainer,
             ),
-            value = prettyCandyCanes(
-                if (showRestBudgetCard) {
-                    restBudget
-                } else {
-                    wholeBudget - restBudget
-                },
-                currency = currency,
-            ),
-            label = if (showRestBudgetCard) {
-                stringResource(R.string.rest_budget)
-            } else {
-                stringResource(R.string.spent_budget)
-            },
-            content = {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = stringResource(R.string.rest_budget_percent, percentFormatted),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
-                )
-            },
-            backdropContent = {
+        ) {
+            val textColor = LocalContentColor.current
+
+            Box(
+                Modifier
+                    .height(IntrinsicSize.Min)
+                    .fillMaxWidth()
+            ) {
                 Box(
-                    modifier = Modifier
-                        .background(
-                            harmonizedColor.main,
-                            shape = WavyShape(
-                                period = 30.dp,
-                                amplitude = 2.dp,
-                                shift = shift.value,
-                            ),
-                        )
+                    Modifier
                         .fillMaxHeight()
-                        .fillMaxWidth(percent.toFloat()),
-                )
+                        .fillMaxWidth()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                harmonizedColor.main,
+                                shape = WavyShape(
+                                    period = 30.dp,
+                                    amplitude = 2.dp,
+                                    shift = shift.value,
+                                ),
+                            )
+                            .fillMaxHeight()
+                            .fillMaxWidth(percent.toFloat()),
+                    )
+                }
+
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(PaddingValues(vertical = 16.dp, horizontal = 24.dp)),
+                    horizontalAlignment = if (bigVariant) Alignment.CenterHorizontally else Alignment.Start,
+                ) {
+                    if (bigVariant) Spacer(modifier = Modifier.height(36.dp))
+                    Text(
+                        text = prettyCandyCanes(
+                            if (showRestBudgetCard) {
+                                restBudget
+                            } else {
+                                wholeBudget - restBudget
+                            },
+                            currency = currency,
+                        ),
+                        style = MaterialTheme.typography.displayLarge,
+                        fontSize = if (bigVariant) MaterialTheme.typography.displaySmall.fontSize else MaterialTheme.typography.titleLarge.fontSize,
+                        overflow = TextOverflow.Ellipsis,
+                        softWrap = false,
+                        lineHeight = TextUnit(0.2f, TextUnitType.Em)
+                    )
+                    Text(
+                        text = if (showRestBudgetCard) {
+                            stringResource(R.string.rest_budget)
+                        } else {
+                            stringResource(R.string.spent_budget)
+                        },
+                        style = MaterialTheme.typography.labelMedium,
+                        color = textColor.copy(alpha = 0.6f),
+                        overflow = TextOverflow.Ellipsis,
+                        softWrap = false,
+                    )
+                    if (bigVariant) {
+                        Spacer(modifier = Modifier.height(24.dp))
+                    } else {
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+
+                    CompositionLocalProvider(
+                        LocalContentColor provides textColor,
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = stringResource(
+                                    R.string.rest_budget_percent,
+                                    percentFormatted
+                                ),
+                                style = if (bigVariant) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium,
+                                fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
+                            )
+                        }
+                    }
+                }
             }
-        )
+        }
+
         Row(
             modifier = Modifier
                 .padding(16.dp)

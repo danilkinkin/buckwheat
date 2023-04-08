@@ -70,6 +70,7 @@
     <string name="use_last">Valori precedenti</string>
 
     <!-- Settings -->
+    <string name="days_left">Giorni rimasti</string>
     <string name="settings_title">Impostazioni</string>
     <string name="theme_label">Tema</string>
     <string name="theme_light">Chiaro</string>

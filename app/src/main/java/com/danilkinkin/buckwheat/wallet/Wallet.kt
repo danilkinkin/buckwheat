@@ -119,7 +119,19 @@ fun Wallet(
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1F))
-                Spacer(Modifier.size(48.dp))
+                if (!isEdit) {
+                    IconButton(
+                        onClick = { isEdit = true },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_edit),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                } else {
+                    Spacer(Modifier.size(48.dp))
+                }
             }
             Column(
                 modifier = Modifier
