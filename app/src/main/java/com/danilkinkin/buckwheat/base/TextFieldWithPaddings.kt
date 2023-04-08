@@ -268,7 +268,7 @@ fun TextFieldWithPaddings(
                                 text = currSymbol,
                                 style = currencyStyle,
                                 modifier = Modifier.offset(
-                                    with(localDensity) { (inputWidth - valueSize.width - currencySymbolSize.width).toDp() },
+                                    with(localDensity) { (inputWidth - valueSize.width - currencySymbolSize.width - currencySymbolSize.width * 0.3f).toDp() },
                                     with(localDensity) { (valueSize.height - currencySymbolSize.height + valueSize.height * 0.14f - valueSize.height * 0.5f).toDp() },
                                 )
                             )
