@@ -5,6 +5,7 @@
     <string name="budget_for_today">Budget per oggi</string>
     <string name="rest_budget_for_today">Per oggi</string>
     <string name="new_daily_budget_short">Nuovo giorno</string>
+    <string name="new_daily_budget">Nuovo budget giornaliero</string>
     <string name="new_daily_budget_description">Oggi hai superato il budget giornaliero, non preoccuparti. Per i giorni seguenti, il budget verrà ricalcolato tenendo conto del budget totale rimanente.</string>
     <string name="budget_end">Il budget è finito</string>
     <string name="budget_end_description">Sei andato/a oltre il budget, non preoccuparti, le spese non sono sempre le stesse. Inizia a spendere di più per capire quanto spenderai alla fine e di quale budget avrai bisogno.</string>

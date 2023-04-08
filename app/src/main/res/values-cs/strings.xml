@@ -5,6 +5,7 @@
     <string name="budget_for_today">Dnešní rozpočet</string>
     <string name="rest_budget_for_today">Pro dnešek</string>
     <string name="new_daily_budget_short">Nový den</string>
+     <string name="new_daily_budget">Nový denní rozpočet</string>
     <string name="new_daily_budget_description">Dnes jste překročili denní rozpočet, nebojte se ale, nic hrozného se neděje. Pro následující dny bude rozpočet přepočítán s ohledem na zbývající celkový rozpočet</string>
     <string name="budget_end">Rozpočet je u konce</string>
     <string name="budget_end_description">Překročili jste plánovaný rozpočet, nebojte se ale, nic hrozného se neděje, výdaje nejsou nikdy stejné. Začněte utrácet dál, abyste pochopili, kolik nakonec utratíte a jaký rozpočet potřebujete</string>

@@ -6,6 +6,7 @@
     <string name="budget_for_today">Budget för idag</string>
     <string name="rest_budget_for_today">För idag</string>
     <string name="new_daily_budget_short">Ny dagtid</string>
+    <string name="new_daily_budget">Ny daglig budget</string>
     <string name="new_daily_budget_description">Du gick över din dagliga budget idag, oroa dig inte, det är okej. För de följande dagarna kommer budgeten att räknas om med hänsyn till den återstående totala budgeten</string>
     <string name="budget_end">Budgeten avslutad</string>
     <string name="budget_end_description">Du har slut på budget, oroa dig inte, det är okej, utgifterna är aldrig desamma. Börja spendera ytterligare för att förstå hur mycket du kommer att spendera i slutändan och vilken budget du behöver</string>

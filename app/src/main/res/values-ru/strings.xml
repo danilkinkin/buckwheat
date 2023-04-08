@@ -5,6 +5,7 @@
     <string name="budget_for_today">Бюджет на сегодня</string>
     <string name="rest_budget_for_today">На сегодня</string>
     <string name="new_daily_budget_short">Новый дневной</string>
+    <string name="new_daily_budget">Новый дневной бюджет</string>
     <string name="new_daily_budget_description">Сегодня вы вышли за рамки дневного бюджета, не беспокойтесь, это не страшно. На последующее дни бюджет будет пересчитан с учетом оставшегося общего бюджета</string>
     <string name="budget_end">Бюджет закончился</string>
     <string name="budget_end_description">Вы вышли за рамки запланированного бюджета, не беспокойтесь, это не страшно, траты никогда не бывают одинаковыми. Заводите траты дальше, чтобы понимать сколько в итоге вы потратите и какой бюджет вам нужен</string>
