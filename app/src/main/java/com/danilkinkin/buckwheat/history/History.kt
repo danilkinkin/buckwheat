@@ -286,15 +286,22 @@ fun History(
                 }
 
                 item("spacer") {
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(18.dp))
                 }
 
                 item("end-checker") {
                     DisposableEffect(Unit) {
                         appViewModel.lockSwipeable.value = false
 
-                        onDispose { appViewModel.lockSwipeable.value = true }
+                        onDispose {
+                            appViewModel.lockSwipeable.value = true
+                        }
                     }
+                }
+
+                // Fixer, because if scroll fast end-checker dispose
+                item("spacer-2") {
+                    Spacer(modifier = Modifier.height(2.dp))
                 }
             }
 
