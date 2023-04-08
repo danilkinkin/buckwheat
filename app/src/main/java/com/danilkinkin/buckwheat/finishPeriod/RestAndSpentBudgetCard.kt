@@ -219,7 +219,7 @@ fun RestAndSpentBudgetCard(
                 Modifier
                     .size(4.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = if (showRestBudgetCard) 1f else 0.5f),
+                        color = harmonizedColor.onContainer.copy(alpha = if (showRestBudgetCard) 1f else 0.5f),
                         shape = CircleShape,
                     )
             )
@@ -228,7 +228,7 @@ fun RestAndSpentBudgetCard(
                 Modifier
                     .size(4.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = if (!showRestBudgetCard) 1f else 0.5f),
+                        color = harmonizedColor.onContainer.copy(alpha = if (!showRestBudgetCard) 1f else 0.5f),
                         shape = CircleShape,
                     )
             )
