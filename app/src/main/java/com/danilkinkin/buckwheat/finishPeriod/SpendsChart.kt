@@ -21,10 +21,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorMax
 import com.danilkinkin.buckwheat.ui.colorMin
 import com.danilkinkin.buckwheat.ui.isNightMode
-import com.danilkinkin.buckwheat.util.combineColors
-import com.danilkinkin.buckwheat.util.harmonize
-import com.danilkinkin.buckwheat.util.toDate
-import com.danilkinkin.buckwheat.util.toPalette
+import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
@@ -96,7 +93,7 @@ fun SpendsChart(
             var lastY = 0f
 
             spends.subList(firstShowIndex, lastShowIndex).forEachIndexed { index, spent ->
-                val scale = if (range == BigDecimal(0)) {
+                val scale = if (range.isZero()) {
                     0.5f
                 } else {
                     spent.value
@@ -136,7 +133,7 @@ fun SpendsChart(
 
 
         val chartColors = if (markedSpent != null) {
-            val scale = if (range == BigDecimal(0)) {
+            val scale = if (range.isZero()) {
                 0.5f
             } else {
                 1f - markedSpent.value
@@ -161,7 +158,7 @@ fun SpendsChart(
         )
 
         if (markedSpent != null) {
-            val scale = if (range == BigDecimal(0)) {
+            val scale = if (range.isZero()) {
                 0.5f
             } else {
                 markedSpent.value

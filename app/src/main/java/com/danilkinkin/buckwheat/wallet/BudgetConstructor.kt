@@ -107,7 +107,7 @@ fun BudgetConstructor(
             visible = showUseSuggestion,
             onClick = {
                 rawBudget =
-                    if (spendsViewModel.budget.value!! !== BigDecimal(0)) {
+                    if (!spendsViewModel.budget.value!!.isZero()) {
                         tryConvertStringToNumber(spendsViewModel.budget.value!!.toString()).join(
                             third = false
                         )

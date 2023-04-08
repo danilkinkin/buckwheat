@@ -49,6 +49,8 @@ class ExtendCurrency(val value: String? = null, val type: CurrencyType) {
     }
 }
 
+fun BigDecimal.isZero(): Boolean = this.signum() == 0
+
 fun Double.round(scale: Int): Double =
     BigDecimal(this).setScale(scale, RoundingMode.HALF_EVEN).toDouble()
 

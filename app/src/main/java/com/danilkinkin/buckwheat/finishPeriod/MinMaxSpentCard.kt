@@ -59,7 +59,7 @@ fun MinMaxSpentCard(
             combineColors(
                 colorMin,
                 colorMax,
-                if (maxValue - minValue == BigDecimal(0)) {
+                if ((maxValue - minValue).isZero()) {
                     if (isMin) 0f else 1f
                 } else if (maxValue != BigDecimal(0)) {
                     ((currValue - minValue) / (maxValue - minValue)).toFloat()
