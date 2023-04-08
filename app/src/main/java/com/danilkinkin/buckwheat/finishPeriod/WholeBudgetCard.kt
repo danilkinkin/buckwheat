@@ -46,8 +46,6 @@ fun WholeBudgetCard(
         valueFontSize = MaterialTheme.typography.displaySmall.fontSize,
         colors = colors,
         content = {
-            val textColor = LocalContentColor.current
-
             Spacer(modifier = Modifier.height(16.dp))
             Layout(
                 measurePolicy = growByMiddleChildRowMeasurePolicy(LocalDensity.current),
@@ -63,14 +61,6 @@ fun WholeBudgetCard(
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
-                        )
-                        Text(
-                            text = stringResource(R.string.label_start_date),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = textColor.copy(alpha = 0.6f),
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
                         )
                     }
 
@@ -95,14 +85,6 @@ fun WholeBudgetCard(
                             overflow = TextOverflow.Ellipsis,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
-                        )
-                        Text(
-                            text = stringResource(R.string.label_finish_date),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = textColor.copy(alpha = 0.6f),
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
                         )
                     }
                 },
