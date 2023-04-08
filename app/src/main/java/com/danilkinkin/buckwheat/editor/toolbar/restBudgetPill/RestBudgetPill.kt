@@ -273,7 +273,7 @@ fun RowScope.RestBudgetPill(
                                     text = if (endBudget) {
                                         stringResource(R.string.budget_end)
                                     } else {
-                                        stringResource(R.string.new_daily_budget)
+                                        stringResource(R.string.new_daily_budget_short)
                                     },
                                     style = MaterialTheme.typography.labelMedium,
                                     color = textColor.copy(alpha = 0.6f),

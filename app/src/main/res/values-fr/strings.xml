@@ -4,7 +4,7 @@
     <!-- Main -->
     <string name="budget_for_today">Budget du jour</string>
     <string name="rest_budget_for_today">Pour aujourd\'hui</string>
-    <string name="new_daily_budget">Nouvelle journée</string>
+    <string name="new_daily_budget_short">Nouvelle journée</string>
     <string name="new_daily_budget_description">Aujourd\'hui vous avez dépassé le budget journalier, ne vous inquiétez pas, ce n\'est pas effrayant. Pour les jours suivants, le budget sera recalculé en tenant compte du budget total restant</string>
     <string name="budget_end">Le budget est épuisé</string>
     <string name="budget_end_description">Vous avez dépassé le budget prévu, pas d\'inquiétude, ce

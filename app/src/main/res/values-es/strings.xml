@@ -4,7 +4,7 @@
     <!-- Main -->
     <string name="budget_for_today">Presupuesto para hoy</string>
     <string name="rest_budget_for_today">Para hoy</string>
-    <string name="new_daily_budget">nuevo día</string>
+    <string name="new_daily_budget_short">nuevo día</string>
     <string name="new_daily_budget_description">Hoy has sobrepasado el presupuesto, pero no te preocupes. El presupuesto de los próximos días se recalculará de acuerdo al dinero que quede.</string>
     <string name="budget_end">Se ha acabado el presupuesto</string>
     <string name="budget_end_description">Has sobrepasado el presupuesto, pero no te preocupes, las necesidades de gasto no siempre son las mismas. Sigue gastado para entender cuánto gastarás a final de mes y cuánto debes presupuestar.</string>
