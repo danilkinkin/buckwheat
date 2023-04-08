@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.util
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,11 +33,7 @@ private fun getAnnotatedString(
     hintParts: List<Pair<Int, Int>>,
     hintColor: Color,
 ): AnnotatedString {
-    return getAnnotatedString(
-        value,
-        hintParts,
-        hintParts.map { SpanStyle(color = hintColor) }
-    )
+    return getAnnotatedString(value, hintParts, hintParts.map { SpanStyle(color = hintColor) })
 }
 
 private fun getAnnotatedString(
@@ -59,24 +56,10 @@ private fun calcShift(before: String, after: String, position: Int): Int {
     return shift
 }
 
-private fun calcMinShift(before: String, after: String): Int {
-    var shift = 0
-
-    if (before.isEmpty() || after.isEmpty()) return 0
-
-    while (shift < after.length && (before.first() != after[shift])) {
-        shift += 1
-    }
-
-    return shift
-}
-
 private fun visualTransformationAsCurrency(
     input: AnnotatedString,
     currency: ExtendCurrency,
     hintColor: Color,
-    placeholder: String = "",
-    placeholderStyle: SpanStyle = SpanStyle(),
 ): TransformedText {
     val floatDivider = getFloatDivider()
     val fixed = tryConvertStringToNumber(input.text)
@@ -85,28 +68,13 @@ private fun visualTransformationAsCurrency(
         currency,
         maximumFractionDigits = 0,
         minimumFractionDigits = 0,
-    ).filter { it !='0' }
-    val output = prettyCandyCanes(
+    ).filter { it != '0' }
+    var output = prettyCandyCanes(
         input.text.ifEmpty { "0" }.toBigDecimal(),
         currency,
         maximumFractionDigits = 2,
         minimumFractionDigits = 1,
     ).replace(currSymbol, "").trim()
-
-    val offsetTranslator = object : OffsetMapping {
-        override fun originalToTransformed(offset: Int): Int {
-            val shift = calcShift(input.text.replace(".", floatDivider), output, offset)
-            val minShift = calcMinShift(input.text.replace(".", floatDivider), output)
-
-            return (offset + shift).coerceIn(max(minShift, 0), output.length)
-        }
-
-        override fun transformedToOriginal(offset: Int): Int {
-            val shift = calcShift(input.text.replace(".", floatDivider), output, offset)
-
-            return (offset - shift).coerceIn(min(0, input.length), input.length)
-        }
-    }
 
     val forceShowAfterDot = input.text.contains(".0")
     val before = output.substringBefore("${floatDivider}0")
@@ -122,31 +90,35 @@ private fun visualTransformationAsCurrency(
         ""
     }
 
-    val heightFixer = if (currSymbol.isEmpty()) " " else ""
+    output = if (input.text.isEmpty()) "" else before + divider + after
+
+    val offsetTranslator = object : OffsetMapping {
+        override fun originalToTransformed(offset: Int): Int {
+            val shift = calcShift(input.text.replace(".", floatDivider), output, offset)
+
+            return (offset + shift).coerceIn(0, output.length)
+        }
+
+        override fun transformedToOriginal(offset: Int): Int {
+            val shift = calcShift(input.text.replace(".", floatDivider), output, offset)
+
+            return (offset - shift).coerceIn(0, input.length)
+        }
+    }
 
     return if (input.text.isEmpty()) {
         TransformedText(
             getAnnotatedString(
-                placeholder + heightFixer,
-                listOf(
-                    Pair(
-                        0,
-                        placeholder.length,
-                    ),
-                ),
-                listOf(
-                    placeholderStyle.copy(
-                        color = hintColor,
-                    ),
-                    SpanStyle(color = hintColor),
-                ),
+                output,
+                listOf(),
+                listOf(),
             ),
             offsetTranslator,
         )
     } else {
         TransformedText(
             getAnnotatedString(
-                before + divider + after,
+                output,
                 listOf(
                     Pair(
                         before.length + (if (fixed.third.isNotEmpty()) 1 else 0),
@@ -165,11 +137,9 @@ private fun visualTransformationAsCurrency(
 fun visualTransformationAsCurrency(
     currency: ExtendCurrency,
     hintColor: Color,
-    placeholder: String = "",
-    placeholderStyle: SpanStyle = SpanStyle(),
 ): ((input: AnnotatedString) -> TransformedText) {
     return {
-        visualTransformationAsCurrency(it, currency, hintColor, placeholder, placeholderStyle)
+        visualTransformationAsCurrency(it, currency, hintColor)
     }
 }
 
@@ -181,7 +151,8 @@ fun isNumber(char: Char): Boolean {
     }
 }
 
-fun Triple<String, String, String>.join(third: Boolean = true): String = this.first + this.second + if (third) this.third else ""
+fun Triple<String, String, String>.join(third: Boolean = true): String =
+    this.first + this.second + if (third) this.third else ""
 
 fun fixedNumberString(input: String): String {
     val dotExist = input.contains(".")
@@ -253,12 +224,6 @@ fun Preview() {
                 getAnnotatedString("", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.none(),
                 Color.Green,
-                placeholder = "PLCHDR",
-                placeholderStyle = SpanStyle(
-                    fontSize = 6.sp,
-                    fontWeight = FontWeight.W700,
-                    baselineShift = BaselineShift(0.25f)
-                ),
             ).text
         )
         Text(
@@ -266,12 +231,6 @@ fun Preview() {
                 getAnnotatedString("", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.getInstance("EUR"),
                 Color.Green,
-                placeholder = "PLCHDR",
-                placeholderStyle = SpanStyle(
-                    fontSize = 6.sp,
-                    fontWeight = FontWeight.W700,
-                    baselineShift = BaselineShift(0.25f)
-                ),
             ).text
         )
         Text(
@@ -279,7 +238,6 @@ fun Preview() {
                 getAnnotatedString("", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.getInstance("RUB"),
                 Color.Green,
-                placeholder = "PLCHDR"
             ).text
         )
     }
