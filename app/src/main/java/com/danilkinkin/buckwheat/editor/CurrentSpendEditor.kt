@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.editor
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.EaseInQuad
@@ -171,170 +172,52 @@ fun CurrentSpendEditor(
             mutableStateOf(intrinsics.maxIntrinsicWidth.toInt())
         }
 
-        AnimatedContent(
-            targetState = stage,
-            transitionSpec = {
-                when(targetState) {
-                    AnimState.EDITING -> slideInHorizontally(
-                        tween(
-                            durationMillis = 80,
-                            easing = EaseInOutQuad,
-                        )
-                    ) {
-                        -currencyShiftWidth
-                    } + fadeIn(
-                        tween(durationMillis = 80)
-                    ) with slideOutHorizontally(
-                        tween(
-                            durationMillis = 80,
-                            easing = EaseInOutQuad,
-                        )
-                    ) {
-                        currencyShiftWidth
-                    } + fadeOut(
-                        tween(durationMillis = 80)
-                    )
-                    AnimState.COMMIT -> slideInVertically(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInQuad,
-                        )
-                    ) { smallShift } + fadeIn(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInQuad,
-                        )
-                    ) with slideOutVertically(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInQuad,
-                        )
-                    ) { -bigShift } + fadeOut(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInQuad,
-                        )
-                    )
-                    AnimState.RESET -> slideInHorizontally(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) {
-                        currencyShiftWidth
-                    } + fadeIn(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInQuad,
-                        )
-                    ) with slideOutHorizontally(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) {
-                        -currencyShiftWidth
-                    } + fadeOut(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInQuad,
-                        )
-                    )
-                    else -> fadeIn(
-                        tween(durationMillis = 150)
-                    ) with fadeOut(
-                        tween(durationMillis = 150)
-                    )
-                }.using(
-                    SizeTransform(clip = false)
-                )
-            }
-        ) { targetStage ->
-            if (targetStage !== AnimState.EDITING) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.CenterStart,
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.enter_spent_placeholder),
-                            style = MaterialTheme.typography.displayLarge,
-                            fontSize = MaterialTheme.typography.headlineMedium.fontSize,
-                            fontWeight = FontWeight.W700,
-                            color = textColor.copy(alpha = 0.9f),
-                            overflow = TextOverflow.Visible,
-                            softWrap = false,
-                            modifier = Modifier
-                                .padding(start = 36.dp, end = 36.dp),
-                        )
-                        Text(
-                            text = if (mode === SpendsViewModel.Mode.ADD) {
-                                stringResource(R.string.new_spent)
-                            } else {
-                                stringResource(R.string.edit_spent)
-                            },
-                            style = MaterialTheme.typography.labelMedium,
-                            fontSize = MaterialTheme.typography.labelLarge.fontSize,
-                            color = textColor.copy(alpha = 0f),
-                            overflow = TextOverflow.Ellipsis,
-                            softWrap = false,
-                            modifier = Modifier.padding(start = 36.dp, end = 36.dp),
-                        )
+        Box(
+            modifier = Modifier.fillMaxSize().background(Color.Green.copy(alpha = 0.3f)),
+            contentAlignment = Alignment.CenterEnd,
+        ) {
+            EditableTextWithLabel(
+                value = spentValue,
+                label = if (mode === SpendsViewModel.Mode.ADD) {
+                    stringResource(R.string.new_spent)
+                } else {
+                    stringResource(R.string.edit_spent)
+                },
+                placeholder = "",
+                onChangeValue = {
+                    val fixed = fixedNumberString(it)
+                    val converted = tryConvertStringToNumber(fixed)
+
+                    Log.d("onChangeValue", "it = $it")
+
+                    spendsViewModel.rawSpentValue.value = fixed
+                    spendsViewModel.editSpent(converted.join().toBigDecimal())
+
+                    if (fixed === "") {
+                        if (mode === SpendsViewModel.Mode.ADD) runBlocking {
+                            spendsViewModel.resetSpent()
+                        }
                     }
-                }
-            } else {
-                Box(
-                    modifier = Modifier.fillMaxSize().background(Color.Green.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    EditableTextWithLabel(
-                        value = spentValue,
-                        label = if (mode === SpendsViewModel.Mode.ADD) {
-                            stringResource(R.string.new_spent)
-                        } else {
-                            stringResource(R.string.edit_spent)
-                        },
-                        placeholder = if (currencyShiftWidth != 0) {
-                            "  ${stringResource(R.string.enter_spent_placeholder)}"
-                        } else {
-                            stringResource(R.string.enter_spent_placeholder)
-                        },
-                        onChangeValue = {
-                            val fixed = fixedNumberString(it)
-                            val converted = tryConvertStringToNumber(fixed)
+                },
+                currency = currency,
+                fontSizeValue = maxFontSize,
+                fontSizeLabel = MaterialTheme.typography.labelLarge.fontSize,
+                focusRequester = focusRequester,
+                placeholderStyle = SpanStyle(
+                    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                    fontWeight = FontWeight.W700,
+                    baselineShift = BaselineShift(0.26f)
+                ),
+                currencyStyle = SpanStyle(
+                    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                    fontWeight = FontWeight.W700,
+                    baselineShift = BaselineShift(0f)
+                ),
+            )
 
-                            spendsViewModel.rawSpentValue.value = fixed
-                            spendsViewModel.editSpent(converted.join().toBigDecimal())
-
-                            if (fixed === "") {
-                                if (mode === SpendsViewModel.Mode.ADD) runBlocking {
-                                    spendsViewModel.resetSpent()
-                                }
-                            }
-                        },
-                        currency = currency,
-                        fontSizeValue = maxFontSize,
-                        fontSizeLabel = MaterialTheme.typography.labelLarge.fontSize,
-                        focusRequester = focusRequester,
-                        placeholderStyle = SpanStyle(
-                            fontSize = MaterialTheme.typography.headlineMedium.fontSize,
-                            fontWeight = FontWeight.W700,
-                            baselineShift = BaselineShift(0.26f)
-                        ),
-                        currencyStyle = SpanStyle(
-                            fontSize = MaterialTheme.typography.headlineMedium.fontSize,
-                            fontWeight = FontWeight.W700,
-                            baselineShift = BaselineShift(0f)
-                        ),
-                    )
-
-                    LaunchedEffect(Unit) {
-                        if (requestFocus) focusRequester.requestFocus()
-                        requestFocus = false
-                    }
-                }
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+                requestFocus = false
             }
         }
     }

@@ -81,8 +81,8 @@ fun EditableTextWithLabel(
                         hintColor = color.copy(alpha = 0.2f),
                         placeholder = placeholder,
                         placeholderStyle = placeholderStyle,
-                        currencyStyle = currencyStyle,
                     ),
+                    currency = currency,
                     focusRequester = focusRequester,
                     contentPadding = contentPaddingValues,
                 )

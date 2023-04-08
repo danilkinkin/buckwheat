@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -24,6 +25,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.Paragraph
 import androidx.compose.ui.text.ParagraphIntrinsics
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -33,7 +35,10 @@ import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
+import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import kotlinx.coroutines.CoroutineStart
+import kotlin.math.ceil
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -43,6 +48,7 @@ fun TextFieldWithPaddings(
     contentPadding: PaddingValues = PaddingValues(horizontal = 32.dp),
     textStyle: TextStyle = MaterialTheme.typography.displayLarge,
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
+    currency: ExtendCurrency? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
@@ -52,7 +58,8 @@ fun TextFieldWithPaddings(
     val scrollState = rememberScrollState()
     var containerWidth by remember { mutableStateOf(0) }
     var inputWidth by remember { mutableStateOf(0) }
-    var width by remember(value) { mutableStateOf(0) }
+    var currencySymbolSize by remember(value) { mutableStateOf(Size(0, 0)) }
+    var valueSize by remember(value) { mutableStateOf(Size(0, 0)) }
     var requestScrollToCursor by remember { mutableStateOf(false) }
     val layoutDirection = when (LocalConfiguration.current.layoutDirection) {
         0 -> LayoutDirection.Rtl
@@ -70,12 +77,26 @@ fun TextFieldWithPaddings(
     val gapEnd =
         with(localDensity) { contentPadding.calculateEndPadding(layoutDirection).toPx().toInt() }
 
-    width = calculateIntrinsics(
+    val currSymbol = currency?.let { currency ->
+        prettyCandyCanes(
+            0.toBigDecimal(),
+            currency,
+            maximumFractionDigits = 0,
+            minimumFractionDigits = 0,
+        ).filter { it !='0' }
+    }
+
+    currencySymbolSize = calculateIntrinsics(
+        currSymbol ?: "",
+        MaterialTheme.typography.headlineMedium,
+    )
+
+    valueSize = calculateIntrinsics(
         visualTransformation.filter(
             AnnotatedString(value)
         ).text.text,
         textStyle,
-    ).maxIntrinsicWidth.toInt()
+    )
 
     fun restoreScrollPosition(forceEnd: Boolean = false) {
         val transformation = visualTransformation.filter(
@@ -97,7 +118,7 @@ fun TextFieldWithPaddings(
         coroutineScope.launch {
             Log.d(
                 "TextField",
-                "position = ${position.toInt()} scrollState = ${scrollState.value} containerWidth = $containerWidth width = $width gapStart = $gapStart gapEnd = $gapEnd requestScrollToCursor = $requestScrollToCursor forceEnd = $forceEnd"
+                "position = ${position.toInt()} scrollState = ${scrollState.value} containerWidth = $containerWidth  gapStart = $gapStart gapEnd = $gapEnd requestScrollToCursor = $requestScrollToCursor forceEnd = $forceEnd"
             )
 
             if (requestScrollToCursor || forceEnd) {
@@ -107,18 +128,18 @@ fun TextFieldWithPaddings(
                         "scroll ot cursor"
                     )
                     scrollState.animateScrollTo(
-                        position.toInt() - containerWidth + gapEnd, tween(
+                        position.toInt() - containerWidth + gapStart, tween(
                             durationMillis = 240,
                             easing = EaseInOutQuad,
                         )
                     )
-                } else if (width < containerWidth) {
+                } else if (valueSize.width < containerWidth) {
                     Log.d(
                         "TextField",
                         "scroll ot end"
                     )
                     scrollState.animateScrollTo(
-                        containerWidth, tween(
+                        containerWidth + gapEnd, tween(
                             durationMillis = 240,
                             easing = EaseInOutQuad,
                         )
@@ -130,9 +151,9 @@ fun TextFieldWithPaddings(
                     )
                     requestScrollToCursor = false
 
-                    if (scrollState.value < inputWidth - width + gapStart) {
+                    if (scrollState.value < inputWidth - valueSize.width + gapStart) {
                         scrollState.animateScrollTo(
-                            inputWidth - width + gapStart, tween(
+                            inputWidth - valueSize.width + gapStart, tween(
                                 durationMillis = 240,
                                 easing = EaseInOutQuad,
                             )
@@ -140,11 +161,18 @@ fun TextFieldWithPaddings(
                     }
                 }
             } else {
-                Log.d("scroll", "fixed = ${scrollState.value < inputWidth - width + gapStart}")
+                Log.d("scroll", "fixed = ${scrollState.value < inputWidth - valueSize.width + gapStart}")
 
-                if (width > containerWidth) {
+                if (valueSize.width > containerWidth) {
                     scrollState.animateScrollTo(
-                        width, tween(
+                        valueSize.width, tween(
+                            durationMillis = 240,
+                            easing = EaseInOutQuad,
+                        )
+                    )
+                } else {
+                    scrollState.animateScrollTo(
+                        containerWidth + gapStart, tween(
                             durationMillis = 240,
                             easing = EaseInOutQuad,
                         )
@@ -190,7 +218,7 @@ fun TextFieldWithPaddings(
                     .background(Color.Red.copy(alpha = 0.3f))
                     .disabledHorizontalPointerInputScroll(
                         scrollState.value,
-                        inputWidth - width + gapStart,
+                        inputWidth - valueSize.width - currencySymbolSize.width - gapStart,
                     )
                     .focusRequester(focusRequester),
                 decorationBox = { input ->
@@ -206,6 +234,17 @@ fun TextFieldWithPaddings(
                             }
                     ) {
                         input()
+
+                        if (currSymbol !== null) {
+                            Text(
+                                text = currSymbol,
+                                fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                                modifier = Modifier.offset(
+                                    with(localDensity) { (inputWidth - valueSize.width - currencySymbolSize.width).toDp() },
+                                    with(localDensity) { (valueSize.height - currencySymbolSize.height).toDp() },
+                                )
+                            )
+                        }
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -225,14 +264,25 @@ fun TextFieldWithPaddings(
 }
 
 @Composable
-fun calculateIntrinsics(input: String, style: TextStyle): ParagraphIntrinsics {
-    return ParagraphIntrinsics(
+fun calculateIntrinsics(input: String, style: TextStyle): Size {
+    val intrinsics = ParagraphIntrinsics(
         text = input,
         style = style,
         density = LocalDensity.current,
         fontFamilyResolver = createFontFamilyResolver(LocalContext.current)
     )
+
+    val paragraph = Paragraph(
+        paragraphIntrinsics = intrinsics,
+        constraints = Constraints(maxWidth = ceil(1000f).toInt()),
+        maxLines = 1,
+        ellipsis = false
+    )
+
+    return Size(intrinsics.maxIntrinsicWidth.toInt(), paragraph.height.toInt())
 }
+
+data class Size(val width: Int, val height: Int)
 
 fun Modifier.disabledHorizontalPointerInputScroll(
     valueScroll: Int,
