@@ -46,6 +46,7 @@ fun TextFieldWithPaddings(
     value: String = "",
     onChangeValue: (output: String) -> Unit,
     contentPadding: PaddingValues = PaddingValues(horizontal = 32.dp),
+    currencyStyle: TextStyle = MaterialTheme.typography.displaySmall,
     textStyle: TextStyle = MaterialTheme.typography.displayLarge,
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     currency: ExtendCurrency? = null,
@@ -88,7 +89,7 @@ fun TextFieldWithPaddings(
 
     currencySymbolSize = calculateIntrinsics(
         currSymbol ?: "",
-        MaterialTheme.typography.headlineMedium,
+        currencyStyle,
     )
 
     valueSize = calculateIntrinsics(
@@ -215,7 +216,6 @@ fun TextFieldWithPaddings(
                 cursorBrush = cursorBrush,
                 visualTransformation = visualTransformation,
                 modifier = Modifier
-                    .background(Color.Red.copy(alpha = 0.3f))
                     .disabledHorizontalPointerInputScroll(
                         scrollState.value,
                         inputWidth - valueSize.width - currencySymbolSize.width - gapStart,
@@ -227,21 +227,19 @@ fun TextFieldWithPaddings(
                             .fillMaxWidth()
                             .horizontalScroll(scrollState)
                             .padding(contentPadding)
-                            .background(Color.Yellow.copy(alpha = 0.3f))
                             .onGloballyPositioned {
                                 inputWidth = it.size.width
-                                Log.d("inputWidth", "inputWidth = $inputWidth")
                             }
                     ) {
                         input()
 
-                        if (currSymbol !== null) {
+                        if (currSymbol !== null && textFieldValue.text.isNotEmpty()) {
                             Text(
                                 text = currSymbol,
-                                fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+                                style = currencyStyle,
                                 modifier = Modifier.offset(
                                     with(localDensity) { (inputWidth - valueSize.width - currencySymbolSize.width).toDp() },
-                                    with(localDensity) { (valueSize.height - currencySymbolSize.height).toDp() },
+                                    with(localDensity) { (valueSize.height - currencySymbolSize.height - valueSize.height * 0.1f).toDp() },
                                 )
                             )
                         }
@@ -256,7 +254,7 @@ fun TextFieldWithPaddings(
                 return@DisposableEffect onDispose { }
             }
 
-            //restoreScrollPosition(true)
+            restoreScrollPosition(true)
 
             onDispose { }
         }

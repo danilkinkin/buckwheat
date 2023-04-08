@@ -59,7 +59,7 @@ fun EditableTextWithLabel(
         }
     })
 
-    Column(modifier.background(Color.Blue.copy(alpha = 0.3f))) {
+    Column(modifier) {
         CompositionLocalProvider(
             LocalTextInputService provides keyboardHandler
         ) {
@@ -70,6 +70,11 @@ fun EditableTextWithLabel(
                 TextFieldWithPaddings(
                     value = value,
                     onChangeValue = { onChangeValue(it) },
+                    currencyStyle = MaterialTheme.typography.displaySmall.copy(
+                        fontSize = fontSizeValue * 0.5f,
+                        fontWeight = FontWeight.W700,
+                        color = color,
+                    ),
                     textStyle = MaterialTheme.typography.displayLarge.copy(
                         fontSize = fontSizeValue,
                         fontWeight = FontWeight.W700,

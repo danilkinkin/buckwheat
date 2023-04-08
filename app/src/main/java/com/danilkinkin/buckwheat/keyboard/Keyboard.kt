@@ -69,6 +69,8 @@ fun Keyboard(
 
             if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
             spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
+        } else if (newValue == "") {
+            spendsViewModel.rawSpentValue.value = newValue
         }
     }
 
