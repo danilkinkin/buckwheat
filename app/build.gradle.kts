@@ -9,9 +9,6 @@ plugins {
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
-val sentryProperties = Properties()
-sentryProperties.load(FileInputStream(rootProject.file("sentry.properties")))
-
 android {
     compileSdk = 33
 
