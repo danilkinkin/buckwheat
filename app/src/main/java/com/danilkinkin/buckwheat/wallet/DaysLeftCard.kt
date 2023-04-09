@@ -63,7 +63,7 @@ fun DaysLeftCard(
                 Box(
                     modifier = Modifier
                         .background(
-                            textColor,
+                            MaterialTheme.colorScheme.primary,
                             shape = ArcShape(
                                 thickness = 6.dp,
                                 progress = restDays / days.toFloat(),
