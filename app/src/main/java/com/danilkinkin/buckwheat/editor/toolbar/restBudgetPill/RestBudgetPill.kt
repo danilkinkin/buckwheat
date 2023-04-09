@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.AnimatedNumber
 import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
@@ -35,12 +37,13 @@ import java.math.RoundingMode
 import java.util.*
 import kotlin.math.ceil
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun RowScope.RestBudgetPill(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
+    val localDensity = LocalDensity.current
 
     val overspendingWarnHidden by spendsViewModel.overspendingWarnHidden.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
@@ -48,6 +51,7 @@ fun RowScope.RestBudgetPill(
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var restBudgetAbsoluteValue by remember { mutableStateOf(BigDecimal(0)) }
     var budgetPerDaySplit by remember { mutableStateOf("") }
+    var previewBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var finalBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var dailyBudget by remember { mutableStateOf(BigDecimal(0)) }
     var editing by remember { mutableStateOf(false) }
@@ -94,6 +98,7 @@ fun RowScope.RestBudgetPill(
             RoundingMode.HALF_EVEN
         ) else BigDecimal(0)
 
+        previewBudgetValue = finalBudgetValue
         finalBudgetValue = if (restBudgetValue >= 0.toBigDecimal()) {
             restBudgetValue
         } else {
@@ -311,17 +316,39 @@ fun RowScope.RestBudgetPill(
                         }
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    if (!endBudget) {
-                        Text(
-                            text = prettyCandyCanes(
-                                finalBudgetValue,
+                    AnimatedVisibility(
+                        visible = !endBudget,
+                        enter = fadeIn(
+                            tween(
+                                durationMillis = 150,
+                                easing = EaseInOutQuad,
+                            )
+                        ) + slideInHorizontally(
+                            tween(
+                                durationMillis = 150,
+                                easing = EaseInOutQuad,
+                            )
+                        ) { with(localDensity) { 20.dp.toPx().toInt() } },
+                        exit = fadeOut(
+                            tween(
+                                durationMillis = 150,
+                                easing = EaseInOutQuad,
+                            )
+                        ) + slideOutHorizontally(
+                            tween(
+                                durationMillis = 150,
+                                easing = EaseInOutQuad,
+                            )
+                        ) { with(localDensity) { 20.dp.toPx().toInt() } },
+                    ) {
+                        AnimatedNumber(
+                            value = prettyCandyCanes(
+                                if (!endBudget) finalBudgetValue else previewBudgetValue,
                                 currency = currency,
                             ),
-                            style = MaterialTheme.typography.displayLarge,
-                            fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                            overflow = TextOverflow.Ellipsis,
-                            softWrap = false,
-                            lineHeight = TextUnit(0.2f, TextUnitType.Em)
+                            style = MaterialTheme.typography.displayLarge.copy(
+                                fontSize = MaterialTheme.typography.titleLarge.fontSize
+                            ),
                         )
                     }
                     Spacer(modifier = Modifier.width(22.dp))
