@@ -1,6 +1,6 @@
-<p align="center">
-  <img width="350" height="300" src="/screenshots/logo.svg" alt="Buckwheat logo">
-</p>
+<img width="100%" height="auto" src="/screenshots/en/github-screenshot.png" alt="Buckwheat logo with screenshots">
+
+[![Latest release][release-badge]][github-releases]
 
 **Buckwheat** is an app that helps you spend money wisely. 
 Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.
@@ -13,10 +13,14 @@ Writing down each spending sobers the mind and gives you an idea of how much and
     />
 </a>
 
+## Motivation
+
+A couple of years ago, I used the [tzlvt](https://www.fuckgrechka.ru/tzlvt/) app. I liked his idea and it helped me learn how to manage money. After I decided to improve this idea and it inspired me to create buckwheat
+
 ## Links
 
 - [GooglePlay](https://play.google.com/store/apps/details?id=com.danilkinkin.buckwheat)
-- [Landing](https://buckwheat.app/)
+- [Landing page](https://buckwheat.app/)
 
 ## Translations
 
@@ -33,3 +37,12 @@ If you want to support my work, you can share my app with friends
 ## Policy
 
 See policy [there](./POLICY.md)
+
+## License
+
+[GNU GPL v3][license]
+
+[release-badge]: https://img.shields.io/github/v/tag/danilkinkin/buckwheat?color=orange&label=release
+[github-releases]: https://github.com/danilkinkin/buckwheat/releases/
+[license-badge]: https://img.shields.io/github/license/danilkinkin/buckwheat
+[license]: LICENSE

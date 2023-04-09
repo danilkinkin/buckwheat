@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,6 +33,7 @@ fun Keyboard(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
+    val haptic = LocalHapticFeedback.current
     val coroutineScope = rememberCoroutineScope()
     val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
     val currentRawSpent by spendsViewModel.rawSpentValue.observeAsState("")
@@ -66,6 +69,8 @@ fun Keyboard(
 
             if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
             spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
+        } else if (newValue == "") {
+            spendsViewModel.rawSpentValue.value = newValue
         }
     }
 
@@ -87,6 +92,7 @@ fun Keyboard(
                     onClick = {
                         dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
                         debugProgress = 0
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     }
                 )
             }
@@ -99,6 +105,7 @@ fun Keyboard(
                 onClick = {
                     dispatch(SpendsViewModel.Action.REMOVE_LAST, null)
                     debugProgress = 0
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 },
                 onLongClick = {
                     debugProgress = 0
@@ -110,6 +117,7 @@ fun Keyboard(
                         if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
                         spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
                     }
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 },
             )
         }
@@ -135,6 +143,7 @@ fun Keyboard(
                             onClick = {
                                 dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
                                 debugProgress = 0
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             }
                         )
                     }
@@ -153,6 +162,7 @@ fun Keyboard(
                             onClick = {
                                 dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
                                 debugProgress = 0
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             }
                         )
                     }
@@ -170,6 +180,7 @@ fun Keyboard(
                         onClick = {
                             dispatch(SpendsViewModel.Action.PUT_NUMBER, 0)
                             debugProgress += 1
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         },
                     )
                     KeyboardButton(
@@ -181,6 +192,7 @@ fun Keyboard(
                         onClick = {
                             dispatch(SpendsViewModel.Action.SET_DOT, null)
                             debugProgress = if (debugProgress == 8) -1 else 0
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         }
                     )
                 }
@@ -222,6 +234,7 @@ fun Keyboard(
                             onClick = {
                                 spendsViewModel.editedSpent?.let { spendsViewModel.removeSpent(it) }
                                 spendsViewModel.resetSpent()
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
                     } else {
@@ -257,6 +270,7 @@ fun Keyboard(
                                 runBlocking {
                                     spendsViewModel.commitSpent()
                                 }
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
                     }

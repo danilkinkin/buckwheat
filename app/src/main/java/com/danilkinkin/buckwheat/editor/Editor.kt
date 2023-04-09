@@ -10,7 +10,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.editor.restBudget.RestBudget
 import com.danilkinkin.buckwheat.editor.tagging.TaggingSpent
 import com.danilkinkin.buckwheat.editor.toolbar.EditorToolbar
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -35,8 +34,7 @@ fun Editor(
                     indication = null
                 ) { focusController.focus() }
         ) {
-            EditorToolbar(onOpenHistory = onOpenHistory)
-            RestBudget()
+            EditorToolbar()
             CurrentSpendEditor(
                 modifier = Modifier
                     .fillMaxWidth()

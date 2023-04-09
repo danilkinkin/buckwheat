@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.editor.restBudget
+package com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.LocalContentColor

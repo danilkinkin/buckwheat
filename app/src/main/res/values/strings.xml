@@ -3,7 +3,8 @@
 
     <!-- Main -->
     <string name="budget_for_today">Budget for today</string>
-    <string name="rest_budget_for_today">Remains for today</string>
+    <string name="rest_budget_for_today">For today</string>
+    <string name="new_daily_budget_short">New daily budget</string>
     <string name="new_daily_budget">New daily budget</string>
     <string name="new_daily_budget_description">Today you went beyond the daily budget, do not worry, it\'s not scary. For the following days, the budget will be recalculated taking into account the remaining total budget</string>
     <string name="budget_end">The budget is over</string>
@@ -28,7 +29,7 @@
     <string name="remove_spent">Expenditure returned to budget</string>
     <string name="remove_spent_undo">Undo</string>
     <string name="no_spends">No spending yet</string>
-    <string name="total_per_day">Total:</string>
+    <string name="total_per_day">Day total:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Budget</string>
@@ -66,6 +67,7 @@
     <string name="confirm_change_budget_description">Please note that when you change the budget, the current spending history will be deleted and the countdown will start over</string>
     <string name="confirm_change_budget">Change budget</string>
     <string name="use_last">Previous values</string>
+    <string name="days_left">Days left</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
@@ -81,6 +83,7 @@
     <string name="about">About app</string>
     <string name="description">Buckwheat is an app that helps you spend money wisely. Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.</string>
     <string name="report_bug">Report a bug</string>
+    <string name="contribute">Contribute</string>
     <string name="developer">Development &amp; design:</string>
 
     <!-- Bug reporting -->
@@ -152,4 +155,5 @@
     <string name="spent_budget">Spent</string>
     <string name="edit_spent">Editable spent</string>
     <string name="cancel_editing">Cancel editing</string>
+    <string name="over">over</string>
 </resources>

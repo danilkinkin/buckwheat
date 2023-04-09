@@ -3,7 +3,8 @@
 
     <!-- Main -->
     <string name="budget_for_today">Budget per oggi</string>
-    <string name="rest_budget_for_today">Rimangono per oggi</string>
+    <string name="rest_budget_for_today">Per oggi</string>
+    <string name="new_daily_budget_short">Nuovo giorno</string>
     <string name="new_daily_budget">Nuovo budget giornaliero</string>
     <string name="new_daily_budget_description">Oggi hai superato il budget giornaliero, non preoccuparti. Per i giorni seguenti, il budget verrà ricalcolato tenendo conto del budget totale rimanente.</string>
     <string name="budget_end">Il budget è finito</string>
@@ -28,7 +29,7 @@
     <string name="remove_spent">Expenditure returned to budget</string>
     <string name="remove_spent_undo">Annulla</string>
     <string name="no_spends">Nessuna spesa per ora</string>
-    <string name="total_per_day">Totale:</string>
+    <string name="total_per_day">Totale giornaliero:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Budget</string>
@@ -69,6 +70,7 @@
     <string name="use_last">Valori precedenti</string>
 
     <!-- Settings -->
+    <string name="days_left">Giorni rimasti</string>
     <string name="settings_title">Impostazioni</string>
     <string name="theme_label">Tema</string>
     <string name="theme_light">Chiaro</string>
@@ -82,6 +84,7 @@
     <string name="about">Informazioni sull\'app</string>
     <string name="description">Buckwheat è un\'app che ti aiuta a spendere più saggiamente. Annotare ogni spesa fa riflettere e dà un\'idea di quanto e come si può spendere.</string>
     <string name="report_bug">Segnala un bug</string>
+    <string name="contribute">Dare un contributo</string>
     <string name="developer">Sviluppo &amp; design:</string>
 
     <!-- Bug reporting -->
@@ -152,4 +155,5 @@
     <string name="spent_budget">Speso</string>
     <string name="edit_spent">Rifiuti modificabili</string>
     <string name="cancel_editing">Annulla la modifica</string>
+    <string name="over">oltre il</string>
 </resources>

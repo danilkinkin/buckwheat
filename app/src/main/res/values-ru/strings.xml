@@ -3,7 +3,8 @@
 
     <!-- Main -->
     <string name="budget_for_today">Бюджет на сегодня</string>
-    <string name="rest_budget_for_today">Останется на сегодня</string>
+    <string name="rest_budget_for_today">На сегодня</string>
+    <string name="new_daily_budget_short">Новый дневной</string>
     <string name="new_daily_budget">Новый дневной бюджет</string>
     <string name="new_daily_budget_description">Сегодня вы вышли за рамки дневного бюджета, не беспокойтесь, это не страшно. На последующее дни бюджет будет пересчитан с учетом оставшегося общего бюджета</string>
     <string name="budget_end">Бюджет закончился</string>
@@ -30,7 +31,7 @@
     <string name="remove_spent">Трата возвращена в бюджет</string>
     <string name="remove_spent_undo">Отменить</string>
     <string name="no_spends">Трат пока не было</string>
-    <string name="total_per_day">Итого:</string>
+    <string name="total_per_day">Дневной итог:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Бюджет</string>
@@ -73,6 +74,7 @@
     <string name="use_last">Предыдущие значения</string>
 
     <!-- Settings -->
+    <string name="days_left">Дней осталось</string>
     <string name="settings_title">Настройки</string>
     <string name="theme_label">Тема</string>
     <string name="theme_light">Светлая</string>
@@ -86,6 +88,7 @@
     <string name="about">О приложении</string>
     <string name="description">Гречка — это приложение, которое помогает осознанно тратить деньги. Записывание каждой траты отрезвляет ум и дает понимание сколько и как вы можете тратить</string>
     <string name="report_bug">Сообщить об ошибке</string>
+    <string name="contribute">Сделать вклад</string>
     <string name="developer">Разработка и дизайн:</string>
 
     <!-- Bug reporting -->
@@ -156,4 +159,5 @@
     <string name="spent_budget">Потрачено</string>
     <string name="edit_spent">Редактируемая трата</string>
     <string name="cancel_editing">Отменить редактирование</string>
+    <string name="over">более</string>
 </resources>

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.setContent
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -20,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.ThemeMode
 import com.danilkinkin.buckwheat.ui.syncTheme
-import com.danilkinkin.buckwheat.util.initSentry
 import com.danilkinkin.buckwheat.util.locScreenOrientation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -45,12 +45,11 @@ class MainActivity : ComponentActivity() {
             context.dataStore.data.first()
         }
 
-        initSentry(context)
-
         super.onCreate(savedInstanceState)
 
         setContent {
             val localContext = LocalContext.current
+            val activityResultRegistryOwner = LocalActivityResultRegistryOwner.current
 
             LaunchedEffect(Unit) {
                 syncTheme(localContext)
@@ -68,7 +67,7 @@ class MainActivity : ComponentActivity() {
             if (isDone.value) {
                 BuckwheatTheme {
                     OverrideLocalize {
-                        MainScreen(widthSizeClass)
+                        MainScreen(widthSizeClass, activityResultRegistryOwner)
                     }
                 }
             }

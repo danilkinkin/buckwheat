@@ -13,8 +13,6 @@
         android:localeConfig="@xml/locales_config"
         tools:targetApi="33">
 
-        <meta-data android:name="io.sentry.auto-init" android:value="false" />
-
         <profileable
             android:shell="true"
             tools:targetApi="q" />

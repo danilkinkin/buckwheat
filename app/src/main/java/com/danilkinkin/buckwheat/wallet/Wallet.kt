@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.wallet
 
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -11,7 +12,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,10 +40,13 @@ const val WALLET_SHEET = "wallet"
 fun Wallet(
     forceChange: Boolean = false,
     windowSizeClass: WindowWidthSizeClass,
+    activityResultRegistryOwner: ActivityResultRegistryOwner? = null,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val haptic = LocalHapticFeedback.current
+
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
     val currency by spendsViewModel.currency.observeAsState()
@@ -113,7 +119,19 @@ fun Wallet(
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1F))
-                Spacer(Modifier.size(48.dp))
+                if (!isEdit) {
+                    IconButton(
+                        onClick = { isEdit = true },
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_edit),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                } else {
+                    Spacer(Modifier.size(48.dp))
+                }
             }
             Column(
                 modifier = Modifier
@@ -163,12 +181,13 @@ fun Wallet(
                         BudgetSummary(
                             onEdit = {
                                 isEdit = true
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             }
                         )
                     }
                 }
                 ButtonRow(
-                    icon = painterResource(R.drawable.ic_choice),
+                    icon = painterResource(R.drawable.ic_directions),
                     text = stringResource(R.string.rest_label),
                     onClick = {
                         appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
@@ -221,7 +240,9 @@ fun Wallet(
                     ),
                 ) {
                     Column {
-                        val exportCSVLaunch = rememberExportCSV()
+                        val exportCSVLaunch = rememberExportCSV(
+                            activityResultRegistryOwner = activityResultRegistryOwner
+                        )
 
                         ButtonRow(
                             icon = painterResource(R.drawable.ic_file_download),
@@ -259,11 +280,13 @@ fun Wallet(
                             onClick = {
                                 if (spends!!.isNotEmpty() && !forceChange) {
                                     openConfirmChangeBudgetDialog.value = true
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 } else {
                                     spendsViewModel.changeCurrency(currency!!)
                                     spendsViewModel.changeBudget(budget, dateToValue.value!!)
 
                                     onClose()
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 }
                             },
                             modifier = Modifier
@@ -295,6 +318,7 @@ fun Wallet(
                 spendsViewModel.changeBudget(budget, dateToValue.value!!)
 
                 onClose()
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             },
             onClose = { openConfirmChangeBudgetDialog.value = false },
         )

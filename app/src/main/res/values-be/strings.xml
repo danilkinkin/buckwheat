@@ -4,7 +4,8 @@
 
     <!-- Main -->
     <string name="budget_for_today">Бюджэт на сёння</string>
-    <string name="rest_budget_for_today">Застанецца на сёння</string>
+    <string name="rest_budget_for_today">На сёння</string>
+    <string name="new_daily_budget_short">Новы дзённы</string>
     <string name="new_daily_budget">Новы дзённы бюджэт</string>
     <string name="new_daily_budget_description">Сёння вы выйшлі за рамкі дзённага бюджэту, не хвалюйцеся, гэта не страшна. На наступныя дні бюджэт будзе пералічаны з улікам агульнага бюджэту, які застаўся</string>
     <string name="budget_end">Бюджэт скончыўся</string>
@@ -31,7 +32,7 @@
     <string name="remove_spent">Трата вернутая ў бюджэт</string>
     <string name="remove_spent_undo">Адмяніць</string>
     <string name="no_spends">Трат пакуль не было</string>
-    <string name="total_per_day">Разам:</string>
+    <string name="total_per_day">Дзённы вынік:</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Бюджэт</string>
@@ -74,6 +75,7 @@
     <string name="use_last">Папярэднія значэнні</string>
 
     <!-- Settings -->
+    <string name="days_left">Дзён засталося</string>
     <string name="settings_title">Налады</string>
     <string name="theme_label">Тэма</string>
     <string name="theme_light">Светлая</string>
@@ -87,6 +89,7 @@
     <string name="about">Аб дадатку</string>
     <string name="description">Грэчка — гэта дадатак, якое дапамагае свядома марнаваць грошы. Запісванне кожнай марнаванні выцвярэжвае розум і дае разуменне колькі і як вы можаце марнаваць</string>
     <string name="report_bug">Паведаміць пра памылку</string>
+    <string name="contribute">Зрабіць уклад</string>
     <string name="developer">Распрацоўка і дызайн:</string>
 
     <!-- Bug reporting -->
@@ -157,4 +160,5 @@
     <string name="spent_budget">Выдаткавана</string>
     <string name="edit_spent">Рэдагуемае марнаванне</string>
     <string name="cancel_editing">Адмяніць рэдагаванне</string>
+    <string name="over">больш за</string>
 </resources>

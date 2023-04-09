@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -44,6 +46,8 @@ fun BudgetConstructor(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onChange: (budget: BigDecimal, finishDate: Date?) -> Unit = { _, _ -> },
 ) {
+    val haptic = LocalHapticFeedback.current
+
     var rawBudget by remember {
         val restBudget =
             (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
@@ -103,7 +107,7 @@ fun BudgetConstructor(
             visible = showUseSuggestion,
             onClick = {
                 rawBudget =
-                    if (spendsViewModel.budget.value!! !== BigDecimal(0)) {
+                    if (!spendsViewModel.budget.value!!.isZero()) {
                         tryConvertStringToNumber(spendsViewModel.budget.value!!.toString()).join(
                             third = false
                         )
@@ -127,6 +131,7 @@ fun BudgetConstructor(
                 )
 
                 showUseSuggestion = false
+                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
             }
         )
 
@@ -191,7 +196,11 @@ fun BudgetConstructor(
             onClick = {
                 appViewModel.openSheet(PathState(
                     name = FINISH_DATE_SELECTOR_SHEET,
-                    args = mapOf("initialDate" to dateToValue.value),
+                    args = if (days > 0) {
+                        mapOf("initialDate" to dateToValue.value)
+                    } else {
+                        mapOf("initialDate" to null)
+                    },
                     callback = { result ->
                         if (!result.containsKey("finishDate")) return@PathState
 

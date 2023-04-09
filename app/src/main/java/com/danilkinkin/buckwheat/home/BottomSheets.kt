@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.home
 
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -13,10 +14,10 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.*
-import com.danilkinkin.buckwheat.editor.restBudget.BUDGET_IS_OVER_DESCRIPTION_SHEET
-import com.danilkinkin.buckwheat.editor.restBudget.BudgetIsOverDescription
-import com.danilkinkin.buckwheat.editor.restBudget.NEW_DAY_BUDGET_DESCRIPTION_SHEET
-import com.danilkinkin.buckwheat.editor.restBudget.NewDayBudgetDescription
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BudgetIsOverDescription
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NEW_DAY_BUDGET_DESCRIPTION_SHEET
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NewDayBudgetDescription
 import com.danilkinkin.buckwheat.editor.toolbar.DEBUG_MENU_SHEET
 import com.danilkinkin.buckwheat.editor.toolbar.DebugMenu
 import com.danilkinkin.buckwheat.effects.Confetti
@@ -35,6 +36,7 @@ import java.util.*
 @Composable
 fun BottomSheets(
     windowSizeClass: WindowWidthSizeClass,
+    activityResultRegistryOwner: ActivityResultRegistryOwner?,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
@@ -51,6 +53,35 @@ fun BottomSheets(
     ) { state ->
         Wallet(
             forceChange = finishPeriod || requireSetBudget,
+            windowSizeClass = windowSizeClass,
+            activityResultRegistryOwner = activityResultRegistryOwner,
+            onClose = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            }
+        )
+    }
+
+    BottomSheetWrapper(
+        name = DEFAULT_RECALC_BUDGET_CHOOSER,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
+        DefaultRecalcBudgetChooser(
+            windowSizeClass = windowSizeClass,
+            onClose = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            }
+        )
+    }
+
+    BottomSheetWrapper(
+        name = CURRENCY_EDITOR,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
+        CurrencyEditor(
             windowSizeClass = windowSizeClass,
             onClose = {
                 coroutineScope.launch {
@@ -136,6 +167,7 @@ fun BottomSheets(
         cancelable = false,
     ) { state ->
         FinishPeriod(
+            activityResultRegistryOwner = activityResultRegistryOwner,
             onCreateNewPeriod = {
                 appViewModel.openSheet(PathState(WALLET_SHEET))
             },

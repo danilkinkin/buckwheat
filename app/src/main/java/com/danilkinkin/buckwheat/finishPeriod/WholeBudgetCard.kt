@@ -33,21 +33,20 @@ fun WholeBudgetCard(
     startDate: Date,
     finishDate: Date?,
     colors: CardColors = CardDefaults.cardColors(),
+    bigVariant: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
 ) {
     StatCard(
         modifier = modifier.fillMaxWidth(),
         contentPadding = contentPadding,
+        label = stringResource(R.string.whole_budget),
         value = prettyCandyCanes(
             budget,
             currency = currency,
         ),
-        label = stringResource(R.string.whole_budget),
-        valueFontSize = MaterialTheme.typography.displaySmall.fontSize,
+        valueFontSize = if (bigVariant) MaterialTheme.typography.displaySmall.fontSize else MaterialTheme.typography.titleLarge.fontSize,
         colors = colors,
         content = {
-            val textColor = LocalContentColor.current
-
             Spacer(modifier = Modifier.height(16.dp))
             Layout(
                 measurePolicy = growByMiddleChildRowMeasurePolicy(LocalDensity.current),
@@ -61,16 +60,8 @@ fun WholeBudgetCard(
                             ),
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = if (bigVariant) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
                             fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
-                        )
-                        Text(
-                            text = stringResource(R.string.label_start_date),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = textColor.copy(alpha = 0.6f),
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
                         )
                     }
 
@@ -93,16 +84,8 @@ fun WholeBudgetCard(
                             },
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = if (bigVariant) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
                             fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
-                        )
-                        Text(
-                            text = stringResource(R.string.label_finish_date),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = textColor.copy(alpha = 0.6f),
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
                         )
                     }
                 },

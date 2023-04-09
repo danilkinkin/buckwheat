@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.home
 
 import android.util.Log
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.animateFloatAsState
@@ -44,6 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen(
     windowSizeClass: WindowWidthSizeClass,
+    activityResultRegistryOwner: ActivityResultRegistryOwner?,
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
 ) {
@@ -275,7 +277,7 @@ fun MainScreen(
             }
         }
 
-        BottomSheets(windowSizeClass)
+        BottomSheets(windowSizeClass, activityResultRegistryOwner)
 
         if (windowSizeClass == WindowWidthSizeClass.Compact) {
             SnackbarHost()
