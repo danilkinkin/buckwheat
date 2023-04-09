@@ -14,10 +14,10 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.*
-import com.danilkinkin.buckwheat.editor.restBudget.BUDGET_IS_OVER_DESCRIPTION_SHEET
-import com.danilkinkin.buckwheat.editor.restBudget.BudgetIsOverDescription
-import com.danilkinkin.buckwheat.editor.restBudget.NEW_DAY_BUDGET_DESCRIPTION_SHEET
-import com.danilkinkin.buckwheat.editor.restBudget.NewDayBudgetDescription
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BudgetIsOverDescription
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NEW_DAY_BUDGET_DESCRIPTION_SHEET
+import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NewDayBudgetDescription
 import com.danilkinkin.buckwheat.editor.toolbar.DEBUG_MENU_SHEET
 import com.danilkinkin.buckwheat.editor.toolbar.DebugMenu
 import com.danilkinkin.buckwheat.effects.Confetti
