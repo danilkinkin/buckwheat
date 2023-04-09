@@ -164,7 +164,6 @@ fun RowScope.RestBudgetPill(
         )
     )
 
-
     if (overspendingWarnHidden && restBudgetValue < 0.toBigDecimal()) {
         BigIconButton(
             icon = painterResource(R.drawable.ic_balance_wallet),
