@@ -154,4 +154,5 @@
     <string name="spent_budget">Speso</string>
     <string name="edit_spent">Rifiuti modificabili</string>
     <string name="cancel_editing">Annulla la modifica</string>
+    <string name="over">oltre il</string>
 </resources>

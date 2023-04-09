@@ -154,4 +154,5 @@
     <string name="spent_budget">Gastado</string>
     <string name="edit_spent">Gasto editable</string>
     <string name="cancel_editing">Cancelar edición</string>
+    <string name="over">más del</string>
 </resources>

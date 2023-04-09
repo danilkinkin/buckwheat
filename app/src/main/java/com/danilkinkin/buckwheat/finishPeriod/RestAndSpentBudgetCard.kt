@@ -39,6 +39,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -69,15 +70,23 @@ fun RestAndSpentBudgetCard(
         }
     }
 
+    val overString = stringResource(R.string.over)
+
     val percentFormatted = remember {
         val formatter = NumberFormat.getNumberInstance(Locale.getDefault())
         formatter.maximumFractionDigits = 2
         formatter.minimumFractionDigits = 0
 
-        if (showRestBudgetCard) {
-            formatter.format(percent.multiply(BigDecimal(100)))
+        val percentCalculated = if (showRestBudgetCard) {
+            percent.multiply(BigDecimal(100))
         } else {
-            formatter.format(BigDecimal(1).minus(percent).multiply(BigDecimal(100)))
+            BigDecimal(1).minus(percent).multiply(BigDecimal(100))
+        }
+
+        if (percentCalculated.abs() > BigDecimal(1000)) {
+            "$overString ${formatter.format(percentCalculated.coerceIn(BigDecimal(-1000), BigDecimal(1000)))}"
+        } else {
+            formatter.format(percentCalculated)
         }
     }
 

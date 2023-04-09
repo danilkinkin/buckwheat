@@ -155,4 +155,5 @@
     <string name="spent_budget">Spenderat</string>
     <string name="edit_spent">Redigerbart avfall</string>
     <string name="cancel_editing">Ångra redigering</string>
+    <string name="over">över</string>
 </resources>

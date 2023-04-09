@@ -190,4 +190,5 @@
     <string name="spent_budget">Dépensé</string>
     <string name="edit_spent">Modifier la dépense</string>
     <string name="cancel_editing">Annuler la modification</string>
+    <string name="over">plus de</string>
 </resources>

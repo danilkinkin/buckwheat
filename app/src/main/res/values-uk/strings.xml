@@ -159,4 +159,5 @@
     <string name="spent_budget">Витрачено</string>
     <string name="edit_spent">Редагована витрата</string>
     <string name="cancel_editing">Скасувати редагування</string>
+    <string name="over">понад</string>
 </resources>

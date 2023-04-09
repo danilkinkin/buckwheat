@@ -162,4 +162,5 @@
     <string name="spent_budget">Utraceno</string>
     <string name="edit_spent">Upravit výdaje</string>
     <string name="cancel_editing">Zrušit úpravu</string>
-</resources>
+     <string name="over">přes</string>
+ </resources>
