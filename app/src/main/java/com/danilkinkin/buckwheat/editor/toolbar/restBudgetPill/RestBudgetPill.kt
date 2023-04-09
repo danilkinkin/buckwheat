@@ -1,14 +1,12 @@
 package com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill
 
-import com.danilkinkin.buckwheat.finishPeriod.StatCard
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FloatTweenSpec
-import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.ui.geometry.Size
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -17,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,16 +26,12 @@ import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.editor.restBudget.BUDGET_IS_OVER_DESCRIPTION_SHEET
-import com.danilkinkin.buckwheat.editor.restBudget.NEW_DAY_BUDGET_DESCRIPTION_SHEET
-import com.danilkinkin.buckwheat.settings.SETTINGS_SHEET
 import com.danilkinkin.buckwheat.ui.*
 import com.danilkinkin.buckwheat.util.*
 import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.NumberFormat
 import java.util.*
 import kotlin.math.ceil
 
@@ -48,11 +41,9 @@ fun RowScope.RestBudgetPill(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
-    val localDensity = LocalDensity.current
 
     val overspendingWarnHidden by spendsViewModel.overspendingWarnHidden.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
-    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
 
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
     var restBudgetAbsoluteValue by remember { mutableStateOf(BigDecimal(0)) }
@@ -64,6 +55,7 @@ fun RowScope.RestBudgetPill(
     var endBudget by remember { mutableStateOf(false) }
     var percent by remember { mutableStateOf(BigDecimal(0)) }
     var percentReal by remember { mutableStateOf(BigDecimal(0)) }
+    var dataIsLoading by remember { mutableStateOf(true) }
 
 
     fun calculateValues() {
@@ -102,11 +94,13 @@ fun RowScope.RestBudgetPill(
             RoundingMode.HALF_EVEN
         ) else BigDecimal(0)
 
-        if (restBudgetValue >= 0.toBigDecimal()) {
-            finalBudgetValue = restBudgetValue
+        finalBudgetValue = if (restBudgetValue >= 0.toBigDecimal()) {
+            restBudgetValue
         } else {
-            finalBudgetValue = newPerDayBudget.coerceAtLeast(BigDecimal(0))
+            newPerDayBudget.coerceAtLeast(BigDecimal(0))
         }
+
+        dataIsLoading = false
     }
 
     observeLiveData(spendsViewModel.dailyBudget) {
@@ -146,6 +140,10 @@ fun RowScope.RestBudgetPill(
 
         anim()
     }
+    val percentAnim = if (dataIsLoading) 1f else animateFloatAsState(
+        targetValue = percent.toFloat().coerceAtLeast(0f).coerceIn(0f, 0.98f),
+        animationSpec = TweenSpec(300),
+    ).value
 
     val harmonizedColor = toPalette(
         harmonize(
@@ -155,8 +153,9 @@ fun RowScope.RestBudgetPill(
                     colorNotGood,
                     colorGood,
                 ),
-                percent.coerceAtLeast(BigDecimal(0)).toFloat(),
-            )
+                percentAnim,
+            ),
+            colorEditor
         )
     )
 
@@ -173,9 +172,9 @@ fun RowScope.RestBudgetPill(
                 .weight(1F)
                 .padding(0.dp, 6.dp)
                 .height(44.dp),
-            shape = MaterialTheme.shapes.extraLarge,
+            shape = CircleShape,
             colors = CardDefaults.cardColors(
-                containerColor = harmonizedColor.container,
+                containerColor = harmonizedColor.container.copy(alpha = 0.4f),
                 contentColor = harmonizedColor.onContainer,
             ),
             onClick = {
@@ -185,16 +184,17 @@ fun RowScope.RestBudgetPill(
             val textColor = LocalContentColor.current
 
             Box(Modifier.fillMaxHeight()) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
+                Box(Modifier.fillMaxSize()) {
                     if (percentReal.toFloat() < 0.9999f) {
+                        val percentRealAnim by animateFloatAsState(
+                            targetValue = percentReal.toFloat().coerceIn(0f, 0.98f),
+                            animationSpec = TweenSpec(250),
+                        )
+
                         Box(
                             modifier = Modifier
                                 .background(
-                                    harmonizedColor.main.copy(alpha = 0.5f),
+                                    harmonizedColor.main.copy(alpha = 0.1f),
                                     shape = WavyShape(
                                         period = 30.dp,
                                         amplitude = 2.dp,
@@ -202,30 +202,23 @@ fun RowScope.RestBudgetPill(
                                     ),
                                 )
                                 .fillMaxHeight()
-                                .fillMaxWidth(kotlin.math.min(percentReal.toFloat(), 0.98f)),
+                                .fillMaxWidth(percentRealAnim),
                         )
                     } else {
                         Box(
                             modifier = Modifier
-                                .background(
-                                    harmonizedColor.main.copy(alpha = 0.5f),
-                                )
-                                .fillMaxHeight()
-                                .fillMaxWidth(),
+                                .background(harmonizedColor.main.copy(alpha = 0.1f))
+                                .fillMaxSize(),
                         )
                     }
                 }
 
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
+                Box(Modifier.fillMaxSize()) {
                     if (percent.toFloat() < 0.9999f) {
                         Box(
                             modifier = Modifier
                                 .background(
-                                    harmonizedColor.main,
+                                    harmonizedColor.main.copy(alpha = 0.15f),
                                     shape = WavyShape(
                                         period = 30.dp,
                                         amplitude = 2.dp,
@@ -233,87 +226,89 @@ fun RowScope.RestBudgetPill(
                                     ),
                                 )
                                 .fillMaxHeight()
-                                .fillMaxWidth(kotlin.math.min(percent.toFloat(), 0.98f)),
+                                .fillMaxWidth(percentAnim),
                         )
                     } else {
                         Box(
                             modifier = Modifier
-                                .background(
-                                    harmonizedColor.main,
-                                )
-                                .fillMaxHeight()
-                                .fillMaxWidth(),
+                                .background(harmonizedColor.main.copy(alpha = 0.15f))
+                                .fillMaxSize(),
                         )
                     }
                 }
-
                 Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
+                    modifier = Modifier.fillMaxSize(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,
                 ) {
-                    if (restBudgetValue < 0.toBigDecimal()) {
-                        Card(
-                            modifier = Modifier
-                                .height(44.dp),
-                            shape = MaterialTheme.shapes.extraLarge,
-                            colors = CardDefaults.cardColors(
-                                containerColor = harmonizedColor.container.copy(alpha = 0f),
-                                contentColor = harmonizedColor.onContainer,
-                            ),
-                            onClick = {
+                    Box(contentAlignment = Alignment.CenterStart) {
+                        Row(
+                            modifier = Modifier.height(44.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            val textStartOffset by animateDpAsState(
+                                targetValue = if (restBudgetValue < 0.toBigDecimal()) 38.dp else 14.dp,
+                                animationSpec = TweenSpec(250),
+                            )
 
-                                if (endBudget) {
-                                    appViewModel.openSheet(
-                                        PathState(
-                                            BUDGET_IS_OVER_DESCRIPTION_SHEET
-                                        )
-                                    )
+                            Spacer(modifier = Modifier.width(textStartOffset))
+                            Text(
+                                text = if (restBudgetValue >= 0.toBigDecimal()) {
+                                    stringResource(R.string.rest_budget_for_today)
+                                } else if (endBudget) {
+                                    stringResource(R.string.budget_end)
                                 } else {
-                                    appViewModel.openSheet(
-                                        PathState(
-                                            NEW_DAY_BUDGET_DESCRIPTION_SHEET
+                                    stringResource(R.string.new_daily_budget_short)
+                                },
+                                style = MaterialTheme.typography.labelMedium,
+                                color = textColor.copy(alpha = 0.6f),
+                                overflow = TextOverflow.Ellipsis,
+                                softWrap = false,
+                            )
+                            Spacer(modifier = Modifier.width(14.dp))
+                        }
+                        androidx.compose.animation.AnimatedVisibility(
+                            visible = restBudgetValue < 0.toBigDecimal(),
+                            enter = fadeIn(tween(durationMillis = 250)),
+                            exit = fadeOut(tween(durationMillis = 250)),
+                        ) {
+                            Card(
+                                modifier = Modifier.size(44.dp),
+                                shape = CircleShape,
+                                colors = CardDefaults.cardColors(
+                                    containerColor = harmonizedColor.container.copy(alpha = 0f),
+                                    contentColor = harmonizedColor.onContainer,
+                                ),
+                                onClick = {
+                                    if (endBudget) {
+                                        appViewModel.openSheet(
+                                            PathState(
+                                                BUDGET_IS_OVER_DESCRIPTION_SHEET
+                                            )
                                         )
+                                    } else {
+                                        appViewModel.openSheet(
+                                            PathState(
+                                                NEW_DAY_BUDGET_DESCRIPTION_SHEET
+                                            )
+                                        )
+                                    }
+                                }
+                            ) {
+                                Row(
+                                    Modifier.fillMaxHeight(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Spacer(modifier = Modifier.width(14.dp))
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_info),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
                                     )
+                                    Spacer(modifier = Modifier.width(14.dp))
                                 }
                             }
-                        ) {
-                            Row(
-                                Modifier.fillMaxHeight(),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Spacer(modifier = Modifier.width(14.dp))
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_info),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = if (endBudget) {
-                                        stringResource(R.string.budget_end)
-                                    } else {
-                                        stringResource(R.string.new_daily_budget_short)
-                                    },
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = textColor.copy(alpha = 0.6f),
-                                    overflow = TextOverflow.Ellipsis,
-                                    softWrap = false,
-                                )
-                                Spacer(modifier = Modifier.width(14.dp))
-                            }
                         }
-                    } else {
-                        Spacer(modifier = Modifier.width(14.dp))
-                        Text(
-                            text = stringResource(R.string.rest_budget_for_today),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = textColor.copy(alpha = 0.6f),
-                            overflow = TextOverflow.Ellipsis,
-                            softWrap = false,
-                        )
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     if (!endBudget) {
