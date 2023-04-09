@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
+import android.graphics.drawable.shapes.RectShape
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.LinearEasing
@@ -39,6 +40,7 @@ import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.ceil
+import kotlin.math.min
 
 @Composable
 fun RestAndSpentBudgetCard(
@@ -135,19 +137,30 @@ fun RestAndSpentBudgetCard(
                         .fillMaxHeight()
                         .fillMaxWidth()
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                harmonizedColor.main,
-                                shape = WavyShape(
-                                    period = 30.dp,
-                                    amplitude = 2.dp,
-                                    shift = shift.value,
-                                ),
-                            )
-                            .fillMaxHeight()
-                            .fillMaxWidth(percent.toFloat()),
-                    )
+                    if (percent.toFloat() < 0.9999f) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    harmonizedColor.main,
+                                    shape = WavyShape(
+                                        period = 30.dp,
+                                        amplitude = 2.dp,
+                                        shift = shift.value,
+                                    ),
+                                )
+                                .fillMaxHeight()
+                                .fillMaxWidth(min(percent.toFloat(), 0.98f)),
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    harmonizedColor.main,
+                                )
+                                .fillMaxHeight()
+                                .fillMaxWidth(),
+                        )
+                    }
                 }
 
                 Column(

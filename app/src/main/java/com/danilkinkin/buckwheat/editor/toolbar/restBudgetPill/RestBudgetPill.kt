@@ -190,19 +190,30 @@ fun RowScope.RestBudgetPill(
                         .fillMaxWidth()
                         .fillMaxHeight()
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                harmonizedColor.main.copy(alpha = 0.5f),
-                                shape = WavyShape(
-                                    period = 30.dp,
-                                    amplitude = 2.dp,
-                                    shift = shift.value,
-                                ),
-                            )
-                            .fillMaxHeight()
-                            .fillMaxWidth(percentReal.toFloat()),
-                    )
+                    if (percentReal.toFloat() < 0.9999f) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    harmonizedColor.main.copy(alpha = 0.5f),
+                                    shape = WavyShape(
+                                        period = 30.dp,
+                                        amplitude = 2.dp,
+                                        shift = shift.value,
+                                    ),
+                                )
+                                .fillMaxHeight()
+                                .fillMaxWidth(kotlin.math.min(percentReal.toFloat(), 0.98f)),
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    harmonizedColor.main.copy(alpha = 0.5f),
+                                )
+                                .fillMaxHeight()
+                                .fillMaxWidth(),
+                        )
+                    }
                 }
 
                 Box(
@@ -210,19 +221,30 @@ fun RowScope.RestBudgetPill(
                         .fillMaxWidth()
                         .fillMaxHeight()
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                harmonizedColor.main,
-                                shape = WavyShape(
-                                    period = 30.dp,
-                                    amplitude = 2.dp,
-                                    shift = shift.value,
-                                ),
-                            )
-                            .fillMaxHeight()
-                            .fillMaxWidth(percent.toFloat()),
-                    )
+                    if (percent.toFloat() < 0.9999f) {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    harmonizedColor.main,
+                                    shape = WavyShape(
+                                        period = 30.dp,
+                                        amplitude = 2.dp,
+                                        shift = shift.value,
+                                    ),
+                                )
+                                .fillMaxHeight()
+                                .fillMaxWidth(kotlin.math.min(percent.toFloat(), 0.98f)),
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    harmonizedColor.main,
+                                )
+                                .fillMaxHeight()
+                                .fillMaxWidth(),
+                        )
+                    }
                 }
 
                 Row(
