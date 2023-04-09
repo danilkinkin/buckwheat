@@ -106,6 +106,7 @@ class ArcShape(
         layoutDirection: LayoutDirection,
         density: Density,
     ) = Outline.Generic(Path().apply {
+        val fixedProgress = progress - 0.000001f
         val thicknessPx = with(density) { thickness.toPx() }
         val shift = -90f
 
@@ -113,7 +114,7 @@ class ArcShape(
             arcTo(
                 Rect(offset = Offset.Zero, size = size),
                 shift,
-                -360 * progress,
+                -360 * fixedProgress,
                 forceMoveTo = true,
             )
             arcTo(
@@ -121,8 +122,8 @@ class ArcShape(
                     offset = Offset(thicknessPx, thicknessPx),
                     size = Size(width = size.width - thicknessPx * 2, height = size.height - thicknessPx * 2),
                 ),
-                -360 * progress + shift,
-                360 * progress,
+                -360 * fixedProgress + shift,
+                360 * fixedProgress,
                 forceMoveTo = false,
             )
         }
