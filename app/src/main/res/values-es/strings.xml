@@ -77,8 +77,6 @@
     <string name="theme_system">Sistema</string>
     <string name="locale_label">Idioma</string>
     <string name="locale_system">Sistema</string>
-    <string name="not_send_crash_report">Enviar informes de fallos anónimos</string>
-    <string name="not_send_crash_report_description">El informe de fallos sólo contiene el punto del código en el que la aplicación falló, y no contiene ningún dato personal que pueda identificarte. Estos datos ayudan a mejorar la estabilidad de la aplicación.</string>
     <string name="version">Versión: %1$s</string>
     <string name="about">Acerca de la app</string>
     <string name="description">Buckwheat es una app que te ayuda a gastar tu dinero sabiamente. Anotar cada gasto da paz mental y te ayuda a entender cuánto y cómo puedes gastar.</string>

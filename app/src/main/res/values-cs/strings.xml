@@ -85,9 +85,7 @@
     <string name="theme_system">Systémový</string>
     <string name="locale_label">Jazyk</string>
     <string name="locale_system">Systémový</string>
-    <string name="not_send_crash_report">Odesílat anonymní hlášení o pádech</string>
-    <string name="not_send_crash_report_description">Informace o pádu obsahují pouze místo v kódu, kde aplikace spadla, a neobsahují žádné údaje, které by vás mohly identifikovat. Tyto údaje pomáhají zlepšit stabilitu aplikace.</string>
-    <string name="version">Verze: %1$s</string>
+     <string name="version">Verze: %1$s</string>
     <string name="about">O aplikaci</string>
     <string name="description">Buckwheat je aplikace, která vám pomůže rozumně utrácet peníze. Zapisování jednotlivých výdajů vás vystřízliví a dá vám představu o tom, kolik a jak můžete utratit.</string>
     <string name="report_bug">Nahlásit chybu</string>
