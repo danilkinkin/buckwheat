@@ -4,7 +4,7 @@
     <!-- Main -->
     <string name="budget_for_today">Orçamento para hoje</string>
     <string name="rest_budget_for_today">Para hoje</string>
-    <string name="new_daily_budget_short">Novo orçamento diário</string>
+    <string name="new_daily_budget_short">Novo dia</string>
     <string name="new_daily_budget">Novo orçamento diário</string>
     <string name="new_daily_budget_description">Hoje você ultrapassou o orçamento diário, não se preocupe, não é assustador. Para os dias seguintes, o orçamento será recalculado tendo em conta o orçamento total restante</string>
     <string name="budget_end">O orçamento acabou</string>
