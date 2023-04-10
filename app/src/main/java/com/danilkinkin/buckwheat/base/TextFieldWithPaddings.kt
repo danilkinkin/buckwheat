@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import com.danilkinkin.buckwheat.editor.calcAdaptiveFont
+import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import kotlinx.coroutines.CoroutineStart
@@ -101,11 +102,13 @@ fun TextFieldWithPaddings(
     val textStyle = MaterialTheme.typography.displayLarge.copy(
         fontSize = fontSize,
         fontWeight = FontWeight.W700,
+        color = colorOnEditor,
     )
 
     val currencyStyle = MaterialTheme.typography.displaySmall.copy(
         fontSize = textStyle.fontSize * 0.5f,
         fontWeight = FontWeight.W700,
+        color = colorOnEditor,
     )
 
     currencySymbolSize = calculateIntrinsics(
