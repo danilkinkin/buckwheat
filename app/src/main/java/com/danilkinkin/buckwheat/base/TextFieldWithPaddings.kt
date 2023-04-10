@@ -250,17 +250,16 @@ fun TextFieldWithPaddings(
                 decorationBox = { input ->
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
+                            .fillMaxSize()
                             .horizontalScroll(scrollState)
                             .padding(contentPadding)
                             .onGloballyPositioned {
                                 inputWidth = it.size.width
                             },
-                        contentAlignment = Alignment.CenterStart
+                        contentAlignment = Alignment.CenterEnd
                     ) {
                         Box(
-                            modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+                            modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             input()
@@ -271,7 +270,7 @@ fun TextFieldWithPaddings(
                                 text = currSymbol,
                                 style = currencyStyle,
                                 modifier = Modifier.offset(
-                                    with(localDensity) { (inputWidth - valueSize.width - currencySymbolSize.width - currencySymbolSize.width * 0.3f).toDp() },
+                                    with(localDensity) { ( -valueSize.width - currencySymbolSize.width * 0.3f).toDp() },
                                     with(localDensity) { (valueSize.height - currencySymbolSize.height + valueSize.height * 0.14f - valueSize.height * 0.5f).toDp() },
                                 )
                             )
