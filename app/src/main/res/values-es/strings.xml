@@ -93,7 +93,7 @@
     <string name="new_day_title">¡Felicidades! Has ahorrado</string>
     <string name="recalc_budget">Descubre como presupuestar</string>
     <string name="split_rest_days_title">Repartirlo entre los días que quedan</string>
-    <string name="split_rest_days_description">Obten %1$s al día</string>
+    <string name="split_rest_days_description">Obtén %1$s al día</string>
     <string name="add_current_day_title">Dejarlo para hoy</string>
     <string name="add_current_day_description">Tendrás %1$s para hoy y %2$s para los días sucesivos</string>
 
@@ -103,7 +103,7 @@
     <string name="period_summary_no_spends_title">Wow, no has gastado nada en este periodo</string>
     <string name="new_period_title">Establece un nuevo presupuesto</string>
     <string name="whole_budget">Presupuesto inicial</string>
-    <string name="rest_budget">Sobra</string>
+    <string name="rest_budget">Sobrante</string>
     <string name="rest_budget_percent">%1$s%% del presupuesto</string>
     <string name="min_spent">Gasto mínimo</string>
     <string name="max_spent">Gasto máximo</string>
@@ -124,7 +124,7 @@
     <string name="onboarding_title">Bienvenido a Buckwheat, ahorremos juntos</string>
     <string name="set_period_title">Establece un presupuesto</string>
     <string name="help_set_budget_title">Establece un presupuesto</string>
-    <string name="help_set_budget_description">Calcula cuánto necesitas para un periodo determinado, como un mes, e introdúcelo en la aplicación. Si no puedes calcularlo, indícalo de forma muy aproximada; por ejemplo, la mitad del salario. Con el tiempo, mejorarás tu estimación. over time you will indicate it more and more accurately</string>
+    <string name="help_set_budget_description">Calcula cuánto necesitas para un periodo determinado, como un mes, e introdúcelo en la aplicación. Si no puedes calcularlo, indícalo de forma muy aproximada; por ejemplo, la mitad del salario. Con el tiempo, mejorarás tu estimación.</string>
     <string name="help_record_spends_title">Anota cada gasto</string>
     <string name="help_record_spends_description">La aplicación calculará cuánto puedes gastar cada día para ajustarte al presupuesto, anota cada gasto y sigue el presupuesto</string>
     <string name="help_good_luck_title">Gasta sabiamente</string>
@@ -147,7 +147,7 @@
     <string name="always_ask">Preguntarme siempre</string>
     <string name="method_split_to_rest_days_title">Repartir</string>
     <string name="method_split_to_rest_days_description">El sobrante se repartirá entre los días que queden</string>
-    <string name="method_add_to_current_day_title">Añadir al presupuesto del día siguente</string>
+    <string name="method_add_to_current_day_title">Añadir al presupuesto del día siguiente</string>
     <string name="method_add_to_current_day_description">El sobrante se añadirá al presupuesto para el siguiente día</string>
     <string name="spent_budget">Gastado</string>
     <string name="edit_spent">Gasto editable</string>
