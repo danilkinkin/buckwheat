@@ -8,7 +8,7 @@
     <string name="new_daily_budget">Nuevo presupuesto diario</string>
     <string name="new_daily_budget_description">Hoy has sobrepasado el presupuesto, pero no te preocupes. El presupuesto de los próximos días se recalculará de acuerdo al dinero que quede.</string>
     <string name="budget_end">Se ha acabado el presupuesto</string>
-    <string name="budget_end_description">Has sobrepasado el presupuesto, pero no te preocupes, las necesidades de gasto no siempre son las mismas. Sigue gastado para entender cuánto gastarás a final de mes y cuánto debes presupuestar.</string>
+    <string name="budget_end_description">Has sobrepasado el presupuesto, pero no te preocupes, las necesidades de gasto no siempre son las mismas. Sigue gastando para entender cuánto gastarás a final de mes y cuánto debes presupuestar.</string>
     <string name="new_spent">Nuevo gasto</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s gastado hoy</item>
@@ -64,7 +64,7 @@
     <string name="currency_custom_title">Introduce tu divisa</string>
     <string name="currency_custom_description">Por ejemplo, gastar 150 unidades convencionales se mostrará así:</string>
     <string name="confirm_change_budget_title">Cambio del presupuesto</string>
-    <string name="confirm_change_budget_description">Por favor, ten en cuenta que al cambiar el presupuesto el historial de gastos actual se borrará y la cuenta atrás empezará de nuevo.</string>
+    <string name="confirm_change_budget_description">Por favor, ten en cuenta que al cambiar el presupuesto el historial de gastos actual se borrará y la cuenta atrás empezará de nuevo</string>
     <string name="confirm_change_budget">Cambiar el presupuesto</string>
     <string name="use_last">Valores anteriores</string>
 
@@ -126,7 +126,7 @@
     <string name="help_set_budget_title">Establece un presupuesto</string>
     <string name="help_set_budget_description">Calcula cuánto necesitas para un periodo determinado, como un mes, e introdúcelo en la aplicación. Si no puedes calcularlo, indícalo de forma muy aproximada; por ejemplo, la mitad del salario. Con el tiempo, mejorarás tu estimación.</string>
     <string name="help_record_spends_title">Anota cada gasto</string>
-    <string name="help_record_spends_description">La aplicación calculará cuánto puedes gastar cada día para ajustarte al presupuesto, anota cada gasto y sigue el presupuesto</string>
+    <string name="help_record_spends_description">La aplicación calculará cuánto puedes gastar cada día para ajustarte al presupuesto, anota cada gasto y sigue el presupuesto.</string>
     <string name="help_good_luck_title">Gasta sabiamente</string>
     <string name="help_good_luck_description">Con el tiempo, aprenderás a intuir cuánto gastas y cuánto necesitas. Aprende a valorar si puedes gastar dinero en un capricho ahora mismo.</string>
 
