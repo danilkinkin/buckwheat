@@ -264,7 +264,7 @@ fun RowScope.RestBudgetPill(
                                 } else {
                                     stringResource(R.string.new_daily_budget_short)
                                 },
-                                style = MaterialTheme.typography.labelMedium,
+                                style = MaterialTheme.typography.labelLarge,
                                 color = textColor.copy(alpha = 0.6f),
                                 overflow = TextOverflow.Ellipsis,
                                 softWrap = false,
@@ -346,7 +346,7 @@ fun RowScope.RestBudgetPill(
                                 currency = currency,
                             ),
                             style = MaterialTheme.typography.displayLarge.copy(
-                                fontSize = MaterialTheme.typography.titleLarge.fontSize
+                                fontSize = MaterialTheme.typography.headlineSmall.fontSize
                             ),
                         )
                     }

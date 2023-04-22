@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.base
 
 import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -63,11 +64,11 @@ fun AnimatedNumber(
                 targetState = it.current,
                 transitionSpec = {
                     if (targetState > initialState) {
-                        slideInVertically { height -> height } + fadeIn() with
-                                slideOutVertically { height -> -height } + fadeOut()
+                        slideInVertically(tween(durationMillis = 200)) { height -> height } + fadeIn(tween(durationMillis = 200)) with
+                                slideOutVertically(tween(durationMillis = 200)) { height -> -height } + fadeOut(tween(durationMillis = 200))
                     } else {
-                        slideInVertically { height -> -height } + fadeIn() with
-                                slideOutVertically { height -> height } + fadeOut()
+                        slideInVertically(tween(durationMillis = 200)) { height -> -height } + fadeIn(tween(durationMillis = 200)) with
+                                slideOutVertically(tween(durationMillis = 200)) { height -> height } + fadeOut(tween(durationMillis = 200))
                     }.using(
                         SizeTransform(clip = false)
                     )

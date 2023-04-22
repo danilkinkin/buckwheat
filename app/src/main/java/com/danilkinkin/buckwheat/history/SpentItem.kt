@@ -33,7 +33,7 @@ fun SpentItem(
             ) {
                 Text(
                     text = prettyCandyCanes(spent.value, currency = currency),
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineLarge,
                     color = colorOnEditor,
                     softWrap = false,
                     overflow = TextOverflow.Ellipsis,
