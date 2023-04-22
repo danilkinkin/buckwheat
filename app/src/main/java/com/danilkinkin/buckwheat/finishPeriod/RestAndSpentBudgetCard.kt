@@ -57,23 +57,11 @@ fun RestAndSpentBudgetCard(
     val wholeBudget = spendsViewModel.budget.value!!
     val restBudget = spendsViewModel.calcResetBudget()
 
-    val percent = remember {
-        if (showRestBudgetCard) {
-            restBudget.divide(wholeBudget, 5, RoundingMode.HALF_EVEN)
-        } else {
-            BigDecimal(1).minus(
-                (wholeBudget - restBudget).divide(
-                    wholeBudget,
-                    5,
-                    RoundingMode.HALF_EVEN
-                )
-            )
-        }
-    }
+    val percent = remember { restBudget.divide(wholeBudget, 5, RoundingMode.HALF_EVEN) }
 
     val overString = stringResource(R.string.over)
 
-    val percentFormatted = remember {
+    val percentFormatted = remember(showRestBudgetCard) {
         val formatter = NumberFormat.getNumberInstance(Locale.getDefault())
         formatter.maximumFractionDigits = 2
         formatter.minimumFractionDigits = 0
