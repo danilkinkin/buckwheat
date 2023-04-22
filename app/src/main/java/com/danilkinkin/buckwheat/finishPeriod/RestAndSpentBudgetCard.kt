@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.WavyShape
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -98,7 +99,7 @@ fun RestAndSpentBudgetCard(
             coroutineScope.launch {
                 shift.animateTo(
                     1f,
-                    animationSpec = FloatTweenSpec(4000, 0, LinearEasing)
+                    animationSpec = FloatTweenSpec(if (bigVariant) 6000 else 5000, 0, LinearEasing)
                 )
                 shift.snapTo(0f)
                 anim()
@@ -152,8 +153,8 @@ fun RestAndSpentBudgetCard(
                                 .background(
                                     harmonizedColor.main,
                                     shape = WavyShape(
-                                        period = 30.dp,
-                                        amplitude = 2.dp,
+                                        period = if (bigVariant) 70.dp else 40.dp,
+                                        amplitude = if (bigVariant) 3.5.dp else 2.dp,
                                         shift = shift.value,
                                     ),
                                 )
@@ -256,39 +257,6 @@ fun RestAndSpentBudgetCard(
             )
         }
     }
-}
-
-class WavyShape(
-    private val period: Dp,
-    private val amplitude: Dp,
-    private val shift: Float,
-) : Shape {
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density,
-    ) = Outline.Generic(Path().apply {
-        val halfPeriod = with(density) { period.toPx() } / 2
-        val amplitude = with(density) { amplitude.toPx() }
-
-        val wavyPath = Path().apply {
-            moveTo(x = 0f, y = 0f)
-            lineTo(size.width - amplitude, -halfPeriod * 2.5f + halfPeriod * 2 * shift)
-            repeat(ceil(size.height / halfPeriod + 3).toInt()) { i ->
-                relativeQuadraticBezierTo(
-                    dx1 = 2 * amplitude * (if (i % 2 == 0) 1 else -1),
-                    dy1 = halfPeriod / 2,
-                    dx2 = 0f,
-                    dy2 = halfPeriod,
-                )
-            }
-            lineTo(0f, size.height)
-        }
-        val boundsPath = Path().apply {
-            addRect(Rect(offset = Offset.Zero, size = size))
-        }
-        op(wavyPath, boundsPath, PathOperation.Intersect)
-    })
 }
 
 @Preview(name = "The budget is almost completely spent")
