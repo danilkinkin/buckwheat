@@ -351,7 +351,7 @@ fun RowScope.RestBudgetPill(
                             ),
                         )
                     }
-                    Spacer(modifier = Modifier.width(22.dp))
+                    Spacer(modifier = Modifier.width(14.dp))
                 }
             }
         }

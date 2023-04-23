@@ -43,12 +43,12 @@ fun RowScope.CancelEditSpent(
             Icon(
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = null,
-                modifier = Modifier.size(16.dp)
+                modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = stringResource(R.string.cancel_editing),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelLarge,
                 color = textColor.copy(alpha = 0.6f),
                 overflow = TextOverflow.Ellipsis,
                 softWrap = false,

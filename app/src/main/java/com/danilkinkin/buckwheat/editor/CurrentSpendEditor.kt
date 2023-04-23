@@ -1,25 +1,14 @@
 package com.danilkinkin.buckwheat.editor
 
-import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.BaselineShift
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.*
@@ -64,7 +53,6 @@ fun CurrentSpendEditor(
     }
 
     observeLiveData(appViewModel.sheetStates) {
-        Log.d("requestFocus", "try = ${it.isEmpty()} spendsViewModel.rawSpentValue.value!! = ${spendsViewModel.rawSpentValue.value!!}")
         if (it.isEmpty()) {
             requestFocus = true
             hide = false
@@ -134,8 +122,6 @@ fun CurrentSpendEditor(
                         val fixed = fixedNumberString(it)
                         val converted = tryConvertStringToNumber(fixed)
 
-                        Log.d("onChangeValue", "it = $it fixed = $fixed converted = $converted")
-
                         spendsViewModel.rawSpentValue.value = fixed
                         spendsViewModel.editSpent(converted.join().toBigDecimal())
 
@@ -150,7 +136,6 @@ fun CurrentSpendEditor(
                 )
 
                 DisposableEffect(requestFocus) {
-                    Log.d("requestFocus", "requestFocus")
                     focusRequester.requestFocus()
                     requestFocus = false
 

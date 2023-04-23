@@ -275,16 +275,6 @@ fun History(
                 }
 
                 item("budget-info") {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(
-                                WindowInsets.systemBars
-                                    .asPaddingValues()
-                                    .calculateTopPadding()
-                            )
-                    )
-
                     WholeBudgetCard(
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                         budget = budget.value,
@@ -296,9 +286,18 @@ fun History(
                             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
                         ),
                     )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(
+                                WindowInsets.systemBars
+                                    .asPaddingValues()
+                                    .calculateTopPadding()
+                            )
+                    )
                 }
             }
-            
+
             if (spends !== null && spends!!.isEmpty()) {
                 NoSpends(Modifier.weight(1f))
             }

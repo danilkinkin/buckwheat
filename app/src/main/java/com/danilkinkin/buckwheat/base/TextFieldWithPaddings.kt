@@ -141,17 +141,8 @@ fun TextFieldWithPaddings(
         ).maxIntrinsicWidth
 
         coroutineScope.launch {
-            Log.d(
-                "TextField",
-                "position = ${position.toInt()} scrollState = ${scrollState.value} containerWidth = $containerWidth  gapStart = $gapStart gapEnd = $gapEnd requestScrollToCursor = $requestScrollToCursor forceEnd = $forceEnd"
-            )
-
             if (requestScrollToCursor || forceEnd) {
                 if (position.toInt() - scrollState.value > containerWidth) {
-                    Log.d(
-                        "TextField",
-                        "scroll ot cursor"
-                    )
                     scrollState.animateScrollTo(
                         position.toInt() - containerWidth + gapStart, tween(
                             durationMillis = 240,
@@ -159,10 +150,6 @@ fun TextFieldWithPaddings(
                         )
                     )
                 } else if (valueSize.width < containerWidth) {
-                    Log.d(
-                        "TextField",
-                        "scroll ot end"
-                    )
                     scrollState.animateScrollTo(
                         containerWidth + gapEnd, tween(
                             durationMillis = 240,
@@ -170,10 +157,6 @@ fun TextFieldWithPaddings(
                         )
                     )
                 } else {
-                    Log.d(
-                        "TextField",
-                        "skip"
-                    )
                     requestScrollToCursor = false
 
                     if (scrollState.value < inputWidth - valueSize.width + gapStart) {
@@ -186,8 +169,6 @@ fun TextFieldWithPaddings(
                     }
                 }
             } else {
-                Log.d("scroll", "fixed = ${scrollState.value < inputWidth - valueSize.width + gapStart}")
-
                 if (valueSize.width > containerWidth) {
                     scrollState.animateScrollTo(
                         valueSize.width, tween(
