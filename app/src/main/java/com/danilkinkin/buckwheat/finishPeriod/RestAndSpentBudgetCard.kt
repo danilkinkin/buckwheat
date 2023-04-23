@@ -105,7 +105,7 @@ fun RestAndSpentBudgetCard(
                     colorNotGood,
                     colorGood,
                 ),
-                percent.coerceAtLeast(BigDecimal(0)).toFloat(),
+                percent.coerceIn(BigDecimal(0), BigDecimal(1)).toFloat(),
             )
         )
     )
