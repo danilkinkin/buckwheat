@@ -15,6 +15,10 @@ const val DAY = 24 * 60 * 60 * 1000
 
 fun LocalDate.toDate(): Date = Date(this.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000)
 
+fun LocalDateTime.toDate(): Date = Date(this.toEpochSecond(
+    ZoneId.systemDefault().rules.getOffset(this)
+) * 1000)
+
 fun Date.toLocalDate(): LocalDate = this.toInstant()
     .atZone(ZoneId.systemDefault())
     .toLocalDate()
