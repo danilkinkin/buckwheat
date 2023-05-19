@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.AnimatedNumber
 import com.danilkinkin.buckwheat.base.BigIconButton
+import com.danilkinkin.buckwheat.base.WavyShape
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -264,7 +265,7 @@ fun RowScope.RestBudgetPill(
                                 } else {
                                     stringResource(R.string.new_daily_budget_short)
                                 },
-                                style = MaterialTheme.typography.labelMedium,
+                                style = MaterialTheme.typography.labelLarge,
                                 color = textColor.copy(alpha = 0.6f),
                                 overflow = TextOverflow.Ellipsis,
                                 softWrap = false,
@@ -346,48 +347,15 @@ fun RowScope.RestBudgetPill(
                                 currency = currency,
                             ),
                             style = MaterialTheme.typography.displayLarge.copy(
-                                fontSize = MaterialTheme.typography.titleLarge.fontSize
+                                fontSize = MaterialTheme.typography.headlineSmall.fontSize
                             ),
                         )
                     }
-                    Spacer(modifier = Modifier.width(22.dp))
+                    Spacer(modifier = Modifier.width(14.dp))
                 }
             }
         }
     }
-}
-
-class WavyShape(
-    private val period: Dp,
-    private val amplitude: Dp,
-    private val shift: Float,
-) : Shape {
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density,
-    ) = Outline.Generic(Path().apply {
-        val halfPeriod = with(density) { period.toPx() } / 2
-        val amplitude = with(density) { amplitude.toPx() }
-
-        val wavyPath = Path().apply {
-            moveTo(x = 0f, y = 0f)
-            lineTo(size.width - amplitude, -halfPeriod * 2.5f + halfPeriod * 2 * shift)
-            repeat(ceil(size.height / halfPeriod + 3).toInt()) { i ->
-                relativeQuadraticBezierTo(
-                    dx1 = 2 * amplitude * (if (i % 2 == 0) 1 else -1),
-                    dy1 = halfPeriod / 2,
-                    dx2 = 0f,
-                    dy2 = halfPeriod,
-                )
-            }
-            lineTo(0f, size.height)
-        }
-        val boundsPath = Path().apply {
-            addRect(Rect(offset = Offset.Zero, size = size))
-        }
-        op(wavyPath, boundsPath, PathOperation.Intersect)
-    })
 }
 
 @Preview(name = "The budget is almost completely spent")

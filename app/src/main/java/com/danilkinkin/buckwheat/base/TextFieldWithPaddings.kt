@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import com.danilkinkin.buckwheat.editor.calcAdaptiveFont
+import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import kotlinx.coroutines.CoroutineStart
@@ -101,11 +102,13 @@ fun TextFieldWithPaddings(
     val textStyle = MaterialTheme.typography.displayLarge.copy(
         fontSize = fontSize,
         fontWeight = FontWeight.W700,
+        color = colorOnEditor,
     )
 
     val currencyStyle = MaterialTheme.typography.displaySmall.copy(
         fontSize = textStyle.fontSize * 0.5f,
         fontWeight = FontWeight.W700,
+        color = colorOnEditor,
     )
 
     currencySymbolSize = calculateIntrinsics(
@@ -138,17 +141,8 @@ fun TextFieldWithPaddings(
         ).maxIntrinsicWidth
 
         coroutineScope.launch {
-            Log.d(
-                "TextField",
-                "position = ${position.toInt()} scrollState = ${scrollState.value} containerWidth = $containerWidth  gapStart = $gapStart gapEnd = $gapEnd requestScrollToCursor = $requestScrollToCursor forceEnd = $forceEnd"
-            )
-
             if (requestScrollToCursor || forceEnd) {
                 if (position.toInt() - scrollState.value > containerWidth) {
-                    Log.d(
-                        "TextField",
-                        "scroll ot cursor"
-                    )
                     scrollState.animateScrollTo(
                         position.toInt() - containerWidth + gapStart, tween(
                             durationMillis = 240,
@@ -156,10 +150,6 @@ fun TextFieldWithPaddings(
                         )
                     )
                 } else if (valueSize.width < containerWidth) {
-                    Log.d(
-                        "TextField",
-                        "scroll ot end"
-                    )
                     scrollState.animateScrollTo(
                         containerWidth + gapEnd, tween(
                             durationMillis = 240,
@@ -167,10 +157,6 @@ fun TextFieldWithPaddings(
                         )
                     )
                 } else {
-                    Log.d(
-                        "TextField",
-                        "skip"
-                    )
                     requestScrollToCursor = false
 
                     if (scrollState.value < inputWidth - valueSize.width + gapStart) {
@@ -183,8 +169,6 @@ fun TextFieldWithPaddings(
                     }
                 }
             } else {
-                Log.d("scroll", "fixed = ${scrollState.value < inputWidth - valueSize.width + gapStart}")
-
                 if (valueSize.width > containerWidth) {
                     scrollState.animateScrollTo(
                         valueSize.width, tween(
@@ -247,17 +231,16 @@ fun TextFieldWithPaddings(
                 decorationBox = { input ->
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
+                            .fillMaxSize()
                             .horizontalScroll(scrollState)
                             .padding(contentPadding)
                             .onGloballyPositioned {
                                 inputWidth = it.size.width
                             },
-                        contentAlignment = Alignment.CenterStart
+                        contentAlignment = Alignment.CenterEnd
                     ) {
                         Box(
-                            modifier = Modifier.fillMaxHeight().fillMaxWidth(),
+                            modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterEnd
                         ) {
                             input()
@@ -268,7 +251,7 @@ fun TextFieldWithPaddings(
                                 text = currSymbol,
                                 style = currencyStyle,
                                 modifier = Modifier.offset(
-                                    with(localDensity) { (inputWidth - valueSize.width - currencySymbolSize.width - currencySymbolSize.width * 0.3f).toDp() },
+                                    with(localDensity) { ( -valueSize.width - currencySymbolSize.width * 0.3f).toDp() },
                                     with(localDensity) { (valueSize.height - currencySymbolSize.height + valueSize.height * 0.14f - valueSize.height * 0.5f).toDp() },
                                 )
                             )

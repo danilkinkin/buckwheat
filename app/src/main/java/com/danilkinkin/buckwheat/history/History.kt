@@ -143,52 +143,41 @@ fun History(
         }
 
 
-        updateAnimatedItemsState(newList = list.toList().map { it })
+        updateAnimatedItemsState(newList = list.toList().reversed().map { it })
     } else {
         null
     }
 
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            LazyColumn(state = scrollState) {
-                item("budget-info") {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(
-                                WindowInsets.systemBars
-                                    .asPaddingValues()
-                                    .calculateTopPadding()
-                            )
-                    )
+            LazyColumn(
+                reverseLayout = true,
+                state = scrollState
+            ) {
 
-                    WholeBudgetCard(
-                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                        budget = budget.value,
-                        currency = spendsViewModel.currency.value!!,
-                        startDate = startDate.value,
-                        finishDate = finishDate.value,
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                        ),
-                    )
+                // Fixer, because if scroll fast end-checker dispose
+                item("spacer-2") {
+                    Spacer(modifier = Modifier.height(2.dp))
+                }
+
+                item("end-checker") {
+                    DisposableEffect(Unit) {
+                        appViewModel.lockSwipeable.value = false
+
+                        onDispose {
+                            appViewModel.lockSwipeable.value = true
+                        }
+                    }
+                }
+
+                item("spacer") {
+                    Spacer(modifier = Modifier.height(18.dp))
                 }
 
                 if (animatedList !== null) animatedItemsIndexed(
                     state = animatedList.value,
                     key = { rowItem -> rowItem.key },
                 ) { index, row ->
-                    if (index == 0) {
-                        LaunchedEffect(Unit) {
-                            if (scrollToBottom.value) {
-                                scrollToBottom.value = false
-                                coroutineScope.launch {
-                                    scrollState.scrollToItem(animatedList.value.size + 1)
-                                }
-                            }
-                        }
-                    }
                     when (row.type) {
                         RowEntityType.DayDivider -> HistoryDateDivider(row.day)
                         RowEntityType.DayTotal -> TotalPerDay(
@@ -285,26 +274,29 @@ fun History(
                     }
                 }
 
-                item("spacer") {
-                    Spacer(modifier = Modifier.height(18.dp))
-                }
-
-                item("end-checker") {
-                    DisposableEffect(Unit) {
-                        appViewModel.lockSwipeable.value = false
-
-                        onDispose {
-                            appViewModel.lockSwipeable.value = true
-                        }
-                    }
-                }
-
-                // Fixer, because if scroll fast end-checker dispose
-                item("spacer-2") {
-                    Spacer(modifier = Modifier.height(2.dp))
+                item("budget-info") {
+                    WholeBudgetCard(
+                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                        budget = budget.value,
+                        currency = spendsViewModel.currency.value!!,
+                        startDate = startDate.value,
+                        finishDate = finishDate.value,
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                        ),
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(
+                                WindowInsets.systemBars
+                                    .asPaddingValues()
+                                    .calculateTopPadding()
+                            )
+                    )
                 }
             }
-
 
             if (spends !== null && spends!!.isEmpty()) {
                 NoSpends(Modifier.weight(1f))
@@ -324,7 +316,7 @@ fun History(
                     .scale(fapScale),
                 onClick = {
                     coroutineScope.launch {
-                        scrollState.animateScrollToItem(animatedList!!.value.size + 1)
+                        scrollState.animateScrollToItem(0)
                     }
                 },
             ) {

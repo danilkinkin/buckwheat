@@ -8,7 +8,7 @@
     <string name="new_daily_budget">Nuevo presupuesto diario</string>
     <string name="new_daily_budget_description">Hoy has sobrepasado el presupuesto, pero no te preocupes. El presupuesto de los próximos días se recalculará de acuerdo al dinero que quede.</string>
     <string name="budget_end">Se ha acabado el presupuesto</string>
-    <string name="budget_end_description">Has sobrepasado el presupuesto, pero no te preocupes, las necesidades de gasto no siempre son las mismas. Sigue gastado para entender cuánto gastarás a final de mes y cuánto debes presupuestar.</string>
+    <string name="budget_end_description">Has sobrepasado el presupuesto, pero no te preocupes, las necesidades de gasto no siempre son las mismas. Sigue gastando para entender cuánto gastarás a final de mes y cuánto debes presupuestar.</string>
     <string name="new_spent">Nuevo gasto</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s gastado hoy</item>
@@ -64,7 +64,7 @@
     <string name="currency_custom_title">Introduce tu divisa</string>
     <string name="currency_custom_description">Por ejemplo, gastar 150 unidades convencionales se mostrará así:</string>
     <string name="confirm_change_budget_title">Cambio del presupuesto</string>
-    <string name="confirm_change_budget_description">Por favor, ten en cuenta que al cambiar el presupuesto el historial de gastos actual se borrará y la cuenta atrás empezará de nuevo.</string>
+    <string name="confirm_change_budget_description">Por favor, ten en cuenta que al cambiar el presupuesto el historial de gastos actual se borrará y la cuenta atrás empezará de nuevo</string>
     <string name="confirm_change_budget">Cambiar el presupuesto</string>
     <string name="use_last">Valores anteriores</string>
 
@@ -77,8 +77,6 @@
     <string name="theme_system">Sistema</string>
     <string name="locale_label">Idioma</string>
     <string name="locale_system">Sistema</string>
-    <string name="not_send_crash_report">Enviar informes de fallos anónimos</string>
-    <string name="not_send_crash_report_description">El informe de fallos sólo contiene el punto del código en el que la aplicación falló, y no contiene ningún dato personal que pueda identificarte. Estos datos ayudan a mejorar la estabilidad de la aplicación.</string>
     <string name="version">Versión: %1$s</string>
     <string name="about">Acerca de la app</string>
     <string name="description">Buckwheat es una app que te ayuda a gastar tu dinero sabiamente. Anotar cada gasto da paz mental y te ayuda a entender cuánto y cómo puedes gastar.</string>
@@ -95,7 +93,7 @@
     <string name="new_day_title">¡Felicidades! Has ahorrado</string>
     <string name="recalc_budget">Descubre como presupuestar</string>
     <string name="split_rest_days_title">Repartirlo entre los días que quedan</string>
-    <string name="split_rest_days_description">Obten %1$s al día</string>
+    <string name="split_rest_days_description">Obtén %1$s al día</string>
     <string name="add_current_day_title">Dejarlo para hoy</string>
     <string name="add_current_day_description">Tendrás %1$s para hoy y %2$s para los días sucesivos</string>
 
@@ -105,7 +103,7 @@
     <string name="period_summary_no_spends_title">Wow, no has gastado nada en este periodo</string>
     <string name="new_period_title">Establece un nuevo presupuesto</string>
     <string name="whole_budget">Presupuesto inicial</string>
-    <string name="rest_budget">Sobra</string>
+    <string name="rest_budget">Sobrante</string>
     <string name="rest_budget_percent">%1$s%% del presupuesto</string>
     <string name="min_spent">Gasto mínimo</string>
     <string name="max_spent">Gasto máximo</string>
@@ -126,9 +124,9 @@
     <string name="onboarding_title">Bienvenido a Buckwheat, ahorremos juntos</string>
     <string name="set_period_title">Establece un presupuesto</string>
     <string name="help_set_budget_title">Establece un presupuesto</string>
-    <string name="help_set_budget_description">Calcula cuánto necesitas para un periodo determinado, como un mes, e introdúcelo en la aplicación. Si no puedes calcularlo, indícalo de forma muy aproximada; por ejemplo, la mitad del salario. Con el tiempo, mejorarás tu estimación. over time you will indicate it more and more accurately</string>
+    <string name="help_set_budget_description">Calcula cuánto necesitas para un periodo determinado, como un mes, e introdúcelo en la aplicación. Si no puedes calcularlo, indícalo de forma muy aproximada; por ejemplo, la mitad del salario. Con el tiempo, mejorarás tu estimación.</string>
     <string name="help_record_spends_title">Anota cada gasto</string>
-    <string name="help_record_spends_description">La aplicación calculará cuánto puedes gastar cada día para ajustarte al presupuesto, anota cada gasto y sigue el presupuesto</string>
+    <string name="help_record_spends_description">La aplicación calculará cuánto puedes gastar cada día para ajustarte al presupuesto, anota cada gasto y sigue el presupuesto.</string>
     <string name="help_good_luck_title">Gasta sabiamente</string>
     <string name="help_good_luck_description">Con el tiempo, aprenderás a intuir cuánto gastas y cuánto necesitas. Aprende a valorar si puedes gastar dinero en un capricho ahora mismo.</string>
 
@@ -149,7 +147,7 @@
     <string name="always_ask">Preguntarme siempre</string>
     <string name="method_split_to_rest_days_title">Repartir</string>
     <string name="method_split_to_rest_days_description">El sobrante se repartirá entre los días que queden</string>
-    <string name="method_add_to_current_day_title">Añadir al presupuesto del día siguente</string>
+    <string name="method_add_to_current_day_title">Añadir al presupuesto del día siguiente</string>
     <string name="method_add_to_current_day_description">El sobrante se añadirá al presupuesto para el siguiente día</string>
     <string name="spent_budget">Gastado</string>
     <string name="edit_spent">Gasto editable</string>

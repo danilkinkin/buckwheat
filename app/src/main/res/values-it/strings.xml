@@ -78,8 +78,6 @@
     <string name="theme_system">In base al sistema</string>
     <string name="locale_label">Lingua</string>
     <string name="locale_system">Systemic</string>
-    <string name="not_send_crash_report">Invia informazioni anonime in caso di errore</string>
-    <string name="not_send_crash_report_description">Le informazioni di errore contengono solo la porzione di codice che ha causato il crash e non contengono alcuna informazione che può identificarti. Questi dati contribuiscono a migliorare la stabilità dell\'applicazione.</string>
     <string name="version">Versione: %1$s</string>
     <string name="about">Informazioni sull\'app</string>
     <string name="description">Buckwheat è un\'app che ti aiuta a spendere più saggiamente. Annotare ogni spesa fa riflettere e dà un\'idea di quanto e come si può spendere.</string>

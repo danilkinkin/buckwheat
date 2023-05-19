@@ -16,8 +16,8 @@ android {
         applicationId = "com.danilkinkin.buckwheat"
         minSdk = 26
         targetSdk = 33
-        versionCode = 14
-        versionName = "2.0.0"
+        versionCode = 16
+        versionName = "2.2.0"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -71,19 +71,19 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.activity:activity-compose:1.7.0")
-    implementation("androidx.compose.runtime:runtime:1.4.1")
-    implementation("androidx.compose.foundation:foundation:1.4.1")
-    implementation("androidx.compose.foundation:foundation-layout:1.4.1")
-    implementation("androidx.compose.ui:ui-util:1.4.1")
+    implementation("androidx.activity:activity-compose:1.7.1")
+    implementation("androidx.compose.runtime:runtime:1.4.2")
+    implementation("androidx.compose.foundation:foundation:1.4.2")
+    implementation("androidx.compose.foundation:foundation-layout:1.4.2")
+    implementation("androidx.compose.ui:ui-util:1.4.2")
     implementation("androidx.compose.material3:material3-window-size-class:1.0.1")
-    implementation("androidx.compose.animation:animation:1.4.1")
-    implementation("androidx.compose.material:material-icons-extended:1.4.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.4.1")
-    debugImplementation("androidx.compose.ui:ui-tooling:1.4.1")
+    implementation("androidx.compose.animation:animation:1.4.2")
+    implementation("androidx.compose.material:material-icons-extended:1.4.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.4.2")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.4.2")
     implementation("androidx.compose.material3:material3:1.0.1")
-    implementation("androidx.compose.material:material:1.4.1")
+    implementation("androidx.compose.material:material:1.4.2")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.1")
@@ -102,8 +102,8 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.45")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     implementation("io.coil-kt:coil-compose:2.2.2")
-    implementation("androidx.core:core-splashscreen:1.0.0")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.4.1")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.4.2")
     androidTestImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test:core:1.5.0")
     androidTestImplementation("androidx.test:runner:1.5.2")
@@ -111,8 +111,8 @@ dependencies {
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.4.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.1")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.4.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.2")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.45")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.45")
