@@ -24,7 +24,7 @@ fun drawText(context: Context, text: String): Bitmap {
     paint.isSubpixelText = true
     paint.typeface = clock
     paint.style = Paint.Style.FILL
-    paint.color = if (context.isNightMode) Color.Black.toArgb() else Color.White.toArgb()
+    //paint.color = if (context.isNightMode) Color.Black.toArgb() else Color.White.toArgb()
     paint.textSize = 65F
     paint.textAlign = Paint.Align.CENTER
     myCanvas.drawText(text, 80F, 60F, paint)

@@ -25,7 +25,7 @@ import androidx.glance.text.TextStyle
 import com.danilkinkin.buckwheat.util.*
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.Wave
-import com.danilkinkin.buckwheat.widget.generateWidgetColorPalette
+//import com.danilkinkin.buckwheat.widget.generateWidgetColorPalette
 import java.math.BigDecimal
 
 class AppWidget : GlanceAppWidget() {
@@ -43,97 +43,97 @@ class AppWidget : GlanceAppWidget() {
         setOf(superTinyMode, tinyMode, smallMode, mediumMode, largeMode, hugeMode, superHugeMode)
     )
 
-    @Composable
-    @GlanceComposable
-    override fun Content() {
-        val size = LocalSize.current
-        val context = LocalContext.current
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        provideContent {
+            val size = LocalSize.current
+            val context = LocalContext.current
 
-        val intent = Intent(context, MainActivity::class.java)
-        //actionStartActivity(intent)
+            val intent = Intent(context, MainActivity::class.java)
+            //actionStartActivity(intent)
 
-        val harmonizedPalette = generateWidgetColorPalette()
+            //val harmonizedPalette = generateWidgetColorPalette()
 
-        Box(
-            modifier = GlanceModifier
-                .cornerRadius(24.dp)
-                .fillMaxSize()
-                .background(harmonizedPalette.container)
-        ) {
-            Wave(
-                percent = 30F,
-                color = harmonizedPalette.main,
-            )
-            Column(modifier = GlanceModifier.fillMaxSize()) {
-                Text(
-                    modifier = GlanceModifier.padding(
-                        24.dp, 16.dp, 24.dp, 0.dp
-                    ),
-                    text = context.resources.getString(R.string.budget_for_today),
-                    style = TextStyle(
-                        color = harmonizedPalette.onContainer,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp,
-                    )
-                )
-                Column(
-                    modifier = GlanceModifier.defaultWeight().padding(bottom = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+            Box(
+                modifier = GlanceModifier
+                    .cornerRadius(24.dp)
+                    .fillMaxSize()
+                    //.background(harmonizedPalette.container)
+            ) {
+                /* Wave(
+                    percent = 30F,
+                    color = harmonizedPalette.main,
+                ) */
+                Column(modifier = GlanceModifier.fillMaxSize()) {
                     Text(
-                        modifier = GlanceModifier.padding(24.dp, 0.dp),
-                        text = prettyCandyCanes(
-                            BigDecimal("52130"), ExtendCurrency.getInstance("USD")
+                        modifier = GlanceModifier.padding(
+                            24.dp, 16.dp, 24.dp, 0.dp
                         ),
+                        text = context.resources.getString(R.string.budget_for_today),
                         style = TextStyle(
-                            color = harmonizedPalette.onContainer,
+                            //color = harmonizedPalette.onContainer,
                             fontWeight = FontWeight.Bold,
-                            fontSize = when (size) {
-                                superHugeMode -> 56.sp
-                                superTinyMode -> 24.sp
-                                else -> 36.sp
-                            },
+                            fontSize = 12.sp,
                         )
                     )
+                    Column(
+                        modifier = GlanceModifier.defaultWeight().padding(bottom = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = GlanceModifier.padding(24.dp, 0.dp),
+                            text = prettyCandyCanes(
+                                BigDecimal("52130"), ExtendCurrency.getInstance("USD")
+                            ),
+                            style = TextStyle(
+                                //color = harmonizedPalette.onContainer,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = when (size) {
+                                    superHugeMode -> 56.sp
+                                    superTinyMode -> 24.sp
+                                    else -> 36.sp
+                                },
+                            )
+                        )
+                    }
                 }
-            }
-            Column(
-                modifier = GlanceModifier.fillMaxSize(),
-                horizontalAlignment = Alignment.End,
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                Row(
-                    modifier = GlanceModifier.padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                Column(
+                    modifier = GlanceModifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.End,
+                    verticalAlignment = Alignment.Bottom,
                 ) {
-                    val drawable = ResourcesCompat.getDrawable(
-                        context.resources,
-                        R.drawable.ic_add,
-                        null,
-                    )!!
+                    Row(
+                        modifier = GlanceModifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        val drawable = ResourcesCompat.getDrawable(
+                            context.resources,
+                            R.drawable.ic_add,
+                            null,
+                        )!!
 
-                    val iconColor = harmonizedPalette.onContainer.getColor(context).toArgb()
-                    drawable.colorFilter = LightingColorFilter(iconColor, iconColor)
+                        /* val iconColor = harmonizedPalette.onContainer.getColor(context).toArgb()
+                        drawable.colorFilter = LightingColorFilter(iconColor, iconColor)
 
-                    CanvasText(text = "TEST 1234")
+                        CanvasText(text = "TEST 1234")
 
-                    Image(
-                        modifier = GlanceModifier.size(24.dp),
-                        provider = ImageProvider(drawable.toBitmap()),
-                        contentDescription = null,
-                    )
+                        Image(
+                            modifier = GlanceModifier.size(24.dp),
+                            provider = ImageProvider(drawable.toBitmap()),
+                            contentDescription = null,
+                        ) */
+                    }
                 }
             }
-        }
 
-        Box(
-            modifier = GlanceModifier
-                .appWidgetBackground()
-                .cornerRadius(24.dp)
-                .fillMaxSize()
-                .clickable(actionRunCallback<AddSpendActionCallback>())
-        ){}
-    }
+            Box(
+                modifier = GlanceModifier
+                    .appWidgetBackground()
+                    .cornerRadius(24.dp)
+                    .fillMaxSize()
+                    .clickable(actionRunCallback<AddSpendActionCallback>())
+            ){}
+        }
+        }
 }
 
 

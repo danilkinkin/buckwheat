@@ -14,9 +14,8 @@ import com.danilkinkin.buckwheat.ui.colorNotGood
 import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.harmonize
 import com.danilkinkin.buckwheat.util.toPalette
-import androidx.glance.appwidget.unit.ColorProvider
 
-val Context.isNightMode: Boolean
+/* val Context.isNightMode: Boolean
     get() =
         resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
                 Configuration.UI_MODE_NIGHT_YES
@@ -82,4 +81,4 @@ fun generateWidgetColorPalette(): HarmonizedWidgetColorProviderPalette {
             nightPalette.onSurfaceVariant
         ),
     )
-}
+} */
