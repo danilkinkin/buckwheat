@@ -19,7 +19,7 @@ import kotlinx.coroutines.runBlocking
 
 enum class ThemeMode { LIGHT, NIGHT, SYSTEM }
 
-private fun darkColorScheme(): ColorScheme {
+fun darkColorScheme(): ColorScheme {
     val palette = CorePalette.contentOf(colorSeed.toArgb())
     
     return darkColorScheme(
@@ -55,7 +55,7 @@ private fun darkColorScheme(): ColorScheme {
     )
 }
 
-private fun lightColorScheme(): ColorScheme {
+fun lightColorScheme(): ColorScheme {
     val palette = CorePalette.contentOf(colorSeed.toArgb())
 
     return lightColorScheme(

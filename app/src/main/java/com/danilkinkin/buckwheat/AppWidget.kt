@@ -3,16 +3,14 @@ package com.danilkinkin.buckwheat
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.*
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.glance.*
+import androidx.glance.ColorFilter
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.*
@@ -20,9 +18,9 @@ import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.layout.*
 import androidx.glance.text.FontWeight
-import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.danilkinkin.buckwheat.util.*
+import com.danilkinkin.buckwheat.widget.BuckwheatWidgetTheme
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.Wave
 //import com.danilkinkin.buckwheat.widget.generateWidgetColorPalette
@@ -53,87 +51,85 @@ class AppWidget : GlanceAppWidget() {
 
             //val harmonizedPalette = generateWidgetColorPalette()
 
-            Box(
-                modifier = GlanceModifier
-                    .cornerRadius(24.dp)
-                    .fillMaxSize()
-                    //.background(harmonizedPalette.container)
-            ) {
-                /* Wave(
-                    percent = 30F,
-                    color = harmonizedPalette.main,
-                ) */
-                Column(modifier = GlanceModifier.fillMaxSize()) {
-                    Text(
-                        modifier = GlanceModifier.padding(
-                            24.dp, 16.dp, 24.dp, 0.dp
-                        ),
-                        text = context.resources.getString(R.string.budget_for_today),
-                        style = TextStyle(
-                            //color = harmonizedPalette.onContainer,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                        )
+            BuckwheatWidgetTheme {
+                Box(
+                    modifier = GlanceModifier
+                        .cornerRadius(24.dp)
+                        .fillMaxSize()
+                        .background(GlanceTheme.colors.primaryContainer)
+                ) {
+                    Wave(
+                        percent = 30F,
+                        color = GlanceTheme.colors.primary,
                     )
-                    Column(
-                        modifier = GlanceModifier.defaultWeight().padding(bottom = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = GlanceModifier.padding(24.dp, 0.dp),
-                            text = prettyCandyCanes(
-                                BigDecimal("52130"), ExtendCurrency.getInstance("USD")
+                    Column(modifier = GlanceModifier.fillMaxSize()) {
+                        CanvasText(
+                            modifier = GlanceModifier.padding(
+                                24.dp, 16.dp, 24.dp, 0.dp
                             ),
+                            text = context.resources.getString(R.string.budget_for_today),
                             style = TextStyle(
-                                //color = harmonizedPalette.onContainer,
+                                color = GlanceTheme.colors.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = when (size) {
-                                    superHugeMode -> 56.sp
-                                    superTinyMode -> 24.sp
-                                    else -> 36.sp
-                                },
+                                fontSize = 12.sp,
                             )
                         )
+                        Column(
+                            modifier = GlanceModifier.defaultWeight().padding(bottom = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CanvasText(
+                                modifier = GlanceModifier.padding(24.dp, 0.dp),
+                                text = prettyCandyCanes(
+                                    BigDecimal("52130"), ExtendCurrency.getInstance("USD")
+                                ),
+                                style = TextStyle(
+                                    color = GlanceTheme.colors.onPrimaryContainer,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = when (size) {
+                                        superHugeMode -> 56.sp
+                                        superTinyMode -> 24.sp
+                                        else -> 36.sp
+                                    },
+                                )
+                            )
+                        }
                     }
-                }
-                Column(
-                    modifier = GlanceModifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.End,
-                    verticalAlignment = Alignment.Bottom,
-                ) {
-                    Row(
-                        modifier = GlanceModifier.padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                    Column(
+                        modifier = GlanceModifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.End,
+                        verticalAlignment = Alignment.Bottom,
                     ) {
-                        val drawable = ResourcesCompat.getDrawable(
-                            context.resources,
-                            R.drawable.ic_add,
-                            null,
-                        )!!
+                        Row(
+                            modifier = GlanceModifier.padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            val drawable = ResourcesCompat.getDrawable(
+                                context.resources,
+                                R.drawable.ic_add,
+                                null,
+                            )!!
 
-                        /* val iconColor = harmonizedPalette.onContainer.getColor(context).toArgb()
-                        drawable.colorFilter = LightingColorFilter(iconColor, iconColor)
-
-                        CanvasText(text = "TEST 1234")
-
-                        Image(
-                            modifier = GlanceModifier.size(24.dp),
-                            provider = ImageProvider(drawable.toBitmap()),
-                            contentDescription = null,
-                        ) */
+                            Image(
+                                modifier = GlanceModifier.size(24.dp),
+                                provider = ImageProvider(drawable.toBitmap()),
+                                colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
+                                contentDescription = null,
+                            )
+                        }
                     }
                 }
-            }
 
-            Box(
-                modifier = GlanceModifier
-                    .appWidgetBackground()
-                    .cornerRadius(24.dp)
-                    .fillMaxSize()
-                    .clickable(actionRunCallback<AddSpendActionCallback>())
-            ){}
+                Box(
+                    modifier = GlanceModifier
+                        .appWidgetBackground()
+                        .cornerRadius(24.dp)
+                        .fillMaxSize()
+                        .clickable(actionRunCallback<AddSpendActionCallback>())
+                ) {}
+            }
         }
-        }
+    }
 }
 
 

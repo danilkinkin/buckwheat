@@ -33,14 +33,12 @@ fun Wave(modifier: GlanceModifier = GlanceModifier, percent: Float, color: Color
         val waveColor = color.getColor(context).toArgb()
         waveDrawable.colorFilter = LightingColorFilter(waveColor, waveColor)
 
-        Box(
-            modifier = GlanceModifier
-                .fillMaxHeight()
-                .background(color)
-                .background(
-                    imageProvider = ImageProvider(waveDrawable.toBitmap()),
-                    contentScale = ContentScale.Crop
-                )
-        ) {}
+        Image(
+            modifier = GlanceModifier.fillMaxHeight(),
+            provider = ImageProvider(waveDrawable.toBitmap()),
+            contentScale = ContentScale.FillBounds,
+            colorFilter = ColorFilter.tint(color),
+            contentDescription = null,
+        )
     }
 }
