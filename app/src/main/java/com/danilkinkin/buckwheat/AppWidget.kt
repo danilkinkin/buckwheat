@@ -4,14 +4,15 @@ package com.danilkinkin.buckwheat
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.*
 import androidx.glance.ColorFilter
 import androidx.glance.action.clickable
@@ -34,9 +35,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.math.RoundingMode
+import java.util.Date
 import javax.inject.Inject
 
-private val countPreferenceKey = intPreferencesKey("count-key")
+private enum class StateBudget {
+    NOT_SET,
+    NORMAL,
+    NEW_DAILY,
+    IS_OVER,
+}
+
+private val todayBudgetPreferenceKey = intPreferencesKey("today-budget-key")
+private val currencyPreferenceKey = stringPreferencesKey("currency-key")
+private val stateBudgetPreferenceKey = stringPreferencesKey("state-budget-key")
+private val spentPercentPreferenceKey = floatPreferencesKey("spent-percent-key")
 
 class AppWidget : GlanceAppWidget() {
 
@@ -62,7 +75,11 @@ class AppWidget : GlanceAppWidget() {
             val intent = Intent(context, MainActivity::class.java)
 
             val prefs = currentState<Preferences>()
-            val count = prefs[countPreferenceKey] ?: 0
+            val todayBudget = prefs[todayBudgetPreferenceKey] ?: 0
+            val currency = prefs[currencyPreferenceKey]
+            val stateBudget =
+                StateBudget.valueOf(prefs[stateBudgetPreferenceKey] ?: StateBudget.NOT_SET.name)
+            val spentPercent = prefs[spentPercentPreferenceKey] ?: 0F
 
             BuckwheatWidgetTheme {
                 Box(
@@ -71,16 +88,21 @@ class AppWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.primaryContainer)
                 ) {
-                    Wave(
-                        percent = 30F,
+                    /* Wave(
+                        percent = if (spentPercent >= 0.9999f) 1F else spentPercent,
                         color = GlanceTheme.colors.primary,
-                    )
+                    ) */
                     Column(modifier = GlanceModifier.fillMaxSize()) {
                         CanvasText(
                             modifier = GlanceModifier.padding(
                                 24.dp, 16.dp, 24.dp, 0.dp
                             ),
-                            text = context.resources.getString(R.string.budget_for_today),
+                            text = when (stateBudget) {
+                                StateBudget.NOT_SET -> context.resources.getString(R.string.budget_for_today)
+                                StateBudget.NORMAL -> context.resources.getString(R.string.rest_budget_for_today)
+                                StateBudget.NEW_DAILY -> context.resources.getString(R.string.new_daily_budget)
+                                StateBudget.IS_OVER -> context.resources.getString(R.string.budget_end)
+                            },
                             style = TextStyle(
                                 color = GlanceTheme.colors.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold,
@@ -94,7 +116,7 @@ class AppWidget : GlanceAppWidget() {
                             CanvasText(
                                 modifier = GlanceModifier.padding(24.dp, 0.dp),
                                 text = prettyCandyCanes(
-                                    BigDecimal(count), ExtendCurrency.getInstance("USD")
+                                    BigDecimal(todayBudget), ExtendCurrency.getInstance(currency)
                                 ),
                                 style = TextStyle(
                                     color = GlanceTheme.colors.onPrimaryContainer,
@@ -173,42 +195,144 @@ class AppWidgetReceiver : GlanceAppWidgetReceiver() {
         appWidgetIds: IntArray
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-        Log.d("AppWidgetReceiver", "onUpdate")
 
         observeData(context)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        Log.d("AppWidgetReceiver", "onReceive")
 
         if (intent.action == UPDATE_ACTION) {
             observeData(context)
         }
     }
 
+    private fun calcBudgetPerDaySplit(
+        finishDate: Date,
+        spent: BigDecimal,
+        budget: BigDecimal,
+        dailyBudget: BigDecimal,
+        spentFromDailyBudget: BigDecimal,
+    ): BigDecimal {
+        val restDays = countDays(finishDate) - 1
+        val restBudget = (budget - spent) - dailyBudget
+        val splitBudget = restBudget + dailyBudget - spentFromDailyBudget
+
+        return (splitBudget / restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)))
+            .setScale(
+                0,
+                RoundingMode.FLOOR
+            )
+    }
+
     private fun observeData(context: Context) {
         coroutineScope.launch {
 
-            val spends = databaseRepository.spentDao().getAllSync()
-
-            Log.d("AppWidgetReceiver", "observeData spends: ${spends.size}")
-
             val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(AppWidget::class.java)
 
-            glanceIds.forEach { glanceId ->
-                updateAppWidgetState(
-                    context = context,
-                    definition = PreferencesGlanceStateDefinition,
-                    glanceId = glanceId
-                ) { preferences ->
-                    preferences.toMutablePreferences()
-                        .apply {
-                            this[countPreferenceKey] = spends.size
-                        }
+            val storageDao = databaseRepository.storageDao()
+
+            val finishDate: Date? = try {
+                Date(storageDao.get("finishDate").value.toLong())
+            } catch (e: Exception) {
+                null
+            }
+
+            val spentFromDailyBudget: BigDecimal = try {
+                storageDao.get("spentFromDailyBudget").value.toBigDecimal()
+            } catch (e: Exception) {
+                0.0.toBigDecimal()
+            }
+
+            val dailyBudget: BigDecimal = try {
+                storageDao.get("dailyBudget").value.toBigDecimal()
+            } catch (e: Exception) {
+                0.0.toBigDecimal()
+            }
+
+            val spent: BigDecimal = try {
+                storageDao.get("spent").value.toBigDecimal()
+            } catch (e: Exception) {
+                0.0.toBigDecimal()
+            }
+
+            val budget: BigDecimal = try {
+                storageDao.get("budget").value.toBigDecimal()
+            } catch (e: Exception) {
+                0.toBigDecimal()
+            }
+
+            val currency: ExtendCurrency = try {
+                ExtendCurrency.getInstance(storageDao.get("currency").value)
+            } catch (e: Exception) {
+                ExtendCurrency(value = null, type = CurrencyType.NONE)
+            }
+
+            if (finishDate === null) {
+                glanceIds.forEach { glanceId ->
+                    updateAppWidgetState(
+                        context = context,
+                        definition = PreferencesGlanceStateDefinition,
+                        glanceId = glanceId
+                    ) { preferences ->
+                        preferences.toMutablePreferences()
+                            .apply {
+                                this[stateBudgetPreferenceKey] = StateBudget.NOT_SET.name
+                            }
+                    }
+
+                    AppWidget().update(context, glanceId)
+                }
+            } else {
+                val newBudget = dailyBudget - spentFromDailyBudget
+
+                val newPerDayBudget = calcBudgetPerDaySplit(
+                    finishDate = finishDate,
+                    spent = spent,
+                    budget = budget,
+                    dailyBudget = dailyBudget,
+                    spentFromDailyBudget = spentFromDailyBudget,
+                )
+
+                val endBudget = newPerDayBudget <= BigDecimal(0)
+
+                val percent =
+                    if (dailyBudget > BigDecimal(0)) (dailyBudget - spentFromDailyBudget).divide(
+                        dailyBudget,
+                        5,
+                        RoundingMode.HALF_EVEN
+                    ) else BigDecimal(0)
+
+                val finalBudgetValue = if (newBudget >= 0.toBigDecimal()) {
+                    newBudget
+                } else {
+                    newPerDayBudget.coerceAtLeast(BigDecimal(0))
                 }
 
-                AppWidget().update(context, glanceId)
+                glanceIds.forEach { glanceId ->
+                    updateAppWidgetState(
+                        context = context,
+                        definition = PreferencesGlanceStateDefinition,
+                        glanceId = glanceId
+                    ) { preferences ->
+                        preferences.toMutablePreferences()
+                            .apply {
+                                this[todayBudgetPreferenceKey] = finalBudgetValue.toInt()
+                                this[currencyPreferenceKey] = currency.value.toString()
+                                this[stateBudgetPreferenceKey] =
+                                    if (newBudget >= 0.toBigDecimal()) {
+                                        StateBudget.NORMAL.name
+                                    } else if (endBudget) {
+                                        StateBudget.IS_OVER.name
+                                    } else {
+                                        StateBudget.NEW_DAILY.name
+                                    }
+                                this[spentPercentPreferenceKey] = percent.toFloat()
+                            }
+                    }
+
+                    AppWidget().update(context, glanceId)
+                }
             }
 
         }
