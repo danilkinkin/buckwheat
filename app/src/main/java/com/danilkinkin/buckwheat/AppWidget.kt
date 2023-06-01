@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat
 
 
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -9,24 +10,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.glance.*
 import androidx.glance.ColorFilter
-import androidx.glance.action.ActionParameters
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.*
-import androidx.glance.appwidget.action.ActionCallback
-import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.action.actionStartActivity
+import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.layout.*
+import androidx.glance.state.GlanceStateDefinition
+import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
+import com.danilkinkin.buckwheat.di.DatabaseRepository
 import com.danilkinkin.buckwheat.util.*
 import com.danilkinkin.buckwheat.widget.BuckwheatWidgetTheme
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.Wave
-//import com.danilkinkin.buckwheat.widget.generateWidgetColorPalette
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import javax.inject.Inject
+
+private val countPreferenceKey = intPreferencesKey("count-key")
 
 class AppWidget : GlanceAppWidget() {
+
+    override val stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
+
     companion object {
         private val superTinyMode = DpSize(200.dp, 48.dp)
         private val tinyMode = DpSize(200.dp, 84.dp)
@@ -44,12 +59,10 @@ class AppWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
             val size = LocalSize.current
-            val context = LocalContext.current
-
             val intent = Intent(context, MainActivity::class.java)
-            //actionStartActivity(intent)
 
-            //val harmonizedPalette = generateWidgetColorPalette()
+            val prefs = currentState<Preferences>()
+            val count = prefs[countPreferenceKey] ?: 0
 
             BuckwheatWidgetTheme {
                 Box(
@@ -81,7 +94,7 @@ class AppWidget : GlanceAppWidget() {
                             CanvasText(
                                 modifier = GlanceModifier.padding(24.dp, 0.dp),
                                 text = prettyCandyCanes(
-                                    BigDecimal("52130"), ExtendCurrency.getInstance("USD")
+                                    BigDecimal(count), ExtendCurrency.getInstance("USD")
                                 ),
                                 style = TextStyle(
                                     color = GlanceTheme.colors.onPrimaryContainer,
@@ -125,24 +138,79 @@ class AppWidget : GlanceAppWidget() {
                         .appWidgetBackground()
                         .cornerRadius(24.dp)
                         .fillMaxSize()
-                        .clickable(actionRunCallback<AddSpendActionCallback>())
+                        .clickable(actionStartActivity(intent))
                 ) {}
             }
         }
     }
 }
 
-
-class AddSpendActionCallback : ActionCallback {
-    override suspend fun onAction(
-        context: Context,
-        glanceId: GlanceId,
-        parameters: ActionParameters
-    ) {
-        Log.d("Buckwheat widget", "add spend...")
-    }
-}
-
+@AndroidEntryPoint
 class AppWidgetReceiver : GlanceAppWidgetReceiver() {
+
+    companion object {
+        const val UPDATE_ACTION = "updateAction"
+
+        fun requestUpdateData(context: Context) {
+            val intent = Intent(context, AppWidgetReceiver::class.java)
+            intent.action = UPDATE_ACTION
+            context.sendBroadcast(intent)
+        }
+    }
+
     override val glanceAppWidget = AppWidget()
+
+
+    private val job = SupervisorJob()
+    val coroutineScope = CoroutineScope(Dispatchers.IO + job)
+
+    @Inject
+    lateinit var databaseRepository: DatabaseRepository
+
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds)
+        Log.d("AppWidgetReceiver", "onUpdate")
+
+        observeData(context)
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        Log.d("AppWidgetReceiver", "onReceive")
+
+        if (intent.action == UPDATE_ACTION) {
+            observeData(context)
+        }
+    }
+
+    private fun observeData(context: Context) {
+        coroutineScope.launch {
+
+            val spends = databaseRepository.spentDao().getAllSync()
+
+            Log.d("AppWidgetReceiver", "observeData spends: ${spends.size}")
+
+            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(AppWidget::class.java)
+
+            glanceIds.forEach { glanceId ->
+                updateAppWidgetState(
+                    context = context,
+                    definition = PreferencesGlanceStateDefinition,
+                    glanceId = glanceId
+                ) { preferences ->
+                    preferences.toMutablePreferences()
+                        .apply {
+                            this[countPreferenceKey] = spends.size
+                        }
+                }
+
+                AppWidget().update(context, glanceId)
+            }
+
+        }
+    }
 }

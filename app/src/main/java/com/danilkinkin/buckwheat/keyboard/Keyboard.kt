@@ -8,11 +8,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.AppWidgetReceiver
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -22,7 +24,6 @@ import com.danilkinkin.buckwheat.util.join
 import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.math.BigDecimal
 
 val BUTTON_GAP = 6.dp
 
@@ -34,6 +35,7 @@ fun Keyboard(
     appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val haptic = LocalHapticFeedback.current
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
     val currentRawSpent by spendsViewModel.rawSpentValue.observeAsState("")
@@ -269,6 +271,8 @@ fun Keyboard(
 
                                 runBlocking {
                                     spendsViewModel.commitSpent()
+
+                                    AppWidgetReceiver.requestUpdateData(context)
                                 }
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
