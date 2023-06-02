@@ -28,7 +28,6 @@ import com.danilkinkin.buckwheat.di.DatabaseRepository
 import com.danilkinkin.buckwheat.util.*
 import com.danilkinkin.buckwheat.widget.BuckwheatWidgetTheme
 import com.danilkinkin.buckwheat.widget.CanvasText
-import com.danilkinkin.buckwheat.widget.Wave
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -88,10 +87,6 @@ class AppWidget : GlanceAppWidget() {
                         .fillMaxSize()
                         .background(GlanceTheme.colors.primaryContainer)
                 ) {
-                    /* Wave(
-                        percent = if (spentPercent >= 0.9999f) 1F else spentPercent,
-                        color = GlanceTheme.colors.primary,
-                    ) */
                     Column(modifier = GlanceModifier.fillMaxSize()) {
                         CanvasText(
                             modifier = GlanceModifier.padding(
