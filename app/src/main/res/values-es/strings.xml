@@ -154,4 +154,6 @@
     <string name="edit_spent">Gasto editable</string>
     <string name="cancel_editing">Cancelar edición</string>
     <string name="over">más del</string>
+    <string name="app_widget_extend_name">Alforfón extender</string>
+    <string name="app_widget_minimal_name">Alforfón mínimo</string>
 </resources>

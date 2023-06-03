@@ -154,4 +154,6 @@
     <string name="edit_spent">Gasto editável</string>
     <string name="cancel_editing">Cancelar edição</string>
     <string name="over">sobre</string>
+    <string name="app_widget_extend_name">trigo mourisco estender</string>
+    <string name="app_widget_minimal_name">Trigo mourisco mínimo</string>
 </resources>

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Buckwheat</string>
+    <string name="app_widget_extend_name">Buckwheat extend</string>
+    <string name="app_widget_minimal_name">Buckwheat minimal</string>
 
     <!-- Main -->
     <string name="budget_for_today">Budget for today</string>

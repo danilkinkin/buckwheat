@@ -156,4 +156,6 @@
     <string name="edit_spent">Redigerbart avfall</string>
     <string name="cancel_editing">Ångra redigering</string>
     <string name="over">över</string>
+    <string name="app_widget_extend_name">Bovete förlänga</string>
+    <string name="app_widget_minimal_name">Bovete minimalt</string>
 </resources>

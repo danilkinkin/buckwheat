@@ -159,4 +159,6 @@
     <string name="edit_spent">Редактируемая трата</string>
     <string name="cancel_editing">Отменить редактирование</string>
     <string name="over">более</string>
+    <string name="app_widget_extend_name">Гречка расширеный</string>
+    <string name="app_widget_minimal_name">Гречка минимальная</string>
 </resources>

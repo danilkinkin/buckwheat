@@ -17,6 +17,7 @@
             tools:targetApi="q" />
         <receiver
             android:name=".widget.extend.ExtendWidgetReceiver"
+            android:label="@string/app_widget_extend_name"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -28,6 +29,7 @@
 
         <receiver
             android:name=".widget.minimal.MinimalWidgetReceiver"
+            android:label="@string/app_widget_minimal_name"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

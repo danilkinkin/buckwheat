@@ -188,4 +188,6 @@
     <string name="edit_spent">Modifier la dépense</string>
     <string name="cancel_editing">Annuler la modification</string>
     <string name="over">plus de</string>
+    <string name="app_widget_extend_name">Extension de sarrasin</string>
+    <string name="app_widget_minimal_name">Minimum de sarrasin</string>
 </resources>

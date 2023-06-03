@@ -160,4 +160,6 @@
     <string name="edit_spent">Редагована витрата</string>
     <string name="cancel_editing">Скасувати редагування</string>
     <string name="over">понад</string>
+    <string name="app_widget_extend_name">Гречана крупа подовжується</string>
+    <string name="app_widget_minimal_name">Мінімум гречки</string>
 </resources>
