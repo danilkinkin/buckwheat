@@ -14,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.buckwheat.AppWidgetReceiver
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -271,8 +270,6 @@ fun Keyboard(
 
                                 runBlocking {
                                     spendsViewModel.commitSpent()
-
-                                    AppWidgetReceiver.requestUpdateData(context)
                                 }
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
