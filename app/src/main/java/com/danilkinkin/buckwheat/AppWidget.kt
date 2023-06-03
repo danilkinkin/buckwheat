@@ -40,6 +40,7 @@ import javax.inject.Inject
 
 private enum class StateBudget {
     NOT_SET,
+    END_PERIOD,
     NORMAL,
     NEW_DAILY,
     IS_OVER,
@@ -88,64 +89,158 @@ class AppWidget : GlanceAppWidget() {
                         .background(GlanceTheme.colors.primaryContainer)
                 ) {
                     Column(modifier = GlanceModifier.fillMaxSize()) {
-                        CanvasText(
-                            modifier = GlanceModifier.padding(
-                                24.dp, 16.dp, 24.dp, 0.dp
-                            ),
-                            text = when (stateBudget) {
-                                StateBudget.NOT_SET -> context.resources.getString(R.string.budget_for_today)
-                                StateBudget.NORMAL -> context.resources.getString(R.string.rest_budget_for_today)
-                                StateBudget.NEW_DAILY -> context.resources.getString(R.string.new_daily_budget)
-                                StateBudget.IS_OVER -> context.resources.getString(R.string.budget_end)
-                            },
-                            style = TextStyle(
-                                color = GlanceTheme.colors.onPrimaryContainer,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                            )
-                        )
+                        if (
+                            stateBudget !== StateBudget.NOT_SET &&
+                            stateBudget !== StateBudget.END_PERIOD
+                        ) {
+                            Row(
+                                modifier = GlanceModifier.padding(
+                                    16.dp, 16.dp, 24.dp, 0.dp
+                                ),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                val drawable = ResourcesCompat.getDrawable(
+                                    context.resources,
+                                    R.drawable.ic_info,
+                                    null,
+                                )!!
+
+                                Image(
+                                    modifier = GlanceModifier.size(16.dp),
+                                    provider = ImageProvider(drawable.toBitmap()),
+                                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
+                                    contentDescription = null,
+                                )
+
+                                CanvasText(
+                                    modifier = GlanceModifier.padding(
+                                        8.dp, 0.dp, 0.dp, 0.dp
+                                    ),
+                                    text = when (stateBudget) {
+                                        StateBudget.NEW_DAILY -> context.resources.getString(
+                                            R.string.rest_budget_for_today
+                                        )
+
+                                        StateBudget.IS_OVER -> context.resources.getString(
+                                            R.string.budget_end
+                                        )
+
+                                        else -> context.resources.getString(
+                                            R.string.rest_budget_for_today
+                                        )
+                                    },
+                                    style = TextStyle(
+                                        color = GlanceTheme.colors.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 12.sp,
+                                    )
+                                )
+                            }
+                        }
                         Column(
                             modifier = GlanceModifier.defaultWeight().padding(bottom = 16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            CanvasText(
-                                modifier = GlanceModifier.padding(24.dp, 0.dp),
-                                text = prettyCandyCanes(
-                                    BigDecimal(todayBudget), ExtendCurrency.getInstance(currency)
-                                ),
-                                style = TextStyle(
-                                    color = GlanceTheme.colors.onPrimaryContainer,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = when (size) {
-                                        superHugeMode -> 56.sp
-                                        superTinyMode -> 24.sp
-                                        else -> 36.sp
-                                    },
+                            if (
+                                stateBudget !== StateBudget.NOT_SET &&
+                                stateBudget !== StateBudget.IS_OVER &&
+                                stateBudget !== StateBudget.END_PERIOD
+                            ) {
+                                CanvasText(
+                                    modifier = GlanceModifier.padding(24.dp, 0.dp),
+                                    text = prettyCandyCanes(
+                                        BigDecimal(todayBudget),
+                                        ExtendCurrency.getInstance(currency)
+                                    ),
+                                    style = TextStyle(
+                                        color = GlanceTheme.colors.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = when (size) {
+                                            superHugeMode -> 56.sp
+                                            superTinyMode -> 24.sp
+                                            else -> 36.sp
+                                        },
+                                    )
                                 )
-                            )
+                            } else if (stateBudget !== StateBudget.IS_OVER) {
+                                CanvasText(
+                                    modifier = GlanceModifier.padding(24.dp, 0.dp),
+                                    text = if (stateBudget === StateBudget.NOT_SET) context.resources.getString(
+                                        R.string.budget_not_set
+                                    ) else context.resources.getString(R.string.finish_period_title),
+                                    style = TextStyle(
+                                        color = GlanceTheme.colors.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = when (size) {
+                                            superHugeMode -> 42.sp
+                                            superTinyMode -> 18.sp
+                                            else -> 24.sp
+                                        },
+                                    )
+                                )
+                            }
                         }
                     }
-                    Column(
-                        modifier = GlanceModifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.End,
-                        verticalAlignment = Alignment.Bottom,
-                    ) {
-                        Row(
-                            modifier = GlanceModifier.padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
+                    if (stateBudget !== StateBudget.NOT_SET && stateBudget !== StateBudget.END_PERIOD) {
+                        Column(
+                            modifier = GlanceModifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.End,
+                            verticalAlignment = Alignment.Bottom,
                         ) {
-                            val drawable = ResourcesCompat.getDrawable(
-                                context.resources,
-                                R.drawable.ic_add,
-                                null,
-                            )!!
+                            Row(
+                                modifier = GlanceModifier.padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                val drawable = ResourcesCompat.getDrawable(
+                                    context.resources,
+                                    R.drawable.ic_add,
+                                    null,
+                                )!!
 
-                            Image(
-                                modifier = GlanceModifier.size(24.dp),
-                                provider = ImageProvider(drawable.toBitmap()),
-                                colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
-                                contentDescription = null,
-                            )
+                                Image(
+                                    modifier = GlanceModifier.size(24.dp),
+                                    provider = ImageProvider(drawable.toBitmap()),
+                                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
+                                    contentDescription = null,
+                                )
+                            }
+                        }
+                    }
+                    if (stateBudget === StateBudget.NOT_SET || stateBudget === StateBudget.END_PERIOD) {
+                        Column(
+                            modifier = GlanceModifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.End,
+                            verticalAlignment = Alignment.Bottom,
+                        ) {
+                            Row(
+                                modifier = GlanceModifier.padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                CanvasText(
+                                    modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
+                                    text = context.resources.getString(
+                                        R.string.set_period_title
+                                    ),
+                                    style = TextStyle(
+                                        color = GlanceTheme.colors.onPrimaryContainer,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                    )
+                                )
+
+                                val drawable = ResourcesCompat.getDrawable(
+                                    context.resources,
+                                    R.drawable.ic_arrow_forward,
+                                    null,
+                                )!!
+
+                                Image(
+                                    modifier = GlanceModifier.size(24.dp),
+                                    provider = ImageProvider(drawable.toBitmap()),
+                                    colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
+                                    contentDescription = null,
+                                )
+                            }
                         }
                     }
                 }
@@ -263,7 +358,7 @@ class AppWidgetReceiver : GlanceAppWidgetReceiver() {
                 ExtendCurrency(value = null, type = CurrencyType.NONE)
             }
 
-            if (finishDate === null) {
+            if (finishDate === null || finishDate.time <= Date().time) {
                 glanceIds.forEach { glanceId ->
                     updateAppWidgetState(
                         context = context,
@@ -272,7 +367,12 @@ class AppWidgetReceiver : GlanceAppWidgetReceiver() {
                     ) { preferences ->
                         preferences.toMutablePreferences()
                             .apply {
-                                this[stateBudgetPreferenceKey] = StateBudget.NOT_SET.name
+                                this[stateBudgetPreferenceKey] =
+                                    if (finishDate !== null && finishDate.time <= Date().time) {
+                                        StateBudget.END_PERIOD.name
+                                    } else {
+                                        StateBudget.NOT_SET.name
+                                    }
                             }
                     }
 

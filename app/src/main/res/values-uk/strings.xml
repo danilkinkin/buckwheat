@@ -9,6 +9,7 @@
     <string name="new_daily_budget">Новий денний бюджет</string>
     <string name="new_daily_budget_description">Сьогодні ви вийшли за рамки денного бюджету, не турбуйтеся, це не страшно. На наступні дні бюджет буде перерахований з урахуванням загального бюджету, що залишився</string>
     <string name="budget_end">Бюджет закінчився</string>
+    <string name="budget_not_set">Бюджет не встановлений</string>
     <string name="budget_end_description">Ви вийшли за межі запланованого бюджету, не турбуйтеся, це не страшно, витрати ніколи не бувають однаковими. Заводьте витрати далі, щоб розуміти скільки зрештою ви витратите і який бюджет вам потрібен</string>
     <string name="new_spent">Нова витрата</string>
     <plurals name="spends_today">

@@ -8,6 +8,7 @@
     <string name="new_daily_budget">New daily budget</string>
     <string name="new_daily_budget_description">Today you went beyond the daily budget, do not worry, it\'s not scary. For the following days, the budget will be recalculated taking into account the remaining total budget</string>
     <string name="budget_end">The budget is over</string>
+    <string name="budget_not_set">No budget set</string>
     <string name="budget_end_description">You went beyond the planned budget, do not worry, it\'s not scary, spending is never the same. Start spending further to understand how much you will spend in the end and what budget you need</string>
     <string name="new_spent">New spending</string>
     <plurals name="spends_today">
