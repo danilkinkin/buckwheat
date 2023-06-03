@@ -3,6 +3,8 @@ package com.danilkinkin.buckwheat
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.danilkinkin.buckwheat.widget.extend.ExtendWidgetReceiver
+import com.danilkinkin.buckwheat.widget.minimal.MinimalWidgetReceiver
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -24,7 +26,8 @@ class Application : Application() {
             }
 
             override fun onActivityPaused(activity: Activity) {
-                AppWidgetReceiver.requestUpdateData(activity.applicationContext)
+                ExtendWidgetReceiver.requestUpdateData(activity.applicationContext)
+                MinimalWidgetReceiver.requestUpdateData(activity.applicationContext)
             }
 
             override fun onActivityStopped(activity: Activity) {

@@ -1,7 +1,5 @@
-package com.danilkinkin.buckwheat
+package com.danilkinkin.buckwheat.widget.extend
 
-
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import androidx.compose.ui.unit.DpSize
@@ -10,48 +8,47 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.floatPreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.*
 import androidx.glance.ColorFilter
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
+import androidx.glance.Image
+import androidx.glance.ImageProvider
+import androidx.glance.LocalSize
 import androidx.glance.action.clickable
-import androidx.glance.appwidget.*
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.actionStartActivity
-import androidx.glance.appwidget.state.updateAppWidgetState
-import androidx.glance.layout.*
+import androidx.glance.appwidget.appWidgetBackground
+import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.provideContent
+import androidx.glance.background
+import androidx.glance.currentState
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
+import androidx.glance.layout.Column
+import androidx.glance.layout.Row
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.padding
+import androidx.glance.layout.size
 import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.state.PreferencesGlanceStateDefinition
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
-import com.danilkinkin.buckwheat.di.DatabaseRepository
-import com.danilkinkin.buckwheat.util.*
+import com.danilkinkin.buckwheat.MainActivity
+import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import com.danilkinkin.buckwheat.widget.BuckwheatWidgetTheme
 import com.danilkinkin.buckwheat.widget.CanvasText
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import com.danilkinkin.buckwheat.widget.WidgetReceiver
+import com.danilkinkin.buckwheat.widget.WidgetReceiver.Companion.currencyPreferenceKey
+import com.danilkinkin.buckwheat.widget.WidgetReceiver.Companion.spentPercentPreferenceKey
+import com.danilkinkin.buckwheat.widget.WidgetReceiver.Companion.stateBudgetPreferenceKey
+import com.danilkinkin.buckwheat.widget.WidgetReceiver.Companion.todayBudgetPreferenceKey
 import java.math.BigDecimal
-import java.math.RoundingMode
-import java.util.Date
-import javax.inject.Inject
 
-private enum class StateBudget {
-    NOT_SET,
-    END_PERIOD,
-    NORMAL,
-    NEW_DAILY,
-    IS_OVER,
-}
-
-private val todayBudgetPreferenceKey = intPreferencesKey("today-budget-key")
-private val currencyPreferenceKey = stringPreferencesKey("currency-key")
-private val stateBudgetPreferenceKey = stringPreferencesKey("state-budget-key")
-private val spentPercentPreferenceKey = floatPreferencesKey("spent-percent-key")
-
-class AppWidget : GlanceAppWidget() {
+class ExtendWidget : GlanceAppWidget() {
 
     override val stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
 
@@ -78,7 +75,7 @@ class AppWidget : GlanceAppWidget() {
             val todayBudget = prefs[todayBudgetPreferenceKey] ?: 0
             val currency = prefs[currencyPreferenceKey]
             val stateBudget =
-                StateBudget.valueOf(prefs[stateBudgetPreferenceKey] ?: StateBudget.NOT_SET.name)
+                WidgetReceiver.Companion.StateBudget.valueOf(prefs[stateBudgetPreferenceKey] ?: WidgetReceiver.Companion.StateBudget.NOT_SET.name)
             val spentPercent = prefs[spentPercentPreferenceKey] ?: 0F
 
             BuckwheatWidgetTheme {
@@ -90,8 +87,8 @@ class AppWidget : GlanceAppWidget() {
                 ) {
                     Column(modifier = GlanceModifier.fillMaxSize()) {
                         if (
-                            stateBudget !== StateBudget.NOT_SET &&
-                            stateBudget !== StateBudget.END_PERIOD
+                            stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
+                            stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
                         ) {
                             Row(
                                 modifier = GlanceModifier.padding(
@@ -117,11 +114,11 @@ class AppWidget : GlanceAppWidget() {
                                         8.dp, 0.dp, 0.dp, 0.dp
                                     ),
                                     text = when (stateBudget) {
-                                        StateBudget.NEW_DAILY -> context.resources.getString(
+                                        WidgetReceiver.Companion.StateBudget.NEW_DAILY -> context.resources.getString(
                                             R.string.rest_budget_for_today
                                         )
 
-                                        StateBudget.IS_OVER -> context.resources.getString(
+                                        WidgetReceiver.Companion.StateBudget.IS_OVER -> context.resources.getString(
                                             R.string.budget_end
                                         )
 
@@ -142,9 +139,9 @@ class AppWidget : GlanceAppWidget() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             if (
-                                stateBudget !== StateBudget.NOT_SET &&
-                                stateBudget !== StateBudget.IS_OVER &&
-                                stateBudget !== StateBudget.END_PERIOD
+                                stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
+                                stateBudget !== WidgetReceiver.Companion.StateBudget.IS_OVER &&
+                                stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
                             ) {
                                 CanvasText(
                                     modifier = GlanceModifier.padding(24.dp, 0.dp),
@@ -162,10 +159,10 @@ class AppWidget : GlanceAppWidget() {
                                         },
                                     )
                                 )
-                            } else if (stateBudget !== StateBudget.IS_OVER) {
+                            } else if (stateBudget !== WidgetReceiver.Companion.StateBudget.IS_OVER) {
                                 CanvasText(
                                     modifier = GlanceModifier.padding(24.dp, 0.dp),
-                                    text = if (stateBudget === StateBudget.NOT_SET) context.resources.getString(
+                                    text = if (stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET) context.resources.getString(
                                         R.string.budget_not_set
                                     ) else context.resources.getString(R.string.finish_period_title),
                                     style = TextStyle(
@@ -181,7 +178,7 @@ class AppWidget : GlanceAppWidget() {
                             }
                         }
                     }
-                    if (stateBudget !== StateBudget.NOT_SET && stateBudget !== StateBudget.END_PERIOD) {
+                    if (stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET && stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD) {
                         Column(
                             modifier = GlanceModifier.fillMaxSize(),
                             horizontalAlignment = Alignment.End,
@@ -206,7 +203,7 @@ class AppWidget : GlanceAppWidget() {
                             }
                         }
                     }
-                    if (stateBudget === StateBudget.NOT_SET || stateBudget === StateBudget.END_PERIOD) {
+                    if (stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET || stateBudget === WidgetReceiver.Companion.StateBudget.END_PERIOD) {
                         Column(
                             modifier = GlanceModifier.fillMaxSize(),
                             horizontalAlignment = Alignment.End,
@@ -253,183 +250,6 @@ class AppWidget : GlanceAppWidget() {
                         .clickable(actionStartActivity(intent))
                 ) {}
             }
-        }
-    }
-}
-
-@AndroidEntryPoint
-class AppWidgetReceiver : GlanceAppWidgetReceiver() {
-
-    companion object {
-        const val UPDATE_ACTION = "updateAction"
-
-        fun requestUpdateData(context: Context) {
-            val intent = Intent(context, AppWidgetReceiver::class.java)
-            intent.action = UPDATE_ACTION
-            context.sendBroadcast(intent)
-        }
-    }
-
-    override val glanceAppWidget = AppWidget()
-
-
-    private val job = SupervisorJob()
-    val coroutineScope = CoroutineScope(Dispatchers.IO + job)
-
-    @Inject
-    lateinit var databaseRepository: DatabaseRepository
-
-    override fun onUpdate(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
-    ) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds)
-
-        observeData(context)
-    }
-
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-
-        if (intent.action == UPDATE_ACTION) {
-            observeData(context)
-        }
-    }
-
-    private fun calcBudgetPerDaySplit(
-        finishDate: Date,
-        spent: BigDecimal,
-        budget: BigDecimal,
-        dailyBudget: BigDecimal,
-        spentFromDailyBudget: BigDecimal,
-    ): BigDecimal {
-        val restDays = countDays(finishDate) - 1
-        val restBudget = (budget - spent) - dailyBudget
-        val splitBudget = restBudget + dailyBudget - spentFromDailyBudget
-
-        return (splitBudget / restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)))
-            .setScale(
-                0,
-                RoundingMode.FLOOR
-            )
-    }
-
-    private fun observeData(context: Context) {
-        coroutineScope.launch {
-
-            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(AppWidget::class.java)
-
-            val storageDao = databaseRepository.storageDao()
-
-            val finishDate: Date? = try {
-                Date(storageDao.get("finishDate").value.toLong())
-            } catch (e: Exception) {
-                null
-            }
-
-            val spentFromDailyBudget: BigDecimal = try {
-                storageDao.get("spentFromDailyBudget").value.toBigDecimal()
-            } catch (e: Exception) {
-                0.0.toBigDecimal()
-            }
-
-            val dailyBudget: BigDecimal = try {
-                storageDao.get("dailyBudget").value.toBigDecimal()
-            } catch (e: Exception) {
-                0.0.toBigDecimal()
-            }
-
-            val spent: BigDecimal = try {
-                storageDao.get("spent").value.toBigDecimal()
-            } catch (e: Exception) {
-                0.0.toBigDecimal()
-            }
-
-            val budget: BigDecimal = try {
-                storageDao.get("budget").value.toBigDecimal()
-            } catch (e: Exception) {
-                0.toBigDecimal()
-            }
-
-            val currency: ExtendCurrency = try {
-                ExtendCurrency.getInstance(storageDao.get("currency").value)
-            } catch (e: Exception) {
-                ExtendCurrency(value = null, type = CurrencyType.NONE)
-            }
-
-            if (finishDate === null || finishDate.time <= Date().time) {
-                glanceIds.forEach { glanceId ->
-                    updateAppWidgetState(
-                        context = context,
-                        definition = PreferencesGlanceStateDefinition,
-                        glanceId = glanceId
-                    ) { preferences ->
-                        preferences.toMutablePreferences()
-                            .apply {
-                                this[stateBudgetPreferenceKey] =
-                                    if (finishDate !== null && finishDate.time <= Date().time) {
-                                        StateBudget.END_PERIOD.name
-                                    } else {
-                                        StateBudget.NOT_SET.name
-                                    }
-                            }
-                    }
-
-                    AppWidget().update(context, glanceId)
-                }
-            } else {
-                val newBudget = dailyBudget - spentFromDailyBudget
-
-                val newPerDayBudget = calcBudgetPerDaySplit(
-                    finishDate = finishDate,
-                    spent = spent,
-                    budget = budget,
-                    dailyBudget = dailyBudget,
-                    spentFromDailyBudget = spentFromDailyBudget,
-                )
-
-                val endBudget = newPerDayBudget <= BigDecimal(0)
-
-                val percent =
-                    if (dailyBudget > BigDecimal(0)) (dailyBudget - spentFromDailyBudget).divide(
-                        dailyBudget,
-                        5,
-                        RoundingMode.HALF_EVEN
-                    ) else BigDecimal(0)
-
-                val finalBudgetValue = if (newBudget >= 0.toBigDecimal()) {
-                    newBudget
-                } else {
-                    newPerDayBudget.coerceAtLeast(BigDecimal(0))
-                }
-
-                glanceIds.forEach { glanceId ->
-                    updateAppWidgetState(
-                        context = context,
-                        definition = PreferencesGlanceStateDefinition,
-                        glanceId = glanceId
-                    ) { preferences ->
-                        preferences.toMutablePreferences()
-                            .apply {
-                                this[todayBudgetPreferenceKey] = finalBudgetValue.toInt()
-                                this[currencyPreferenceKey] = currency.value.toString()
-                                this[stateBudgetPreferenceKey] =
-                                    if (newBudget >= 0.toBigDecimal()) {
-                                        StateBudget.NORMAL.name
-                                    } else if (endBudget) {
-                                        StateBudget.IS_OVER.name
-                                    } else {
-                                        StateBudget.NEW_DAILY.name
-                                    }
-                                this[spentPercentPreferenceKey] = percent.toFloat()
-                            }
-                    }
-
-                    AppWidget().update(context, glanceId)
-                }
-            }
-
         }
     }
 }

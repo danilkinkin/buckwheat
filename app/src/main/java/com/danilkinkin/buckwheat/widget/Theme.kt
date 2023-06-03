@@ -3,17 +3,10 @@ package com.danilkinkin.buckwheat.widget
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.Font
-import androidx.glance.text.FontFamily
-import androidx.glance.text.FontWeight
 import androidx.glance.GlanceTheme
 import androidx.glance.LocalContext
 import androidx.glance.color.ColorProvider
-import androidx.glance.color.ColorProviders
 import androidx.glance.color.colorProviders
-import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.ui.darkColorScheme
-import com.danilkinkin.buckwheat.ui.lightColorScheme
 
 @Composable
 fun BuckwheatWidgetTheme(
