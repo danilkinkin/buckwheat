@@ -80,12 +80,12 @@ fun WidgetContent() {
                         CanvasText(
                             modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
                             text = context.resources.getString(
-                                R.string.set_period_title
+                                R.string.add_spent
                             ),
                             style = TextStyle(
                                 color = GlanceTheme.colors.onPrimaryContainer,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 24.sp,
+                                fontSize = 22.sp,
                             )
                         )
 
@@ -96,7 +96,7 @@ fun WidgetContent() {
                         )!!
 
                         Image(
-                            modifier = GlanceModifier.size(24.dp),
+                            modifier = GlanceModifier.size(32.dp),
                             provider = ImageProvider(drawable.toBitmap()),
                             colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
                             contentDescription = null,
