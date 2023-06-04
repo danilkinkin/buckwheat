@@ -92,7 +92,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
     private fun observeData(context: Context) {
         coroutineScope.launch {
 
-            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(ExtendWidget::class.java)
+            val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(glanceAppWidget.javaClass)
 
             val storageDao = databaseRepository.storageDao()
 
