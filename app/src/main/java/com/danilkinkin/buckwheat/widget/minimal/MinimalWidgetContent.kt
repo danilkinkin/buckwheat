@@ -45,17 +45,14 @@ fun WidgetContent() {
     val intent = Intent(context, MainActivity::class.java)
 
     val prefs = currentState<Preferences>()
-    val stateBudget =
-        WidgetReceiver.Companion.StateBudget.valueOf(
-            prefs[WidgetReceiver.stateBudgetPreferenceKey]
-                ?: WidgetReceiver.Companion.StateBudget.NOT_SET.name
-        )
+    val stateBudget = WidgetReceiver.Companion.StateBudget.valueOf(
+        prefs[WidgetReceiver.stateBudgetPreferenceKey]
+            ?: WidgetReceiver.Companion.StateBudget.NOT_SET.name
+    )
 
     BuckwheatWidgetTheme {
         Box(
-            modifier = GlanceModifier
-                .cornerRadius(48.dp)
-                .fillMaxSize()
+            modifier = GlanceModifier.cornerRadius(48.dp).fillMaxSize()
                 .background(BuckwheatGlanceTheme.colors.primaryContainer.colorProvider),
             contentAlignment = Alignment.Center,
         ) {
@@ -64,10 +61,7 @@ fun WidgetContent() {
                 horizontalAlignment = Alignment.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (
-                    stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
-                    stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
-                ) {
+                if (stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET && stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD) {
                     Row(
                         modifier = GlanceModifier.padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -80,7 +74,11 @@ fun WidgetContent() {
                             style = TextStyle(
                                 color = BuckwheatGlanceTheme.colors.onPrimaryContainer.colorProvider,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 22.sp,
+                                fontSize = when (size) {
+                                    MinimalWidget.largeMode -> 22.sp
+                                    MinimalWidget.smallMode -> 14.sp
+                                    else -> 22.sp
+                                },
                             )
                         )
 
@@ -98,10 +96,7 @@ fun WidgetContent() {
                         )
                     }
                 }
-                if (
-                    stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET ||
-                    stateBudget === WidgetReceiver.Companion.StateBudget.END_PERIOD
-                ) {
+                if (stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET || stateBudget === WidgetReceiver.Companion.StateBudget.END_PERIOD) {
                     CanvasText(
                         modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
                         text = if (stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET) {
@@ -116,16 +111,32 @@ fun WidgetContent() {
                         style = TextStyle(
                             color = BuckwheatGlanceTheme.colors.onPrimaryContainer.colorProvider,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
+                            fontSize = when (size) {
+                                MinimalWidget.largeMode -> 24.sp
+                                MinimalWidget.smallMode -> 18.sp
+                                else -> 24.sp
+                            },
                         )
                     )
 
                     Row(
-                        modifier = GlanceModifier.padding(0.dp, 4.dp, 0.dp, 0.dp),
+                        modifier = GlanceModifier.padding(
+                            0.dp, when (size) {
+                                MinimalWidget.largeMode -> 4.dp
+                                MinimalWidget.smallMode -> 0.dp
+                                else -> 4.dp
+                            }, 0.dp, 0.dp
+                        ),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         CanvasText(
-                            modifier = GlanceModifier.padding(0.dp, 0.dp, 6.dp, 0.dp),
+                            modifier = GlanceModifier.padding(
+                                0.dp, 0.dp, when (size) {
+                                    MinimalWidget.largeMode -> 6.dp
+                                    MinimalWidget.smallMode -> 2.dp
+                                    else -> 6.dp
+                                }, 0.dp
+                            ),
                             text = context.resources.getString(
                                 R.string.set_period_title
                             ),
@@ -135,7 +146,11 @@ fun WidgetContent() {
                                     alpha = 0.5f,
                                 ),
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
+                                fontSize = when (size) {
+                                    MinimalWidget.largeMode -> 16.sp
+                                    MinimalWidget.smallMode -> 12.sp
+                                    else -> 16.sp
+                                },
                             )
                         )
 
@@ -146,7 +161,13 @@ fun WidgetContent() {
                         )!!
 
                         Image(
-                            modifier = GlanceModifier.size(22.dp),
+                            modifier = GlanceModifier.size(
+                                when (size) {
+                                    MinimalWidget.largeMode -> 22.dp
+                                    MinimalWidget.smallMode -> 14.dp
+                                    else -> 22.dp
+                                }
+                            ),
                             provider = ImageProvider(drawable.toBitmap()),
                             colorFilter = ColorFilter.tint(
                                 BuckwheatGlanceTheme.colors.onPrimaryContainer.alpha(
@@ -162,10 +183,7 @@ fun WidgetContent() {
         }
 
         Box(
-            modifier = GlanceModifier
-                .appWidgetBackground()
-                .cornerRadius(48.dp)
-                .fillMaxSize()
+            modifier = GlanceModifier.appWidgetBackground().cornerRadius(48.dp).fillMaxSize()
                 .clickable(actionStartActivity(intent))
         ) {}
     }
