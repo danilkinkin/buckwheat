@@ -10,7 +10,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceComposable
 import androidx.glance.GlanceModifier
-import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
@@ -32,12 +31,11 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import com.danilkinkin.buckwheat.MainActivity
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.util.ExtendCurrency
-import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import com.danilkinkin.buckwheat.widget.BuckwheatGlanceTheme
 import com.danilkinkin.buckwheat.widget.BuckwheatWidgetTheme
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.WidgetReceiver
-import java.math.BigDecimal
+import com.danilkinkin.buckwheat.widget.alpha
 
 @Composable
 @GlanceComposable
@@ -47,25 +45,22 @@ fun WidgetContent() {
     val intent = Intent(context, MainActivity::class.java)
 
     val prefs = currentState<Preferences>()
-    val todayBudget = prefs[WidgetReceiver.todayBudgetPreferenceKey] ?: 0
-    val currency = prefs[WidgetReceiver.currencyPreferenceKey]
     val stateBudget =
         WidgetReceiver.Companion.StateBudget.valueOf(
             prefs[WidgetReceiver.stateBudgetPreferenceKey]
                 ?: WidgetReceiver.Companion.StateBudget.NOT_SET.name
         )
-    val spentPercent = prefs[WidgetReceiver.spentPercentPreferenceKey] ?: 0F
 
     BuckwheatWidgetTheme {
         Box(
             modifier = GlanceModifier
                 .cornerRadius(48.dp)
                 .fillMaxSize()
-                .background(GlanceTheme.colors.primaryContainer),
+                .background(BuckwheatGlanceTheme.colors.primaryContainer.colorProvider),
             contentAlignment = Alignment.Center,
         ) {
             Column(
-                modifier = GlanceModifier.padding(24.dp),
+                modifier = GlanceModifier.padding(24.dp, 16.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -83,7 +78,7 @@ fun WidgetContent() {
                                 R.string.add_spent
                             ),
                             style = TextStyle(
-                                color = GlanceTheme.colors.onPrimaryContainer,
+                                color = BuckwheatGlanceTheme.colors.onPrimaryContainer.colorProvider,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 22.sp,
                             )
@@ -98,7 +93,7 @@ fun WidgetContent() {
                         Image(
                             modifier = GlanceModifier.size(32.dp),
                             provider = ImageProvider(drawable.toBitmap()),
-                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
+                            colorFilter = ColorFilter.tint(BuckwheatGlanceTheme.colors.onPrimaryContainer.colorProvider),
                             contentDescription = null,
                         )
                     }
@@ -119,7 +114,7 @@ fun WidgetContent() {
                             )
                         },
                         style = TextStyle(
-                            color = GlanceTheme.colors.onPrimaryContainer,
+                            color = BuckwheatGlanceTheme.colors.onPrimaryContainer.colorProvider,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
                         )
@@ -135,7 +130,10 @@ fun WidgetContent() {
                                 R.string.set_period_title
                             ),
                             style = TextStyle(
-                                color = GlanceTheme.colors.onPrimaryContainer,
+                                color = BuckwheatGlanceTheme.colors.onPrimaryContainer.alpha(
+                                    backdropColor = BuckwheatGlanceTheme.colors.primaryContainer,
+                                    alpha = 0.5f,
+                                ),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 16.sp,
                             )
@@ -150,7 +148,12 @@ fun WidgetContent() {
                         Image(
                             modifier = GlanceModifier.size(22.dp),
                             provider = ImageProvider(drawable.toBitmap()),
-                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
+                            colorFilter = ColorFilter.tint(
+                                BuckwheatGlanceTheme.colors.onPrimaryContainer.alpha(
+                                    backdropColor = BuckwheatGlanceTheme.colors.primaryContainer,
+                                    alpha = 0.5f,
+                                )
+                            ),
                             contentDescription = null,
                         )
                     }
@@ -161,7 +164,7 @@ fun WidgetContent() {
         Box(
             modifier = GlanceModifier
                 .appWidgetBackground()
-                .cornerRadius(24.dp)
+                .cornerRadius(48.dp)
                 .fillMaxSize()
                 .clickable(actionStartActivity(intent))
         ) {}
