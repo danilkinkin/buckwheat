@@ -169,6 +169,7 @@
     <string name="export_to_csv_failed">Problème lors de l\'export</string>
     <string name="select_currency_description">La devise n\'affecte en aucun cas les calculs, c\'est
         juste une appelation pour faciliter la compréhension des nombres.</string>
+    <string name="add_spent">Ajouter des déchets</string>
     <string name="remember_choice_reacalc_budget_description">Vous pourrez la modifier plus tard
         depuis votre portefeuille</string>
     <string name="remember_choice">Mémorisez ce choix</string>
@@ -190,4 +191,5 @@
     <string name="over">plus de</string>
     <string name="app_widget_extend_name">Extension de sarrasin</string>
     <string name="app_widget_minimal_name">Minimum de sarrasin</string>
+    <string name="add_spent_short">Dépenses</string>
 </resources>

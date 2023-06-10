@@ -145,6 +145,7 @@
     <string name="export_to_csv_success">Траты экспортированы</string>
     <string name="export_to_csv_failed">Не удалось экспортировать траты</string>
     <string name="add_spent">Добавить трату</string>
+    <string name="add_spent_short">Трата</string>
     <string name="remember_choice_reacalc_budget_description">Позже можно поменять в кошельке</string>
     <string name="remember_choice">Запомнить выбор</string>
     <string name="rest_label">Остаток</string>

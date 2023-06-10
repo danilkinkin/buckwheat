@@ -140,6 +140,7 @@
     <string name="export_to_csv_success">Gastos exportados</string>
     <string name="export_to_csv_failed">Fallo al exportar los gastos</string>
     <string name="select_currency_description">La divisa no afecta a los cálculos en absoluto, solo ayuda a entender mejor los números.</string>
+    <string name="add_spent">Añadir residuos</string>
     <string name="remember_choice_reacalc_budget_description">Podrás cambiarlo más tarde en la cartera</string>
     <string name="remember_choice">Recordar mi elección</string>
     <string name="rest_label">Sobra</string>
@@ -156,4 +157,5 @@
     <string name="over">más del</string>
     <string name="app_widget_extend_name">Alforfón extender</string>
     <string name="app_widget_minimal_name">Alforfón mínimo</string>
+    <string name="add_spent_short">Gasto</string>
 </resources>

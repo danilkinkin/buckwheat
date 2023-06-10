@@ -148,7 +148,8 @@
     <string name="export_to_csv_success">Útrata exportována</string>
     <string name="export_to_csv_failed">Nepodařilo se exportovat útratu</string>
     <string name="select_currency_description">Měna nijak neovlivňuje výpočty, je to jen označení pro snazší pochopení čísel.</string>
-    <string name="remember_choice_reacalc_budget_description">Později to můžete měnit v peněžence</string>
+     <string name="add_spent">Přidat odpad</string>
+     <string name="remember_choice_reacalc_budget_description">Později to můžete měnit v peněžence</string>
     <string name="remember_choice">Zapamatovat volbu</string>
     <string name="rest_label">Zbytek</string>
     <string name="choose_recalc_budget_method_label">Vyberte způsob rozdělení zbytku</string>
@@ -164,4 +165,5 @@
      <string name="over">přes</string>
      <string name="app_widget_extend_name">Pohanka prodloužit</string>
      <string name="app_widget_minimal_name">Pohanka minimum</string>
+     <string name="add_spent_short">Výdaje</string>
  </resources>

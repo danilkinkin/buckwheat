@@ -140,6 +140,7 @@
     <string name="export_to_csv_success">Gastos exportados</string>
     <string name="export_to_csv_failed">Falha ao exportar gastos</string>
     <string name="select_currency_description">A moeda não interfere em nada nos cálculos, é apenas uma designação para facilitar o entendimento dos números.</string>
+    <string name="add_spent">Adicionar Resíduos</string>
     <string name="remember_choice_reacalc_budget_description">Mais tarde você pode mudar na sua carteira</string>
     <string name="remember_choice">Lembre-se da sua escolha</string>
     <string name="rest_label">Resto</string>
@@ -156,4 +157,5 @@
     <string name="over">sobre</string>
     <string name="app_widget_extend_name">trigo mourisco estender</string>
     <string name="app_widget_minimal_name">Trigo mourisco mínimo</string>
+    <string name="add_spent_short">gastos</string>
 </resources>

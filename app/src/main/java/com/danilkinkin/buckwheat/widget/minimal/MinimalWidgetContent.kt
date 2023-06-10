@@ -57,7 +57,7 @@ fun WidgetContent() {
             contentAlignment = Alignment.Center,
         ) {
             Column(
-                modifier = GlanceModifier.padding(24.dp, 16.dp),
+                modifier = GlanceModifier.padding(8.dp),
                 horizontalAlignment = Alignment.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -73,12 +73,16 @@ fun WidgetContent() {
                                 when (size) {
                                     MinimalWidget.largeMode -> 8.dp
                                     MinimalWidget.smallMode -> 4.dp
-                                    else -> 8.dp
+                                    else -> 6.dp
                                 },
                                 0.dp,
                             ),
                             text = context.resources.getString(
-                                R.string.add_spent
+                                when (size) {
+                                    MinimalWidget.smallMode -> R.string.add_spent_short
+                                    else -> R.string.add_spent
+                                }
+
                             ),
                             style = TextStyle(
                                 color = BuckwheatGlanceTheme.colors.onPrimaryContainer.colorProvider,
@@ -86,7 +90,7 @@ fun WidgetContent() {
                                 fontSize = when (size) {
                                     MinimalWidget.largeMode -> 22.sp
                                     MinimalWidget.smallMode -> 14.sp
-                                    else -> 22.sp
+                                    else -> 20.sp
                                 },
                             )
                         )
@@ -102,7 +106,7 @@ fun WidgetContent() {
                                 when (size) {
                                     MinimalWidget.largeMode -> 32.dp
                                     MinimalWidget.smallMode -> 24.dp
-                                    else -> 32.dp
+                                    else -> 30.dp
                                 }
                             ),
                             provider = ImageProvider(drawable.toBitmap()),
