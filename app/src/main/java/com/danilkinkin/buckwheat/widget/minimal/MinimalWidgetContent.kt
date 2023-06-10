@@ -67,7 +67,16 @@ fun WidgetContent() {
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         CanvasText(
-                            modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
+                            modifier = GlanceModifier.padding(
+                                0.dp,
+                                0.dp,
+                                when (size) {
+                                    MinimalWidget.largeMode -> 8.dp
+                                    MinimalWidget.smallMode -> 4.dp
+                                    else -> 8.dp
+                                },
+                                0.dp,
+                            ),
                             text = context.resources.getString(
                                 R.string.add_spent
                             ),
@@ -89,7 +98,13 @@ fun WidgetContent() {
                         )!!
 
                         Image(
-                            modifier = GlanceModifier.size(32.dp),
+                            modifier = GlanceModifier.size(
+                                when (size) {
+                                    MinimalWidget.largeMode -> 32.dp
+                                    MinimalWidget.smallMode -> 24.dp
+                                    else -> 32.dp
+                                }
+                            ),
                             provider = ImageProvider(drawable.toBitmap()),
                             colorFilter = ColorFilter.tint(BuckwheatGlanceTheme.colors.onPrimaryContainer.colorProvider),
                             contentDescription = null,
@@ -121,21 +136,27 @@ fun WidgetContent() {
 
                     Row(
                         modifier = GlanceModifier.padding(
-                            0.dp, when (size) {
+                            0.dp,
+                            when (size) {
                                 MinimalWidget.largeMode -> 4.dp
                                 MinimalWidget.smallMode -> 0.dp
                                 else -> 4.dp
-                            }, 0.dp, 0.dp
+                            },
+                            0.dp,
+                            0.dp,
                         ),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         CanvasText(
                             modifier = GlanceModifier.padding(
-                                0.dp, 0.dp, when (size) {
+                                0.dp,
+                                0.dp,
+                                when (size) {
                                     MinimalWidget.largeMode -> 6.dp
                                     MinimalWidget.smallMode -> 2.dp
                                     else -> 6.dp
-                                }, 0.dp
+                                },
+                                0.dp,
                             ),
                             text = context.resources.getString(
                                 R.string.set_period_title
