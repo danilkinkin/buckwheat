@@ -15,9 +15,9 @@ class MinimalWidget : GlanceAppWidget() {
     override val stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
 
     companion object {
-        val smallMode = DpSize(120.dp, 100.dp)
-        val mediumMode = DpSize(180.dp, 100.dp)
-        val largeMode = DpSize(320.dp, 100.dp)
+        val smallMode = DpSize(120.dp, 60.dp)
+        val mediumMode = DpSize(180.dp, 60.dp)
+        val largeMode = DpSize(320.dp, 60.dp)
     }
 
     override val sizeMode: SizeMode = SizeMode.Responsive(
@@ -26,7 +26,7 @@ class MinimalWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         provideContent {
-            WidgetContent()
+            MinimalWidgetContent()
         }
     }
 }

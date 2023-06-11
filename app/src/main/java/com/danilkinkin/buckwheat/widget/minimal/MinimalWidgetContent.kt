@@ -39,7 +39,7 @@ import com.danilkinkin.buckwheat.widget.alpha
 
 @Composable
 @GlanceComposable
-fun WidgetContent() {
+fun MinimalWidgetContent() {
     val size = LocalSize.current
     val context = LocalContext.current
     val intent = Intent(context, MainActivity::class.java)
@@ -52,7 +52,9 @@ fun WidgetContent() {
 
     BuckwheatWidgetTheme {
         Box(
-            modifier = GlanceModifier.cornerRadius(48.dp).fillMaxSize()
+            modifier = GlanceModifier
+                .cornerRadius(48.dp)
+                .fillMaxSize()
                 .background(BuckwheatGlanceTheme.colors.primaryContainer.colorProvider),
             contentAlignment = Alignment.Center,
         ) {
@@ -61,7 +63,10 @@ fun WidgetContent() {
                 horizontalAlignment = Alignment.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET && stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD) {
+                if (
+                    stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
+                    stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
+                ) {
                     Row(
                         modifier = GlanceModifier.padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -115,7 +120,10 @@ fun WidgetContent() {
                         )
                     }
                 }
-                if (stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET || stateBudget === WidgetReceiver.Companion.StateBudget.END_PERIOD) {
+                if (
+                    stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET ||
+                    stateBudget === WidgetReceiver.Companion.StateBudget.END_PERIOD
+                ) {
                     CanvasText(
                         modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
                         text = if (stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET) {
@@ -208,7 +216,10 @@ fun WidgetContent() {
         }
 
         Box(
-            modifier = GlanceModifier.appWidgetBackground().cornerRadius(48.dp).fillMaxSize()
+            modifier = GlanceModifier
+                .appWidgetBackground()
+                .cornerRadius(48.dp)
+                .fillMaxSize()
                 .clickable(actionStartActivity(intent))
         ) {}
     }
