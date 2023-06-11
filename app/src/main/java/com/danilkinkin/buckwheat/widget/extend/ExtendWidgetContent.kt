@@ -64,6 +64,12 @@ fun ExtendWidgetContent() {
                 .cornerRadius(24.dp)
                 .fillMaxSize()
                 .background(GlanceTheme.colors.primaryContainer)
+                .padding(
+                    when (size) {
+                        ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 8.dp
+                        else -> 0.dp
+                    }
+                )
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {
                 if (
@@ -71,19 +77,22 @@ fun ExtendWidgetContent() {
                     stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
                 ) {
                     Row(
-                        modifier = GlanceModifier.padding(16.dp, 16.dp, 24.dp, 0.dp),
+                        modifier = GlanceModifier.padding(16.dp, 16.dp, 16.dp, 0.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         if (stateBudget === WidgetReceiver.Companion.StateBudget.NORMAL) {
                             CanvasText(
-                                modifier = GlanceModifier.padding(start = 8.dp),
+                                modifier = GlanceModifier.padding(start = 8.dp, end = 8.dp),
                                 text = context.resources.getString(
                                     R.string.rest_budget_for_today
                                 ),
                                 style = TextStyle(
                                     color = GlanceTheme.colors.onPrimaryContainer,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp,
+                                    fontSize = when (size) {
+                                        ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 16.sp
+                                        else -> 12.sp
+                                    },
                                 )
                             )
                         } else {
@@ -94,7 +103,12 @@ fun ExtendWidgetContent() {
                             )!!
 
                             Image(
-                                modifier = GlanceModifier.size(16.dp),
+                                modifier = GlanceModifier.size(
+                                    when (size) {
+                                        ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 18.dp
+                                        else -> 16.dp
+                                    }
+                                ),
                                 provider = ImageProvider(drawable.toBitmap()),
                                 colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
                                 contentDescription = null,
@@ -112,7 +126,10 @@ fun ExtendWidgetContent() {
                                 style = TextStyle(
                                     color = GlanceTheme.colors.onPrimaryContainer,
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp,
+                                    fontSize = when (size) {
+                                        ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 16.sp
+                                        else -> 12.sp
+                                    },
                                 )
                             )
                         }
@@ -120,8 +137,16 @@ fun ExtendWidgetContent() {
                     }
                 }
                 Column(
-                    modifier = GlanceModifier.defaultWeight().padding(24.dp, 0.dp, 0.dp, 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = GlanceModifier
+                        .defaultWeight()
+                        .padding(
+                            24.dp,
+                            if (size == ExtendWidget.tinyMode) (-4).dp else 0.dp,
+                            24.dp,
+                            8.dp,
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalAlignment = Alignment.Start,
                 ) {
                     if (
                         stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
@@ -138,7 +163,8 @@ fun ExtendWidgetContent() {
                                 fontWeight = FontWeight.Bold,
                                 fontSize = when (size) {
                                     ExtendWidget.superHugeMode -> 56.sp
-                                    ExtendWidget.superTinyMode -> 24.sp
+                                    ExtendWidget.hugeMode -> 48.sp
+                                    ExtendWidget.tinyMode -> 24.sp
                                     else -> 36.sp
                                 },
                             )
@@ -155,7 +181,8 @@ fun ExtendWidgetContent() {
                                 fontWeight = FontWeight.Bold,
                                 fontSize = when (size) {
                                     ExtendWidget.superHugeMode -> 42.sp
-                                    ExtendWidget.superTinyMode -> 18.sp
+                                    ExtendWidget.hugeMode -> 36.sp
+                                    ExtendWidget.tinyMode -> 18.sp
                                     else -> 24.sp
                                 },
                             )
@@ -183,9 +210,19 @@ fun ExtendWidgetContent() {
                         )!!
 
                         Image(
-                            modifier = GlanceModifier.size(24.dp),
+                            modifier = GlanceModifier.size(
+                                when (size) {
+                                    ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 32.dp
+                                    else -> 24.dp
+                                }
+                            ),
                             provider = ImageProvider(drawable.toBitmap()),
-                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
+                            colorFilter = ColorFilter.tint(
+                                BuckwheatGlanceTheme.colors.onPrimaryContainer.alpha(
+                                    backdropColor = BuckwheatGlanceTheme.colors.primaryContainer,
+                                    alpha = 0.6f,
+                                )
+                            ),
                             contentDescription = null,
                         )
                     }
@@ -210,9 +247,15 @@ fun ExtendWidgetContent() {
                                 R.string.set_period_title
                             ),
                             style = TextStyle(
-                                color = GlanceTheme.colors.onPrimaryContainer,
+                                color = BuckwheatGlanceTheme.colors.onPrimaryContainer.alpha(
+                                    backdropColor = BuckwheatGlanceTheme.colors.primaryContainer,
+                                    alpha = 0.6f,
+                                ),
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
+                                fontSize = when (size) {
+                                    ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 18.sp
+                                    else -> 16.sp
+                                },
                             )
                         )
 
@@ -223,9 +266,19 @@ fun ExtendWidgetContent() {
                         )!!
 
                         Image(
-                            modifier = GlanceModifier.size(24.dp),
+                            modifier = GlanceModifier.size(
+                                when (size) {
+                                    ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 32.dp
+                                    else -> 24.dp
+                                }
+                            ),
                             provider = ImageProvider(drawable.toBitmap()),
-                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onPrimaryContainer),
+                            colorFilter = ColorFilter.tint(
+                                BuckwheatGlanceTheme.colors.onPrimaryContainer.alpha(
+                                    backdropColor = BuckwheatGlanceTheme.colors.primaryContainer,
+                                    alpha = 0.6f,
+                                )
+                            ),
                             contentDescription = null,
                         )
                     }

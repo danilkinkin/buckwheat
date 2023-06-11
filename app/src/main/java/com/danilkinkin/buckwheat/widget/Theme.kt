@@ -146,8 +146,8 @@ fun DayNightColorProvider.alpha(
     alpha: Float = 0.5F
 ): ColorProvider {
     return ColorProvider(
-        day = combineColors(this.getDayColor(), backdropColor.getDayColor(), alpha),
-        night = combineColors(this.getNightColor(), backdropColor.getNightColor(), alpha),
+        day = combineColors(this.getDayColor(), backdropColor.getDayColor(), 1F - alpha),
+        night = combineColors(this.getNightColor(), backdropColor.getNightColor(), 1F - alpha),
     )
 }
 

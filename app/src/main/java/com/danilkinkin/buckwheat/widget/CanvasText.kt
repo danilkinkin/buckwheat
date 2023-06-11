@@ -16,6 +16,9 @@ import androidx.glance.LocalContext
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import androidx.glance.GlanceModifier
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
+import androidx.glance.layout.ContentScale
 import androidx.glance.text.TextAlign
 import com.danilkinkin.buckwheat.R
 
@@ -61,6 +64,7 @@ fun CanvasText(modifier: GlanceModifier = GlanceModifier, text: String, style: T
         modifier = modifier,
         provider = ImageProvider(drawText(context, text, style)),
         colorFilter = ColorFilter.tint(style.color),
+        contentScale = ContentScale.Fit,
         contentDescription = null,
     )
 }

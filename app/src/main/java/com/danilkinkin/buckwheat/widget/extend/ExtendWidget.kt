@@ -15,7 +15,6 @@ class ExtendWidget : GlanceAppWidget() {
     override val stateDefinition: GlanceStateDefinition<*> = PreferencesGlanceStateDefinition
 
     companion object {
-        val superTinyMode = DpSize(200.dp, 48.dp)
         val tinyMode = DpSize(200.dp, 84.dp)
         val smallMode = DpSize(200.dp, 100.dp)
         val mediumMode = DpSize(200.dp, 130.dp)
@@ -25,7 +24,7 @@ class ExtendWidget : GlanceAppWidget() {
     }
 
     override val sizeMode: SizeMode = SizeMode.Responsive(
-        setOf(superTinyMode, tinyMode, smallMode, mediumMode, largeMode, hugeMode, superHugeMode)
+        setOf(tinyMode, smallMode, mediumMode, largeMode, hugeMode, superHugeMode)
     )
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
