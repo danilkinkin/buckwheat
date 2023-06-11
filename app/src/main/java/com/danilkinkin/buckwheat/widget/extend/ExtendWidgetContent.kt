@@ -26,17 +26,21 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
+import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.MainActivity
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import com.danilkinkin.buckwheat.widget.BuckwheatGlanceTheme
 import com.danilkinkin.buckwheat.widget.BuckwheatWidgetTheme
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.WidgetReceiver
+import com.danilkinkin.buckwheat.widget.alpha
 import java.math.BigDecimal
 
 @Composable
@@ -229,8 +233,25 @@ fun ExtendWidgetContent() {
             }
         }
 
-        Box(
-            modifier = GlanceModifier.appWidgetBackground().cornerRadius(24.dp).fillMaxSize()
+        if (BuildConfig.DEBUG) {
+            Box(
+                modifier = GlanceModifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                CanvasText(
+                    modifier = GlanceModifier.padding(top = 8.dp),
+                    text = "${size.width}x${size.height}",
+                    style = TextStyle(
+                        color = BuckwheatGlanceTheme.colors.onPrimaryContainer.alpha(
+                            backdropColor = BuckwheatGlanceTheme.colors.primaryContainer,
+                            alpha = 0.5f,
+                        ),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 10.sp,
+                    )
+                )
+            }
+        }
 
         Box(
             modifier = GlanceModifier
