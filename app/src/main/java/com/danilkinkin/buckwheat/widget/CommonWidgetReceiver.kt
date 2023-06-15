@@ -1,13 +1,12 @@
 package com.danilkinkin.buckwheat.widget
 
-import com.danilkinkin.buckwheat.widget.extend.ExtendWidget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
 import androidx.datastore.preferences.core.floatPreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.glance.*
 import androidx.glance.appwidget.*
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.PreferencesGlanceStateDefinition
@@ -35,7 +34,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
             IS_OVER,
         }
 
-        val todayBudgetPreferenceKey = intPreferencesKey("today-budget-key")
+        val todayBudgetPreferenceKey = stringPreferencesKey("today-budget-key")
         val currencyPreferenceKey = stringPreferencesKey("currency-key")
         val stateBudgetPreferenceKey = stringPreferencesKey("state-budget-key")
         val spentPercentPreferenceKey = floatPreferencesKey("spent-percent-key")
@@ -60,11 +59,26 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
+        Log.d("WidgetReceiver", "onUpdate")
+
         observeData(context)
+    }
+
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle
+    ) {
+        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+
+        Log.d("WidgetReceiver", "onAppWidgetOptionsChanged")
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
+
+        Log.d("WidgetReceiver", "onReceive")
 
         if (intent.action == UPDATE_ACTION) {
             observeData(context)
@@ -186,7 +200,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
                     ) { preferences ->
                         preferences.toMutablePreferences()
                             .apply {
-                                this[todayBudgetPreferenceKey] = finalBudgetValue.toInt()
+                                this[todayBudgetPreferenceKey] = finalBudgetValue.toString()
                                 this[currencyPreferenceKey] = currency.value.toString()
                                 this[stateBudgetPreferenceKey] =
                                     if (newBudget >= 0.toBigDecimal()) {
