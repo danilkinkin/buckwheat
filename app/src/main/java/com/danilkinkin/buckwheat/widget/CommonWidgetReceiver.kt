@@ -3,8 +3,6 @@ package com.danilkinkin.buckwheat.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.util.Log
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.*
@@ -59,26 +57,11 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
-        Log.d("WidgetReceiver", "onUpdate")
-
         observeData(context)
-    }
-
-    override fun onAppWidgetOptionsChanged(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetId: Int,
-        newOptions: Bundle
-    ) {
-        super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-
-        Log.d("WidgetReceiver", "onAppWidgetOptionsChanged")
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-
-        Log.d("WidgetReceiver", "onReceive")
 
         if (intent.action == UPDATE_ACTION) {
             observeData(context)
