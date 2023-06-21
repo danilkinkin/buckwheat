@@ -158,4 +158,5 @@
     <string name="app_widget_extend_name">Estendere il grano saraceno</string>
     <string name="app_widget_minimal_name">Minimo di grano saraceno</string>
     <string name="add_spent_short">Spesa</string>
+    <string name="app_widget_preview_budget">42 €</string>
 </resources>

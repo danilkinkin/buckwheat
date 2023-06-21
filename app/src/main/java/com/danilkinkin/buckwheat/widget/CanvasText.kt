@@ -7,6 +7,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.content.res.ResourcesCompat
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceComposable
@@ -20,9 +22,10 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.ContentScale
 import androidx.glance.text.TextAlign
+import androidx.glance.unit.ColorProvider
 import com.danilkinkin.buckwheat.R
 
-@Composable
+
 fun drawText(context: Context, text: String, style: TextStyle): Bitmap {
     val paint = Paint().apply {
         isAntiAlias = true
@@ -37,6 +40,7 @@ fun drawText(context: Context, text: String, style: TextStyle): Bitmap {
             },
         )!!
         this.style = Paint.Style.FILL
+        color = style.color.getColor(context).toArgb()
         textSize = Resources.getSystem().displayMetrics.density * style.fontSize!!.value
         textAlign = if (style.textAlign == TextAlign.Right) Paint.Align.RIGHT else Paint.Align.LEFT
     }
@@ -62,7 +66,7 @@ fun CanvasText(modifier: GlanceModifier = GlanceModifier, text: String, style: T
 
     Image(
         modifier = modifier,
-        provider = ImageProvider(drawText(context, text, style)),
+        provider = ImageProvider(drawText(context, text, style.copy(ColorProvider(Color.Black)))),
         colorFilter = ColorFilter.tint(style.color),
         contentScale = ContentScale.Fit,
         contentDescription = null,

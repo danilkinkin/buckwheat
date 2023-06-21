@@ -158,4 +158,5 @@
     <string name="app_widget_extend_name">trigo mourisco estender</string>
     <string name="app_widget_minimal_name">Trigo mourisco mínimo</string>
     <string name="add_spent_short">gastos</string>
+    <string name="app_widget_preview_budget">R$ 173</string>
 </resources>

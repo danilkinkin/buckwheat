@@ -166,4 +166,5 @@
      <string name="app_widget_extend_name">Pohanka prodloužit</string>
      <string name="app_widget_minimal_name">Pohanka minimum</string>
      <string name="add_spent_short">Výdaje</string>
+     <string name="app_widget_preview_budget">779 Kč</string>
  </resources>

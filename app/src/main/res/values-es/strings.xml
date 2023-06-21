@@ -158,4 +158,5 @@
     <string name="app_widget_extend_name">Alforfón extender</string>
     <string name="app_widget_minimal_name">Alforfón mínimo</string>
     <string name="add_spent_short">Gasto</string>
+    <string name="app_widget_preview_budget">42 €</string>
 </resources>
