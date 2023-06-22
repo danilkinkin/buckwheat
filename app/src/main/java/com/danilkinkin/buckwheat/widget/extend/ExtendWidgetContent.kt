@@ -59,7 +59,7 @@ fun ExtendWidgetContent() {
         modifier = GlanceModifier
             .cornerRadius(24.dp)
             .fillMaxSize()
-            .background(GlanceTheme.colors.surface)
+            .background(ImageProvider(R.drawable.extend_widget_preview_background))
             .padding(
                 when (size) {
                     ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 8.dp

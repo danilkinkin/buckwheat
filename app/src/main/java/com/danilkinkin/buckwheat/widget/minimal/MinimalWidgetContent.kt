@@ -53,7 +53,7 @@ fun MinimalWidgetContent() {
         modifier = GlanceModifier
             .cornerRadius(48.dp)
             .fillMaxSize()
-            .background(GlanceTheme.colors.surface),
+            .background(ImageProvider(R.drawable.minimal_widget_preview_background)),
         contentAlignment = Alignment.Center,
     ) {
         Column(
