@@ -6,6 +6,7 @@
     android:maxWidth="250dp"
     android:minResizeHeight="30dp"
     android:minResizeWidth="160dp"
+    android:previewImage="@drawable/minimal_app_widget_preview"
     android:initialLayout="@layout/minimal_app_widget_preview"
     android:updatePeriodMillis="1800000"
     android:resizeMode="horizontal"
