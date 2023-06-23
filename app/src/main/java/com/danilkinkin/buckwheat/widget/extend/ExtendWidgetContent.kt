@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.widget.extend
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,10 +26,12 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
+import androidx.glance.layout.fillMaxHeight
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import com.danilkinkin.buckwheat.BuildConfig
@@ -39,6 +42,8 @@ import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.WidgetReceiver
 import java.math.BigDecimal
+import java.text.BreakIterator
+
 
 @Composable
 @GlanceComposable
@@ -138,7 +143,7 @@ fun ExtendWidgetContent() {
                     .padding(
                         24.dp,
                         if (size == ExtendWidget.tinyMode) (-4).dp else 0.dp,
-                        24.dp,
+                        0.dp,
                         8.dp,
                     ),
                 verticalAlignment = Alignment.CenterVertically,
@@ -149,22 +154,97 @@ fun ExtendWidgetContent() {
                     stateBudget !== WidgetReceiver.Companion.StateBudget.IS_OVER &&
                     stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
                 ) {
-                    CanvasText(
-                        text = prettyCandyCanes(
-                            todayBudget,
-                            ExtendCurrency.getInstance(currency),
-                        ),
-                        style = TextStyle(
-                            color = GlanceTheme.colors.onSurface,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = when (size) {
-                                ExtendWidget.superHugeMode -> 56.sp
-                                ExtendWidget.hugeMode -> 48.sp
-                                ExtendWidget.tinyMode -> 24.sp
-                                else -> 36.sp
-                            },
-                        )
-                    )
+                    Box(
+                        modifier = GlanceModifier
+                            .defaultWeight(),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        Row {
+                            val splittedValue = emptyList<String>().toMutableList()
+                            val value = prettyCandyCanes(
+                                todayBudget,
+                                ExtendCurrency.getInstance(currency),
+                            )
+                            val it = BreakIterator.getCharacterInstance()
+                            it.setText(value)
+
+                            var start = 0
+                            var pevEnd = 0
+                            var end = it.next()
+                            var prevIsSurrogate = false
+                            do {
+                                val isSurrogate = value
+                                    .substring(pevEnd, end)
+                                    .toCharArray()
+                                    .any { char -> char.isSurrogate() }
+
+                                if (prevIsSurrogate != isSurrogate) {
+                                    splittedValue.add(value.substring(start, pevEnd))
+                                    start = pevEnd
+                                }
+
+                                pevEnd = end
+                                end = it.next()
+                                prevIsSurrogate = isSurrogate
+                            } while (end != BreakIterator.DONE)
+                            splittedValue.add(value.substring(start, pevEnd))
+
+                            splittedValue.forEach {
+                                if (it.toCharArray().any { char -> char.isSurrogate() }) {
+                                    CanvasText(
+                                        text = it,
+                                        style = TextStyle(
+                                            color = GlanceTheme.colors.onSurface,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = when (size) {
+                                                ExtendWidget.superHugeMode -> 56.sp
+                                                ExtendWidget.hugeMode -> 48.sp
+                                                ExtendWidget.tinyMode -> 24.sp
+                                                else -> 36.sp
+                                            },
+                                        ),
+                                        noTint = true,
+                                    )
+                                } else {
+                                    CanvasText(
+                                        text = it,
+                                        style = TextStyle(
+                                            color = GlanceTheme.colors.onSurface,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = when (size) {
+                                                ExtendWidget.superHugeMode -> 56.sp
+                                                ExtendWidget.hugeMode -> 48.sp
+                                                ExtendWidget.tinyMode -> 24.sp
+                                                else -> 36.sp
+                                            },
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        Row(
+                            modifier = GlanceModifier
+                                .defaultWeight()
+                                .fillMaxSize()
+                                .fillMaxHeight(),
+                            horizontalAlignment = Alignment.End,
+                        ) {
+                            Image(
+                                modifier = GlanceModifier.fillMaxHeight().width(36.dp),
+                                provider = ImageProvider(R.drawable.extend_widget_gradient),
+                                contentDescription = null,
+                            )
+                            Box(
+                                modifier = GlanceModifier
+                                    .background(R.color.surface)
+                                    .fillMaxHeight()
+                                    .width(16.dp),
+                            ) {
+
+                            }
+                        }
+
+                    }
                 } else if (stateBudget !== WidgetReceiver.Companion.StateBudget.IS_OVER) {
                     CanvasText(
                         text = context.resources.getString(
