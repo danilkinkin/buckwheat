@@ -440,14 +440,16 @@ class SpendsViewModel @Inject constructor(
 
         val printer = CSVPrinter(
             stream?.writer(),
-            CSVFormat.DEFAULT.withHeader("amount", "comment", "commit_time")
+            CSVFormat.Builder.create().setHeader("amount", "comment", "commit_time").build()
         )
+        val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 
         this.spentDao.getAllSync().forEach {
-            val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
-            val formattedDateTime: String =  it.date.toLocalDateTime().format(dateFormatter)
-
-            printer.printRecord(it.value, it.comment, formattedDateTime)
+            printer.printRecord(
+                it.value,
+                it.comment,
+                it.date.toLocalDateTime().format(dateFormatter),
+            )
         }
 
         printer.flush()
