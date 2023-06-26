@@ -225,8 +225,8 @@ fun ExtendWidgetContent() {
                         Row(
                             modifier = GlanceModifier
                                 .defaultWeight()
-                                .fillMaxSize()
-                                .fillMaxHeight(),
+                                .padding(0.dp, 14.dp)
+                                .fillMaxSize(),
                             horizontalAlignment = Alignment.End,
                         ) {
                             Image(
