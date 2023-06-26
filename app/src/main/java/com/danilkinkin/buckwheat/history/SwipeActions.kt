@@ -69,6 +69,7 @@ fun SwipeActions(
     modifier: Modifier = Modifier,
     startActionsConfig: SwipeActionsConfig = DefaultSwipeActionsConfig,
     endActionsConfig: SwipeActionsConfig = DefaultSwipeActionsConfig,
+    onTried: () -> Unit = {},
     showTutorial: Boolean = false,
     content: @Composable (DismissState) -> Unit,
 ) = BoxWithConstraints(modifier) {
@@ -81,6 +82,7 @@ fun SwipeActions(
 
     val state = rememberDismissState(
         confirmStateChange = {
+            onTried()
             if (willDismissDirection == DismissDirection.StartToEnd
                 && it == DismissValue.DismissedToEnd
             ) {

@@ -57,6 +57,7 @@ fun History(
     val showSwipeTutorial = remember {
         appViewModel.getBooleanValue("tutorialSwipe", true)
     }
+    var isUserTrySwipe by remember { mutableStateOf(false) }
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
@@ -65,7 +66,7 @@ fun History(
         onDispose {
             appViewModel.lockSwipeable.value = false
 
-            if (spends !== null && spends!!.isNotEmpty()) {
+            if (spends !== null && spends!!.isNotEmpty() && isUserTrySwipe) {
                 appViewModel.setBooleanValue("tutorialSwipe", false)
             }
         }
@@ -208,7 +209,8 @@ fun History(
                                     spendsViewModel.removeSpent(row.spent!!)
                                 }
                             ),
-                            showTutorial = index == animatedList.value.size - 2 && showSwipeTutorial
+                            onTried = { isUserTrySwipe = true },
+                            showTutorial = index == 2 && showSwipeTutorial
                         ) { state ->
                             val size = with(LocalDensity.current) {
                                 java.lang.Float.max(
