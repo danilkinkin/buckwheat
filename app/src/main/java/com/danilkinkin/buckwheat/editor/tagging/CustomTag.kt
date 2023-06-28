@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.editor.tagging
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOutQuad
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -38,23 +40,21 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.EditStage
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.editor.FocusController
-import com.danilkinkin.buckwheat.editor.calcFontHeight
 import com.danilkinkin.buckwheat.util.observeLiveData
 
 @Composable
-fun TaggingSpent(
+fun CustomTag(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
     editorFocusController: FocusController,
+    extendWidth: Dp = 0.dp,
+    onEdit: (Boolean) -> Unit = {},
 ) {
-    val localDensity = LocalDensity.current
     val focusManager = LocalFocusManager.current
 
-    var showAddComment by remember { mutableStateOf(false) }
     var isEdit by remember { mutableStateOf(false) }
     var value by remember { mutableStateOf("") }
-    val height = calcFontHeight(style = MaterialTheme.typography.bodyMedium).coerceAtLeast(24.dp) + 12.dp
 
     observeLiveData(editorViewModel.stage) {
         if (it === EditStage.CREATING_SPENT) {
@@ -67,74 +67,59 @@ fun TaggingSpent(
     DisposableEffect(editorViewModel.currentComment) {
         value = editorViewModel.currentComment
 
-        onDispose {  }
+        onDispose { }
     }
 
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .heightIn(height)
-            .padding(horizontal = 24.dp)
+    Surface(
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .clip(CircleShape)
+            .then(if (isEdit) {
+                Modifier
+            } else {
+                Modifier.clickable {
+                    editorFocusController.blur()
+                    focusManager.clearFocus()
+                    isEdit = true
+                    onEdit(true)
+                    appViewModel.showSystemKeyboard.value = true
+                }
+            })
     ) {
-        Spacer(modifier = Modifier.weight(1f))
-
-        AnimatedVisibility(
-            visible = showAddComment,
-            enter = fadeIn(
-                tween(
-                    durationMillis = 150,
-                    easing = EaseInOutQuad,
-                )
-            ) + slideInHorizontally(
-                tween(
-                    durationMillis = 150,
-                    easing = EaseInOutQuad,
-                )
-            ) { with(localDensity) { 30.dp.toPx().toInt() } },
-            exit = fadeOut(
-                tween(
-                    durationMillis = 150,
-                    easing = EaseInOutQuad,
-                )
-            ) + slideOutHorizontally(
-                tween(
-                    durationMillis = 150,
-                    easing = EaseInOutQuad,
-                )
-            ) { with(localDensity) { 30.dp.toPx().toInt() } },
+        Row(
+            modifier = Modifier.padding(start = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Surface(
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.surface,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .then(if (isEdit) {
-                        Modifier
-                    } else {
-                        Modifier.clickable {
-                            editorFocusController.blur()
-                            focusManager.clearFocus()
-                            isEdit = true
-                            appViewModel.showSystemKeyboard.value = true
-                        }
-                    })
+            AnimatedVisibility(
+                visible = isEdit,
+                enter = scaleIn(tween(durationMillis = 150)),
+                exit = scaleOut(tween(durationMillis = 150)),
             ) {
-                Row(
-                    modifier = Modifier.padding(start = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    AnimatedVisibility(
-                        visible = isEdit,
-                        enter = scaleIn(tween(durationMillis = 150)),
-                        exit = scaleOut(tween(durationMillis = 150)),
-                    ) {
-                        Spacer(Modifier.width(8.dp))
-                    }
-                    Icon(
-                        modifier = Modifier.size(20.dp),
-                        painter = painterResource(R.drawable.ic_comment),
-                        contentDescription = null,
+                Spacer(Modifier.width(8.dp))
+            }
+            Icon(
+                modifier = Modifier.size(20.dp),
+                painter = painterResource(R.drawable.ic_comment),
+                contentDescription = null,
+            )
+            AnimatedVisibility(
+                visible = !isEdit,
+                enter = scaleIn(tween(durationMillis = 150)),
+                exit = scaleOut(tween(durationMillis = 150)),
+            ) {
+                Spacer(Modifier.width(8.dp))
+            }
+            AnimatedContent(
+                targetState = isEdit,
+                transitionSpec = {
+                    (fadeIn(
+                        tween(durationMillis = 250)
+                    ) with fadeOut(
+                        tween(durationMillis = 250)
+                    )).using(
+                        SizeTransform(clip = false)
                     )
                     AnimatedVisibility(
                         visible = !isEdit,
@@ -179,16 +164,24 @@ fun TaggingSpent(
 }
 
 @Composable
-fun CommentEditor(defaultValue: String, onApply: (comment: String) -> Unit) {
-    var value by remember { mutableStateOf(TextFieldValue(
-        defaultValue,
-        TextRange(defaultValue.length),
-    )) }
+fun CommentEditor(
+    modifier: Modifier = Modifier,
+    defaultValue: String,
+    onApply: (comment: String) -> Unit,
+) {
+    var value by remember {
+        mutableStateOf(
+            TextFieldValue(
+                defaultValue,
+                TextRange(defaultValue.length),
+            )
+        )
+    }
     var focusIsTracking by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
 
     TextField(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .onFocusChanged { focusState ->
@@ -246,6 +239,6 @@ fun CommentEditor(defaultValue: String, onApply: (comment: String) -> Unit) {
 @Composable
 private fun Preview() {
     BuckwheatTheme {
-        TaggingSpent(editorFocusController = FocusController())
+        CustomTag(editorFocusController = FocusController())
     }
 }

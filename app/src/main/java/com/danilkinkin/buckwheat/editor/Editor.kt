@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.tagging.TaggingToolbar
 import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateTimeEditPill
 import com.danilkinkin.buckwheat.editor.tagging.TaggingSpent
 import com.danilkinkin.buckwheat.editor.toolbar.EditorToolbar
@@ -49,7 +50,7 @@ fun Editor(
                     .weight(1f),
                 focusController = focusController,
             )
-            TaggingSpent(editorFocusController = focusController)
+            TaggingToolbar(editorFocusController = focusController)
             Spacer(Modifier.height(24.dp))
 
             BackHandler(mode == EditMode.EDIT) {
