@@ -158,4 +158,6 @@
     <string name="app_widget_extend_name">Alforfón extender</string>
     <string name="app_widget_minimal_name">Alforfón mínimo</string>
     <string name="add_spent_short">Gasto</string>
+    <string name="home_widgets_label">Widgets de pantalla de inicio</string>
+    <string name="try_home_widgets_desc">El trigo sarraceno ahora tiene widgets. Pruébalo y lleva un seguimiento de tu presupuesto desde la pantalla de inicio</string>
 </resources>

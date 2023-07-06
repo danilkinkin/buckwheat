@@ -159,4 +159,6 @@
     <string name="app_widget_extend_name">Bovete förlänga</string>
     <string name="app_widget_minimal_name">Bovete minimalt</string>
     <string name="add_spent_short">Utgifter</string>
+    <string name="home_widgets_label">Startskärmswidgetar</string>
+    <string name="try_home_widgets_desc">Bovetet har nu widgets. Prova det och håll koll på din budget från startskärmen</string>
 </resources>

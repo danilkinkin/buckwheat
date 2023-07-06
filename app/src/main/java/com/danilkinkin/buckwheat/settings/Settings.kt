@@ -20,7 +20,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 const val SETTINGS_SHEET = "settings"
 
 @Composable
-fun Settings(onClose: () -> Unit = {}) {
+fun Settings(onTriedWidget: () -> Unit = {}) {
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
@@ -46,6 +46,9 @@ fun Settings(onClose: () -> Unit = {}) {
             ) {
                 ThemeSwitcher()
                 LangSwitcher()
+                TryWidget(onTried = {
+                    onTriedWidget()
+                })
                 TextRow(
                     text = stringResource(R.string.version, BuildConfig.VERSION_NAME),
                 )

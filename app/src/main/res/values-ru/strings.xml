@@ -162,4 +162,6 @@
     <string name="over">более</string>
     <string name="app_widget_extend_name">Гречка расширеный</string>
     <string name="app_widget_minimal_name">Гречка минимальная</string>
+    <string name="home_widgets_label">Виджеты на главном экране</string>
+    <string name="try_home_widgets_desc">Теперь у гречки есть виджеты. Попробуйте и следите за своим бюджетом с главного экрана</string>
 </resources>

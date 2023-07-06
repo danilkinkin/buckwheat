@@ -163,4 +163,6 @@
     <string name="app_widget_extend_name">Гречана крупа подовжується</string>
     <string name="app_widget_minimal_name">Мінімум гречки</string>
     <string name="add_spent_short">Витрата</string>
+    <string name="home_widgets_label">Віджети на головному екрані</string>
+    <string name="try_home_widgets_desc">Тепер у гречки є віджети. Спробуйте і слідкуйте за своїм бюджетом з головного екрану</string>
 </resources>

@@ -163,4 +163,6 @@
     <string name="app_widget_extend_name">Грэчка падоўжыць</string>
     <string name="app_widget_minimal_name">Грэчкі мінімум</string>
     <string name="add_spent_short">Марнаванне</string>
+    <string name="home_widgets_label">Віджэты на галоўным экране</string>
+    <string name="try_home_widgets_desc">У грэцыцы цяпер ёсць віджэты. Паспрабуйце і старайцеся кантраляваць свой бюджэт з галоўнага экрана</string>
 </resources>

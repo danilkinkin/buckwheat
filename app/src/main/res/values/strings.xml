@@ -158,4 +158,6 @@
     <string name="edit_spent">Editable spent</string>
     <string name="cancel_editing">Cancel editing</string>
     <string name="over">over</string>
+    <string name="home_widgets_label">Home screen widgets</string>
+    <string name="try_home_widgets_desc">Buckwheat now has widgets. Try it out and keep track of your budget from the home screen</string>
 </resources>

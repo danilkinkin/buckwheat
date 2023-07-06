@@ -143,8 +143,8 @@ fun BottomSheets(
         windowSizeClass = windowSizeClass,
     ) { state ->
         Settings(
-            onClose = {
-                coroutineScope.launch { state.hide() }
+            onTriedWidget = {
+                coroutineScope.launch { state.callback(emptyMap()) }
             }
         )
     }
@@ -258,6 +258,13 @@ fun BottomSheets(
                 coroutineScope.launch { state.hide() }
             }
         )
+    }
+
+    BottomSheetWrapper(
+        name = SETTINGS_TRY_WIDGET_SHEET,
+        windowSizeClass = windowSizeClass
+    ) { state ->
+        TryWidgetDialog()
     }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {

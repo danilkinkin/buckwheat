@@ -166,4 +166,6 @@
      <string name="app_widget_extend_name">Pohanka prodloužit</string>
      <string name="app_widget_minimal_name">Pohanka minimum</string>
      <string name="add_spent_short">Výdaje</string>
+     <string name="home_widgets_label">Widgety na domovské obrazovce</string>
+     <string name="try_home_widgets_desc">Hrachovka nyní obsahuje widgety. Vyzkoušejte to a sledujte svůj rozpočet přímo z domovské obrazovky.</string>
  </resources>

@@ -115,7 +115,10 @@ fun MainScreen(
     }
 
     observeLiveData(spendsViewModel.requireSetBudget) {
-        if (it) appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
+        if (it) {
+            appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
+            appViewModel.setBooleanValue("previewWidgets", false)
+        }
     }
 
     observeLiveData(spendsViewModel.finishPeriod) {

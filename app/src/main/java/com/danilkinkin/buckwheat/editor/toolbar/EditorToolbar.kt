@@ -3,10 +3,15 @@ package com.danilkinkin.buckwheat.editor.toolbar
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -32,6 +37,9 @@ fun EditorToolbar(
     val coroutineScope = rememberCoroutineScope()
     val isDebug = appViewModel.isDebug.observeAsState(false)
     val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
+    val showSettingsDot = remember {
+        mutableStateOf(appViewModel.getBooleanValue("previewWidgets", true))
+    }
 
     val spendsCountScale = remember { Animatable(1f) }
 
@@ -78,10 +86,24 @@ fun EditorToolbar(
             RestBudgetPill()
         }
         Spacer(modifier = Modifier.width(4.dp))
-        BigIconButton(
-            icon = painterResource(R.drawable.ic_settings),
-            contentDescription = null,
-            onClick = { appViewModel.openSheet(PathState(SETTINGS_SHEET)) },
-        )
+        Box(contentAlignment = Alignment.TopEnd) {
+            BigIconButton(
+                icon = painterResource(R.drawable.ic_settings),
+                contentDescription = null,
+                onClick = {
+                    appViewModel.openSheet(PathState(SETTINGS_SHEET, callback = {
+                        showSettingsDot.value = appViewModel.getBooleanValue("previewWidgets", true)
+                    }))
+                },
+            )
+            if (showSettingsDot.value) {
+                Box(
+                    modifier = Modifier
+                        .offset((-10).dp, 10.dp)
+                        .background(MaterialTheme.colors.error, shape = CircleShape)
+                        .size(8.dp)
+                )
+            }
+        }
     }
 }

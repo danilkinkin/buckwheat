@@ -192,4 +192,6 @@
     <string name="app_widget_extend_name">Extension de sarrasin</string>
     <string name="app_widget_minimal_name">Minimum de sarrasin</string>
     <string name="add_spent_short">Dépenses</string>
+    <string name="home_widgets_label">Widgets d\'écran d\'accueil</string>
+    <string name="try_home_widgets_desc">Le sarrasin dispose désormais de widgets. Essayez-le et suivez votre budget depuis l\'écran d\'accueil</string>
 </resources>
