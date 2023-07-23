@@ -118,7 +118,7 @@
     <string name="overspending_after_not_go_out_budget">Más sobre el presupuesto que no cumpliste</string>
     <string name="overspending_after_few_times_out_budget">Después, quedaron %1$s de los %2$s sobre el presupuesto</string>
     <string name="overspending_after_many_times_out_budget">Tras quedar %1$s de los %2$s, te ajustaste al presupuesto</string>
-    <string name="overspending_after_all_times_out_budget">Después de sobrarte %1$s, no sobrepasaste el presupuesto</string>
+    <string name="overspending_after_all_times_out_budget">Después de excederte %1$s, no sobrepasaste el presupuesto</string>
 
     <!-- Onboarding -->
     <string name="hello">¡Hola!</string>
@@ -133,14 +133,14 @@
 
     <!-- Common -->
     <string name="copy_in_clipboard">Copiado al portapapeles</string>
-    <string name="not_found_email_clients">No se ha encontrado ningún cliente email</string>
+    <string name="not_found_email_clients">No se ha encontrado ningún cliente de email</string>
     <string name="cancel">Cancelar</string>
     <string name="accept">Aceptar</string>
     <string name="today">Hoy</string>
-    <string name="export_to_csv_success">Gastos exportados</string>
-    <string name="export_to_csv_failed">Fallo al exportar los gastos</string>
+    <string name="export_to_csv_success">Gastos exportados en CSV</string>
+    <string name="export_to_csv_failed">Fallo al exportar los gastos en CSV</string>
     <string name="select_currency_description">La divisa no afecta a los cálculos en absoluto, solo ayuda a entender mejor los números.</string>
-    <string name="add_spent">Añadir residuos</string>
+    <string name="add_spent">Añadir gastado</string>
     <string name="remember_choice_reacalc_budget_description">Podrás cambiarlo más tarde en la cartera</string>
     <string name="remember_choice">Recordar mi elección</string>
     <string name="rest_label">Sobra</string>
@@ -154,9 +154,9 @@
     <string name="spent_budget">Gastado</string>
     <string name="edit_spent">Gasto editable</string>
     <string name="cancel_editing">Cancelar edición</string>
-    <string name="over">más del</string>
-    <string name="app_widget_extend_name">Alforfón extender</string>
-    <string name="app_widget_minimal_name">Alforfón mínimo</string>
+    <string name="over">Por encima de</string>
+    <string name="app_widget_extend_name">Widget ancho</string>
+    <string name="app_widget_minimal_name">Widget mínimo</string>
     <string name="add_spent_short">Gasto</string>
     <string name="home_widgets_label">Widgets de pantalla de inicio</string>
     <string name="try_home_widgets_desc">El trigo sarraceno ahora tiene widgets. Pruébalo y lleva un seguimiento de tu presupuesto desde la pantalla de inicio</string>
