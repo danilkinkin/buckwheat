@@ -93,7 +93,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
         Locale("fr"),
         Locale("cs"),
         Locale("es"),
-        Locale("pt", "BR")
+        Locale("pt", "BR"),
         Locale("ro"),
     )
 
