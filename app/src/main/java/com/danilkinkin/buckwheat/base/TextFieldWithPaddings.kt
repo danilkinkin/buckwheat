@@ -262,6 +262,12 @@ fun TextFieldWithPaddings(
             )
         }
 
+        LaunchedEffect(key1 = Unit) {
+            textFieldValueState = textFieldValueState.copy(
+                selection = TextRange(textFieldValueState.text.length)
+            )
+        }
+
         DisposableEffect(value) {
             if (textFieldValueState.selection.start != 0) {
                 return@DisposableEffect onDispose { }
