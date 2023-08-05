@@ -28,13 +28,13 @@ A couple of years ago, I used the [tzlvt](https://www.fuckgrechka.ru/tzlvt/) app
 
 Buckwheat is translated into several languages. If your language is missing or incomplete, please help to translate via PR.
 
-## Credits
-
-Developed by [Danil Зakhvatkin](https://github.com/danilkinkin) and [contributors](https://github.com/danilkinkin/buckwheat/graphs/contributors).
-
 ## Donate
 
 If you want to support my work, you can share my app with friends
+
+## Credits
+
+Developed by [Danil Зakhvatkin](https://github.com/danilkinkin) and [contributors](https://github.com/danilkinkin/buckwheat/graphs/contributors).
 
 ## Policy
 
