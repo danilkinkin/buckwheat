@@ -13,10 +13,12 @@
     <string name="new_spent">Cheltuială nouă</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s cheltuit azi</item>
+        <item quantity="few">%1$s cheltuiți azi</item>
         <item quantity="other">%1$s cheltuiți azi</item>
     </plurals>
     <plurals name="day">
         <item quantity="one">o zi</item>
+        <item quantity="few">%1$s zile</item>
         <item quantity="other">%1$s zile</item>
     </plurals>
     <string name="enter_spent_placeholder">Introdu cheltuiala</string>
@@ -33,16 +35,18 @@
     <string name="total_per_day">Totalul de azi:</string>
 
     <!-- Wallet -->
-    <string name="wallet_title">Budget</string>
+    <string name="wallet_title">Buget</string>
     <string name="wallet_edit_title">Buget nou</string>
-    <string name="label_budget">Budget</string>
+    <string name="label_budget">Buget</string>
     <string name="select_finish_date_title">Alege o dată finală</string>
     <plurals name="finish_date_label">
         <item quantity="one">Până pe %1$s (o zi)</item>
+        <item quantity="few">Până pe %1$s (%2$s zile)</item>
         <item quantity="other">Până pe %1$s (%2$s zile)</item>
     </plurals>
     <plurals name="finish_date">
         <item quantity="one">%1$s (o zi)</item>
+        <item quantity="few">%1$s (%2$s zile)</item>
         <item quantity="other">%1$s (%2$s zile)</item>
     </plurals>
     <string name="export_to_csv">Exportează ca CSV</string>
