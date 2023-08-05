@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.danilkinkin.buckwheat.calendar.model.CalendarSelectionMode
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
@@ -88,7 +89,9 @@ private fun LazyListScope.itemsCalendarMonth(
         val beginningWeek = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
         val currentDay = beginningWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
-        if (calendarUiState.hasSelectedPeriodOverlap(currentDay, currentDay.plusDays(6))) {
+        if (
+            calendarUiState.hasSelectedPeriodOverlap(currentDay, currentDay.plusDays(6))
+        ) {
             WeekSelectionPill(
                 state = calendarUiState,
                 currentWeekStart = currentDay,

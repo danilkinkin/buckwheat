@@ -8,9 +8,18 @@ import java.time.Period
 import java.time.YearMonth
 import java.util.*
 
-class CalendarState(selectDate: Date? = null) {
+class CalendarState(
+    selectionMode: CalendarSelectionMode = CalendarSelectionMode.SINGLE,
+    selectDate: Date? = null,
+    disableBeforeDate: Date? = null,
+    disableAfterDate: Date? = null,
+) {
 
-    val calendarUiState = mutableStateOf(CalendarUiState())
+    val calendarUiState = mutableStateOf(CalendarUiState(
+        selectionMode = selectionMode,
+        disabledBefore = disableBeforeDate?.toLocalDate(),
+        disabledAfter = disableAfterDate?.toLocalDate(),
+    ))
     val listMonths: List<Month>
 
     private val calendarStartDate: LocalDate = LocalDate.now().withDayOfMonth(1)
@@ -19,7 +28,7 @@ class CalendarState(selectDate: Date? = null) {
 
     private val periodBetweenCalendarStartEnd: Period = Period.between(
         calendarStartDate,
-        calendarEndDate
+        disableAfterDate?.toLocalDate() ?: calendarEndDate
     )
 
     init {
@@ -46,7 +55,11 @@ class CalendarState(selectDate: Date? = null) {
     }
 
     fun setSelectedDay(newDate: LocalDate) {
-        calendarUiState.value = calendarUiState.value.setDates(LocalDate.now(), newDate)
+        if (calendarUiState.value.selectionMode == CalendarSelectionMode.RANGE) {
+            calendarUiState.value = calendarUiState.value.setDates(LocalDate.now(), newDate)
+        } else {
+            calendarUiState.value = calendarUiState.value.setDate(newDate)
+        }
     }
 
     companion object {

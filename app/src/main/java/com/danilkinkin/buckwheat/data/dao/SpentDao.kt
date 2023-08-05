@@ -26,8 +26,8 @@ interface SpentDao {
     @Update(entity = Spent::class, onConflict = OnConflictStrategy.REPLACE)
     fun update(vararg spent: Spent)
 
-    @Delete
-    fun delete(spent: Spent)
+    @Query("DELETE FROM spent WHERE uid = :uid")
+    fun deleteById(uid: Int)
 
     @Query("DELETE FROM spent")
     fun deleteAll()

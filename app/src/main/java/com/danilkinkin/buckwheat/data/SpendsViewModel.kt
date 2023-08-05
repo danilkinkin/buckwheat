@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.data
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.data.entities.Storage
@@ -105,6 +106,7 @@ class SpendsViewModel @Inject constructor(
     }
 
     var editedSpent: Spent? = null
+    var currentDate: Date = Date()
     var currentSpent: BigDecimal = 0.0.toBigDecimal()
     var currentComment: String = ""
 
@@ -318,8 +320,13 @@ class SpendsViewModel @Inject constructor(
         if (fSpent == "0") return
 
         if (editedSpent !== null) {
-            this.spentDao.delete(editedSpent!!)
-            this.spentDao.insert(editedSpent!!.copy(value = currentSpent, comment = currentComment))
+            Log.d("Spent", "Delete spent uid: ${editedSpent!!.uid}")
+            this.spentDao.deleteById(editedSpent!!.uid)
+            this.spentDao.insert(editedSpent!!.copy(
+                value = currentSpent,
+                date = currentDate,
+                comment = currentComment,
+            ))
 
             if (!isSameDay(editedSpent!!.date.time, Date().time)) {
                 val restDays = countDays(finishDate.value!!)
@@ -347,6 +354,7 @@ class SpendsViewModel @Inject constructor(
         }
 
         currentSpent = 0.0.toBigDecimal()
+        currentDate = Date()
         currentComment = ""
         rawSpentValue.value = ""
 
@@ -357,6 +365,7 @@ class SpendsViewModel @Inject constructor(
 
     fun resetSpent() {
         currentSpent = 0.0.toBigDecimal()
+        currentDate = Date()
         currentComment = ""
         rawSpentValue.value = ""
 
@@ -368,6 +377,7 @@ class SpendsViewModel @Inject constructor(
     fun editSpent(spent: Spent) {
         editedSpent = spent
         currentSpent = spent.value
+        currentDate = spent.date
         currentComment = spent.comment
         rawSpentValue.value = tryConvertStringToNumber(spent.value.toString()).join(third = false)
 
@@ -376,7 +386,7 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun removeSpent(spent: Spent) {
-        this.spentDao.delete(spent)
+        this.spentDao.deleteById(spent.uid)
 
         if (!isSameDay(spent.date.time, Date().time)) {
             val restDays = countDays(finishDate.value!!)

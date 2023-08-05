@@ -1,7 +1,6 @@
 package com.danilkinkin.buckwheat.calendar.model
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.res.pluralStringResource
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.util.countDays
@@ -10,31 +9,38 @@ import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toDate
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
 import kotlin.math.abs
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun selectedDatesFormatted(state: CalendarState): String {
     val uiState = state.calendarUiState.value
 
     if (uiState.selectedStartDate == null) return ""
 
-    var output = prettyDate(uiState.selectedStartDate.toDate(), showTime = false, forceShowDate = true)
+    var output =
+        prettyDate(uiState.selectedStartDate.toDate(), showTime = false, forceShowDate = true)
+
+    if (uiState.selectionMode == CalendarSelectionMode.SINGLE) return output
 
     output += if (uiState.selectedEndDate != null) {
         val days = countDays(uiState.selectedEndDate.toDate(), uiState.selectedStartDate.toDate())
 
-        " - ${String.format(
-            pluralStringResource(
-                id = R.plurals.finish_date,
-                count = days,
-            ),
-            prettyDate(uiState.selectedEndDate.toDate(), showTime = false, forceShowDate = true),
-            days,
-        )}"
+        " - ${
+            String.format(
+                pluralStringResource(
+                    id = R.plurals.finish_date,
+                    count = days,
+                ),
+                prettyDate(
+                    uiState.selectedEndDate.toDate(),
+                    showTime = false,
+                    forceShowDate = true
+                ),
+                days,
+            )
+        }"
     } else {
         " - ?"
     }
@@ -42,21 +48,22 @@ fun selectedDatesFormatted(state: CalendarState): String {
     return output
 }
 
+enum class CalendarSelectionMode {
+    SINGLE,
+    RANGE,
+}
+
 data class CalendarUiState(
+    val selectionMode: CalendarSelectionMode = CalendarSelectionMode.RANGE,
     val selectedStartDate: LocalDate? = null,
     val selectedEndDate: LocalDate? = null,
+    val disabledBefore: LocalDate? = LocalDate.now(),
+    val disabledAfter: LocalDate? = null,
 ) {
-
-    val numberSelectedDays: Float
-        get() {
-            if (selectedStartDate == null) return 0f
-            if (selectedEndDate == null) return 1f
-            return ChronoUnit.DAYS.between(selectedStartDate, selectedEndDate.plusDays(1)).toFloat()
-        }
 
     val hasSelectedDates: Boolean
         get() {
-            return selectedEndDate != null
+            return selectedEndDate != null || selectionMode == CalendarSelectionMode.SINGLE
         }
 
     fun hasSelectedPeriodOverlap(start: LocalDate, end: LocalDate): Boolean {
@@ -86,8 +93,9 @@ data class CalendarUiState(
         )
     }
 
-    fun isBeforeCurrentDay(date: LocalDate): Boolean {
-        return date.isBefore(LocalDate.now())
+    fun isDisabledDay(date: LocalDate): Boolean {
+        return (disabledBefore != null && date.isBefore(disabledBefore))
+                || (disabledAfter != null && date.isAfter(disabledAfter))
     }
 
     fun getNumberSelectedDaysInWeek(currentWeekStartDate: LocalDate, month: YearMonth): Int {
@@ -197,7 +205,7 @@ data class CalendarUiState(
         }
     }
 
-    companion object {
-        private val SHORT_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM dd")
+    fun setDate(new: LocalDate?): CalendarUiState {
+        return copy(selectedStartDate = new)
     }
 }

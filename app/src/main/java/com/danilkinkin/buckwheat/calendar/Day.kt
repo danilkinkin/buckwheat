@@ -89,7 +89,7 @@ internal fun Day(
     onDayClicked: (LocalDate) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val disabled = calendarState.isBeforeCurrentDay(day)
+    val disabled = calendarState.isDisabledDay(day)
     val selected = calendarState.isDateInSelectedPeriod(day)
     val current = calendarState.isCurrentDay(day)
 

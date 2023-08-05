@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.home
 
+import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,8 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.*
+import com.danilkinkin.buckwheat.editor.dateTimeEdit.DATE_SELECTOR_SHEET
+import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateSelector
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BudgetIsOverDescription
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NEW_DAY_BUDGET_DESCRIPTION_SHEET
@@ -105,6 +108,27 @@ fun BottomSheets(
             onApply = {
                 coroutineScope.launch {
                     state.hide(mapOf("finishDate" to it))
+                }
+            },
+        )
+    }
+
+    BottomSheetWrapper(
+        name = DATE_SELECTOR_SHEET,
+        windowSizeClass = windowSizeClass,
+    ) { state ->
+        DateSelector(
+            selectDate = state.args["initialDate"] as Date?,
+            disableBeforeDate = state.args["disableBeforeDate"] as Date?,
+            disableAfterDate = state.args["disableAfterDate"] as Date?,
+            onBackPressed = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            },
+            onApply = {
+                coroutineScope.launch {
+                    state.hide(mapOf("date" to it))
                 }
             },
         )

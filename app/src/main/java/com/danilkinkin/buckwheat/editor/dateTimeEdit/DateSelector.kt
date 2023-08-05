@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.wallet
+package com.danilkinkin.buckwheat.editor.dateTimeEdit
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,19 +25,23 @@ import com.danilkinkin.buckwheat.util.toLocalDate
 import java.time.LocalDate
 import java.util.*
 
-const val FINISH_DATE_SELECTOR_SHEET = "finishDateSelector"
+const val DATE_SELECTOR_SHEET = "dateSelector"
 
 @Composable
-fun FinishDateSelector(
+fun DateSelector(
     selectDate: Date? = null,
+    disableBeforeDate: Date? = null,
+    disableAfterDate: Date? = null,
     onBackPressed: () -> Unit,
     onApply: (finishDate: Date) -> Unit,
 ) {
     Surface(modifier = Modifier.fillMaxSize()) {
         val calendarState = remember {
             CalendarState(
-                selectionMode = CalendarSelectionMode.RANGE,
-                selectDate = selectDate,
+                selectionMode = CalendarSelectionMode.SINGLE,
+                selectDate,
+                disableBeforeDate,
+                disableAfterDate,
             )
         }
 
@@ -46,24 +49,24 @@ fun FinishDateSelector(
             if (selectDate !== null) calendarState.setSelectedDay(selectDate.toLocalDate())
         }
 
-        FinishDateSelectorContent(
+        DateSelectorContent(
             calendarState = calendarState,
             onDayClicked = { calendarState.setSelectedDay(it) },
             onBackPressed = onBackPressed,
-            onApply = { onApply(calendarState.calendarUiState.value.selectedEndDate!!.toDate()) }
+            onApply = { onApply(calendarState.calendarUiState.value.selectedStartDate!!.toDate()) }
         )
     }
 }
 
 @Composable
-private fun FinishDateSelectorContent(
+private fun DateSelectorContent(
     calendarState: CalendarState,
     onDayClicked: (LocalDate) -> Unit,
     onBackPressed: () -> Unit,
     onApply: () -> Unit,
 ) {
     Column {
-        FinishDateSelectorTopAppBar(calendarState, onBackPressed, onApply)
+        DateSelectorTopAppBar(calendarState, onBackPressed, onApply)
         Calendar(
             calendarState = calendarState,
             onDayClicked = onDayClicked,
@@ -72,22 +75,19 @@ private fun FinishDateSelectorContent(
 }
 
 @Composable
-private fun FinishDateSelectorTopAppBar(
+private fun DateSelectorTopAppBar(
     calendarState: CalendarState,
     onBackPressed: () -> Unit,
     onApply: () -> Unit,
 ) {
     Surface {
         Column() {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp)) {
+            Row(Modifier.fillMaxWidth().padding(8.dp)) {
                 IconButton(
                     onClick = { onBackPressed() }
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_close),
+                        imageVector = Icons.Filled.ArrowBack,
                         contentDescription = null,
                     )
                 }
@@ -135,7 +135,7 @@ private fun FinishDateSelectorTopAppBar(
 @Composable
 private fun PreviewDefault(){
     BuckwheatTheme {
-        FinishDateSelector(onBackPressed = {}, onApply = {})
+        DateSelector(onBackPressed = {}, onApply = {})
     }
 }
 
@@ -143,6 +143,6 @@ private fun PreviewDefault(){
 @Composable
 private fun PreviewNightMode(){
     BuckwheatTheme {
-        FinishDateSelector(onBackPressed = {}, onApply = {})
+        DateSelector(onBackPressed = {}, onApply = {})
     }
 }
