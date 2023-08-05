@@ -1,4 +1,11 @@
-<img width="100%" height="auto" src="/screenshots/en/github-screenshot.png" alt="Buckwheat logo with screenshots">
+<a href='https://buckwheat.app/' style="font-size: 0; width: 100%;">
+    <img 
+        width="100%" 
+        height="auto" 
+        src="/screenshots/en/github-screenshot.png" 
+        alt="Buckwheat logo with screenshots"
+    >
+</a>
 
 [![Latest release][release-badge]][github-releases]
 
