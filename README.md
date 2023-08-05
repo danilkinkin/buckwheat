@@ -30,7 +30,7 @@ Buckwheat is translated into several languages. If your language is missing or i
 
 ## Donate
 
-If you want to support my work, you can share my app with friends
+If you want to support my work, you can share my app with friends or check another options on [landing page](https://buckwheat.app/contribute)
 
 ## Credits
 
