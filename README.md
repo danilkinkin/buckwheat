@@ -20,7 +20,6 @@ Writing down each spending sobers the mind and gives you an idea of how much and
             src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
         />
     </a>
-    
     <a href='https://github.com/danilkinkin/buckwheat/releases'>
         <img 
             alt='Get it on GitHub' 
