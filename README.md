@@ -12,15 +12,15 @@
 **Buckwheat** is an app that helps you spend money wisely. 
 Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.
 
-<div style="font-size: 0;">
-    <a href='https://play.google.com/store/apps/details?id=com.danilkinkin.buckwheat'>
+<div>
+    <a href='https://play.google.com/store/apps/details?id=com.danilkinkin.buckwheat' style="font-size: 0;">
         <img 
             alt='Get it on Google Play' 
             height="60" 
             src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'
         />
     </a>
-    <a href='https://github.com/danilkinkin/buckwheat/releases'>
+    <a href='https://github.com/danilkinkin/buckwheat/releases' style="font-size: 0;">
         <img 
             alt='Get it on GitHub' 
             height="60" 
