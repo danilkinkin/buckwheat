@@ -15,14 +15,11 @@ Writing down each spending sobers the mind and gives you an idea of how much and
 [<img alt='Get it on Google Play' height="60" src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' />](https://play.google.com/store/apps/details?id=com.danilkinkin.buckwheat)
 [<img alt='Get it on GitHub' height="60" src='/screenshots/en/get-it-on-github.png' />](https://github.com/danilkinkin/buckwheat/releases)
 
+and [landing page](https://buckwheat.app/)
+
 ## Motivation
 
 A couple of years ago, I used the [tzlvt](https://www.fuckgrechka.ru/tzlvt/) app. I liked his idea and it helped me learn how to manage money. After I decided to improve this idea and it inspired me to create buckwheat
-
-## Links
-
-- [GooglePlay](https://play.google.com/store/apps/details?id=com.danilkinkin.buckwheat)
-- [Landing page](https://buckwheat.app/)
 
 ## Translations
 
