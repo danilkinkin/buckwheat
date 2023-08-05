@@ -1,9 +1,9 @@
-package com.danilkinkin.buckwheat.calendar
+package com.danilkinkin.buckwheat.base.datePicker
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import com.danilkinkin.buckwheat.calendar.model.CalendarUiState
-import com.danilkinkin.buckwheat.calendar.model.Week
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
+import com.danilkinkin.buckwheat.base.datePicker.model.Week
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import java.time.DayOfWeek

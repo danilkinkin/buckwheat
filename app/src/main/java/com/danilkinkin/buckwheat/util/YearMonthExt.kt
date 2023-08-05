@@ -1,6 +1,6 @@
 package com.danilkinkin.buckwheat.util
 
-import com.danilkinkin.buckwheat.calendar.CALENDAR_STARTS_ON
+import com.danilkinkin.buckwheat.base.datePicker.CALENDAR_STARTS_ON
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 

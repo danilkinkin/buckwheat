@@ -1,12 +1,12 @@
-package com.danilkinkin.buckwheat.calendar
+package com.danilkinkin.buckwheat.base.datePicker
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import com.danilkinkin.buckwheat.calendar.model.CalendarState
-import com.danilkinkin.buckwheat.calendar.model.CalendarUiState
-import com.danilkinkin.buckwheat.calendar.model.Week
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
+import com.danilkinkin.buckwheat.base.datePicker.model.Week
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset

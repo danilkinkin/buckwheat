@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.calendar.model
+package com.danilkinkin.buckwheat.base.datePicker.model
 
 import androidx.compose.runtime.mutableStateOf
 import com.danilkinkin.buckwheat.util.getNumberWeeks
@@ -15,11 +15,13 @@ class CalendarState(
     disableAfterDate: Date? = null,
 ) {
 
-    val calendarUiState = mutableStateOf(CalendarUiState(
+    val calendarUiState = mutableStateOf(
+        CalendarUiState(
         selectionMode = selectionMode,
         disabledBefore = disableBeforeDate?.toLocalDate(),
         disabledAfter = disableAfterDate?.toLocalDate(),
-    ))
+    )
+    )
     val listMonths: List<Month>
 
     private val calendarStartDate: LocalDate = LocalDate.now().withDayOfMonth(1)

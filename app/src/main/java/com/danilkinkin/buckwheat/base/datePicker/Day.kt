@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.calendar
+package com.danilkinkin.buckwheat.base.datePicker
 
 
 import androidx.compose.foundation.background
@@ -11,7 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.danilkinkin.buckwheat.calendar.model.CalendarUiState
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
-import java.time.YearMonth
 
 @Composable
 internal fun DayOfWeekHeading(day: String, modifier: Modifier = Modifier) {

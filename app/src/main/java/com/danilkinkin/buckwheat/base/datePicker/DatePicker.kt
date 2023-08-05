@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.calendar
+package com.danilkinkin.buckwheat.base.datePicker
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -13,9 +13,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.danilkinkin.buckwheat.calendar.model.CalendarState
-import com.danilkinkin.buckwheat.calendar.model.CalendarUiState
-import com.danilkinkin.buckwheat.calendar.model.Month
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
+import com.danilkinkin.buckwheat.base.datePicker.model.Month
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -23,14 +23,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.buckwheat.calendar.model.CalendarSelectionMode
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 
 @Composable
-fun Calendar(
+fun DatePicker(
     calendarState: CalendarState,
     onDayClicked: (date: LocalDate) -> Unit,
     modifier: Modifier = Modifier,
@@ -118,7 +117,7 @@ fun DayPreview() {
     val state = remember { mutableStateOf(CalendarState()) }
 
     BuckwheatTheme {
-        Calendar(
+        DatePicker(
             state.value,
             onDayClicked = { state.value.setSelectedDay(it) },
         )

@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.calendar.model
+package com.danilkinkin.buckwheat.base.datePicker.model
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource

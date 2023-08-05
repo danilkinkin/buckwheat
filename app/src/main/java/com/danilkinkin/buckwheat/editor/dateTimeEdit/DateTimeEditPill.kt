@@ -13,8 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.buckwheat.calendar.Calendar
-import com.danilkinkin.buckwheat.calendar.model.CalendarState
+import com.danilkinkin.buckwheat.base.datePicker.DatePicker
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -130,7 +130,7 @@ private fun DateSelectorContent(
     onApply: () -> Unit,
 ) {
     Column {
-        Calendar(
+        DatePicker(
             calendarState = calendarState,
             onDayClicked = onDayClicked,
         )

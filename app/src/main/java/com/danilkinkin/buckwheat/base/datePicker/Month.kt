@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.calendar
+package com.danilkinkin.buckwheat.base.datePicker
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding

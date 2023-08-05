@@ -15,10 +15,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.calendar.Calendar
-import com.danilkinkin.buckwheat.calendar.model.CalendarSelectionMode
-import com.danilkinkin.buckwheat.calendar.model.CalendarState
-import com.danilkinkin.buckwheat.calendar.model.selectedDatesFormatted
+import com.danilkinkin.buckwheat.base.datePicker.DatePicker
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarSelectionMode
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
+import com.danilkinkin.buckwheat.base.datePicker.model.selectedDatesFormatted
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
@@ -67,7 +67,7 @@ private fun DateSelectorContent(
 ) {
     Column {
         DateSelectorTopAppBar(calendarState, onBackPressed, onApply)
-        Calendar(
+        DatePicker(
             calendarState = calendarState,
             onDayClicked = onDayClicked,
         )
