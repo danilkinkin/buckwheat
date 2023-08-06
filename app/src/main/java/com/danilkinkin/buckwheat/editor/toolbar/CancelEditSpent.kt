@@ -33,8 +33,6 @@ fun RowScope.CancelEditSpent(
             spendsViewModel.resetSpent()
         }
     ) {
-        val textColor = LocalContentColor.current
-
         Row(
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
@@ -49,7 +47,6 @@ fun RowScope.CancelEditSpent(
             Text(
                 text = stringResource(R.string.cancel_editing),
                 style = MaterialTheme.typography.labelLarge,
-                color = textColor.copy(alpha = 0.6f),
                 overflow = TextOverflow.Ellipsis,
                 softWrap = false,
             )
