@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -117,9 +118,11 @@ fun DayPreview() {
     val state = remember { mutableStateOf(CalendarState()) }
 
     BuckwheatTheme {
-        DatePicker(
-            state.value,
-            onDayClicked = { state.value.setSelectedDay(it) },
-        )
+        Surface {
+            DatePicker(
+                state.value,
+                onDayClicked = { state.value.setSelectedDay(it) },
+            )
+        }
     }
 }

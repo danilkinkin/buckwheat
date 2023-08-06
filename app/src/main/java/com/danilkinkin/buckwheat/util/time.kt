@@ -41,6 +41,28 @@ fun isSameDay(timestampA: Long, timestampB: Long): Boolean {
     return roundToDay(Date(timestampA)) == roundToDay(Date(timestampB))
 }
 
+
+@Composable
+fun prettyDate(
+    date: Date,
+    pattern: String,
+    simplifyIfToday: Boolean = true,
+): String {
+    val dateWithMonthAndYearFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    val currentFullDate = dateWithMonthAndYearFormatter.format(LocalDate.now())
+    val convertedFullDate = dateWithMonthAndYearFormatter.format(date.toLocalDate())
+
+    var final = ""
+
+    final += if (simplifyIfToday && convertedFullDate == currentFullDate) {
+        stringResource(R.string.today)
+    } else {
+        DateTimeFormatter.ofPattern(pattern).format(date.toLocalDate())
+    }
+
+    return final.trim()
+}
+
 @Composable
 fun prettyDate(
     date: Date,

@@ -33,6 +33,8 @@
     <string name="remove_spent_undo">Undo</string>
     <string name="no_spends">No spending yet</string>
     <string name="total_per_day">Day total:</string>
+    <string name="change_date">Change date</string>
+    <string name="change_time">Change time</string>
 
     <!-- Wallet -->
     <string name="wallet_title">Budget</string>
