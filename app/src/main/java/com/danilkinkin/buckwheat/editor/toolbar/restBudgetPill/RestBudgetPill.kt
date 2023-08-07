@@ -11,7 +11,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,6 +34,9 @@ import com.danilkinkin.buckwheat.util.*
 import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
 import kotlinx.coroutines.launch
 import java.util.*
+import java.math.BigDecimal
+import java.math.RoundingMode
+import kotlin.math.ceil
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,11 +93,18 @@ fun RowScope.RestBudgetPill(
 
         anim()
     }
-    val percentAnim = animateFloatAsState(
-        label = "percentAnim",
+    val percentWithNewSpentAnimated = animateFloatAsState(
+        label = "percentWithNewSpentAnimated",
         targetValue = percentWithNewSpent.coerceIn(0f, 0.98f),
         animationSpec = TweenSpec(300),
     ).value
+
+
+    val percentWithoutNewSpentAnimated by animateFloatAsState(
+        label = "percentRealAnim",
+        targetValue = percentWithoutNewSpent.coerceIn(0f, 0.98f),
+        animationSpec = TweenSpec(250),
+    )
 
     val harmonizedColor = toPalette(
         harmonize(
@@ -102,7 +114,7 @@ fun RowScope.RestBudgetPill(
                     colorNotGood,
                     colorGood,
                 ),
-                percentAnim,
+                percentWithNewSpentAnimated,
             ),
             colorEditor
         )
@@ -133,37 +145,52 @@ fun RowScope.RestBudgetPill(
 
             Box(Modifier.fillMaxHeight()) {
                 Box(Modifier.fillMaxSize()) {
-                    if (percentWithoutNewSpent < 0.9999f) {
-                        val percentRealAnim by animateFloatAsState(
-                            label = "percentRealAnim",
-                            targetValue = percentWithoutNewSpent.coerceIn(0f, 0.98f),
-                            animationSpec = TweenSpec(250),
-                        )
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = percentWithNewSpent != percentWithoutNewSpent,
+                        enter = fadeIn(),
+                        exit = fadeOut(),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .drawBehind {
+                                    drawPath(
+                                        path = Path().apply {
+                                            val halfPeriod = with(density) { 30.dp.toPx() } / 2
+                                            val amplitude = with(density) { 2.dp.toPx() }
 
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    harmonizedColor.main.copy(alpha = 0.1f),
-                                    shape = WavyShape(
-                                        period = 30.dp,
-                                        amplitude = 2.dp,
-                                        shift = shift.value,
-                                    ),
-                                )
+                                            moveTo(
+                                                size.width - amplitude,
+                                                -halfPeriod * 2.5f + halfPeriod * 2 * shift.value
+                                            )
+                                            repeat(ceil(size.height / halfPeriod + 3).toInt()) { i ->
+                                                relativeQuadraticBezierTo(
+                                                    dx1 = 2 * amplitude * (if (i % 2 == 0) 1 else -1),
+                                                    dy1 = halfPeriod / 2,
+                                                    dx2 = 0f,
+                                                    dy2 = halfPeriod,
+                                                )
+                                            }
+                                        },
+                                        color = harmonizedColor.main.copy(alpha = 0.3f),
+                                        style = Stroke(
+                                            width = 2.dp.toPx(),
+                                            pathEffect = PathEffect.dashPathEffect(
+                                                floatArrayOf(
+                                                    15f,
+                                                    15f
+                                                )
+                                            )
+                                        )
+                                    )
+                                }
                                 .fillMaxHeight()
-                                .fillMaxWidth(percentRealAnim),
-                        )
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .background(harmonizedColor.main.copy(alpha = 0.1f))
-                                .fillMaxSize(),
+                                .fillMaxWidth(percentWithoutNewSpentAnimated),
                         )
                     }
                 }
 
                 Box(Modifier.fillMaxSize()) {
-                    if (percentAnim < 0.9999f) {
+                    if (percentWithNewSpentAnimated < 0.9999f) {
                         Box(
                             modifier = Modifier
                                 .background(
@@ -175,7 +202,7 @@ fun RowScope.RestBudgetPill(
                                     ),
                                 )
                                 .fillMaxHeight()
-                                .fillMaxWidth(percentAnim),
+                                .fillMaxWidth(percentWithNewSpentAnimated),
                         )
                     } else {
                         Box(
