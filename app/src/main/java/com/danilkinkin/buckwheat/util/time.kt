@@ -41,6 +41,21 @@ fun isSameDay(timestampA: Long, timestampB: Long): Boolean {
     return roundToDay(Date(timestampA)) == roundToDay(Date(timestampB))
 }
 
+enum class DateTimeShow {
+    ALWAYS,
+    NEVER,
+    IF_DIFFERENT,
+}
+
+fun makeDatePattern(
+    target: Date,
+    origin: Date,
+) {
+    val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
+
+
+
+}
 
 @Composable
 fun prettyDate(
