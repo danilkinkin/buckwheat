@@ -19,6 +19,7 @@ import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.util.countDays
+import com.danilkinkin.buckwheat.util.countDaysToToday
 import kotlin.math.abs
 
 const val DEBUG_MENU_SHEET = "debugMenu"
@@ -87,11 +88,11 @@ fun DebugMenu(
             Spacer(Modifier.height(16.dp))
 
             val days = countDays(spendsViewModel.finishDate.value!!, spendsViewModel.startDate.value!!)
-            val restDays = countDays(spendsViewModel.finishDate.value!!)
+            val restDays = countDaysToToday(spendsViewModel.finishDate.value!!)
             MonospaceText("Всего дней -------------------- $days")
             MonospaceText("Прошло дней ------------------- ${days - restDays}")
             MonospaceText("Осталось дней ----------------- $restDays")
-            MonospaceText("Дней с последнего пересчета --- ${abs(countDays(spendsViewModel.lastReCalcBudgetDate!!))}")
+            MonospaceText("Дней с последнего пересчета --- ${abs(countDaysToToday(spendsViewModel.lastReCalcBudgetDate!!))}")
             Spacer(Modifier.height(16.dp))
 
             val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!

@@ -101,7 +101,7 @@ fun BudgetConstructor(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column {
-        val days = if (dateToValue.value != null) countDays(dateToValue.value!!) else 0
+        val days = if (dateToValue.value != null) countDaysToToday(dateToValue.value!!) else 0
 
         UseLastSuggestionChip(
             visible = showUseSuggestion,

@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.data
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.data.entities.Storage
@@ -118,8 +119,8 @@ class SpendsViewModel @Inject constructor(
     init {
         if (
             lastReCalcBudgetDate !== null
-            && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)
-            && countDays(finishDate.value!!) > 0
+            && !isToday(lastReCalcBudgetDate!!)
+            && countDaysToToday(finishDate.value!!) > 0
         ) {
             if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value
                     ?: BigDecimal(0)) > BigDecimal(0))
@@ -146,21 +147,21 @@ class SpendsViewModel @Inject constructor(
             hideOverspendingWarn(false)
         }
 
-        var initAppDate = Date().time
+        var initAppDate = Date()
 
         viewModelScope.launch {
             while (true) {
                 delay(5000L)
 
-                if (isSameDay(initAppDate, Date().time)) {
+                if (isToday(initAppDate)) {
                     continue
                 }
 
-                initAppDate = Date().time
+                initAppDate = Date()
                 if (
                     lastReCalcBudgetDate !== null
-                    && !isSameDay(lastReCalcBudgetDate!!.time, Date().time)
-                    && countDays(finishDate.value!!) > 0
+                    && !isToday(lastReCalcBudgetDate!!)
+                    && countDaysToToday(finishDate.value!!) > 0
                 ) {
                     if (((dailyBudget.value ?: BigDecimal(0)) - (spentFromDailyBudget.value
                             ?: BigDecimal(0)) > BigDecimal(0))
@@ -227,7 +228,7 @@ class SpendsViewModel @Inject constructor(
 
         resetSpent()
         reCalcDailyBudget(
-            (budget / countDays(roundedFinishDate).toBigDecimal()).setScale(
+            (budget / countDaysToToday(roundedFinishDate).toBigDecimal()).setScale(
                 0,
                 RoundingMode.FLOOR
             )
@@ -238,7 +239,7 @@ class SpendsViewModel @Inject constructor(
         applyCurrentSpent: Boolean = false,
         excludeCurrentDay: Boolean = false,
     ): BigDecimal {
-        val restDays = countDays(finishDate.value!!) - if (excludeCurrentDay) 1 else 0
+        val restDays = countDaysToToday(finishDate.value!!) - if (excludeCurrentDay) 1 else 0
         val restBudget = (budget.value!! - spent.value!!) - dailyBudget.value!!
         var splitBudget = restBudget + dailyBudget.value!! - spentFromDailyBudget.value!!
         if (applyCurrentSpent) {
@@ -254,7 +255,7 @@ class SpendsViewModel @Inject constructor(
     fun calcBudgetPerDay(
         excludeCurrentDay: Boolean = false,
     ): BigDecimal {
-        val restDays = countDays(finishDate.value!!) - if (excludeCurrentDay) 1 else 0
+        val restDays = countDaysToToday(finishDate.value!!) - if (excludeCurrentDay) 1 else 0
         val restBudget = (budget.value!! - spent.value!!) - dailyBudget.value!!
 
         return (restBudget / restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)))
@@ -265,8 +266,8 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun calcRequireDistributeBudget(): BigDecimal {
-        val restDays = countDays(finishDate.value!!)
-        val skippedDays = abs(countDays(lastReCalcBudgetDate!!))
+        val restDays = countDaysToToday(finishDate.value!!)
+        val skippedDays = abs(countDaysToToday(lastReCalcBudgetDate!!))
 
         val restBudget =
             (budget.value!! - spent.value!!) - dailyBudget.value!!
@@ -315,14 +316,13 @@ class SpendsViewModel @Inject constructor(
         if (fSpent == "0") return
 
         if (editedSpent !== null) {
-            val previewsVersionOfSpent = editedSpent!!.copy()
             val newVersionOfSpent = editedSpent!!.copy(
                 value = currentSpent,
                 date = currentDate,
                 comment = currentComment,
             )
 
-            this.removeSpent(previewsVersionOfSpent, silent = true)
+            this.removeSpent(editedSpent!!, silent = true)
             this.addSpent(newVersionOfSpent)
         } else {
             this.addSpent(Spent(currentSpent, Date(), currentComment))
@@ -368,11 +368,15 @@ class SpendsViewModel @Inject constructor(
 
             storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
         } else {
-            val restDays = countDaysToToday(finishDate.value!!)
+            val restDays = countDays(finishDate.value!!, spent.date)
             val spreadDeltaSpentPerRestDays = spent.value / restDays.toBigDecimal()
+
+            Log.d("addSpent", "spent before = ${this.spent.value}")
 
             dailyBudget.value = dailyBudget.value!! + spreadDeltaSpentPerRestDays
             this.spent.value = this.spent.value!! + spent.value
+
+            Log.d("addSpent", "spent before = ${this.spent.value}")
 
             storageDao.set(
                 Storage("dailyBudget", dailyBudget.value.toString())
@@ -386,12 +390,20 @@ class SpendsViewModel @Inject constructor(
     fun removeSpent(spent: Spent, silent: Boolean = false) {
         this.spentDao.deleteById(spent.uid)
 
-        if (!isSameDay(spent.date.time, Date().time)) {
-            val restDays = countDays(finishDate.value!!)
-            val spentPerDay = spent.value / restDays.toBigDecimal()
+        if (isToday(spent.date)) {
+            spentFromDailyBudget.value = spentFromDailyBudget.value!! - spent.value
 
-            dailyBudget.value = dailyBudget.value!! + spentPerDay
-            this.spent.value = this.spent.value!! - (spent.value - spentPerDay)
+            storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+        } else {
+            val restDays = countDays(finishDate.value!!, spent.date)
+            val spreadDeltaSpentPerRestDays = spent.value / restDays.toBigDecimal()
+
+            Log.d("removeSpent", "spent before = ${this.spent.value}")
+
+            this.spent.value = this.spent.value!! - spent.value
+            this.dailyBudget.value = this.dailyBudget.value!! + spreadDeltaSpentPerRestDays
+
+            Log.d("removeSpent", "spent after = ${this.spent.value}")
 
             storageDao.set(
                 Storage("dailyBudget", dailyBudget.value.toString())
@@ -399,10 +411,6 @@ class SpendsViewModel @Inject constructor(
             storageDao.set(
                 Storage("spent", this.spent.value.toString())
             )
-        } else {
-            spentFromDailyBudget.value = spentFromDailyBudget.value!! - spent.value
-
-            storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
         }
         editedSpent = null
 
@@ -416,24 +424,24 @@ class SpendsViewModel @Inject constructor(
     fun undoRemoveSpent(spent: Spent) {
         this.spentDao.insert(spent)
 
-        if (!isSameDay(spent.date.time, Date().time)) {
-            val restDays = countDays(finishDate.value!!)
-            val spentPerDay = spent.value / restDays.toBigDecimal()
+        if (isToday(spent.date)) {
+            spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
 
-            dailyBudget.value = dailyBudget.value!! - spentPerDay
-            this.spent.value = this.spent.value!! + (spent.value - spentPerDay)
+            storageDao.set(
+                Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString())
+            )
+        } else {
+            val restDays = countDaysToToday(finishDate.value!!)
+            val spreadDeltaSpentPerRestDays = spent.value / restDays.toBigDecimal()
+
+            dailyBudget.value = dailyBudget.value!! - spreadDeltaSpentPerRestDays
+            this.spent.value = this.spent.value!! + (spent.value - spreadDeltaSpentPerRestDays)
 
             storageDao.set(
                 Storage("dailyBudget", dailyBudget.value.toString())
             )
             storageDao.set(
                 Storage("spent", this.spent.value.toString())
-            )
-        } else {
-            spentFromDailyBudget.value = spentFromDailyBudget.value!! + spent.value
-
-            storageDao.set(
-                Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString())
             )
         }
     }

@@ -42,7 +42,7 @@ fun RecalcBudget(
     val coroutineScope = rememberCoroutineScope()
 
     var rememberChoice by remember { mutableStateOf(false) }
-    val restDays = countDays(spendsViewModel.finishDate.value!!)
+    val restDays = countDaysToToday(spendsViewModel.finishDate.value!!)
 
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!) - spendsViewModel.dailyBudget.value!!

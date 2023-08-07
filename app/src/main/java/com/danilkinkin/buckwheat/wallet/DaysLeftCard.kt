@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.countDays
+import com.danilkinkin.buckwheat.util.countDaysToToday
 import com.danilkinkin.buckwheat.util.toDate
 import java.time.LocalDate
 import java.util.*
@@ -41,7 +42,7 @@ fun DaysLeftCard(
     var size by remember { mutableStateOf(0.dp) }
 
     val days = countDays(finishDate!!, startDate)
-    val restDays = countDays(finishDate)
+    val restDays = countDaysToToday(finishDate)
 
     Box(
         Modifier

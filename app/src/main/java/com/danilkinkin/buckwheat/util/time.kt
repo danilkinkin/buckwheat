@@ -31,7 +31,7 @@ fun countDaysToToday(fromDate: Date): Int {
     return countDays(fromDate, Date())
 }
 
-fun countDays(toDate: Date, fromDate: Date = Date()): Int {
+fun countDays(toDate: Date, fromDate: Date): Int {
     val fromDateRound = roundToDay(fromDate)
     val toDateRound = roundToDay(toDate)
 

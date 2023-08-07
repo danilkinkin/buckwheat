@@ -84,7 +84,7 @@ fun Wallet(
     Surface {
         Column {
             val days = if (dateToValue.value !== null) {
-                countDays(dateToValue.value!!)
+                countDaysToToday(dateToValue.value!!)
             } else {
                 0
             }
@@ -292,7 +292,7 @@ fun Wallet(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            enabled = dateToValue.value !== null && countDays(dateToValue.value!!) > 0 && budget > BigDecimal(
+                            enabled = dateToValue.value !== null && countDaysToToday(dateToValue.value!!) > 0 && budget > BigDecimal(
                                 0
                             )
                         ) {

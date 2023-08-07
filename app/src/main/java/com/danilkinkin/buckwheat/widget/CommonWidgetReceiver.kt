@@ -75,7 +75,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
         dailyBudget: BigDecimal,
         spentFromDailyBudget: BigDecimal,
     ): BigDecimal {
-        val restDays = countDays(finishDate) - 1
+        val restDays = countDaysToToday(finishDate) - 1
         val restBudget = (budget - spent) - dailyBudget
         val splitBudget = restBudget + dailyBudget - spentFromDailyBudget
 
