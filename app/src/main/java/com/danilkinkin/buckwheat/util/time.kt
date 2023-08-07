@@ -27,6 +27,10 @@ fun Date.toLocalDateTime(): LocalDateTime = this.toInstant()
     .atZone(ZoneId.systemDefault())
     .toLocalDateTime()
 
+fun countDaysToToday(fromDate: Date): Int {
+    return countDays(fromDate, Date())
+}
+
 fun countDays(toDate: Date, fromDate: Date = Date()): Int {
     val fromDateRound = roundToDay(fromDate)
     val toDateRound = roundToDay(toDate)
@@ -35,6 +39,10 @@ fun countDays(toDate: Date, fromDate: Date = Date()): Int {
     val daysTo = ceil(toDateRound.time / DAY.toDouble()).toInt()
 
     return daysTo - daysFrom + 1
+}
+
+fun isToday(date: Date): Boolean {
+    return isSameDay(date.time, Date().time)
 }
 
 fun isSameDay(timestampA: Long, timestampB: Long): Boolean {

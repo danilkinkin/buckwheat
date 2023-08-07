@@ -2,7 +2,6 @@ package com.danilkinkin.buckwheat.data
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.data.entities.Storage
@@ -179,10 +178,6 @@ class SpendsViewModel @Inject constructor(
         }
     }
 
-    fun getCountLastDaySpends(): LiveData<Int> {
-        return this.spentDao.getCountLastDaySpends()
-    }
-
     fun getSpends(): LiveData<List<Spent>> {
         return this.spentDao.getAll()
     }
@@ -320,37 +315,17 @@ class SpendsViewModel @Inject constructor(
         if (fSpent == "0") return
 
         if (editedSpent !== null) {
-            Log.d("Spent", "Delete spent uid: ${editedSpent!!.uid}")
-            this.spentDao.deleteById(editedSpent!!.uid)
-            this.spentDao.insert(editedSpent!!.copy(
+            val previewsVersionOfSpent = editedSpent!!.copy()
+            val newVersionOfSpent = editedSpent!!.copy(
                 value = currentSpent,
                 date = currentDate,
                 comment = currentComment,
-            ))
+            )
 
-            if (!isSameDay(editedSpent!!.date.time, Date().time)) {
-                val restDays = countDays(finishDate.value!!)
-                val spentPerDay = (editedSpent!!.value - currentSpent) / restDays.toBigDecimal()
-
-                dailyBudget.value = dailyBudget.value!! + spentPerDay
-                this.spent.value = this.spent.value!! - editedSpent!!.value + currentSpent
-
-                storageDao.set(
-                    Storage("dailyBudget", dailyBudget.value.toString())
-                )
-                storageDao.set(
-                    Storage("spent", this.spent.value.toString())
-                )
-            } else {
-                spentFromDailyBudget.value = spentFromDailyBudget.value!! - editedSpent!!.value + currentSpent
-
-                storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
-            }
+            this.removeSpent(previewsVersionOfSpent, silent = true)
+            this.addSpent(newVersionOfSpent)
         } else {
-            this.spentDao.insert(Spent(currentSpent, Date(), currentComment))
-
-            spentFromDailyBudget.value = spentFromDailyBudget.value?.plus(currentSpent)
-            storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+            this.addSpent(Spent(currentSpent, Date(), currentComment))
         }
 
         currentSpent = 0.0.toBigDecimal()
@@ -385,7 +360,30 @@ class SpendsViewModel @Inject constructor(
         mode.value = Mode.EDIT
     }
 
-    fun removeSpent(spent: Spent) {
+    private fun addSpent(spent: Spent) {
+        this.spentDao.insert(spent)
+
+        if (isToday(spent.date)) {
+            spentFromDailyBudget.value = spentFromDailyBudget.value?.plus(spent.value)
+
+            storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
+        } else {
+            val restDays = countDaysToToday(finishDate.value!!)
+            val spreadDeltaSpentPerRestDays = spent.value / restDays.toBigDecimal()
+
+            dailyBudget.value = dailyBudget.value!! + spreadDeltaSpentPerRestDays
+            this.spent.value = this.spent.value!! + spent.value
+
+            storageDao.set(
+                Storage("dailyBudget", dailyBudget.value.toString())
+            )
+            storageDao.set(
+                Storage("spent", this.spent.value.toString())
+            )
+        }
+    }
+
+    fun removeSpent(spent: Spent, silent: Boolean = false) {
         this.spentDao.deleteById(spent.uid)
 
         if (!isSameDay(spent.date.time, Date().time)) {
@@ -408,8 +406,10 @@ class SpendsViewModel @Inject constructor(
         }
         editedSpent = null
 
-        viewModelScope.launch {
-            lastRemoveSpent.emit(spent)
+        if (!silent) {
+            viewModelScope.launch {
+                lastRemoveSpent.emit(spent)
+            }
         }
     }
 
