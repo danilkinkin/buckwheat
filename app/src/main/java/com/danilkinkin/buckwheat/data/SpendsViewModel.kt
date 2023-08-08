@@ -30,7 +30,6 @@ class SpendsViewModel @Inject constructor(
 ) : ViewModel() {
     enum class Mode { ADD, EDIT }
     enum class Stage { IDLE, CREATING_SPENT, EDIT_SPENT, COMMITTING_SPENT }
-    enum class Action { PUT_NUMBER, SET_DOT, REMOVE_LAST }
     enum class RecalcRestBudgetMethod { REST, ADD_TODAY, ASK }
 
     private val spentDao = db.spentDao()

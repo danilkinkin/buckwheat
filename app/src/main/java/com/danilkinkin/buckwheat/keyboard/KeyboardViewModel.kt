@@ -12,7 +12,7 @@ class KeyboardViewModel @Inject constructor(
 ) : ViewModel() {
     var state: TextFieldValue? = null
     var editCommandDispatcher: ((List<EditCommand>) -> Unit)? = null
-    var manualDispatcher: ((action: SpendsViewModel.Action, value: Int?) -> Unit)? = { _, _ -> }
+    var manualDispatcher: ((action: KeyboardAction, value: Int?) -> Unit)? = { _, _ -> }
     var textFiledIsFocus: Boolean = false
 
     private val platformTextInputService = object : PlatformTextInputService {
@@ -41,22 +41,22 @@ class KeyboardViewModel @Inject constructor(
         }
     }
 
-    fun executeAction(action: SpendsViewModel.Action, value: Int? = null) {
+    fun executeAction(action: KeyboardAction, value: Int? = null) {
         if (manualDispatcher !== null) {
             manualDispatcher!!(action, value)
         }
 
         if (editCommandDispatcher === null) return
 
-        if (action === SpendsViewModel.Action.PUT_NUMBER) {
+        if (action === KeyboardAction.PUT_NUMBER) {
             editCommandDispatcher!!(listOf(
                 CommitTextCommand(value.toString(), value.toString().length)
             ))
-        } else if (action === SpendsViewModel.Action.REMOVE_LAST) {
+        } else if (action === KeyboardAction.REMOVE_LAST) {
             editCommandDispatcher!!(listOf(
                 BackspaceCommand()
             ))
-        } else if (action === SpendsViewModel.Action.SET_DOT) {
+        } else if (action === KeyboardAction.SET_DOT) {
             editCommandDispatcher!!(listOf(
                 CommitTextCommand(".", 1)
             ))

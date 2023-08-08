@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.base.TextFieldWithPaddings
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.keyboard.KeyboardAction
 import com.danilkinkin.buckwheat.keyboard.rememberAppKeyboard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
@@ -37,7 +38,7 @@ fun EditableTextWithLabel(
     )
 
     val keyboardHandler = rememberAppKeyboard(manualDispatcher = { action, _ ->
-        if (action == SpendsViewModel.Action.REMOVE_LAST && value == "") {
+        if (action == KeyboardAction.REMOVE_LAST && value == "") {
             onChangeValue("")
         }
     })

@@ -26,6 +26,8 @@ import kotlinx.coroutines.runBlocking
 
 val BUTTON_GAP = 6.dp
 
+enum class KeyboardAction { PUT_NUMBER, SET_DOT, REMOVE_LAST }
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Keyboard(
@@ -44,13 +46,13 @@ fun Keyboard(
         var newValue = spendsViewModel.rawSpentValue.value ?: ""
 
         when (action) {
-            SpendsViewModel.Action.PUT_NUMBER -> {
+            KeyboardAction.PUT_NUMBER -> {
                 newValue += value
             }
-            SpendsViewModel.Action.SET_DOT -> {
+            KeyboardAction.SET_DOT -> {
                 newValue += "."
             }
-            SpendsViewModel.Action.REMOVE_LAST -> {
+            KeyboardAction.REMOVE_LAST -> {
                 newValue = newValue.dropLast(1)
                 Log.d("mode", mode.toString())
                 Log.d("newValue", "'${newValue}'")
@@ -91,7 +93,7 @@ fun Keyboard(
                     type = KeyboardButtonType.DEFAULT,
                     text = i.toString(),
                     onClick = {
-                        dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
+                        dispatch(KeyboardAction.PUT_NUMBER, i)
                         debugProgress = 0
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     }
@@ -104,7 +106,7 @@ fun Keyboard(
                 type = KeyboardButtonType.SECONDARY,
                 icon = painterResource(R.drawable.ic_backspace),
                 onClick = {
-                    dispatch(SpendsViewModel.Action.REMOVE_LAST, null)
+                    dispatch(KeyboardAction.REMOVE_LAST, null)
                     debugProgress = 0
                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 },
@@ -142,7 +144,7 @@ fun Keyboard(
                             type = KeyboardButtonType.DEFAULT,
                             text = i.toString(),
                             onClick = {
-                                dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
+                                dispatch(KeyboardAction.PUT_NUMBER, i)
                                 debugProgress = 0
                                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             }
@@ -161,7 +163,7 @@ fun Keyboard(
                             type = KeyboardButtonType.DEFAULT,
                             text = i.toString(),
                             onClick = {
-                                dispatch(SpendsViewModel.Action.PUT_NUMBER, i)
+                                dispatch(KeyboardAction.PUT_NUMBER, i)
                                 debugProgress = 0
                                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             }
@@ -179,7 +181,7 @@ fun Keyboard(
                         type = KeyboardButtonType.DEFAULT,
                         text = "0",
                         onClick = {
-                            dispatch(SpendsViewModel.Action.PUT_NUMBER, 0)
+                            dispatch(KeyboardAction.PUT_NUMBER, 0)
                             debugProgress += 1
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         },
@@ -191,7 +193,7 @@ fun Keyboard(
                         type = KeyboardButtonType.DEFAULT,
                         text = getFloatDivider(),
                         onClick = {
-                            dispatch(SpendsViewModel.Action.SET_DOT, null)
+                            dispatch(KeyboardAction.SET_DOT, null)
                             debugProgress = if (debugProgress == 8) -1 else 0
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         }
