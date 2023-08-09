@@ -35,69 +35,32 @@ class SpendsViewModel @Inject constructor(
     private val spentDao = db.spentDao()
     private val storageDao = db.storageDao()
 
-    var mode: MutableLiveData<Mode> = MutableLiveData(Mode.ADD)
-    var stage: MutableLiveData<Stage> = MutableLiveData(Stage.IDLE)
+    var mode = MutableLiveData(Mode.ADD)
+    var stage = MutableLiveData(Stage.IDLE)
     var lastRemoveSpent: MutableSharedFlow<Spent> = MutableSharedFlow()
 
-    var budget: MutableLiveData<BigDecimal> = MutableLiveData(
-        try {
-            storageDao.get("budget").value.toBigDecimal()
-        } catch (e: Exception) {
-            0.toBigDecimal()
-        }
+    var budget = MutableLiveData(storageDao.getAsBigDecimal("budget", 0.toBigDecimal()))
+    var spent = MutableLiveData(storageDao.getAsBigDecimal("spent", 0.0.toBigDecimal()))
+    var dailyBudget = MutableLiveData(
+        storageDao.getAsBigDecimal("dailyBudget", 0.0.toBigDecimal())
     )
-    var spent: MutableLiveData<BigDecimal> = MutableLiveData(
-        try {
-            storageDao.get("spent").value.toBigDecimal()
-        } catch (e: Exception) {
-            0.0.toBigDecimal()
-        }
+    var spentFromDailyBudget = MutableLiveData(
+        storageDao.getAsBigDecimal("spentFromDailyBudget", 0.0.toBigDecimal())
     )
-    var dailyBudget: MutableLiveData<BigDecimal> = MutableLiveData(
-        try {
-            storageDao.get("dailyBudget").value.toBigDecimal()
-        } catch (e: Exception) {
-            0.0.toBigDecimal()
-        }
-    )
-    var spentFromDailyBudget: MutableLiveData<BigDecimal> = MutableLiveData(
-        try {
-            storageDao.get("spentFromDailyBudget").value.toBigDecimal()
-        } catch (e: Exception) {
-            0.0.toBigDecimal()
-        }
-    )
-
-    var recalcRestBudgetMethod: MutableLiveData<RecalcRestBudgetMethod> = MutableLiveData(
+    var recalcRestBudgetMethod = MutableLiveData(
         try {
             RecalcRestBudgetMethod.valueOf(storageDao.get("recalcRestBudgetMethod").value)
         } catch (e: Exception) {
             RecalcRestBudgetMethod.ASK
         }
     )
-
-    var overspendingWarnHidden: MutableLiveData<Boolean> = try {
-        MutableLiveData(storageDao.get("overspendingWarnHidden").value.toBoolean())
-    } catch (e: Exception) {
-        MutableLiveData(false)
-    }
-
-    var startDate: MutableLiveData<Date> = try {
-        MutableLiveData(Date(storageDao.get("startDate").value.toLong()))
-    } catch (e: Exception) {
-        MutableLiveData(Date())
-    }
-    var finishDate: MutableLiveData<Date?> = try {
-        MutableLiveData(Date(storageDao.get("finishDate").value.toLong()))
-    } catch (e: Exception) {
-        MutableLiveData(null)
-    }
-    var lastReCalcBudgetDate: Date? = try {
-        Date(storageDao.get("lastReCalcBudgetDate").value.toLong())
-    } catch (e: Exception) {
-        null
-    }
-
+    var overspendingWarnHidden = MutableLiveData(
+        storageDao.getAsBoolean("overspendingWarnHidden", false)
+    )
+    var startDate: MutableLiveData<Date> = MutableLiveData(storageDao.getAsDate("startDate", Date()))
+    var finishDate = MutableLiveData(storageDao.getAsDate("finishDate", null))
+    var lastReCalcBudgetDate: Date? =
+        storageDao.getAsDate("lastReCalcBudgetDate", null)
     var currency: MutableLiveData<ExtendCurrency> = try {
         MutableLiveData(ExtendCurrency.getInstance(storageDao.get("currency").value))
     } catch (e: Exception) {
@@ -109,11 +72,11 @@ class SpendsViewModel @Inject constructor(
     var currentSpent: BigDecimal = 0.0.toBigDecimal()
     var currentComment: String = ""
 
-    var requireReCalcBudget: MutableLiveData<Boolean> = MutableLiveData(false)
-    var requireSetBudget: MutableLiveData<Boolean> = MutableLiveData(false)
-    var finishPeriod: MutableLiveData<Boolean> = MutableLiveData(false)
+    var requireReCalcBudget = MutableLiveData(false)
+    var requireSetBudget = MutableLiveData(false)
+    var finishPeriod = MutableLiveData(false)
 
-    var rawSpentValue: MutableLiveData<String> = MutableLiveData("")
+    var rawSpentValue = MutableLiveData("")
 
     init {
         if (
