@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.EditMode
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateTimeEditPill
 import com.danilkinkin.buckwheat.editor.tagging.TaggingSpent
@@ -26,7 +27,7 @@ fun Editor(
     onOpenHistory: (() -> Unit)? = null,
 ) {
     val focusController = remember { FocusController() }
-    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
+    val mode by spendsViewModel.mode.observeAsState(EditMode.ADD)
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -38,7 +39,7 @@ fun Editor(
                 ) { focusController.focus() }
         ) {
             EditorToolbar()
-            if (mode == SpendsViewModel.Mode.EDIT) {
+            if (mode == EditMode.EDIT) {
                 DateTimeEditPill()
             }
             CurrentSpendEditor(

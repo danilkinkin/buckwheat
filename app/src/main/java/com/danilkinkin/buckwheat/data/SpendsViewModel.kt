@@ -22,21 +22,21 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 
+enum class EditMode { ADD, EDIT }
+enum class EditStage { IDLE, CREATING_SPENT, EDIT_SPENT, COMMITTING_SPENT }
+enum class RecalcRestBudgetMethod { REST, ADD_TODAY, ASK }
 
 @HiltViewModel
 class SpendsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val db: DatabaseRepository,
 ) : ViewModel() {
-    enum class Mode { ADD, EDIT }
-    enum class Stage { IDLE, CREATING_SPENT, EDIT_SPENT, COMMITTING_SPENT }
-    enum class RecalcRestBudgetMethod { REST, ADD_TODAY, ASK }
 
     private val spentDao = db.spentDao()
     private val storageDao = db.storageDao()
 
-    var mode = MutableLiveData(Mode.ADD)
-    var stage = MutableLiveData(Stage.IDLE)
+    var mode = MutableLiveData(EditMode.ADD)
+    var stage = MutableLiveData(EditStage.IDLE)
     var lastRemoveSpent: MutableSharedFlow<Spent> = MutableSharedFlow()
 
     var budget = MutableLiveData(storageDao.getAsBigDecimal("budget", 0.toBigDecimal()))
@@ -258,17 +258,17 @@ class SpendsViewModel @Inject constructor(
     fun createSpent() {
         currentSpent = 0.0.toBigDecimal()
 
-        stage.value = Stage.CREATING_SPENT
+        stage.value = EditStage.CREATING_SPENT
     }
 
     fun editSpent(value: BigDecimal) {
         currentSpent = value
 
-        stage.value = Stage.EDIT_SPENT
+        stage.value = EditStage.EDIT_SPENT
     }
 
     fun commitSpent() {
-        if (stage.value !== Stage.EDIT_SPENT) return
+        if (stage.value !== EditStage.EDIT_SPENT) return
 
         val fSpent = currentSpent
             .setScale(2, RoundingMode.HALF_UP)
@@ -295,7 +295,7 @@ class SpendsViewModel @Inject constructor(
         currentComment = ""
         rawSpentValue.value = ""
 
-        stage.value = Stage.COMMITTING_SPENT
+        stage.value = EditStage.COMMITTING_SPENT
 
         resetSpent()
     }
@@ -306,8 +306,8 @@ class SpendsViewModel @Inject constructor(
         currentComment = ""
         rawSpentValue.value = ""
 
-        stage.value = Stage.IDLE
-        mode.value = Mode.ADD
+        stage.value = EditStage.IDLE
+        mode.value = EditMode.ADD
         editedSpent = null
     }
 
@@ -318,8 +318,8 @@ class SpendsViewModel @Inject constructor(
         currentComment = spent.comment
         rawSpentValue.value = tryConvertStringToNumber(spent.value.toString()).join(third = false)
 
-        stage.value = Stage.EDIT_SPENT
-        mode.value = Mode.EDIT
+        stage.value = EditStage.EDIT_SPENT
+        mode.value = EditMode.EDIT
     }
 
     private fun addSpent(spent: Spent) {

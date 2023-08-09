@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.editor.calcFontHeight
@@ -55,11 +56,11 @@ fun TaggingSpent(
     val height = calcFontHeight(style = MaterialTheme.typography.bodyMedium).coerceAtLeast(24.dp) + 12.dp
 
     observeLiveData(spendsViewModel.stage) {
-        if (it === SpendsViewModel.Stage.CREATING_SPENT) {
+        if (it === EditStage.CREATING_SPENT) {
             value = ""
         }
 
-        showAddComment = it === SpendsViewModel.Stage.EDIT_SPENT
+        showAddComment = it === EditStage.EDIT_SPENT
     }
 
     DisposableEffect(spendsViewModel.currentComment) {

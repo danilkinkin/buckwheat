@@ -27,6 +27,7 @@ import com.danilkinkin.buckwheat.base.AnimatedNumber
 import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.base.WavyShape
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.*
@@ -118,7 +119,7 @@ fun RowScope.RestBudgetPill(
     }
 
     observeLiveData(spendsViewModel.stage) {
-        editing = it == SpendsViewModel.Stage.EDIT_SPENT
+        editing = it == EditStage.EDIT_SPENT
 
         calculateValues()
     }

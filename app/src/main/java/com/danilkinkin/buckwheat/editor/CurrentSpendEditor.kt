@@ -10,6 +10,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.EditMode
+import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.runBlocking
@@ -38,7 +40,7 @@ fun CurrentSpendEditor(
     val focusManager = LocalFocusManager.current
 
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
-    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
+    val mode by spendsViewModel.mode.observeAsState(EditMode.ADD)
 
     var spentValue by remember { mutableStateOf("0") }
     var stage by remember { mutableStateOf(AnimState.IDLE) }
@@ -71,23 +73,23 @@ fun CurrentSpendEditor(
 
     observeLiveData(spendsViewModel.stage) {
         when (it) {
-            SpendsViewModel.Stage.IDLE -> {
+            EditStage.IDLE -> {
                 if (currState === AnimState.EDITING) {
                     stage = AnimState.RESET
                 }
                 calculateValues()
             }
-            SpendsViewModel.Stage.CREATING_SPENT -> {
+            EditStage.CREATING_SPENT -> {
                 calculateValues()
 
                 stage = AnimState.EDITING
             }
-            SpendsViewModel.Stage.EDIT_SPENT -> {
+            EditStage.EDIT_SPENT -> {
                 calculateValues()
 
                 stage = AnimState.EDITING
             }
-            SpendsViewModel.Stage.COMMITTING_SPENT -> {
+            EditStage.COMMITTING_SPENT -> {
                 stage = AnimState.COMMIT
             }
         }
@@ -126,7 +128,7 @@ fun CurrentSpendEditor(
                         spendsViewModel.editSpent(converted.join().toBigDecimal())
 
                         if (fixed === "") {
-                            if (mode === SpendsViewModel.Mode.ADD) runBlocking {
+                            if (mode === EditMode.ADD) runBlocking {
                                 spendsViewModel.resetSpent()
                             }
                         }

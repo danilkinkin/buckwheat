@@ -26,6 +26,7 @@ import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
+import com.danilkinkin.buckwheat.data.RecalcRestBudgetMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
@@ -193,13 +194,13 @@ fun Wallet(
                         appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
                     },
                     endCaption = when (recalcRestBudgetMethod) {
-                        SpendsViewModel.RecalcRestBudgetMethod.ASK, null -> stringResource(
+                        RecalcRestBudgetMethod.ASK, null -> stringResource(
                             R.string.always_ask
                         )
-                        SpendsViewModel.RecalcRestBudgetMethod.REST -> stringResource(
+                        RecalcRestBudgetMethod.REST -> stringResource(
                             R.string.method_split_to_rest_days_title
                         )
-                        SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY -> stringResource(
+                        RecalcRestBudgetMethod.ADD_TODAY -> stringResource(
                             R.string.method_add_to_current_day_title
                         )
                     },

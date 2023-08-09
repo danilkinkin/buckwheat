@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.EditMode
+import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.getFloatDivider
@@ -38,7 +40,7 @@ fun Keyboard(
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
+    val mode by spendsViewModel.mode.observeAsState(EditMode.ADD)
     val currentRawSpent by spendsViewModel.rawSpentValue.observeAsState("")
     var debugProgress by remember { mutableStateOf(0) }
     val dispatch = rememberAppKeyboardDispatcher { action, value ->
@@ -58,7 +60,7 @@ fun Keyboard(
                 Log.d("newValue", "'${newValue}'")
 
                 if (newValue == "") {
-                    if (mode === SpendsViewModel.Mode.ADD) runBlocking {
+                    if (mode === EditMode.ADD) runBlocking {
                         spendsViewModel.resetSpent()
 
                         isMutate = false
@@ -70,7 +72,7 @@ fun Keyboard(
         if (isMutate) runBlocking {
             spendsViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
 
-            if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
+            if (spendsViewModel.stage.value === EditStage.IDLE) spendsViewModel.createSpent()
             spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
         } else if (newValue == "") {
             spendsViewModel.rawSpentValue.value = newValue
@@ -112,12 +114,12 @@ fun Keyboard(
                 },
                 onLongClick = {
                     debugProgress = 0
-                    if (mode === SpendsViewModel.Mode.ADD) {
+                    if (mode === EditMode.ADD) {
                         spendsViewModel.resetSpent()
                     } else {
                         spendsViewModel.rawSpentValue.value = tryConvertStringToNumber("0").join(third = false)
 
-                        if (spendsViewModel.stage.value === SpendsViewModel.Stage.IDLE) spendsViewModel.createSpent()
+                        if (spendsViewModel.stage.value === EditStage.IDLE) spendsViewModel.createSpent()
                         spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
                     }
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -208,7 +210,7 @@ fun Keyboard(
                 val fixedSpent = tryConvertStringToNumber(currentRawSpent).join(third = false)
 
                 AnimatedContent(
-                    targetState = (fixedSpent == "0" || fixedSpent == "0." || fixedSpent == "0.0") && mode === SpendsViewModel.Mode.EDIT,
+                    targetState = (fixedSpent == "0" || fixedSpent == "0." || fixedSpent == "0.0") && mode === EditMode.EDIT,
                     transitionSpec = {
                         if (targetState && !initialState) {
                             fadeIn(

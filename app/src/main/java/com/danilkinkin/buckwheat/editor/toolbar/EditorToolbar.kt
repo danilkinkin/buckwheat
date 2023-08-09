@@ -22,6 +22,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.EditMode
+import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.RestBudgetPill
@@ -36,7 +38,7 @@ fun EditorToolbar(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val isDebug = appViewModel.isDebug.observeAsState(false)
-    val mode by spendsViewModel.mode.observeAsState(SpendsViewModel.Mode.ADD)
+    val mode by spendsViewModel.mode.observeAsState(EditMode.ADD)
     val showSettingsDot = remember {
         mutableStateOf(appViewModel.getBooleanValue("previewWidgets", true))
     }
@@ -44,7 +46,7 @@ fun EditorToolbar(
     val spendsCountScale = remember { Animatable(1f) }
 
     observeLiveData(spendsViewModel.stage) {
-        if (it === SpendsViewModel.Stage.COMMITTING_SPENT) {
+        if (it === EditStage.COMMITTING_SPENT) {
             coroutineScope.launch {
                 spendsCountScale.animateTo(
                     1.05f,
@@ -80,7 +82,7 @@ fun EditorToolbar(
             )
         }
         Spacer(modifier = Modifier.width(4.dp))
-        if (mode == SpendsViewModel.Mode.EDIT) {
+        if (mode == EditMode.EDIT) {
             CancelEditSpent()
         } else {
             RestBudgetPill()

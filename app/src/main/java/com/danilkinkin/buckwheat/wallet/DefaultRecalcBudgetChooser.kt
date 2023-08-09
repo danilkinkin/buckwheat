@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.RecalcRestBudgetMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 
 const val DEFAULT_RECALC_BUDGET_CHOOSER = "defaultRecalcBudgetChooser"
@@ -68,26 +69,26 @@ fun DefaultRecalcBudgetChooser(
                         )
                 )
                 CheckedRow(
-                    checked = recalcRestBudgetMethod === SpendsViewModel.RecalcRestBudgetMethod.ASK,
+                    checked = recalcRestBudgetMethod === RecalcRestBudgetMethod.ASK,
                     onValueChange = {
-                        spendsViewModel.changeRecalcRestBudgetMethod(SpendsViewModel.RecalcRestBudgetMethod.ASK)
+                        spendsViewModel.changeRecalcRestBudgetMethod(RecalcRestBudgetMethod.ASK)
                         onClose()
                     },
                     text = stringResource(R.string.always_ask),
                 )
                 CheckedRow(
-                    checked = recalcRestBudgetMethod === SpendsViewModel.RecalcRestBudgetMethod.REST,
+                    checked = recalcRestBudgetMethod === RecalcRestBudgetMethod.REST,
                     onValueChange = {
-                        spendsViewModel.changeRecalcRestBudgetMethod(SpendsViewModel.RecalcRestBudgetMethod.REST)
+                        spendsViewModel.changeRecalcRestBudgetMethod(RecalcRestBudgetMethod.REST)
                         onClose()
                     },
                     text = stringResource(R.string.method_split_to_rest_days_title),
                     description = stringResource(R.string.method_split_to_rest_days_description),
                 )
                 CheckedRow(
-                    checked = recalcRestBudgetMethod === SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY,
+                    checked = recalcRestBudgetMethod === RecalcRestBudgetMethod.ADD_TODAY,
                     onValueChange = {
-                        spendsViewModel.changeRecalcRestBudgetMethod(SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY)
+                        spendsViewModel.changeRecalcRestBudgetMethod(RecalcRestBudgetMethod.ADD_TODAY)
                         onClose()
                     },
                     text = stringResource(R.string.method_add_to_current_day_title),

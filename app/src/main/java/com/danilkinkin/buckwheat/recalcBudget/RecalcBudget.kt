@@ -22,6 +22,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.RecalcRestBudgetMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
@@ -180,7 +181,7 @@ fun RecalcBudget(
                         onClick = {
                             spendsViewModel.reCalcDailyBudget(budgetPerDaySplit)
                             if (rememberChoice) spendsViewModel.changeRecalcRestBudgetMethod(
-                                SpendsViewModel.RecalcRestBudgetMethod.REST
+                                RecalcRestBudgetMethod.REST
                             )
 
                             onClose()
@@ -215,7 +216,7 @@ fun RecalcBudget(
                         onClick = {
                             spendsViewModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
                             if (rememberChoice) spendsViewModel.changeRecalcRestBudgetMethod(
-                                SpendsViewModel.RecalcRestBudgetMethod.ADD_TODAY
+                                RecalcRestBudgetMethod.ADD_TODAY
                             )
 
                             onClose()
