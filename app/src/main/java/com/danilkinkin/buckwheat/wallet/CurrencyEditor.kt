@@ -105,7 +105,7 @@ fun CurrencyEditor(
                     checked = currency.type === CurrencyType.NONE,
                     onValueChange = {
                         currency = ExtendCurrency(type = CurrencyType.NONE)
-                        spendsViewModel.changeCurrency(currency)
+                        spendsViewModel.changeDisplayCurrency(currency)
 
                         onClose()
                     },
@@ -125,7 +125,7 @@ fun CurrencyEditor(
             },
             onSelect = {
                 currency = ExtendCurrency(type = CurrencyType.FROM_LIST, value = it.currencyCode)
-                spendsViewModel.changeCurrency(currency)
+                spendsViewModel.changeDisplayCurrency(currency)
 
                 onClose()
             },
@@ -143,7 +143,7 @@ fun CurrencyEditor(
             },
             onChange = {
                 currency = ExtendCurrency(type = CurrencyType.CUSTOM, value = it)
-                spendsViewModel.changeCurrency(currency)
+                spendsViewModel.changeDisplayCurrency(currency)
 
                 onClose()
             },

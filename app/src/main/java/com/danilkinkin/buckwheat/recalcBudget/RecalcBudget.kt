@@ -22,7 +22,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.RecalcRestBudgetMethod
+import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
@@ -48,9 +48,9 @@ fun RecalcBudget(
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!) - spendsViewModel.dailyBudget.value!!
 
-    val requireDistributeBudget = spendsViewModel.calcRequireDistributeBudget()
-    val budgetPerDaySplit = spendsViewModel.calcBudgetPerDaySplit()
-    val budgetPerDayAdd = spendsViewModel.calcBudgetPerDay()
+    val requireDistributeBudget = spendsViewModel.howMuchNotSpent()
+    val budgetPerDaySplit = spendsViewModel.whatBudgetForDay()
+    val budgetPerDayAdd = spendsViewModel.whatBudgetForDay(excludeCurrentDay = true)
     val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
     val navigationBarHeight = WindowInsets.systemBars
@@ -179,9 +179,9 @@ fun RecalcBudget(
                             { Text("($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit") }
                         } else null,
                         onClick = {
-                            spendsViewModel.reCalcDailyBudget(budgetPerDaySplit)
-                            if (rememberChoice) spendsViewModel.changeRecalcRestBudgetMethod(
-                                RecalcRestBudgetMethod.REST
+                            spendsViewModel.setDailyBudget(budgetPerDaySplit)
+                            if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
+                                RestedBudgetDistributionMethod.REST
                             )
 
                             onClose()
@@ -214,9 +214,9 @@ fun RecalcBudget(
                             }
                         } else null,
                         onClick = {
-                            spendsViewModel.reCalcDailyBudget(budgetPerDayAdd + requireDistributeBudget)
-                            if (rememberChoice) spendsViewModel.changeRecalcRestBudgetMethod(
-                                RecalcRestBudgetMethod.ADD_TODAY
+                            spendsViewModel.setDailyBudget(budgetPerDayAdd + requireDistributeBudget)
+                            if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
+                                RestedBudgetDistributionMethod.ADD_TODAY
                             )
 
                             onClose()

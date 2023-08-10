@@ -30,7 +30,7 @@ fun RowScope.CancelEditSpent(
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         ),
         onClick = {
-            spendsViewModel.resetSpent()
+            spendsViewModel.resetEditingSpent()
         }
     ) {
         Row(

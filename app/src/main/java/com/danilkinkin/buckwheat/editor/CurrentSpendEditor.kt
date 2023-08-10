@@ -103,8 +103,8 @@ fun CurrentSpendEditor(
                 requestFocus = true
                 calculateValues()
 
-                spendsViewModel.createSpent()
-                spendsViewModel.editSpent(0.toBigDecimal())
+                spendsViewModel.startCreatingSpent()
+                spendsViewModel.modifyEditingSpent(0.toBigDecimal())
             }
         }
         focusController.onBlur.value = {
@@ -125,11 +125,11 @@ fun CurrentSpendEditor(
                         val converted = tryConvertStringToNumber(fixed)
 
                         spendsViewModel.rawSpentValue.value = fixed
-                        spendsViewModel.editSpent(converted.join().toBigDecimal())
+                        spendsViewModel.modifyEditingSpent(converted.join().toBigDecimal())
 
                         if (fixed === "") {
                             if (mode === EditMode.ADD) runBlocking {
-                                spendsViewModel.resetSpent()
+                                spendsViewModel.resetEditingSpent()
                             }
                         }
                     },

@@ -99,7 +99,7 @@ fun DebugMenu(
 
             MonospaceText("Весь бюджет ------------------- ${spendsViewModel.budget.value!!}")
             MonospaceText("Потрачено из бюджета ---------- ${spendsViewModel.spent.value!! + spentFromDailyBudget}")
-            MonospaceText("Оставшийся бюджет ------------- ${spendsViewModel.calcResetBudget()}")
+            MonospaceText("Оставшийся бюджет ------------- ${spendsViewModel.howMuchBudgetRest()}")
             Spacer(Modifier.height(16.dp))
 
 

@@ -26,7 +26,7 @@ import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
-import com.danilkinkin.buckwheat.data.RecalcRestBudgetMethod
+import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
@@ -194,13 +194,13 @@ fun Wallet(
                         appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
                     },
                     endCaption = when (recalcRestBudgetMethod) {
-                        RecalcRestBudgetMethod.ASK, null -> stringResource(
+                        RestedBudgetDistributionMethod.ASK, null -> stringResource(
                             R.string.always_ask
                         )
-                        RecalcRestBudgetMethod.REST -> stringResource(
+                        RestedBudgetDistributionMethod.REST -> stringResource(
                             R.string.method_split_to_rest_days_title
                         )
-                        RecalcRestBudgetMethod.ADD_TODAY -> stringResource(
+                        RestedBudgetDistributionMethod.ADD_TODAY -> stringResource(
                             R.string.method_add_to_current_day_title
                         )
                     },
@@ -283,7 +283,7 @@ fun Wallet(
                                     openConfirmChangeBudgetDialog.value = true
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 } else {
-                                    spendsViewModel.changeCurrency(currency!!)
+                                    spendsViewModel.changeDisplayCurrency(currency!!)
                                     spendsViewModel.changeBudget(budget, dateToValue.value!!)
 
                                     onClose()
@@ -315,7 +315,7 @@ fun Wallet(
         ConfirmChangeBudgetDialog(
             windowSizeClass = windowSizeClass,
             onConfirm = {
-                spendsViewModel.changeCurrency(currency!!)
+                spendsViewModel.changeDisplayCurrency(currency!!)
                 spendsViewModel.changeBudget(budget, dateToValue.value!!)
 
                 onClose()

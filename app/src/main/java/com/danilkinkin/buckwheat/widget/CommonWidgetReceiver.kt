@@ -68,7 +68,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
         }
     }
 
-    private fun calcBudgetPerDaySplit(
+    private fun whatBudgetForDay(
         finishDate: Date,
         spent: BigDecimal,
         budget: BigDecimal,
@@ -152,7 +152,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
             } else {
                 val newBudget = dailyBudget - spentFromDailyBudget
 
-                val newPerDayBudget = calcBudgetPerDaySplit(
+                val newPerDayBudget = whatBudgetForDay(
                     finishDate = finishDate,
                     spent = spent,
                     budget = budget,

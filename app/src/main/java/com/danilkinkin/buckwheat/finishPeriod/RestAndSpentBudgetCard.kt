@@ -55,7 +55,7 @@ fun RestAndSpentBudgetCard(
     val showRestBudgetCard by appViewModel.showRestBudgetCardByDefault.observeAsState(true)
 
     val wholeBudget = spendsViewModel.budget.value!!
-    val restBudget = spendsViewModel.calcResetBudget()
+    val restBudget = spendsViewModel.howMuchBudgetRest()
 
     val percent = remember { restBudget.divide(wholeBudget, 5, RoundingMode.HALF_EVEN) }
 

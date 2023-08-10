@@ -61,7 +61,7 @@ fun Keyboard(
 
                 if (newValue == "") {
                     if (mode === EditMode.ADD) runBlocking {
-                        spendsViewModel.resetSpent()
+                        spendsViewModel.resetEditingSpent()
 
                         isMutate = false
                     }
@@ -72,8 +72,8 @@ fun Keyboard(
         if (isMutate) runBlocking {
             spendsViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
 
-            if (spendsViewModel.stage.value === EditStage.IDLE) spendsViewModel.createSpent()
-            spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
+            if (spendsViewModel.stage.value === EditStage.IDLE) spendsViewModel.startCreatingSpent()
+            spendsViewModel.modifyEditingSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
         } else if (newValue == "") {
             spendsViewModel.rawSpentValue.value = newValue
         }
@@ -115,12 +115,12 @@ fun Keyboard(
                 onLongClick = {
                     debugProgress = 0
                     if (mode === EditMode.ADD) {
-                        spendsViewModel.resetSpent()
+                        spendsViewModel.resetEditingSpent()
                     } else {
                         spendsViewModel.rawSpentValue.value = tryConvertStringToNumber("0").join(third = false)
 
-                        if (spendsViewModel.stage.value === EditStage.IDLE) spendsViewModel.createSpent()
-                        spendsViewModel.editSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
+                        if (spendsViewModel.stage.value === EditStage.IDLE) spendsViewModel.startCreatingSpent()
+                        spendsViewModel.modifyEditingSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
                     }
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 },
@@ -238,7 +238,7 @@ fun Keyboard(
                             icon = painterResource(R.drawable.ic_delete_forever),
                             onClick = {
                                 spendsViewModel.editedSpent?.let { spendsViewModel.removeSpent(it) }
-                                spendsViewModel.resetSpent()
+                                spendsViewModel.resetEditingSpent()
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
@@ -251,7 +251,7 @@ fun Keyboard(
                             icon = painterResource(R.drawable.ic_apply),
                             onClick = {
                                 if (debugProgress == -1) {
-                                    spendsViewModel.resetSpent()
+                                    spendsViewModel.resetEditingSpent()
 
                                     appViewModel.setIsDebug(!appViewModel.isDebug.value!!)
 
@@ -273,7 +273,7 @@ fun Keyboard(
                                 debugProgress = 0
 
                                 runBlocking {
-                                    spendsViewModel.commitSpent()
+                                    spendsViewModel.commitEditingSpent()
                                 }
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }

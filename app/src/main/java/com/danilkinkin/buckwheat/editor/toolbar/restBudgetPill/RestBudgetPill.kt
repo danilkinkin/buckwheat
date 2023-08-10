@@ -77,7 +77,7 @@ fun RowScope.RestBudgetPill(
         restBudgetValue = newBudget
         restBudgetAbsoluteValue = restBudgetValue.coerceAtLeast(BigDecimal(0))
 
-        val newPerDayBudget = spendsViewModel.calcBudgetPerDaySplit(
+        val newPerDayBudget = spendsViewModel.whatBudgetForDay(
             applyCurrentSpent = true,
             excludeCurrentDay = true,
         )

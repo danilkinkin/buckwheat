@@ -194,7 +194,7 @@ fun History(
                                 icon = painterResource(R.drawable.ic_edit),
                                 stayDismissed = true,
                                 onDismiss = {
-                                    spendsViewModel.editSpent(row.spent!!)
+                                    spendsViewModel.startEditingSpent(row.spent!!)
                                     onClose()
                                 }
                             ),
