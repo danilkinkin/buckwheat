@@ -10,7 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.EditMode
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateTimeEditPill
 import com.danilkinkin.buckwheat.editor.tagging.TaggingSpent
@@ -24,10 +23,11 @@ fun Editor(
     modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    editorViewModel: EditorViewModel = hiltViewModel(),
     onOpenHistory: (() -> Unit)? = null,
 ) {
     val focusController = remember { FocusController() }
-    val mode by spendsViewModel.mode.observeAsState(EditMode.ADD)
+    val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(

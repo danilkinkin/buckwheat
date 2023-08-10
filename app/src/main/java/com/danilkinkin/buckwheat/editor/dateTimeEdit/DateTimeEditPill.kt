@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
@@ -23,10 +24,11 @@ import java.util.Calendar
 fun DateTimeEditPill(
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
+    editorViewModel: EditorViewModel = hiltViewModel(),
 ) {
-    if (spendsViewModel.editedSpent === null) return
+    if (editorViewModel.editedSpent === null) return
 
-    var cachedDate by remember { mutableStateOf(spendsViewModel.currentDate) }
+    var cachedDate by remember { mutableStateOf(editorViewModel.currentDate) }
     var isPickTime by remember { mutableStateOf(false) }
     var isPickDate by remember { mutableStateOf(false) }
 
@@ -72,7 +74,7 @@ fun DateTimeEditPill(
                 )
 
                 cachedDate = calendar.time
-                spendsViewModel.currentDate = cachedDate
+                editorViewModel.currentDate = cachedDate
                 isPickTime = false
             },
             onClose = {
@@ -101,7 +103,7 @@ fun DateTimeEditPill(
                 )
 
                 cachedDate = calendar.time
-                spendsViewModel.currentDate = cachedDate
+                editorViewModel.currentDate = cachedDate
                 isPickDate = false
             },
             onClose = {

@@ -21,8 +21,6 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 
-enum class EditMode { ADD, EDIT }
-enum class EditStage { IDLE, CREATING_SPENT, EDIT_SPENT, COMMITTING_SPENT }
 enum class RestedBudgetDistributionMethod { REST, ADD_TODAY, ASK }
 
 @HiltViewModel
@@ -34,8 +32,7 @@ class SpendsViewModel @Inject constructor(
     private val spentDao = db.spentDao()
     private val storageDao = db.storageDao()
 
-    var mode = MutableLiveData(EditMode.ADD)
-    var stage = MutableLiveData(EditStage.IDLE)
+
     var lastRemoveSpent: MutableSharedFlow<Spent> = MutableSharedFlow()
 
     var budget = MutableLiveData(storageDao.getAsBigDecimal("budget", 0.toBigDecimal()))
@@ -67,16 +64,9 @@ class SpendsViewModel @Inject constructor(
         MutableLiveData(ExtendCurrency(value = null, type = CurrencyType.NONE))
     }
 
-    var editedSpent: Spent? = null
-    var currentDate: Date = Date()
-    var currentSpent: BigDecimal = 0.0.toBigDecimal()
-    var currentComment: String = ""
-
     var requireReCalcBudget = MutableLiveData(false)
     var requireSetBudget = MutableLiveData(false)
     var finishPeriod = MutableLiveData(false)
-
-    var rawSpentValue = MutableLiveData("")
 
     init {
         runChangeDayAction()
@@ -164,19 +154,18 @@ class SpendsViewModel @Inject constructor(
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.toString()))
         storageDao.set(Storage("lastReCalcBudgetDate", startDate.toString()))
 
-        resetEditingSpent()
         setDailyBudget(whatBudgetForDay())
     }
 
     fun whatBudgetForDay(
-        applyCurrentSpent: Boolean = false,
         excludeCurrentDay: Boolean = false,
+        notCommittedSpent: BigDecimal = 0.0.toBigDecimal()
     ): BigDecimal {
         val restDays = countDaysToToday(finishDate.value!!) - if (excludeCurrentDay) 1 else 0
         var restBudget = budget.value!! - spent.value!!
 
-        if (applyCurrentSpent && !excludeCurrentDay) {
-            restBudget -= currentSpent
+        if (!excludeCurrentDay) {
+            restBudget -= notCommittedSpent
         }
 
         restBudget -= if (excludeCurrentDay) {
@@ -186,8 +175,11 @@ class SpendsViewModel @Inject constructor(
         }
 
         return restBudget
-            .divide(restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)))
-            .setScale(0, RoundingMode.FLOOR)
+            .divide(
+                restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)),
+                0,
+                RoundingMode.FLOOR
+            )
     }
 
     fun howMuchNotSpent(): BigDecimal {
@@ -217,69 +209,7 @@ class SpendsViewModel @Inject constructor(
         storageDao.set(Storage("lastReCalcBudgetDate", lastReCalcBudgetDate.toString()))
     }
 
-    fun startEditingSpent(spent: Spent) {
-        editedSpent = spent
-        currentSpent = spent.value
-        currentDate = spent.date
-        currentComment = spent.comment
-        rawSpentValue.value = tryConvertStringToNumber(spent.value.toString()).join(third = false)
-
-        stage.value = EditStage.EDIT_SPENT
-        mode.value = EditMode.EDIT
-    }
-
-    fun startCreatingSpent() {
-        currentSpent = 0.0.toBigDecimal()
-
-        stage.value = EditStage.CREATING_SPENT
-    }
-
-    fun modifyEditingSpent(value: BigDecimal) {
-        currentSpent = value
-
-        stage.value = EditStage.EDIT_SPENT
-    }
-
-    fun resetEditingSpent() {
-        currentSpent = 0.0.toBigDecimal()
-        currentDate = Date()
-        currentComment = ""
-        rawSpentValue.value = ""
-
-        stage.value = EditStage.IDLE
-        mode.value = EditMode.ADD
-        editedSpent = null
-    }
-
-    fun commitEditingSpent() {
-        if (stage.value !== EditStage.EDIT_SPENT) return
-
-        val formatSpent = currentSpent
-            .setScale(2, RoundingMode.HALF_UP)
-            .stripTrailingZeros()
-            .toPlainString()
-
-        if (formatSpent == "0") return
-
-        if (mode.value == EditMode.EDIT) {
-            val newVersionOfSpent = editedSpent!!.copy(
-                value = currentSpent,
-                date = currentDate,
-                comment = currentComment,
-            )
-
-            this.removeSpent(editedSpent!!, silent = true)
-            this.addSpent(newVersionOfSpent)
-        } else {
-            this.addSpent(Spent(currentSpent, Date(), currentComment))
-        }
-
-        stage.value = EditStage.COMMITTING_SPENT
-
-        resetEditingSpent()
-    }
-
-    private fun addSpent(newSpent: Spent) {
+    fun addSpent(newSpent: Spent) {
         this.spentDao.insert(newSpent)
 
         if (isToday(newSpent.date)) {
@@ -315,7 +245,6 @@ class SpendsViewModel @Inject constructor(
             storageDao.set(Storage("dailyBudget", dailyBudget.value.toString()))
             storageDao.set(Storage("spent", spent.value.toString()))
         }
-        editedSpent = null
 
         if (!silent) {
             viewModelScope.launch {

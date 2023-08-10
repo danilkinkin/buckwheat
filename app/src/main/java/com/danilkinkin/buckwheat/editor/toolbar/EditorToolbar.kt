@@ -22,10 +22,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.EditMode
-import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.EditMode
+import com.danilkinkin.buckwheat.editor.EditStage
+import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.RestBudgetPill
 import com.danilkinkin.buckwheat.settings.SETTINGS_SHEET
 import com.danilkinkin.buckwheat.util.observeLiveData
@@ -35,17 +36,18 @@ import kotlinx.coroutines.launch
 fun EditorToolbar(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    editorViewModel: EditorViewModel = hiltViewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val isDebug = appViewModel.isDebug.observeAsState(false)
-    val mode by spendsViewModel.mode.observeAsState(EditMode.ADD)
+    val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
     val showSettingsDot = remember {
         mutableStateOf(appViewModel.getBooleanValue("previewWidgets", true))
     }
 
     val spendsCountScale = remember { Animatable(1f) }
 
-    observeLiveData(spendsViewModel.stage) {
+    observeLiveData(editorViewModel.stage) {
         if (it === EditStage.COMMITTING_SPENT) {
             coroutineScope.launch {
                 spendsCountScale.animateTo(

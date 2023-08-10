@@ -34,8 +34,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.EditStage
+import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.editor.calcFontHeight
 import com.danilkinkin.buckwheat.util.observeLiveData
@@ -45,6 +46,7 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 fun TaggingSpent(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    editorViewModel: EditorViewModel = hiltViewModel(),
     editorFocusController: FocusController,
 ) {
     val localDensity = LocalDensity.current
@@ -55,7 +57,7 @@ fun TaggingSpent(
     var value by remember { mutableStateOf("") }
     val height = calcFontHeight(style = MaterialTheme.typography.bodyMedium).coerceAtLeast(24.dp) + 12.dp
 
-    observeLiveData(spendsViewModel.stage) {
+    observeLiveData(editorViewModel.stage) {
         if (it === EditStage.CREATING_SPENT) {
             value = ""
         }
@@ -63,8 +65,8 @@ fun TaggingSpent(
         showAddComment = it === EditStage.EDIT_SPENT
     }
 
-    DisposableEffect(spendsViewModel.currentComment) {
-        value = spendsViewModel.currentComment
+    DisposableEffect(editorViewModel.currentComment) {
+        value = editorViewModel.currentComment
 
         onDispose {  }
     }
@@ -160,7 +162,7 @@ fun TaggingSpent(
                                 value = comment
                                 isEdit = false
                                 appViewModel.showSystemKeyboard.value = false
-                                spendsViewModel.currentComment = comment
+                                editorViewModel.currentComment = comment
                             }
                         )
                     } else {

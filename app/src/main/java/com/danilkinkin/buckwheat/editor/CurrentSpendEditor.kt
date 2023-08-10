@@ -10,8 +10,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.EditMode
-import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.runBlocking
@@ -35,12 +33,13 @@ fun CurrentSpendEditor(
     focusController: FocusController = remember { FocusController() },
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    editorViewModel: EditorViewModel = hiltViewModel(),
 ) {
     val localDensity = LocalDensity.current
     val focusManager = LocalFocusManager.current
 
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
-    val mode by spendsViewModel.mode.observeAsState(EditMode.ADD)
+    val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
 
     var spentValue by remember { mutableStateOf("0") }
     var stage by remember { mutableStateOf(AnimState.IDLE) }
@@ -50,7 +49,7 @@ fun CurrentSpendEditor(
     val focusRequester = remember { FocusRequester() }
 
     fun calculateValues() {
-        spentValue = spendsViewModel.rawSpentValue.value!!
+        spentValue = editorViewModel.rawSpentValue.value!!
         requestFocus = true
     }
 
@@ -59,7 +58,7 @@ fun CurrentSpendEditor(
             requestFocus = true
             hide = false
         } else {
-            hide = spendsViewModel.rawSpentValue.value!! == ""
+            hide = editorViewModel.rawSpentValue.value!! == ""
         }
     }
 
@@ -71,7 +70,7 @@ fun CurrentSpendEditor(
         calculateValues()
     }
 
-    observeLiveData(spendsViewModel.stage) {
+    observeLiveData(editorViewModel.stage) {
         when (it) {
             EditStage.IDLE -> {
                 if (currState === AnimState.EDITING) {
@@ -103,8 +102,8 @@ fun CurrentSpendEditor(
                 requestFocus = true
                 calculateValues()
 
-                spendsViewModel.startCreatingSpent()
-                spendsViewModel.modifyEditingSpent(0.toBigDecimal())
+                editorViewModel.startCreatingSpent()
+                editorViewModel.modifyEditingSpent(0.toBigDecimal())
             }
         }
         focusController.onBlur.value = {
@@ -124,12 +123,12 @@ fun CurrentSpendEditor(
                         val fixed = fixedNumberString(it)
                         val converted = tryConvertStringToNumber(fixed)
 
-                        spendsViewModel.rawSpentValue.value = fixed
-                        spendsViewModel.modifyEditingSpent(converted.join().toBigDecimal())
+                        editorViewModel.rawSpentValue.value = fixed
+                        editorViewModel.modifyEditingSpent(converted.join().toBigDecimal())
 
                         if (fixed === "") {
                             if (mode === EditMode.ADD) runBlocking {
-                                spendsViewModel.resetEditingSpent()
+                                editorViewModel.resetEditingSpent()
                             }
                         }
                     },

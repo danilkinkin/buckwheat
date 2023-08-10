@@ -16,15 +16,18 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.EditMode
-import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.editor.EditMode
+import com.danilkinkin.buckwheat.editor.EditStage
+import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.getFloatDivider
 import com.danilkinkin.buckwheat.util.join
 import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.Date
 
 val BUTTON_GAP = 6.dp
 
@@ -36,16 +39,17 @@ fun Keyboard(
     modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    editorViewModel: EditorViewModel = hiltViewModel(),
 ) {
     val haptic = LocalHapticFeedback.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val mode by spendsViewModel.mode.observeAsState(EditMode.ADD)
-    val currentRawSpent by spendsViewModel.rawSpentValue.observeAsState("")
+    val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
+    val currentRawSpent by editorViewModel.rawSpentValue.observeAsState("")
     var debugProgress by remember { mutableStateOf(0) }
     val dispatch = rememberAppKeyboardDispatcher { action, value ->
         var isMutate = true
-        var newValue = spendsViewModel.rawSpentValue.value ?: ""
+        var newValue = editorViewModel.rawSpentValue.value ?: ""
 
         when (action) {
             KeyboardAction.PUT_NUMBER -> {
@@ -61,7 +65,7 @@ fun Keyboard(
 
                 if (newValue == "") {
                     if (mode === EditMode.ADD) runBlocking {
-                        spendsViewModel.resetEditingSpent()
+                        editorViewModel.resetEditingSpent()
 
                         isMutate = false
                     }
@@ -70,12 +74,12 @@ fun Keyboard(
         }
 
         if (isMutate) runBlocking {
-            spendsViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
+            editorViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
 
-            if (spendsViewModel.stage.value === EditStage.IDLE) spendsViewModel.startCreatingSpent()
-            spendsViewModel.modifyEditingSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
+            if (editorViewModel.stage.value === EditStage.IDLE) editorViewModel.startCreatingSpent()
+            editorViewModel.modifyEditingSpent(editorViewModel.rawSpentValue.value!!.toBigDecimal())
         } else if (newValue == "") {
-            spendsViewModel.rawSpentValue.value = newValue
+            editorViewModel.rawSpentValue.value = newValue
         }
     }
 
@@ -115,12 +119,12 @@ fun Keyboard(
                 onLongClick = {
                     debugProgress = 0
                     if (mode === EditMode.ADD) {
-                        spendsViewModel.resetEditingSpent()
+                        editorViewModel.resetEditingSpent()
                     } else {
-                        spendsViewModel.rawSpentValue.value = tryConvertStringToNumber("0").join(third = false)
+                        editorViewModel.rawSpentValue.value = tryConvertStringToNumber("0").join(third = false)
 
-                        if (spendsViewModel.stage.value === EditStage.IDLE) spendsViewModel.startCreatingSpent()
-                        spendsViewModel.modifyEditingSpent(spendsViewModel.rawSpentValue.value!!.toBigDecimal())
+                        if (editorViewModel.stage.value === EditStage.IDLE) editorViewModel.startCreatingSpent()
+                        editorViewModel.modifyEditingSpent(editorViewModel.rawSpentValue.value!!.toBigDecimal())
                     }
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                 },
@@ -237,8 +241,8 @@ fun Keyboard(
                             type = KeyboardButtonType.DELETE,
                             icon = painterResource(R.drawable.ic_delete_forever),
                             onClick = {
-                                spendsViewModel.editedSpent?.let { spendsViewModel.removeSpent(it) }
-                                spendsViewModel.resetEditingSpent()
+                                editorViewModel.editedSpent?.let { spendsViewModel.removeSpent(it) }
+                                editorViewModel.resetEditingSpent()
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
                         )
@@ -251,7 +255,7 @@ fun Keyboard(
                             icon = painterResource(R.drawable.ic_apply),
                             onClick = {
                                 if (debugProgress == -1) {
-                                    spendsViewModel.resetEditingSpent()
+                                    editorViewModel.resetEditingSpent()
 
                                     appViewModel.setIsDebug(!appViewModel.isDebug.value!!)
 
@@ -273,7 +277,22 @@ fun Keyboard(
                                 debugProgress = 0
 
                                 runBlocking {
-                                    spendsViewModel.commitEditingSpent()
+                                    if (editorViewModel.canCommitEditingSpent()) {
+                                        if (mode == EditMode.EDIT) {
+                                            val newVersionOfSpent = editorViewModel.editedSpent!!.copy(
+                                                value = editorViewModel.currentSpent,
+                                                date = editorViewModel.currentDate,
+                                                comment = editorViewModel.currentComment,
+                                            )
+
+                                            spendsViewModel.removeSpent(editorViewModel.editedSpent!!, silent = true)
+                                            spendsViewModel.addSpent(newVersionOfSpent)
+                                        } else {
+                                            spendsViewModel.addSpent(Spent(editorViewModel.currentSpent, Date(), editorViewModel.currentComment))
+                                        }
+
+                                        editorViewModel.resetEditingSpent()
+                                    }
                                 }
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }

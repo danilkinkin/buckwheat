@@ -25,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
@@ -44,6 +45,7 @@ fun History(
     modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
+    editorViewModel: EditorViewModel = viewModel(),
     onClose: () -> Unit = {}
 ) {
     val scrollState = rememberLazyListState()
@@ -194,7 +196,7 @@ fun History(
                                 icon = painterResource(R.drawable.ic_edit),
                                 stayDismissed = true,
                                 onDismiss = {
-                                    spendsViewModel.startEditingSpent(row.spent!!)
+                                    editorViewModel.startEditingSpent(row.spent!!)
                                     onClose()
                                 }
                             ),

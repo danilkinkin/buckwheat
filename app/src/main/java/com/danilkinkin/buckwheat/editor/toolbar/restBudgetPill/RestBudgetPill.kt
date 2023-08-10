@@ -27,9 +27,10 @@ import com.danilkinkin.buckwheat.base.AnimatedNumber
 import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.base.WavyShape
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.EditStage
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.editor.EditStage
+import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.ui.*
 import com.danilkinkin.buckwheat.util.*
 import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
@@ -44,6 +45,7 @@ import kotlin.math.ceil
 fun RowScope.RestBudgetPill(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    editorViewModel: EditorViewModel = hiltViewModel(),
 ) {
     val localDensity = LocalDensity.current
 
@@ -69,7 +71,7 @@ fun RowScope.RestBudgetPill(
 
         val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
         dailyBudget = spendsViewModel.dailyBudget.value!!
-        val currentSpent = spendsViewModel.currentSpent
+        val currentSpent = editorViewModel.currentSpent
 
         val newBudget = dailyBudget - spentFromDailyBudget - currentSpent
 
@@ -78,8 +80,8 @@ fun RowScope.RestBudgetPill(
         restBudgetAbsoluteValue = restBudgetValue.coerceAtLeast(BigDecimal(0))
 
         val newPerDayBudget = spendsViewModel.whatBudgetForDay(
-            applyCurrentSpent = true,
             excludeCurrentDay = true,
+            notCommittedSpent = currentSpent,
         )
 
         endBudget = newPerDayBudget <= BigDecimal(0)
@@ -118,7 +120,7 @@ fun RowScope.RestBudgetPill(
         calculateValues()
     }
 
-    observeLiveData(spendsViewModel.stage) {
+    observeLiveData(editorViewModel.stage) {
         editing = it == EditStage.EDIT_SPENT
 
         calculateValues()

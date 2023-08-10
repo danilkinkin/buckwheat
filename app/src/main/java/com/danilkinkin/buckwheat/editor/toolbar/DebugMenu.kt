@@ -15,6 +15,7 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.data.PathState
+import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
@@ -28,6 +29,7 @@ const val DEBUG_MENU_SHEET = "debugMenu"
 fun DebugMenu(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    editorViewModel: EditorViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
     val navigationBarHeight = androidx.compose.ui.unit.max(
@@ -104,7 +106,7 @@ fun DebugMenu(
 
 
             val dailyBudget = spendsViewModel.dailyBudget.value!!
-            val currentSpent = spendsViewModel.currentSpent
+            val currentSpent = editorViewModel.currentSpent
 
             val restTodayBudget = dailyBudget - spentFromDailyBudget - currentSpent
 
