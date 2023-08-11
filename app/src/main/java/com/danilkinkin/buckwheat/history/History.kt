@@ -53,8 +53,8 @@ fun History(
 
     val spends by spendsViewModel.getSpends().observeAsState(initial = null)
     val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal(0))
-    val startDate = spendsViewModel.startDate.observeAsState(initial = Date())
-    val finishDate = spendsViewModel.finishDate.observeAsState(initial = Date())
+    val startPeriodDate = spendsViewModel.startPeriodDate.observeAsState(initial = Date())
+    val finishPeriodDate = spendsViewModel.finishPeriodDate.observeAsState(initial = Date())
     val scrollToBottom = remember { mutableStateOf(true) }
     val showSwipeTutorial = remember {
         appViewModel.getBooleanValue("tutorialSwipe", true)
@@ -283,8 +283,8 @@ fun History(
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                         budget = budget.value,
                         currency = spendsViewModel.currency.value!!,
-                        startDate = startDate.value,
-                        finishDate = finishDate.value,
+                        startDate = startPeriodDate.value,
+                        finishDate = finishPeriodDate.value,
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                             contentColor = MaterialTheme.colorScheme.onTertiaryContainer,

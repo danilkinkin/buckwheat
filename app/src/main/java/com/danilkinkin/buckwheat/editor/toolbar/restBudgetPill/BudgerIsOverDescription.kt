@@ -30,7 +30,7 @@ fun BudgetIsOverDescription(
         16.dp,
     )
 
-    val overspendingWarnHidden by spendsViewModel.overspendingWarnHidden.observeAsState(false)
+    val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
 
     Surface {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
@@ -62,7 +62,7 @@ fun BudgetIsOverDescription(
             Spacer(modifier = Modifier.height(32.dp))
 
             ButtonRow(
-                icon = if (overspendingWarnHidden) {
+                icon = if (hideOverspendingWarn) {
                     painterResource(R.drawable.ic_do_not_disturb)
                 } else {
                     painterResource(R.drawable.ic_do_disturb)
@@ -72,13 +72,13 @@ fun BudgetIsOverDescription(
                 wrapMainText = true,
                 denseDescriptionOffset = false,
                 onClick = {
-                    spendsViewModel.hideOverspendingWarn(!overspendingWarnHidden)
+                    spendsViewModel.hideOverspendingWarn(!hideOverspendingWarn)
                 },
                 endContent = {
                     Switch(
-                        checked = overspendingWarnHidden,
+                        checked = hideOverspendingWarn,
                         onCheckedChange = {
-                            spendsViewModel.hideOverspendingWarn(!overspendingWarnHidden)
+                            spendsViewModel.hideOverspendingWarn(!hideOverspendingWarn)
                         },
                     )
 

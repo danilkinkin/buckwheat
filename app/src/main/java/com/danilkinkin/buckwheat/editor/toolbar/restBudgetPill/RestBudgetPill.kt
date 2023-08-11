@@ -49,7 +49,7 @@ fun RowScope.RestBudgetPill(
 ) {
     val localDensity = LocalDensity.current
 
-    val overspendingWarnHidden by spendsViewModel.overspendingWarnHidden.observeAsState(false)
+    val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
 
     var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
@@ -67,7 +67,7 @@ fun RowScope.RestBudgetPill(
 
 
     fun calculateValues() {
-        if (spendsViewModel.finishDate.value === null) return
+        if (spendsViewModel.finishPeriodDate.value === null) return
 
         val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
         dailyBudget = spendsViewModel.dailyBudget.value!!
@@ -168,7 +168,7 @@ fun RowScope.RestBudgetPill(
         )
     )
 
-    if (overspendingWarnHidden && restBudgetValue < 0.toBigDecimal()) {
+    if (hideOverspendingWarn && restBudgetValue < 0.toBigDecimal()) {
         BigIconButton(
             icon = painterResource(R.drawable.ic_balance_wallet),
             contentDescription = null,

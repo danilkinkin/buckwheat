@@ -14,8 +14,12 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.toLocalDate
+import com.danilkinkin.buckwheat.util.toLocalDateTime
 import kotlinx.coroutines.launch
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun rememberExportCSV(
@@ -30,37 +34,60 @@ fun rememberExportCSV(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val startDate by remember { mutableStateOf(spendsViewModel.startDate.value) }
-    val finishDate by remember { mutableStateOf(spendsViewModel.finishDate.value) }
+    val startPeriodDate by remember { mutableStateOf(spendsViewModel.startPeriodDate.value) }
+    val finishPeriodDate by remember { mutableStateOf(spendsViewModel.finishPeriodDate.value) }
 
     val snackBarExportToCSVSuccess = stringResource(R.string.export_to_csv_success)
     val snackBarExportToCSVFailed = stringResource(R.string.export_to_csv_failed)
 
     val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
 
-    val from = if (yearFormatter.format(startDate!!.toLocalDate()) == yearFormatter.format(
-            finishDate!!.toLocalDate()
+    val from = if (yearFormatter.format(startPeriodDate!!.toLocalDate()) == yearFormatter.format(
+            finishPeriodDate!!.toLocalDate()
         )
     ) {
-        DateTimeFormatter.ofPattern("dd-MM").format(startDate!!.toLocalDate())
+        DateTimeFormatter.ofPattern("dd-MM").format(startPeriodDate!!.toLocalDate())
     } else {
-        DateTimeFormatter.ofPattern("dd-MM-yyyy").format(startDate!!.toLocalDate())
+        DateTimeFormatter.ofPattern("dd-MM-yyyy").format(startPeriodDate!!.toLocalDate())
     }
-    val to = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(finishDate!!.toLocalDate())
+    val to = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(finishPeriodDate!!.toLocalDate())
 
     CompositionLocalProvider(
         LocalActivityResultRegistryOwner provides activityResultRegistryOwner
     ) {
         createHistoryFileLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.CreateDocument("text/csv")
-        ) {
-            coroutineScope.launch {
-                if (it !== null) {
-                    spendsViewModel.exportAsCsv(context, it)
-                    appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVSuccess)
-                } else {
+        ) { uri ->
+            if (uri === null) {
+                coroutineScope.launch {
                     appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVFailed)
                 }
+
+                return@rememberLauncherForActivityResult
+            }
+
+            coroutineScope.launch {
+                val stream = context.contentResolver.openOutputStream(uri)
+
+                val printer = CSVPrinter(
+                    stream?.writer(),
+                    CSVFormat.Builder.create().setHeader("amount", "comment", "commit_time").build()
+                )
+                val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+
+                spendsViewModel.spentDao.getAllSync().forEach { spent ->
+                    printer.printRecord(
+                        spent.value,
+                        spent.comment,
+                        spent.date.toLocalDateTime().format(dateFormatter),
+                    )
+                }
+
+                printer.flush()
+                printer.close()
+                stream?.close()
+
+                appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVSuccess)
             }
         }
     }

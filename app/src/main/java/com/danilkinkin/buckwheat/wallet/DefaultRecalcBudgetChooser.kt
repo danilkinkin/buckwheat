@@ -31,7 +31,7 @@ fun DefaultRecalcBudgetChooser(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
-    val recalcRestBudgetMethod by spendsViewModel.recalcRestBudgetMethod.observeAsState()
+    val restedBudgetDistributionMethod by spendsViewModel.restedBudgetDistributionMethod.observeAsState()
 
     val navigationBarHeight = WindowInsets.systemBars
         .asPaddingValues()
@@ -69,7 +69,7 @@ fun DefaultRecalcBudgetChooser(
                         )
                 )
                 CheckedRow(
-                    checked = recalcRestBudgetMethod === RestedBudgetDistributionMethod.ASK,
+                    checked = restedBudgetDistributionMethod === RestedBudgetDistributionMethod.ASK,
                     onValueChange = {
                         spendsViewModel.changeRestedBudgetDistributionMethod(RestedBudgetDistributionMethod.ASK)
                         onClose()
@@ -77,7 +77,7 @@ fun DefaultRecalcBudgetChooser(
                     text = stringResource(R.string.always_ask),
                 )
                 CheckedRow(
-                    checked = recalcRestBudgetMethod === RestedBudgetDistributionMethod.REST,
+                    checked = restedBudgetDistributionMethod === RestedBudgetDistributionMethod.REST,
                     onValueChange = {
                         spendsViewModel.changeRestedBudgetDistributionMethod(RestedBudgetDistributionMethod.REST)
                         onClose()
@@ -86,7 +86,7 @@ fun DefaultRecalcBudgetChooser(
                     description = stringResource(R.string.method_split_to_rest_days_description),
                 )
                 CheckedRow(
-                    checked = recalcRestBudgetMethod === RestedBudgetDistributionMethod.ADD_TODAY,
+                    checked = restedBudgetDistributionMethod === RestedBudgetDistributionMethod.ADD_TODAY,
                     onValueChange = {
                         spendsViewModel.changeRestedBudgetDistributionMethod(RestedBudgetDistributionMethod.ADD_TODAY)
                         onClose()

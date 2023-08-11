@@ -49,10 +49,10 @@ fun Wallet(
     val haptic = LocalHapticFeedback.current
 
     var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
-    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
+    val dateToValue = remember { mutableStateOf(spendsViewModel.finishPeriodDate.value) }
     val currency by spendsViewModel.currency.observeAsState()
     val spends by spendsViewModel.getSpends().observeAsState()
-    val recalcRestBudgetMethod by spendsViewModel.recalcRestBudgetMethod.observeAsState()
+    val restedBudgetDistributionMethod by spendsViewModel.restedBudgetDistributionMethod.observeAsState()
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
 
@@ -67,14 +67,14 @@ fun Wallet(
 
     val isChange = (
             budget != spendsViewModel.budget.value
-                    || dateToValue.value != spendsViewModel.finishDate.value
+                    || dateToValue.value != spendsViewModel.finishPeriodDate.value
             )
 
-    var isEdit by remember(spendsViewModel.startDate, spendsViewModel.finishDate, forceChange) {
+    var isEdit by remember(spendsViewModel.startPeriodDate, spendsViewModel.finishPeriodDate, forceChange) {
         mutableStateOf(
-            (spendsViewModel.finishDate.value !== null && isSameDay(
-                spendsViewModel.startDate.value!!.time,
-                spendsViewModel.finishDate.value!!.time
+            (spendsViewModel.finishPeriodDate.value !== null && isSameDay(
+                spendsViewModel.startPeriodDate.value!!.time,
+                spendsViewModel.finishPeriodDate.value!!.time
             ))
                     || forceChange
         )
@@ -193,7 +193,7 @@ fun Wallet(
                     onClick = {
                         appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
                     },
-                    endCaption = when (recalcRestBudgetMethod) {
+                    endCaption = when (restedBudgetDistributionMethod) {
                         RestedBudgetDistributionMethod.ASK, null -> stringResource(
                             R.string.always_ask
                         )

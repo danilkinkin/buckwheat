@@ -1,7 +1,5 @@
 package com.danilkinkin.buckwheat.data
 
-import android.content.Context
-import android.net.Uri
 import androidx.lifecycle.*
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.data.entities.Storage
@@ -11,12 +9,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import org.apache.commons.csv.CSVFormat
-import org.apache.commons.csv.CSVPrinter
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -28,12 +22,8 @@ class SpendsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val db: DatabaseRepository,
 ) : ViewModel() {
-
-    private val spentDao = db.spentDao()
-    private val storageDao = db.storageDao()
-
-
-    var lastRemoveSpent: MutableSharedFlow<Spent> = MutableSharedFlow()
+    val spentDao = db.spentDao()
+    val storageDao = db.storageDao()
 
     var budget = MutableLiveData(storageDao.getAsBigDecimal("budget", 0.toBigDecimal()))
     var spent = MutableLiveData(storageDao.getAsBigDecimal("spent", 0.0.toBigDecimal()))
@@ -43,78 +33,34 @@ class SpendsViewModel @Inject constructor(
     var spentFromDailyBudget = MutableLiveData(
         storageDao.getAsBigDecimal("spentFromDailyBudget", 0.0.toBigDecimal())
     )
-    var recalcRestBudgetMethod = MutableLiveData(
-        try {
-            RestedBudgetDistributionMethod.valueOf(storageDao.get("recalcRestBudgetMethod").value)
-        } catch (e: Exception) {
-            RestedBudgetDistributionMethod.ASK
-        }
-    )
-    var overspendingWarnHidden = MutableLiveData(
+
+    var restedBudgetDistributionMethod = try {
+        MutableLiveData(RestedBudgetDistributionMethod.valueOf(storageDao.get("recalcRestBudgetMethod").value))
+    } catch (e: Exception) {
+        MutableLiveData(RestedBudgetDistributionMethod.ASK)
+    }
+    var hideOverspendingWarn = MutableLiveData(
         storageDao.getAsBoolean("overspendingWarnHidden", false)
     )
-    var startDate: MutableLiveData<Date> =
-        MutableLiveData(storageDao.getAsDate("startDate", Date()))
-    var finishDate = MutableLiveData(storageDao.getAsDate("finishDate", null))
-    var lastReCalcBudgetDate: Date? =
-        storageDao.getAsDate("lastReCalcBudgetDate", null)
+    var startPeriodDate: MutableLiveData<Date> = MutableLiveData(
+        storageDao.getAsDate("startDate", Date())
+    )
+    var finishPeriodDate = MutableLiveData(storageDao.getAsDate("finishDate", null))
+    var lastChangeDailyBudgetDate = storageDao.getAsDate("lastReCalcBudgetDate", null)
     var currency: MutableLiveData<ExtendCurrency> = try {
         MutableLiveData(ExtendCurrency.getInstance(storageDao.get("currency").value))
     } catch (e: Exception) {
         MutableLiveData(ExtendCurrency(value = null, type = CurrencyType.NONE))
     }
 
-    var requireReCalcBudget = MutableLiveData(false)
+    var requireDistributionRestedBudget = MutableLiveData(false)
     var requireSetBudget = MutableLiveData(false)
-    var finishPeriod = MutableLiveData(false)
+    var periodFinished = MutableLiveData(false)
+    var lastRemovedSpent: MutableSharedFlow<Spent> = MutableSharedFlow()
 
     init {
         runChangeDayAction()
         runScheduledDetectChangeDayTask()
-    }
-
-    private fun runScheduledDetectChangeDayTask() {
-        var currentDay = Date()
-
-        viewModelScope.launch {
-            while (true) {
-                delay(5000L)
-
-                if (isToday(currentDay)) continue
-
-                currentDay = Date()
-                runChangeDayAction()
-            }
-        }
-    }
-
-    private fun runChangeDayAction() {
-        if (
-            lastReCalcBudgetDate !== null
-            && !isToday(lastReCalcBudgetDate!!)
-            && countDaysToToday(finishDate.value!!) > 0
-        ) {
-            if (dailyBudget.value!! - spentFromDailyBudget.value!! > BigDecimal(0)) {
-                when (recalcRestBudgetMethod.value) {
-                    RestedBudgetDistributionMethod.ASK, null -> requireReCalcBudget.value = true
-                    RestedBudgetDistributionMethod.REST -> setDailyBudget(whatBudgetForDay())
-                    RestedBudgetDistributionMethod.ADD_TODAY -> setDailyBudget(
-                        whatBudgetForDay(excludeCurrentDay = true) + howMuchNotSpent()
-                    )
-                }
-            } else {
-                setDailyBudget(whatBudgetForDay())
-            }
-        } else if (lastReCalcBudgetDate === null) {
-            requireSetBudget.value = true
-        } else if (finishDate.value!!.time <= Date().time) {
-            finishPeriod.value = true
-        }
-
-        // Bug fix https://github.com/danilkinkin/buckwheat/issues/28
-        if (this.dailyBudget.value!! - this.spentFromDailyBudget.value!! > BigDecimal(0)) {
-            hideOverspendingWarn(false)
-        }
     }
 
     fun getSpends(): LiveData<List<Spent>> = this.spentDao.getAll()
@@ -126,7 +72,7 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun changeRestedBudgetDistributionMethod(method: RestedBudgetDistributionMethod) {
-        this.recalcRestBudgetMethod.value = method
+        this.restedBudgetDistributionMethod.value = method
 
         storageDao.set(Storage("recalcRestBudgetMethod", method.toString()))
     }
@@ -134,25 +80,25 @@ class SpendsViewModel @Inject constructor(
     fun changeBudget(newBudget: BigDecimal, newFinishDate: Date) {
         // Reset all data
         budget.value = newBudget
-        startDate.value = roundToDay(Date())
-        finishDate.value = Date(roundToDay(newFinishDate).time + DAY - 1000)
+        startPeriodDate.value = roundToDay(Date())
+        finishPeriodDate.value = Date(roundToDay(newFinishDate).time + DAY - 1000)
         spent.value = 0.0.toBigDecimal()
         dailyBudget.value = 0.0.toBigDecimal()
         spentFromDailyBudget.value = 0.0.toBigDecimal()
-        lastReCalcBudgetDate = startDate.value
+        lastChangeDailyBudgetDate = startPeriodDate.value
         requireSetBudget.value = false
-        finishPeriod.value = false
+        periodFinished.value = false
         hideOverspendingWarn(false)
         spentDao.deleteAll()
 
         // Save new data to storage
         storageDao.set(Storage("budget", budget.toString()))
-        storageDao.set(Storage("startDate", startDate.toString()))
-        storageDao.set(Storage("finishDate", finishDate.toString()))
+        storageDao.set(Storage("startDate", startPeriodDate.toString()))
+        storageDao.set(Storage("finishDate", finishPeriodDate.toString()))
         storageDao.set(Storage("spent", spent.toString()))
         storageDao.set(Storage("dailyBudget", dailyBudget.toString()))
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.toString()))
-        storageDao.set(Storage("lastReCalcBudgetDate", startDate.toString()))
+        storageDao.set(Storage("lastReCalcBudgetDate", startPeriodDate.toString()))
 
         setDailyBudget(whatBudgetForDay())
     }
@@ -161,7 +107,7 @@ class SpendsViewModel @Inject constructor(
         excludeCurrentDay: Boolean = false,
         notCommittedSpent: BigDecimal = 0.0.toBigDecimal()
     ): BigDecimal {
-        val restDays = countDaysToToday(finishDate.value!!) - if (excludeCurrentDay) 1 else 0
+        val restDays = countDaysToToday(finishPeriodDate.value!!) - if (excludeCurrentDay) 1 else 0
         var restBudget = budget.value!! - spent.value!!
 
         if (!excludeCurrentDay) {
@@ -183,8 +129,8 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun howMuchNotSpent(): BigDecimal {
-        val restDays = countDaysToToday(finishDate.value!!)
-        val skippedDays = abs(countDaysToToday(lastReCalcBudgetDate!!))
+        val restDays = countDaysToToday(finishPeriodDate.value!!)
+        val skippedDays = abs(countDaysToToday(lastChangeDailyBudgetDate!!))
         val restBudget = budget.value!! - spent.value!! - dailyBudget.value!!
 
         return restBudget
@@ -199,14 +145,14 @@ class SpendsViewModel @Inject constructor(
 
     fun setDailyBudget(newDailyBudget: BigDecimal) {
         dailyBudget.value = newDailyBudget
-        lastReCalcBudgetDate = roundToDay(Date())
+        lastChangeDailyBudgetDate = roundToDay(Date())
         spent.value = spent.value!! + spentFromDailyBudget.value!!
         spentFromDailyBudget.value = BigDecimal(0)
 
         storageDao.set(Storage("spent", spent.toString()))
         storageDao.set(Storage("dailyBudget", dailyBudget.toString()))
         storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.toString()))
-        storageDao.set(Storage("lastReCalcBudgetDate", lastReCalcBudgetDate.toString()))
+        storageDao.set(Storage("lastReCalcBudgetDate", lastChangeDailyBudgetDate.toString()))
     }
 
     fun addSpent(newSpent: Spent) {
@@ -218,7 +164,7 @@ class SpendsViewModel @Inject constructor(
             storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
         } else {
             val spreadDeltaSpentPerRestDays = newSpent.value
-                .divide(countDays(finishDate.value!!, newSpent.date).toBigDecimal())
+                .divide(countDays(finishPeriodDate.value!!, newSpent.date).toBigDecimal())
 
             dailyBudget.value = dailyBudget.value!! + spreadDeltaSpentPerRestDays
             spent.value = spent.value!! + newSpent.value
@@ -236,7 +182,7 @@ class SpendsViewModel @Inject constructor(
 
             storageDao.set(Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString()))
         } else {
-            val restDays = countDays(finishDate.value!!, spentForRemove.date)
+            val restDays = countDays(finishPeriodDate.value!!, spentForRemove.date)
             val spreadDeltaSpentPerRestDays = spentForRemove.value / restDays.toBigDecimal()
 
             spent.value = spent.value!! - spentForRemove.value
@@ -248,7 +194,7 @@ class SpendsViewModel @Inject constructor(
 
         if (!silent) {
             viewModelScope.launch {
-                lastRemoveSpent.emit(spentForRemove)
+                lastRemovedSpent.emit(spentForRemove)
             }
         }
     }
@@ -263,7 +209,7 @@ class SpendsViewModel @Inject constructor(
                 Storage("spentFromDailyBudget", spentFromDailyBudget.value.toString())
             )
         } else {
-            val restDays = countDaysToToday(finishDate.value!!)
+            val restDays = countDaysToToday(finishPeriodDate.value!!)
             val spreadDeltaSpentPerRestDays = removedSpent.value / restDays.toBigDecimal()
 
             dailyBudget.value = dailyBudget.value!! - spreadDeltaSpentPerRestDays
@@ -275,30 +221,58 @@ class SpendsViewModel @Inject constructor(
     }
 
     fun hideOverspendingWarn(hide: Boolean) {
-        this.overspendingWarnHidden.value = hide
+        this.hideOverspendingWarn.value = hide
 
         storageDao.set(Storage("overspendingWarnHidden", hide.toString()))
     }
 
-    fun exportAsCsv(context: Context, uri: Uri) {
-        val stream = context.contentResolver.openOutputStream(uri)
+    private fun runChangeDayAction() {
+        when {
+            lastChangeDailyBudgetDate !== null
+                    && !isToday(lastChangeDailyBudgetDate!!)
+                    && countDaysToToday(finishPeriodDate.value!!) > 0 -> {
+                if (dailyBudget.value!! - spentFromDailyBudget.value!! > BigDecimal(0)) {
+                    when (restedBudgetDistributionMethod.value) {
+                        RestedBudgetDistributionMethod.ASK, null -> requireDistributionRestedBudget.value =
+                            true
 
-        val printer = CSVPrinter(
-            stream?.writer(),
-            CSVFormat.Builder.create().setHeader("amount", "comment", "commit_time").build()
-        )
-        val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+                        RestedBudgetDistributionMethod.REST -> setDailyBudget(whatBudgetForDay())
+                        RestedBudgetDistributionMethod.ADD_TODAY -> setDailyBudget(
+                            whatBudgetForDay(excludeCurrentDay = true) + howMuchNotSpent()
+                        )
+                    }
+                } else {
+                    setDailyBudget(whatBudgetForDay())
+                }
+            }
 
-        this.spentDao.getAllSync().forEach {
-            printer.printRecord(
-                it.value,
-                it.comment,
-                it.date.toLocalDateTime().format(dateFormatter),
-            )
+            lastChangeDailyBudgetDate === null -> {
+                requireSetBudget.value = true
+            }
+
+            finishPeriodDate.value!!.time <= Date().time -> {
+                periodFinished.value = true
+            }
         }
 
-        printer.flush()
-        printer.close()
-        stream?.close()
+        // Bug fix https://github.com/danilkinkin/buckwheat/issues/28
+        if (this.dailyBudget.value!! - this.spentFromDailyBudget.value!! > BigDecimal(0)) {
+            hideOverspendingWarn(false)
+        }
+    }
+
+    private fun runScheduledDetectChangeDayTask() {
+        var currentDay = Date()
+
+        viewModelScope.launch {
+            while (true) {
+                delay(5000L)
+
+                if (isToday(currentDay)) continue
+
+                currentDay = Date()
+                runChangeDayAction()
+            }
+        }
     }
 }

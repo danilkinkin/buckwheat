@@ -36,12 +36,12 @@ fun BudgetSummary(
                 bigVariant = false,
                 budget = wholeBudget,
                 currency = currency!!,
-                startDate = spendsViewModel.startDate.value!!,
-                finishDate = spendsViewModel.finishDate.value!!,
+                startDate = spendsViewModel.startPeriodDate.value!!,
+                finishDate = spendsViewModel.finishPeriodDate.value!!,
             )
             DaysLeftCard(
-                startDate = spendsViewModel.startDate.value!!,
-                finishDate = spendsViewModel.finishDate.value!!,
+                startDate = spendsViewModel.startPeriodDate.value!!,
+                finishDate = spendsViewModel.finishPeriodDate.value!!,
             )
         }
         EditButton(onClick = { onEdit() })

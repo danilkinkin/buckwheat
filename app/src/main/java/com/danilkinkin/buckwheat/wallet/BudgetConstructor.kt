@@ -72,15 +72,15 @@ fun BudgetConstructor(
 
         mutableStateOf(BigDecimal(restBudget))
     }
-    val dateToValue = remember { mutableStateOf(spendsViewModel.finishDate.value) }
+    val dateToValue = remember { mutableStateOf(spendsViewModel.finishPeriodDate.value) }
     var showUseSuggestion by remember {
         val useBudget = budget != spendsViewModel.budget.value!!
                 && spendsViewModel.budget.value!! != BigDecimal(0)
 
-        val length = if (spendsViewModel.finishDate.value !== null) {
+        val length = if (spendsViewModel.finishPeriodDate.value !== null) {
             countDays(
-                spendsViewModel.finishDate.value!!,
-                spendsViewModel.startDate.value!!,
+                spendsViewModel.finishPeriodDate.value!!,
+                spendsViewModel.startPeriodDate.value!!,
             )
         } else {
             0
@@ -88,9 +88,9 @@ fun BudgetConstructor(
         val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
 
         val useDate = length != 0
-                && (spendsViewModel.finishDate.value == null || !isSameDay(
+                && (spendsViewModel.finishPeriodDate.value == null || !isSameDay(
             finishDate.time,
-            spendsViewModel.finishDate.value!!.time
+            spendsViewModel.finishPeriodDate.value!!.time
         ))
 
         mutableStateOf(
@@ -118,8 +118,8 @@ fun BudgetConstructor(
                 budget = spendsViewModel.budget.value!!
 
                 val length = countDays(
-                    spendsViewModel.finishDate.value!!,
-                    spendsViewModel.startDate.value!!,
+                    spendsViewModel.finishPeriodDate.value!!,
+                    spendsViewModel.startPeriodDate.value!!,
                 )
                 val finishDate = LocalDate.now().plusDays(length.toLong() - 1).toDate()
 

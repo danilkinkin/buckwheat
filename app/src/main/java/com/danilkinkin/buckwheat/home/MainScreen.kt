@@ -97,7 +97,7 @@ fun MainScreen(
     )
 
     LaunchedEffect(Unit) {
-        spendsViewModel.lastRemoveSpent.collectLatest {
+        spendsViewModel.lastRemovedSpent.collectLatest {
             val snackbarResult = appViewModel.snackbarHostState.showSnackbar(
                 message = snackBarMessage,
                 actionLabel = snackBarAction,
@@ -110,7 +110,7 @@ fun MainScreen(
         }
     }
 
-    observeLiveData(spendsViewModel.requireReCalcBudget) {
+    observeLiveData(spendsViewModel.requireDistributionRestedBudget) {
         if (it) appViewModel.openSheet(PathState(RECALCULATE_DAILY_BUDGET_SHEET))
     }
 
@@ -121,7 +121,7 @@ fun MainScreen(
         }
     }
 
-    observeLiveData(spendsViewModel.finishPeriod) {
+    observeLiveData(spendsViewModel.periodFinished) {
         if (it) appViewModel.openSheet(PathState(FINISH_PERIOD_SHEET))
     }
 

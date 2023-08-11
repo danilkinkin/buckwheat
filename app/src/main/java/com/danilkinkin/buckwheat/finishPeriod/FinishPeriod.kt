@@ -73,8 +73,8 @@ fun FinishPeriod(
                     WholeBudgetCard(
                         budget = wholeBudget,
                         currency = spendsViewModel.currency.value!!,
-                        startDate = spendsViewModel.startDate.value!!,
-                        finishDate = spendsViewModel.finishDate.value!!,
+                        startDate = spendsViewModel.startPeriodDate.value!!,
+                        finishDate = spendsViewModel.finishPeriodDate.value!!,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     if (spends.isNotEmpty()) {
@@ -121,8 +121,8 @@ fun FinishPeriod(
                             modifier = Modifier.fillMaxWidth(),
                             budget = wholeBudget,
                             spends = spends,
-                            startDate = spendsViewModel.startDate.value!!,
-                            finishDate = spendsViewModel.finishDate.value!!,
+                            startDate = spendsViewModel.startPeriodDate.value!!,
+                            finishDate = spendsViewModel.finishPeriodDate.value!!,
                             currency = spendsViewModel.currency.value!!,
                         )
                         Spacer(modifier = Modifier.height(16.dp))

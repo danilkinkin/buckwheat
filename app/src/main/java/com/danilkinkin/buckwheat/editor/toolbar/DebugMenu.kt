@@ -84,17 +84,17 @@ fun DebugMenu(
             )
             Header("Debug budget")
             Spacer(Modifier.height(16.dp))
-            MonospaceText("Начало --------------- ${spendsViewModel.startDate.value!!}")
-            MonospaceText("Конец ---------------- ${spendsViewModel.finishDate.value!!}")
-            MonospaceText("Последний пересчет --- ${spendsViewModel.lastReCalcBudgetDate}")
+            MonospaceText("Начало --------------- ${spendsViewModel.startPeriodDate.value!!}")
+            MonospaceText("Конец ---------------- ${spendsViewModel.finishPeriodDate.value!!}")
+            MonospaceText("Последний пересчет --- ${spendsViewModel.lastChangeDailyBudgetDate}")
             Spacer(Modifier.height(16.dp))
 
-            val days = countDays(spendsViewModel.finishDate.value!!, spendsViewModel.startDate.value!!)
-            val restDays = countDaysToToday(spendsViewModel.finishDate.value!!)
+            val days = countDays(spendsViewModel.finishPeriodDate.value!!, spendsViewModel.startPeriodDate.value!!)
+            val restDays = countDaysToToday(spendsViewModel.finishPeriodDate.value!!)
             MonospaceText("Всего дней -------------------- $days")
             MonospaceText("Прошло дней ------------------- ${days - restDays}")
             MonospaceText("Осталось дней ----------------- $restDays")
-            MonospaceText("Дней с последнего пересчета --- ${abs(countDaysToToday(spendsViewModel.lastReCalcBudgetDate!!))}")
+            MonospaceText("Дней с последнего пересчета --- ${abs(countDaysToToday(spendsViewModel.lastChangeDailyBudgetDate!!))}")
             Spacer(Modifier.height(16.dp))
 
             val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
