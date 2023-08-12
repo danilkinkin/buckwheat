@@ -50,9 +50,9 @@ fun MinMaxSpentCard(
 
     val spent = if (isMin) minSpent else maxSpent
 
-    val minValue = minSpent?.value ?: BigDecimal(0)
-    val maxValue = maxSpent?.value ?: BigDecimal(0)
-    val currValue = spent?.value ?: BigDecimal(0)
+    val minValue = minSpent?.value ?: BigDecimal.ZERO
+    val maxValue = maxSpent?.value ?: BigDecimal.ZERO
+    val currValue = spent?.value ?: BigDecimal.ZERO
 
     val harmonizedColor = toPalette(
         harmonize(
@@ -61,7 +61,7 @@ fun MinMaxSpentCard(
                 colorMax,
                 if ((maxValue - minValue).isZero()) {
                     if (isMin) 0f else 1f
-                } else if (maxValue != BigDecimal(0)) {
+                } else if (maxValue != BigDecimal.ZERO) {
                     ((currValue - minValue) / (maxValue - minValue)).toFloat()
                 } else {
                     0f

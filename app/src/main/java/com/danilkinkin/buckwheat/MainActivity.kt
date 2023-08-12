@@ -27,7 +27,8 @@ import kotlinx.coroutines.launch
 import syncOverrideLocale
 import java.util.*
 
-val Context.dataStore by preferencesDataStore("settings")
+val Context.budgetDataStore by preferencesDataStore("budget")
+val Context.settingsDataStore by preferencesDataStore("settings")
 var Context.appTheme by mutableStateOf(ThemeMode.SYSTEM)
 var Context.appLocale: Locale? by mutableStateOf(null)
 var Context.systemLocale: Locale? by mutableStateOf(null)
@@ -42,7 +43,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen().setKeepOnScreenCondition { !isDone.value }
         lifecycleScope.launch {
-            context.dataStore.data.first()
+            context.settingsDataStore.data.first()
         }
 
         super.onCreate(savedInstanceState)

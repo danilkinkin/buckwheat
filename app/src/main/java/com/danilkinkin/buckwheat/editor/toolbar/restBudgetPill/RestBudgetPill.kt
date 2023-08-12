@@ -3,7 +3,6 @@ package com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.ui.geometry.Size
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -12,8 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -29,105 +26,47 @@ import com.danilkinkin.buckwheat.base.WavyShape
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.editor.EditStage
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.ui.*
 import com.danilkinkin.buckwheat.util.*
 import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.util.*
-import kotlin.math.ceil
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RowScope.RestBudgetPill(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
+    restBudgetPillViewModel: RestBudgetPillViewModel = hiltViewModel(),
 ) {
     val localDensity = LocalDensity.current
 
     val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
 
-    var restBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
-    var restBudgetAbsoluteValue by remember { mutableStateOf(BigDecimal(0)) }
-    var budgetPerDaySplit by remember { mutableStateOf("") }
-    var previewBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
-    var finalBudgetValue by remember { mutableStateOf(BigDecimal(0)) }
-    var dailyBudget by remember { mutableStateOf(BigDecimal(0)) }
-    var editing by remember { mutableStateOf(false) }
-    var overdaft by remember { mutableStateOf(false) }
-    var endBudget by remember { mutableStateOf(false) }
-    var percent by remember { mutableStateOf(BigDecimal(0)) }
-    var percentReal by remember { mutableStateOf(BigDecimal(0)) }
-    var dataIsLoading by remember { mutableStateOf(true) }
-
-
-    fun calculateValues() {
-        if (spendsViewModel.finishPeriodDate.value === null) return
-
-        val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
-        dailyBudget = spendsViewModel.dailyBudget.value!!
-        val currentSpent = editorViewModel.currentSpent
-
-        val newBudget = dailyBudget - spentFromDailyBudget - currentSpent
-
-        overdaft = newBudget < BigDecimal(0)
-        restBudgetValue = newBudget
-        restBudgetAbsoluteValue = restBudgetValue.coerceAtLeast(BigDecimal(0))
-
-        val newPerDayBudget = spendsViewModel.whatBudgetForDay(
-            excludeCurrentDay = true,
-            notCommittedSpent = currentSpent,
-        )
-
-        endBudget = newPerDayBudget <= BigDecimal(0)
-
-        budgetPerDaySplit = prettyCandyCanes(
-            newPerDayBudget.coerceAtLeast(BigDecimal(0)),
-            currency = currency,
-        )
-
-        percent = if (dailyBudget > BigDecimal(0)) restBudgetValue.divide(
-            dailyBudget,
-            5,
-            RoundingMode.HALF_EVEN
-        ) else BigDecimal(0)
-        percentReal = if (dailyBudget > BigDecimal(0)) (dailyBudget - spentFromDailyBudget).divide(
-            dailyBudget,
-            5,
-            RoundingMode.HALF_EVEN
-        ) else BigDecimal(0)
-
-        previewBudgetValue = finalBudgetValue
-        finalBudgetValue = if (restBudgetValue >= 0.toBigDecimal()) {
-            restBudgetValue
-        } else {
-            newPerDayBudget.coerceAtLeast(BigDecimal(0))
-        }
-
-        dataIsLoading = false
-    }
+    val isOverdraft by restBudgetPillViewModel.isOverdraft.observeAsState(false)
+    val isBudgetEnd by restBudgetPillViewModel.isBudgetEnd.observeAsState(false)
+    val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(0f)
+    val percentWithoutNewSpent by restBudgetPillViewModel.percentWithoutNewSpent.observeAsState(0f)
+    val todayBudget by restBudgetPillViewModel.todayBudget.observeAsState("")
+    val newDailyBudget by restBudgetPillViewModel.newDailyBudget.observeAsState("")
 
     observeLiveData(spendsViewModel.dailyBudget) {
-        calculateValues()
+        restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
     }
 
     observeLiveData(spendsViewModel.spentFromDailyBudget) {
-        calculateValues()
+        restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
     }
 
     observeLiveData(editorViewModel.stage) {
-        editing = it == EditStage.EDIT_SPENT
-
-        calculateValues()
+        restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
     }
 
     DisposableEffect(currency) {
-        calculateValues()
+        restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
 
         onDispose { }
     }
@@ -149,8 +88,9 @@ fun RowScope.RestBudgetPill(
 
         anim()
     }
-    val percentAnim = if (dataIsLoading) 1f else animateFloatAsState(
-        targetValue = percent.toFloat().coerceAtLeast(0f).coerceIn(0f, 0.98f),
+    val percentAnim = animateFloatAsState(
+        label = "percentAnim",
+        targetValue = percentWithNewSpent.coerceIn(0f, 0.98f),
         animationSpec = TweenSpec(300),
     ).value
 
@@ -168,7 +108,7 @@ fun RowScope.RestBudgetPill(
         )
     )
 
-    if (hideOverspendingWarn && restBudgetValue < 0.toBigDecimal()) {
+    if (hideOverspendingWarn && isBudgetEnd) {
         BigIconButton(
             icon = painterResource(R.drawable.ic_balance_wallet),
             contentDescription = null,
@@ -193,9 +133,10 @@ fun RowScope.RestBudgetPill(
 
             Box(Modifier.fillMaxHeight()) {
                 Box(Modifier.fillMaxSize()) {
-                    if (percentReal.toFloat() < 0.9999f) {
+                    if (percentWithNewSpent < 0.9999f) {
                         val percentRealAnim by animateFloatAsState(
-                            targetValue = percentReal.toFloat().coerceIn(0f, 0.98f),
+                            label = "percentRealAnim",
+                            targetValue = percentWithNewSpent.coerceIn(0f, 0.98f),
                             animationSpec = TweenSpec(250),
                         )
 
@@ -222,7 +163,7 @@ fun RowScope.RestBudgetPill(
                 }
 
                 Box(Modifier.fillMaxSize()) {
-                    if (percent.toFloat() < 0.9999f) {
+                    if (percentWithoutNewSpent < 0.9999f) {
                         Box(
                             modifier = Modifier
                                 .background(
@@ -255,15 +196,16 @@ fun RowScope.RestBudgetPill(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             val textStartOffset by animateDpAsState(
-                                targetValue = if (restBudgetValue < 0.toBigDecimal()) 38.dp else 14.dp,
+                                label = "textStartOffset",
+                                targetValue = if (isOverdraft) 38.dp else 14.dp,
                                 animationSpec = TweenSpec(250),
                             )
 
                             Spacer(modifier = Modifier.width(textStartOffset))
                             Text(
-                                text = if (restBudgetValue >= 0.toBigDecimal()) {
+                                text = if (!isOverdraft && !isBudgetEnd) {
                                     stringResource(R.string.rest_budget_for_today)
-                                } else if (endBudget) {
+                                } else if (isBudgetEnd) {
                                     stringResource(R.string.budget_end)
                                 } else {
                                     stringResource(R.string.new_daily_budget_short)
@@ -276,7 +218,7 @@ fun RowScope.RestBudgetPill(
                             Spacer(modifier = Modifier.width(14.dp))
                         }
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = restBudgetValue < 0.toBigDecimal(),
+                            visible = isOverdraft,
                             enter = fadeIn(tween(durationMillis = 250)),
                             exit = fadeOut(tween(durationMillis = 250)),
                         ) {
@@ -288,7 +230,7 @@ fun RowScope.RestBudgetPill(
                                     contentColor = harmonizedColor.onContainer,
                                 ),
                                 onClick = {
-                                    if (endBudget) {
+                                    if (isBudgetEnd) {
                                         appViewModel.openSheet(
                                             PathState(
                                                 BUDGET_IS_OVER_DESCRIPTION_SHEET
@@ -320,7 +262,7 @@ fun RowScope.RestBudgetPill(
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     AnimatedVisibility(
-                        visible = !endBudget,
+                        visible = !isBudgetEnd,
                         enter = fadeIn(
                             tween(
                                 durationMillis = 150,
@@ -345,10 +287,7 @@ fun RowScope.RestBudgetPill(
                         ) { with(localDensity) { 20.dp.toPx().toInt() } },
                     ) {
                         AnimatedNumber(
-                            value = prettyCandyCanes(
-                                if (!endBudget) finalBudgetValue else previewBudgetValue,
-                                currency = currency,
-                            ),
+                            value = if (isOverdraft) newDailyBudget else todayBudget,
                             style = MaterialTheme.typography.displayLarge.copy(
                                 fontSize = MaterialTheme.typography.headlineSmall.fontSize
                             ),

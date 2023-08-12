@@ -27,7 +27,7 @@ fun Total(
     val textColor = LocalContentColor.current
 
     Column {
-        if (budget > BigDecimal(0) && days > 0) {
+        if (budget > BigDecimal.ZERO && days > 0) {
             Text(
                 text = stringResource(R.string.total_title),
                 style = MaterialTheme.typography.titleMedium,
@@ -68,7 +68,7 @@ fun Total(
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     }
-                    if (budget <= BigDecimal(0)) {
+                    if (budget <= BigDecimal.ZERO) {
                         Text(
                             text = "- " + stringResource(id = R.string.budget_must_greater_zero),
                             style = MaterialTheme.typography.bodyMedium,

@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.*
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.PreferencesGlanceStateDefinition
-import com.danilkinkin.buckwheat.di.DatabaseRepository
+import com.danilkinkin.buckwheat.di.SpendsRepository
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +48,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
     val coroutineScope = CoroutineScope(Dispatchers.IO + job)
 
     @Inject
-    lateinit var databaseRepository: DatabaseRepository
+    lateinit var databaseRepository: SpendsRepository
 
     override fun onUpdate(
         context: Context,
@@ -87,7 +87,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
     }
 
     private fun observeData(context: Context) {
-        coroutineScope.launch {
+        /* coroutineScope.launch {
 
             val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(glanceAppWidget.javaClass)
 
@@ -102,25 +102,25 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
             val spentFromDailyBudget: BigDecimal = try {
                 storageDao.get("spentFromDailyBudget").value.toBigDecimal()
             } catch (e: Exception) {
-                0.0.toBigDecimal()
+                BigDecimal.ZERO
             }
 
             val dailyBudget: BigDecimal = try {
                 storageDao.get("dailyBudget").value.toBigDecimal()
             } catch (e: Exception) {
-                0.0.toBigDecimal()
+                BigDecimal.ZERO
             }
 
             val spent: BigDecimal = try {
                 storageDao.get("spent").value.toBigDecimal()
             } catch (e: Exception) {
-                0.0.toBigDecimal()
+                BigDecimal.ZERO
             }
 
             val budget: BigDecimal = try {
                 storageDao.get("budget").value.toBigDecimal()
             } catch (e: Exception) {
-                0.toBigDecimal()
+                BigDecimal.ZERO
             }
 
             val currency: ExtendCurrency = try {
@@ -160,19 +160,19 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
                     spentFromDailyBudget = spentFromDailyBudget,
                 )
 
-                val endBudget = newPerDayBudget <= BigDecimal(0)
+                val endBudget = newPerDayBudget <= BigDecimal.ZERO
 
                 val percent =
-                    if (dailyBudget > BigDecimal(0)) (dailyBudget - spentFromDailyBudget).divide(
+                    if (dailyBudget > BigDecimal.ZERO) (dailyBudget - spentFromDailyBudget).divide(
                         dailyBudget,
                         5,
                         RoundingMode.HALF_EVEN
-                    ) else BigDecimal(0)
+                    ) else BigDecimal.ZERO
 
-                val finalBudgetValue = if (newBudget >= 0.toBigDecimal()) {
+                val finalBudgetValue = if (newBudget >= BigDecimal.ZERO) {
                     newBudget
                 } else {
-                    newPerDayBudget.coerceAtLeast(BigDecimal(0))
+                    newPerDayBudget.coerceAtLeast(BigDecimal.ZERO)
                 }
 
                 glanceIds.forEach { glanceId ->
@@ -186,7 +186,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
                                 this[todayBudgetPreferenceKey] = finalBudgetValue.toString()
                                 this[currencyPreferenceKey] = currency.value.toString()
                                 this[stateBudgetPreferenceKey] =
-                                    if (newBudget >= 0.toBigDecimal()) {
+                                    if (newBudget >= BigDecimal.ZERO) {
                                         StateBudget.NORMAL.name
                                     } else if (endBudget) {
                                         StateBudget.IS_OVER.name
@@ -201,6 +201,6 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
                 }
             }
 
-        }
+        } */
     }
 }

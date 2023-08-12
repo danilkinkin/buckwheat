@@ -24,6 +24,7 @@ import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditMode
 import com.danilkinkin.buckwheat.editor.EditStage
 import com.danilkinkin.buckwheat.editor.EditorViewModel
@@ -41,9 +42,7 @@ fun EditorToolbar(
     val coroutineScope = rememberCoroutineScope()
     val isDebug = appViewModel.isDebug.observeAsState(false)
     val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
-    val showSettingsDot = remember {
-        mutableStateOf(appViewModel.getBooleanValue("previewWidgets", true))
-    }
+    val isTutorialPassed by appViewModel.isTutorialPassed(TUTORS.WIDGETS_PREVIEW).observeAsState(false)
 
     val spendsCountScale = remember { Animatable(1f) }
 
@@ -95,12 +94,10 @@ fun EditorToolbar(
                 icon = painterResource(R.drawable.ic_settings),
                 contentDescription = null,
                 onClick = {
-                    appViewModel.openSheet(PathState(SETTINGS_SHEET, callback = {
-                        showSettingsDot.value = appViewModel.getBooleanValue("previewWidgets", true)
-                    }))
+                    appViewModel.openSheet(PathState(SETTINGS_SHEET))
                 },
             )
-            if (showSettingsDot.value) {
+            if (!isTutorialPassed) {
                 Box(
                     modifier = Modifier
                         .offset((-10).dp, 10.dp)

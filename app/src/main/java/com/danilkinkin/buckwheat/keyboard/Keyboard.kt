@@ -260,7 +260,7 @@ fun Keyboard(
                                     appViewModel.setIsDebug(!appViewModel.isDebug.value!!)
 
                                     coroutineScope.launch {
-                                        appViewModel.snackbarHostState.showSnackbar(
+                                        appViewModel.showSnackbar(
                                             "Debug ${
                                                 if (appViewModel.isDebug.value!!) {
                                                     "ON"

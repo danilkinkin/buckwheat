@@ -28,6 +28,7 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.Editor
 import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.keyboard.Keyboard
@@ -96,18 +97,18 @@ fun MainScreen(
         key = isNightModeM.value,
     )
 
-    LaunchedEffect(Unit) {
-        spendsViewModel.lastRemovedSpent.collectLatest {
-            val snackbarResult = appViewModel.snackbarHostState.showSnackbar(
-                message = snackBarMessage,
-                actionLabel = snackBarAction,
-                duration = SnackbarDuration.Long,
-            )
-
+    observeLiveData(spendsViewModel.lastRemovedSpent) {
+        appViewModel.showSnackbar(
+            message = snackBarMessage,
+            actionLabel = snackBarAction,
+            duration = SnackbarDuration.Long,
+        ) { snackbarResult ->
             if (snackbarResult == SnackbarResult.ActionPerformed) {
-                spendsViewModel.undoRemoveSpent(it)
+                spendsViewModel.undoRemoveSpent()
             }
         }
+
+
     }
 
     observeLiveData(spendsViewModel.requireDistributionRestedBudget) {
@@ -117,7 +118,7 @@ fun MainScreen(
     observeLiveData(spendsViewModel.requireSetBudget) {
         if (it) {
             appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
-            appViewModel.setBooleanValue("previewWidgets", false)
+            appViewModel.passTutorial(TUTORS.WIDGETS_PREVIEW)
         }
     }
 
@@ -292,8 +293,6 @@ fun MainScreen(
 fun BoxScope.SnackbarHost(
     appViewModel: AppViewModel = viewModel(),
 ) {
-    val snackbarHostState = remember { appViewModel.snackbarHostState }
-
     Column(
         horizontalAlignment = Alignment.End,
         modifier = Modifier
@@ -301,7 +300,7 @@ fun BoxScope.SnackbarHost(
             .fillMaxWidth()
             .navigationBarsPadding(),
     ) {
-        SwipeableSnackbarHost(hostState = snackbarHostState)
+        SwipeableSnackbarHost(hostState = remember { appViewModel._snackbarHostState })
     }
 }
 

@@ -9,7 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.danilkinkin.buckwheat.appLocale
-import com.danilkinkin.buckwheat.dataStore
+import com.danilkinkin.buckwheat.settingsDataStore
 import com.danilkinkin.buckwheat.systemLocale
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -52,7 +52,7 @@ fun OverrideLocalize(content: @Composable () -> Unit) {
 }
 
 suspend fun switchOverrideLocale(context: Context, localeCode: String?) {
-    context.dataStore.edit {
+    context.settingsDataStore.edit {
         if (localeCode != null) {
             it[stringPreferencesKey("locale")] = localeCode
         } else {
@@ -66,7 +66,7 @@ suspend fun switchOverrideLocale(context: Context, localeCode: String?) {
 fun syncOverrideLocale(context: Context) {
     context.systemLocale = context.resources.configuration.locales[0]
 
-    val currentValue = runBlocking { context.dataStore.data.first() }
+    val currentValue = runBlocking { context.settingsDataStore.data.first() }
 
     val localeCode = currentValue[stringPreferencesKey("locale")]
 

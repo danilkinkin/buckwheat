@@ -1,16 +1,21 @@
 package com.danilkinkin.buckwheat.data
 
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.danilkinkin.buckwheat.data.entities.Storage
-import com.danilkinkin.buckwheat.di.DatabaseRepository
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.danilkinkin.buckwheat.di.SettingsRepository
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.effects.ConfettiController
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class SystemBarState (
@@ -29,12 +34,28 @@ data class PathState (
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val db: DatabaseRepository,
+    private val settingsRepository: SettingsRepository,
 ) : ViewModel() {
-    private val storage = db.storageDao()
 
-    var snackbarHostState = SnackbarHostState()
+    var _snackbarHostState = SnackbarHostState()
         private set
+    fun showSnackbar(
+        message: String,
+        actionLabel: String? = null,
+        duration: SnackbarDuration =
+            if (actionLabel == null) SnackbarDuration.Short else SnackbarDuration.Indefinite,
+        snackbarResult: (SnackbarResult) -> Unit = {},
+    ) {
+        viewModelScope.launch {
+            val result = _snackbarHostState.showSnackbar(
+                message = message,
+                actionLabel = actionLabel,
+                duration = duration,
+            )
+
+            snackbarResult(result)
+        }
+    }
 
     var confettiController = ConfettiController()
         private set
@@ -47,28 +68,22 @@ class AppViewModel @Inject constructor(
 
     var sheetStates: MutableLiveData<Map<String, PathState>> = MutableLiveData(emptyMap())
 
-    var isDebug: MutableLiveData<Boolean> = MutableLiveData(try {
-        storage.get("isDebug").value.toBoolean()
-    } catch (e: Exception) {
-        false
-    })
+    var isDebug = settingsRepository.isDebug().asLiveData()
 
-    var showRestBudgetCardByDefault: MutableLiveData<Boolean> = MutableLiveData(try {
-        storage.get("showRestBudgetCardByDefault").value.toBoolean()
-    } catch (e: Exception) {
-        true
-    })
+    var showRestBudgetCardByDefault = settingsRepository.isShowRestedBudgetCardByDefault().asLiveData()
+
+    fun isTutorialPassed(name: TUTORS) = settingsRepository.isTutorialPassed(name).asLiveData()
 
     fun setShowRestBudgetCardByDefault(showByDefault: Boolean) {
-        storage.set(Storage("showRestBudgetCardByDefault", showByDefault.toString()))
-
-        showRestBudgetCardByDefault.value = showByDefault
+        viewModelScope.launch {
+            settingsRepository.switchShowRestedBudgetCardByDefault(showByDefault)
+        }
     }
 
     fun setIsDebug(debug: Boolean) {
-        storage.set(Storage("isDebug", debug.toString()))
-
-        isDebug.value = debug
+        viewModelScope.launch {
+            settingsRepository.switchDebug(debug)
+        }
     }
 
     fun openSheet(state: PathState) {
@@ -79,16 +94,9 @@ class AppViewModel @Inject constructor(
         sheetStates.value = sheetStates.value!!.minus(name)
     }
 
-    fun getBooleanValue(key: String, defaultValue: Boolean = false): Boolean {
-        return try {
-            val value = storage.get(key).value.toBoolean()
-            value
-        } catch (e: Exception) {
-            defaultValue
+    fun passTutorial(name: TUTORS) {
+        viewModelScope.launch {
+            settingsRepository.passTutorial(name)
         }
-    }
-
-    fun setBooleanValue(key: String, value: Boolean) {
-        storage.set(Storage(key, value.toString()))
     }
 }

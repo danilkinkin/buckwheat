@@ -4,10 +4,10 @@ import com.danilkinkin.buckwheat.data.dao.SpentDao
 import com.danilkinkin.buckwheat.data.dao.StorageDao
 import javax.inject.Inject
 
-class DatabaseRepository @Inject constructor(
-    private val spentDao: SpentDao,
+class StorageRepository @Inject constructor(
     private val storageDao: StorageDao
 ){
-    fun spentDao() = spentDao
     fun storageDao() = storageDao
+
+
 }

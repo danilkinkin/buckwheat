@@ -23,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,6 +43,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.widget.extend.ExtendWidgetReceiver
 import com.danilkinkin.buckwheat.widget.minimal.MinimalWidgetReceiver
 
@@ -48,9 +51,7 @@ const val SETTINGS_TRY_WIDGET_SHEET = "settings.tryWidget"
 
 @Composable
 fun TryWidget(appViewModel: AppViewModel = hiltViewModel(), onTried: () -> Unit) {
-    val showDot = remember {
-        mutableStateOf(appViewModel.getBooleanValue("previewWidgets", true))
-    }
+    val isTutorialPassed by appViewModel.isTutorialPassed(TUTORS.WIDGETS_PREVIEW).observeAsState(false)
 
     Box(contentAlignment = Alignment.TopStart) {
         ButtonRow(
@@ -58,12 +59,11 @@ fun TryWidget(appViewModel: AppViewModel = hiltViewModel(), onTried: () -> Unit)
             text = stringResource(R.string.home_widgets_label),
             onClick = {
                 appViewModel.openSheet(PathState(SETTINGS_TRY_WIDGET_SHEET))
-                appViewModel.setBooleanValue("previewWidgets", false)
-                showDot.value = false
+                appViewModel.passTutorial(TUTORS.WIDGETS_PREVIEW)
                 onTried()
             },
         )
-        if (showDot.value) {
+        if (!isTutorialPassed) {
             Box(
                 modifier = Modifier
                     .offset(38.dp, 10.dp)

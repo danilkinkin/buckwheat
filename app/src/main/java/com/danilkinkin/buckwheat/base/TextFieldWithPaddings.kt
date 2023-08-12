@@ -40,6 +40,7 @@ import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import kotlinx.coroutines.CoroutineStart
+import java.math.BigDecimal
 import kotlin.math.ceil
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -81,7 +82,7 @@ fun TextFieldWithPaddings(
 
     val currSymbol = currency?.let { currency ->
         prettyCandyCanes(
-            0.toBigDecimal(),
+            BigDecimal.ZERO,
             currency,
             maximumFractionDigits = 0,
             minimumFractionDigits = 0,

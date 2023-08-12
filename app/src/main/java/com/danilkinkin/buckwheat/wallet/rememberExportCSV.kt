@@ -60,7 +60,7 @@ fun rememberExportCSV(
         ) { uri ->
             if (uri === null) {
                 coroutineScope.launch {
-                    appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVFailed)
+                    appViewModel.showSnackbar(snackBarExportToCSVFailed)
                 }
 
                 return@rememberLauncherForActivityResult
@@ -75,7 +75,7 @@ fun rememberExportCSV(
                 )
                 val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 
-                spendsViewModel.spentDao.getAllSync().forEach { spent ->
+                spendsViewModel.spends.value!!.forEach { spent ->
                     printer.printRecord(
                         spent.value,
                         spent.comment,
@@ -87,7 +87,7 @@ fun rememberExportCSV(
                 printer.close()
                 stream?.close()
 
-                appViewModel.snackbarHostState.showSnackbar(snackBarExportToCSVSuccess)
+                appViewModel.showSnackbar(snackBarExportToCSVSuccess)
             }
         }
     }

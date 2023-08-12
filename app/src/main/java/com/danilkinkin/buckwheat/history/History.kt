@@ -23,12 +23,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
+import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
@@ -51,14 +54,13 @@ fun History(
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val spends by spendsViewModel.getSpends().observeAsState(initial = null)
-    val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal(0))
+    val spends by spendsViewModel.spends.observeAsState(initial = null)
+    val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal.ZERO)
+    val currency = spendsViewModel.currency.observeAsState(initial = ExtendCurrency.none())
     val startPeriodDate = spendsViewModel.startPeriodDate.observeAsState(initial = Date())
     val finishPeriodDate = spendsViewModel.finishPeriodDate.observeAsState(initial = Date())
     val scrollToBottom = remember { mutableStateOf(true) }
-    val showSwipeTutorial = remember {
-        appViewModel.getBooleanValue("tutorialSwipe", true)
-    }
+    val isTutorialPassed by appViewModel.isTutorialPassed(TUTORS.SWIPE_EDIT_SPENT).observeAsState(false)
     var isUserTrySwipe by remember { mutableStateOf(false) }
 
     DisposableEffect(Unit) {
@@ -69,7 +71,7 @@ fun History(
             appViewModel.lockSwipeable.value = false
 
             if (spends !== null && spends!!.isNotEmpty() && isUserTrySwipe) {
-                appViewModel.setBooleanValue("tutorialSwipe", false)
+                appViewModel.passTutorial(TUTORS.SWIPE_EDIT_SPENT)
             }
         }
     }
@@ -185,7 +187,7 @@ fun History(
                         RowEntityType.DayDivider -> HistoryDateDivider(row.day)
                         RowEntityType.DayTotal -> TotalPerDay(
                             spentPerDay = row.dayTotal!!,
-                            currency = spendsViewModel.currency.value!!,
+                            currency = currency.value,
                         )
                         RowEntityType.Spent -> SwipeActions(
                             startActionsConfig = SwipeActionsConfig(
@@ -212,7 +214,7 @@ fun History(
                                 }
                             ),
                             onTried = { isUserTrySwipe = true },
-                            showTutorial = index == 2 && showSwipeTutorial
+                            showTutorial = index == 2 && !isTutorialPassed,
                         ) { state ->
                             val size = with(LocalDensity.current) {
                                 java.lang.Float.max(
@@ -270,7 +272,7 @@ fun History(
                                 ) {
                                     SpentItem(
                                         spent = row.spent!!,
-                                        currency = spendsViewModel.currency.value!!
+                                        currency = currency.value
                                     )
                                 }
                             }
@@ -282,7 +284,7 @@ fun History(
                     WholeBudgetCard(
                         modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                         budget = budget.value,
-                        currency = spendsViewModel.currency.value!!,
+                        currency = currency.value,
                         startDate = startPeriodDate.value,
                         finishDate = finishPeriodDate.value,
                         colors = CardDefaults.cardColors(

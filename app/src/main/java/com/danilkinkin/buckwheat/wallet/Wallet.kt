@@ -48,13 +48,19 @@ fun Wallet(
 ) {
     val haptic = LocalHapticFeedback.current
 
-    var budget by remember { mutableStateOf(spendsViewModel.budget.value!!) }
+    var budgetCache by remember { mutableStateOf(spendsViewModel.budget.value!!) }
+    val budget by spendsViewModel.budget.observeAsState(BigDecimal.ZERO)
+    val spent by spendsViewModel.spent.observeAsState(BigDecimal.ZERO)
+    val spentFromDailyBudget by spendsViewModel.spentFromDailyBudget.observeAsState(BigDecimal.ZERO)
+    val startPeriodDate by spendsViewModel.startPeriodDate.observeAsState(Date())
+    val finishPeriodDate by spendsViewModel.finishPeriodDate.observeAsState(Date())
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishPeriodDate.value) }
     val currency by spendsViewModel.currency.observeAsState()
-    val spends by spendsViewModel.getSpends().observeAsState()
+    val spends by spendsViewModel.spends.observeAsState()
     val restedBudgetDistributionMethod by spendsViewModel.restedBudgetDistributionMethod.observeAsState()
+
     val restBudget =
-        (spendsViewModel.budget.value!! - spendsViewModel.spent.value!! - spendsViewModel.spentFromDailyBudget.value!!)
+        (budgetCache - spent - spentFromDailyBudget)
 
     val openConfirmChangeBudgetDialog = remember { mutableStateOf(false) }
 
@@ -66,15 +72,15 @@ fun Wallet(
         .coerceAtLeast(16.dp)
 
     val isChange = (
-            budget != spendsViewModel.budget.value
-                    || dateToValue.value != spendsViewModel.finishPeriodDate.value
+            budgetCache != budget
+                    || dateToValue.value != finishPeriodDate
             )
 
-    var isEdit by remember(spendsViewModel.startPeriodDate, spendsViewModel.finishPeriodDate, forceChange) {
+    var isEdit by remember(startPeriodDate, finishPeriodDate, forceChange) {
         mutableStateOf(
-            (spendsViewModel.finishPeriodDate.value !== null && isSameDay(
-                spendsViewModel.startPeriodDate.value!!.time,
-                spendsViewModel.finishPeriodDate.value!!.time
+            (finishPeriodDate !== null && isSameDay(
+                startPeriodDate.time,
+                finishPeriodDate!!.time
             ))
                     || forceChange
         )
@@ -174,7 +180,7 @@ fun Wallet(
                         BudgetConstructor(
                             forceChange = forceChange,
                             onChange = { newBudget, finishDate ->
-                                budget = newBudget
+                                budgetCache = newBudget
                                 dateToValue.value = finishDate
                             }
                         )
@@ -271,7 +277,7 @@ fun Wallet(
                         Divider()
                         Spacer(Modifier.height(24.dp))
                         Total(
-                            budget = budget,
+                            budget = budgetCache,
                             restBudget = restBudget,
                             days = days,
                             currency = currency!!,
@@ -284,7 +290,7 @@ fun Wallet(
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 } else {
                                     spendsViewModel.changeDisplayCurrency(currency!!)
-                                    spendsViewModel.changeBudget(budget, dateToValue.value!!)
+                                    spendsViewModel.changeBudget(budgetCache, dateToValue.value!!)
 
                                     onClose()
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
@@ -293,7 +299,7 @@ fun Wallet(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
-                            enabled = dateToValue.value !== null && countDaysToToday(dateToValue.value!!) > 0 && budget > BigDecimal(
+                            enabled = dateToValue.value !== null && countDaysToToday(dateToValue.value!!) > 0 && budgetCache > BigDecimal(
                                 0
                             )
                         ) {
@@ -316,7 +322,7 @@ fun Wallet(
             windowSizeClass = windowSizeClass,
             onConfirm = {
                 spendsViewModel.changeDisplayCurrency(currency!!)
-                spendsViewModel.changeBudget(budget, dateToValue.value!!)
+                spendsViewModel.changeBudget(budgetCache, dateToValue.value!!)
 
                 onClose()
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)

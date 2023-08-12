@@ -13,6 +13,7 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.runBlocking
+import java.math.BigDecimal
 
 class FocusController {
     var onFocus: MutableState<(() -> Unit)?> = mutableStateOf(null)
@@ -103,7 +104,7 @@ fun CurrentSpendEditor(
                 calculateValues()
 
                 editorViewModel.startCreatingSpent()
-                editorViewModel.modifyEditingSpent(0.toBigDecimal())
+                editorViewModel.modifyEditingSpent(BigDecimal.ZERO)
             }
         }
         focusController.onBlur.value = {

@@ -36,7 +36,7 @@ fun FinishPeriod(
     onCreateNewPeriod: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
-    val spends by spendsViewModel.getSpends().observeAsState(initial = emptyList())
+    val spends by spendsViewModel.spends.observeAsState(emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
     val scrollState = rememberScrollState()
 

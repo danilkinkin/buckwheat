@@ -91,17 +91,19 @@ fun DebugMenu(
 
             val days = countDays(spendsViewModel.finishPeriodDate.value!!, spendsViewModel.startPeriodDate.value!!)
             val restDays = countDaysToToday(spendsViewModel.finishPeriodDate.value!!)
+            val lastChangeDailyBudgetDate = spendsViewModel.lastChangeDailyBudgetDate.value!!
             MonospaceText("Всего дней -------------------- $days")
             MonospaceText("Прошло дней ------------------- ${days - restDays}")
             MonospaceText("Осталось дней ----------------- $restDays")
-            MonospaceText("Дней с последнего пересчета --- ${abs(countDaysToToday(spendsViewModel.lastChangeDailyBudgetDate!!))}")
+            MonospaceText("Дней с последнего пересчета --- $lastChangeDailyBudgetDate")
             Spacer(Modifier.height(16.dp))
 
             val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
+            val howMuchBudgetRest = spendsViewModel.howMuchBudgetRest().value!!
 
-            MonospaceText("Весь бюджет ------------------- ${spendsViewModel.budget.value!!}")
-            MonospaceText("Потрачено из бюджета ---------- ${spendsViewModel.spent.value!! + spentFromDailyBudget}")
-            MonospaceText("Оставшийся бюджет ------------- ${spendsViewModel.howMuchBudgetRest()}")
+            MonospaceText("Весь бюджет ------------------- ${spendsViewModel.budget}")
+            MonospaceText("Потрачено из бюджета ---------- ${spendsViewModel.spent.value!! + spendsViewModel.spentFromDailyBudget.value!!}")
+            MonospaceText("Оставшийся бюджет ------------- $howMuchBudgetRest")
             Spacer(Modifier.height(16.dp))
 
 

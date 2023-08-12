@@ -77,7 +77,7 @@ fun SpendsBudgetCard(
                 colorNotGood,
                 colorGood,
             ),
-            percent.coerceAtLeast(BigDecimal(0)).toFloat(),
+            percent.coerceAtLeast(BigDecimal.ZERO).toFloat(),
         )
     ))
 
@@ -159,7 +159,7 @@ private fun PreviewFull() {
 private fun PreviewOverspending() {
     BuckwheatTheme {
         SpendsBudgetCard(
-            spend = BigDecimal(0),
+            spend = BigDecimal.ZERO,
             budget = BigDecimal(60000),
             currency = ExtendCurrency(type = CurrencyType.NONE),
         )

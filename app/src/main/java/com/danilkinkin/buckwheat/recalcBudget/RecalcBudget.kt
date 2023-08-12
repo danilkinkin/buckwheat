@@ -48,9 +48,9 @@ fun RecalcBudget(
     val restBudget =
         (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!) - spendsViewModel.dailyBudget.value!!
 
-    val requireDistributeBudget = spendsViewModel.howMuchNotSpent()
-    val budgetPerDaySplit = spendsViewModel.whatBudgetForDay()
-    val budgetPerDayAdd = spendsViewModel.whatBudgetForDay(excludeCurrentDay = true)
+    val requireDistributeBudget = spendsViewModel.howMuchNotSpent().value!!
+    val budgetPerDaySplit = spendsViewModel.whatBudgetForDay().value!!
+    val budgetPerDayAdd = spendsViewModel.whatBudgetForDay(excludeCurrentDay = true).value!!
     val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
 
     val navigationBarHeight = WindowInsets.systemBars

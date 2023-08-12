@@ -9,6 +9,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.tooling.preview.Preview
+import java.math.BigDecimal
 import kotlin.math.min
 
 private fun getAnnotatedString(
@@ -59,7 +60,7 @@ private fun visualTransformationAsCurrency(
     val floatDivider = getFloatDivider()
     val fixed = tryConvertStringToNumber(input.text)
     val currSymbol = prettyCandyCanes(
-        0.toBigDecimal(),
+        BigDecimal.ZERO,
         currency,
         maximumFractionDigits = 0,
         minimumFractionDigits = 0,
