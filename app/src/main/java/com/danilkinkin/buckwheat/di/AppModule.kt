@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.di
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
@@ -28,9 +29,4 @@ object AppModule {
     @Singleton
     @Provides
     fun provideSpentDao(db: DatabaseModule) = db.spentDao()
-
-    @Singleton
-    @Provides
-    fun provideStorageDao(db: DatabaseModule) = db.storageDao()
-
 }
