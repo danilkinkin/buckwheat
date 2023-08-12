@@ -133,10 +133,10 @@ fun RowScope.RestBudgetPill(
 
             Box(Modifier.fillMaxHeight()) {
                 Box(Modifier.fillMaxSize()) {
-                    if (percentWithNewSpent < 0.9999f) {
+                    if (percentWithoutNewSpent < 0.9999f) {
                         val percentRealAnim by animateFloatAsState(
                             label = "percentRealAnim",
-                            targetValue = percentWithNewSpent.coerceIn(0f, 0.98f),
+                            targetValue = percentWithoutNewSpent.coerceIn(0f, 0.98f),
                             animationSpec = TweenSpec(250),
                         )
 
@@ -163,7 +163,7 @@ fun RowScope.RestBudgetPill(
                 }
 
                 Box(Modifier.fillMaxSize()) {
-                    if (percentWithoutNewSpent < 0.9999f) {
+                    if (percentAnim < 0.9999f) {
                         Box(
                             modifier = Modifier
                                 .background(
