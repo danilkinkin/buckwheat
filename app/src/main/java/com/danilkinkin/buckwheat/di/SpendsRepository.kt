@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.di
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -41,26 +42,33 @@ val finishPeriodDateStoreKey = longPreferencesKey("finishPeriodDate")
 class SpendsRepository @Inject constructor(
     @ApplicationContext val context: Context,
     private val spentDao: SpentDao,
-){
+    private val getCurrentDateUseCase: GetCurrentDateUseCase,
+) {
     fun getAllSpends(): LiveData<List<Spent>> = spentDao.getAll()
     fun getBudget() = context.budgetDataStore.data.map {
         it[budgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
     }
+
     fun getSpent() = context.budgetDataStore.data.map {
         it[spentStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
     }
+
     fun getDailyBudget() = context.budgetDataStore.data.map {
         it[dailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
     }
+
     fun getSpentFromDailyBudget() = context.budgetDataStore.data.map {
         it[spentFromDailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
     }
-    fun getStartPeriodDate() = context.budgetDataStore.data.map { it ->
-        it[startPeriodDateStoreKey]?.let { value -> Date(value) } ?: Date()
+
+    fun getStartPeriodDate() = context.budgetDataStore.data.map {
+        it[startPeriodDateStoreKey]?.let { value -> Date(value) } ?: getCurrentDateUseCase()
     }
+
     fun getFinishPeriodDate() = context.budgetDataStore.data.map {
         it[finishPeriodDateStoreKey]?.let { value -> Date(value) }
     }
+
     fun getLastChangeDailyBudgetDate() = context.budgetDataStore.data.map {
         it[lastChangeDailyBudgetDateStoreKey]?.let { value -> Date(value) }
     }
@@ -70,11 +78,13 @@ class SpendsRepository @Inject constructor(
             ExtendCurrency(value = value, type = CurrencyType.NONE)
         } ?: ExtendCurrency(value = null, type = CurrencyType.NONE)
     }
+
     fun getRestedBudgetDistributionMethod() = context.budgetDataStore.data.map { it ->
         it[restedBudgetDistributionMethodStoreKey]?.let {
             RestedBudgetDistributionMethod.valueOf(it)
         } ?: RestedBudgetDistributionMethod.ASK
     }
+
     fun getHideOverspendingWarn() = context.budgetDataStore.data.map {
         it[hideOverspendingWarnStoreKey] ?: false
     }
@@ -104,9 +114,18 @@ class SpendsRepository @Inject constructor(
             it[spentStoreKey] = BigDecimal.ZERO.toString()
             it[dailyBudgetStoreKey] = BigDecimal.ZERO.toString()
             it[spentFromDailyBudgetStoreKey] = BigDecimal.ZERO.toString()
-            it[lastChangeDailyBudgetDateStoreKey] = roundToDay(Date()).time
-            it[startPeriodDateStoreKey] = roundToDay(Date()).time
+            it[lastChangeDailyBudgetDateStoreKey] = roundToDay(getCurrentDateUseCase()).time
+            it[startPeriodDateStoreKey] = roundToDay(getCurrentDateUseCase()).time
             it[finishPeriodDateStoreKey] = Date(roundToDay(newFinishDate).time + DAY - 1000).time
+
+            Log.d(
+                "SpendsRepository",
+                "Set budget ["
+                        + "budget: ${it[budgetStoreKey]} "
+                        + "start date: ${Date(it[startPeriodDateStoreKey]!!)} "
+                        + "finish date: ${Date(it[finishPeriodDateStoreKey]!!)}"
+                        + "]"
+            )
         }
 
         setDailyBudget(whatBudgetForDay())
@@ -118,12 +137,21 @@ class SpendsRepository @Inject constructor(
     suspend fun setDailyBudget(newDailyBudget: BigDecimal) {
         context.budgetDataStore.edit {
             val spent: BigDecimal = it[spentStoreKey]?.toBigDecimal()!!
-            val spentFromDailyBudget: BigDecimal = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
+            val spentFromDailyBudget: BigDecimal =
+                it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
 
             it[dailyBudgetStoreKey] = newDailyBudget.toString()
             it[spentStoreKey] = (spent + spentFromDailyBudget).toString()
-            it[lastChangeDailyBudgetDateStoreKey] = roundToDay(Date()).time
+            it[lastChangeDailyBudgetDateStoreKey] = roundToDay(getCurrentDateUseCase()).time
             it[spentFromDailyBudgetStoreKey] = BigDecimal.ZERO.toString()
+
+            Log.d(
+                "SpendsRepository",
+                "Set daily budget ["
+                        + "daily budget: ${it[dailyBudgetStoreKey]} "
+                        + "spent: ${it[spentStoreKey]}"
+                        + "]"
+            )
         }
     }
 
@@ -135,10 +163,12 @@ class SpendsRepository @Inject constructor(
         val spent = getSpent().first()
         val dailyBudget = getDailyBudget().first()
         val spentFromDailyBudget = getSpentFromDailyBudget().first()
-        val finishPeriodDate = getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
+        val finishPeriodDate =
+            getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
 
 
-        val restDays = countDaysToToday(finishPeriodDate) - if (excludeCurrentDay) 1 else 0
+        val restDays =
+            countDays(finishPeriodDate, getCurrentDateUseCase()) - if (excludeCurrentDay) 1 else 0
         var restBudget = budget - spent
 
         if (!excludeCurrentDay) {
@@ -151,12 +181,25 @@ class SpendsRepository @Inject constructor(
             spentFromDailyBudget
         }
 
-        return restBudget
+        val whatBudgetForDay = restBudget
             .divide(
                 restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)),
                 0,
                 RoundingMode.FLOOR
             )
+
+        Log.d(
+            "SpendsRepository",
+            "Check what budget for day ["
+                    + "what budget for day: $whatBudgetForDay "
+                    + "excludeCurrentDay: $excludeCurrentDay "
+                    + "notCommittedSpent: $notCommittedSpent "
+                    + "rest budget: $restBudget "
+                    + "rest days: $restDays"
+                    + "]"
+        )
+
+        return whatBudgetForDay
     }
 
     suspend fun howMuchBudgetRest(): BigDecimal {
@@ -172,18 +215,40 @@ class SpendsRepository @Inject constructor(
         val spent = getSpent().first()
         val dailyBudget = getDailyBudget().first()
         val spentFromDailyBudget = getSpentFromDailyBudget().first()
-        val finishPeriodDate = getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
-        val lastChangeDailyBudgetDate = getLastChangeDailyBudgetDate().first() ?: getStartPeriodDate().first()
+        val finishPeriodDate =
+            getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
+        val lastChangeDailyBudgetDate =
+            getLastChangeDailyBudgetDate().first() ?: getStartPeriodDate().first()
 
 
-        val restDays = countDaysToToday(finishPeriodDate)
-        val skippedDays = abs(countDaysToToday(lastChangeDailyBudgetDate))
-        val restBudget = budget - spent - dailyBudget
+        val restDays = countDays(finishPeriodDate, getCurrentDateUseCase())
+        val skippedDays = countDays(getCurrentDateUseCase(), lastChangeDailyBudgetDate) - 1
+        val restBudget = budget - spent
 
-        return restBudget
-            .divide((restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal())
+        val howMuchNotSpent = restBudget
+            .divide(
+                (restDays + skippedDays).coerceAtLeast(1).toBigDecimal(),
+                2,
+                RoundingMode.HALF_EVEN,
+            )
             .multiply((skippedDays - 1).coerceAtLeast(0).toBigDecimal())
             .plus(dailyBudget - spentFromDailyBudget)
+
+        Log.d(
+            "SpendsRepository",
+            "How much not spent check ["
+                    + "how much not spent: $howMuchNotSpent "
+                    + "rest budget: $restBudget "
+                    + "restDays: $restDays "
+                    + "skippedDays: $skippedDays "
+                    + "lastChangeDailyBudgetDate: $lastChangeDailyBudgetDate "
+                    + "getCurrentDateUseCase: ${getCurrentDateUseCase()} "
+                    + "dailyBudget: $dailyBudget "
+                    + "spentFromDailyBudget: $spentFromDailyBudget "
+                    + "]"
+        )
+
+        return howMuchNotSpent
     }
 
     suspend fun addSpent(newSpent: Spent) {
@@ -192,7 +257,8 @@ class SpendsRepository @Inject constructor(
         context.budgetDataStore.edit {
             if (isToday(newSpent.date)) {
                 val spentFromDailyBudget = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
-                it[spentFromDailyBudgetStoreKey] = (spentFromDailyBudget + newSpent.value).toString()
+                it[spentFromDailyBudgetStoreKey] =
+                    (spentFromDailyBudget + newSpent.value).toString()
             } else {
                 val finishPeriodDate = it[finishPeriodDateStoreKey]?.let { value -> Date(value) }!!
                 val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal()!!
@@ -214,7 +280,8 @@ class SpendsRepository @Inject constructor(
             if (isToday(spentForRemove.date)) {
                 val spentFromDailyBudget = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
 
-                it[spentFromDailyBudgetStoreKey] = (spentFromDailyBudget - spentForRemove.value).toString()
+                it[spentFromDailyBudgetStoreKey] =
+                    (spentFromDailyBudget - spentForRemove.value).toString()
             } else {
                 val finishPeriodDate = it[finishPeriodDateStoreKey]?.let { value -> Date(value) }!!
                 val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal()!!
