@@ -15,8 +15,7 @@ import com.danilkinkin.buckwheat.util.CurrencyType
 import com.danilkinkin.buckwheat.util.DAY
 import com.danilkinkin.buckwheat.util.ExtendCurrency
 import com.danilkinkin.buckwheat.util.countDays
-import com.danilkinkin.buckwheat.util.countDaysToToday
-import com.danilkinkin.buckwheat.util.isToday
+import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.roundToDay
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
@@ -25,7 +24,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.Date
 import javax.inject.Inject
-import kotlin.math.abs
 
 val currencyStoreKey = stringPreferencesKey("currency")
 val restedBudgetDistributionMethodStoreKey = stringPreferencesKey("restedBudgetDistributionMethod")
@@ -255,7 +253,7 @@ class SpendsRepository @Inject constructor(
         this.spentDao.insert(newSpent)
 
         context.budgetDataStore.edit {
-            if (isToday(newSpent.date)) {
+            if (isSameDay(newSpent.date, getCurrentDateUseCase())) {
                 val spentFromDailyBudget = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
                 it[spentFromDailyBudgetStoreKey] =
                     (spentFromDailyBudget + newSpent.value).toString()
@@ -265,9 +263,25 @@ class SpendsRepository @Inject constructor(
                 val spent = it[spentStoreKey]?.toBigDecimal()!!
 
                 val spreadDeltaSpentPerRestDays = newSpent.value
-                    .divide(countDays(finishPeriodDate, newSpent.date).toBigDecimal())
+                    .divide(
+                        countDays(finishPeriodDate, getCurrentDateUseCase()).toBigDecimal(),
+                        0,
+                        RoundingMode.HALF_EVEN,
+                    )
 
-                it[dailyBudgetStoreKey] = (dailyBudget + spreadDeltaSpentPerRestDays).toString()
+                Log.d(
+                    "SpendsRepository",
+                    "Add spent for previous day ["
+                            + "spent: $spent "
+                            + "dailyBudget: $dailyBudget "
+                            + "spreadDeltaSpentPerRestDays: $spreadDeltaSpentPerRestDays "
+                            + "spentDate: ${newSpent.date} "
+                            + "getCurrentDateUseCase: ${getCurrentDateUseCase()} "
+                            + "countDays: ${countDays(finishPeriodDate, getCurrentDateUseCase())} "
+                            + "]"
+                )
+
+                it[dailyBudgetStoreKey] = (dailyBudget - spreadDeltaSpentPerRestDays).toString()
                 it[spentStoreKey] = (spent + newSpent.value).toString()
             }
         }
@@ -277,7 +291,7 @@ class SpendsRepository @Inject constructor(
         this.spentDao.deleteById(spentForRemove.uid)
 
         context.budgetDataStore.edit {
-            if (isToday(spentForRemove.date)) {
+            if (isSameDay(spentForRemove.date, getCurrentDateUseCase())) {
                 val spentFromDailyBudget = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
 
                 it[spentFromDailyBudgetStoreKey] =
@@ -287,8 +301,20 @@ class SpendsRepository @Inject constructor(
                 val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal()!!
                 val spent = it[spentStoreKey]?.toBigDecimal()!!
 
-                val restDays = countDays(finishPeriodDate, spentForRemove.date)
+                val restDays = countDays(finishPeriodDate, getCurrentDateUseCase())
                 val spreadDeltaSpentPerRestDays = spentForRemove.value / restDays.toBigDecimal()
+
+                Log.d(
+                    "SpendsRepository",
+                    "Remove spent from previous day ["
+                            + "spent: $spent "
+                            + "dailyBudget: $dailyBudget "
+                            + "spreadDeltaSpentPerRestDays: $spreadDeltaSpentPerRestDays "
+                            + "spentDate: ${spentForRemove.date} "
+                            + "getCurrentDateUseCase: ${getCurrentDateUseCase()} "
+                            + "countDays: ${countDays(finishPeriodDate, getCurrentDateUseCase())} "
+                            + "]"
+                )
 
                 it[dailyBudgetStoreKey] = (dailyBudget + spreadDeltaSpentPerRestDays).toString()
                 it[spentStoreKey] = (spent - spentForRemove.value).toString()

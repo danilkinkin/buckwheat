@@ -14,7 +14,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.Date
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -40,28 +39,34 @@ class SpendsRepositoryTest {
         )
     }
 
-    @Test
-    fun setBudget() = runTest {
+    private suspend fun setBudget() {
         spendsRepository.changeBudget(
             1000.toBigDecimal(),
             currentDateUseCase.value.toLocalDate().plusDays(4).toDate()
         )
+    }
+
+    private fun rewindTime(days: Long, hours: Long = 0) {
+        currentDateUseCase.value = currentDateUseCase.value
+            .toLocalDateTime()
+            .plusDays(days)
+            .plusHours(hours)
+            .toDate()
+    }
+
+    @Test
+    fun setBudgetTest() = runTest {
+        setBudget()
 
         assert(spendsRepository.getBudget().first() == 1000.toBigDecimal())
         assert(spendsRepository.getDailyBudget().first() == 200.toBigDecimal())
     }
 
     @Test
-    fun addSpent() = runTest {
-        spendsRepository.changeBudget(
-            1000.toBigDecimal(),
-            currentDateUseCase.value.toLocalDate().plusDays(4).toDate()
-        )
+    fun addSpentTest() = runTest {
+        setBudget()
 
-        val spend = Spent(
-            value = 100.toBigDecimal(),
-            date = currentDateUseCase.value,
-        )
+        val spend = Spent(100.toBigDecimal(), currentDateUseCase.value)
         spendsRepository.addSpent(spend)
         val spends = spendsRepository.getAllSpends().value!!
 
@@ -70,11 +75,33 @@ class SpendsRepositoryTest {
     }
 
     @Test
-    fun removeSpend() = runTest {
-        spendsRepository.changeBudget(
-            1000.toBigDecimal(),
-            currentDateUseCase.value.toLocalDate().plusDays(5).toDate()
-        )
+    fun addSpentInPreviousDayTest() = runTest {
+        setBudget()
+
+        val spend = Spent(100.toBigDecimal(), currentDateUseCase.value)
+
+        Log.d("SpendsRepositoryTest", "whatBudgetForDay: ${spendsRepository.whatBudgetForDay()}")
+
+        rewindTime(1, 2)
+
+        Log.d("SpendsRepositoryTest", "whatBudgetForDay: ${spendsRepository.whatBudgetForDay()}")
+
+        spendsRepository.setDailyBudget(spendsRepository.whatBudgetForDay())
+
+        spendsRepository.addSpent(spend)
+
+        Log.d("SpendsRepositoryTest", "spentFromDailyBudget: ${spendsRepository.getSpentFromDailyBudget().first()}")
+        Log.d("SpendsRepositoryTest", "dailyBudget: ${spendsRepository.getDailyBudget().first()}")
+        Log.d("SpendsRepositoryTest", "spent: ${spendsRepository.getSpent().first()}")
+
+        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal())
+        assert(spendsRepository.getDailyBudget().first() == 225.toBigDecimal())
+        assert(spendsRepository.getSpent().first() == 100.toBigDecimal())
+    }
+
+    @Test
+    fun removeSpendTest() = runTest {
+        setBudget()
 
         val spend = Spent(
             value = 200.toBigDecimal(),
@@ -88,13 +115,35 @@ class SpendsRepositoryTest {
     }
 
     @Test
-    fun reCalcBudgetAfterChangeDay() = runTest {
-        spendsRepository.changeBudget(
-            1000.toBigDecimal(),
-            currentDateUseCase.value.toLocalDate().plusDays(4).toDate()
-        )
+    fun removeSpendInAnotherDayTest() = runTest {
+        setBudget()
 
-        currentDateUseCase.value = currentDateUseCase.value.toLocalDateTime().plusDays(1).plusHours(2).toDate()
+        val spend = Spent(
+            value = 100.toBigDecimal(),
+            date = currentDateUseCase.value,
+        )
+        spendsRepository.addSpent(spend)
+
+        rewindTime(1, 2)
+        spendsRepository.setDailyBudget(spendsRepository.whatBudgetForDay())
+
+        spendsRepository.removeSpent(spend)
+        val spends = spendsRepository.getAllSpends().value!!
+
+        Log.d("SpendsRepositoryTest", "spentFromDailyBudget: ${spendsRepository.getSpentFromDailyBudget().first()}")
+        Log.d("SpendsRepositoryTest", "dailyBudget: ${spendsRepository.getDailyBudget().first()}")
+        Log.d("SpendsRepositoryTest", "spent: ${spendsRepository.getSpent().first()}")
+
+        assert(spends.isEmpty())
+        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal())
+        assert(spendsRepository.getDailyBudget().first() == 250.toBigDecimal())
+        assert(spendsRepository.getSpent().first() == 0.toBigDecimal())
+    }
+
+    @Test
+    fun reCalcBudgetAfterChangeDayTest() = runTest {
+        setBudget()
+        rewindTime(1, 2)
 
         assert(spendsRepository.howMuchNotSpent() == 200.toBigDecimal().setScale(2))
 
@@ -105,35 +154,21 @@ class SpendsRepositoryTest {
     }
 
     @Test
-    fun reCalcBudgetAfterSkipFewDay() = runTest {
-        spendsRepository.changeBudget(
-            1000.toBigDecimal(),
-            currentDateUseCase.value.toLocalDate().plusDays(4).toDate()
-        )
-
-        currentDateUseCase.value = currentDateUseCase.value.toLocalDateTime().plusDays(2).plusHours(4).toDate()
-
-        Log.d("reCalcBudgetAfterSkipFewDay", "lastChangeDailyBudgetDate: ${spendsRepository.getLastChangeDailyBudgetDate().first()}")
-        Log.d("reCalcBudgetAfterSkipFewDay", "currentDate: ${currentDateUseCase.value}")
+    fun reCalcBudgetAfterSkipFewDayTest() = runTest {
+        setBudget()
+        rewindTime(2, 4)
 
         assert(spendsRepository.howMuchNotSpent() == 400.toBigDecimal().setScale(2))
 
         spendsRepository.setDailyBudget(spendsRepository.whatBudgetForDay())
-
-        Log.d("reCalcBudgetAfterSkipFewDay", "whatBudgetForDay: ${spendsRepository.whatBudgetForDay()}")
-        Log.d("reCalcBudgetAfterSkipFewDay", "budget: ${spendsRepository.getBudget().first()}")
-        Log.d("reCalcBudgetAfterSkipFewDay", "dailyBudget: ${spendsRepository.getDailyBudget().first()}")
 
         assert(spendsRepository.getBudget().first() == 1000.toBigDecimal())
         assert(spendsRepository.getDailyBudget().first() == 333.toBigDecimal())
     }
 
     @Test
-    fun removeAndReturnSpent() = runTest {
-        spendsRepository.changeBudget(
-            1000.toBigDecimal(),
-            currentDateUseCase.value.toLocalDate().plusDays(4).toDate()
-        )
+    fun removeAndReturnSpentTest() = runTest {
+        setBudget()
 
         val spend = Spent(
             value = 100.toBigDecimal(),
@@ -146,6 +181,28 @@ class SpendsRepositoryTest {
 
         assert(spends.contains(spend))
         assert(spends.size == 1)
+        assert(spendsRepository.getSpentFromDailyBudget().first() == 100.toBigDecimal())
+    }
+
+    @Test
+    fun changeDayOfSpentTest() = runTest {
+        setBudget()
+
+        val spend = Spent(
+            value = 100.toBigDecimal(),
+            date = currentDateUseCase.value,
+        )
+        spendsRepository.addSpent(spend)
+
+        rewindTime(2, 4)
+        spendsRepository.setDailyBudget(spendsRepository.whatBudgetForDay())
+
+        spendsRepository.removeSpent(spend)
+
+        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal())
+
+        spendsRepository.addSpent(spend.copy(date = currentDateUseCase.value))
+
         assert(spendsRepository.getSpentFromDailyBudget().first() == 100.toBigDecimal())
     }
 }

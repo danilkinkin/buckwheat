@@ -46,7 +46,11 @@ fun isToday(date: Date): Boolean {
 }
 
 fun isSameDay(timestampA: Long, timestampB: Long): Boolean {
-    return roundToDay(Date(timestampA)) == roundToDay(Date(timestampB))
+    return isSameDay(Date(timestampA), Date(timestampB))
+}
+
+fun isSameDay(dateA: Date, dateB: Date): Boolean {
+    return roundToDay(dateA) == roundToDay(dateB)
 }
 
 enum class DateTimeShow {
