@@ -70,13 +70,13 @@ class AppViewModel @Inject constructor(
 
     var isDebug = settingsRepository.isDebug().asLiveData()
 
-    var showRestBudgetCardByDefault = settingsRepository.isShowRestedBudgetCardByDefault().asLiveData()
+    var showSpentCardByDefault = settingsRepository.isShowSpentCardByDefault().asLiveData()
 
     fun isTutorialPassed(name: TUTORS) = settingsRepository.isTutorialPassed(name).asLiveData()
 
-    fun setShowRestBudgetCardByDefault(showByDefault: Boolean) {
+    fun setShowSpentCardByDefault(showByDefault: Boolean) {
         viewModelScope.launch {
-            settingsRepository.switchShowRestedBudgetCardByDefault(showByDefault)
+            settingsRepository.switchShowSpentCardByDefault(showByDefault)
         }
     }
 

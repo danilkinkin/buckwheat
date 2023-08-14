@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 val debugStoreKey = booleanPreferencesKey("debug")
-val showRestedBudgetCardByDefaultStoreKey = booleanPreferencesKey("showRestedBudgetCardByDefault")
+val showSpentCardByDefaultStoreKey = booleanPreferencesKey("showSpentCardByDefault")
 
 enum class TUTORS(val key: Preferences.Key<Boolean>) {
     SWIPE_EDIT_SPENT(booleanPreferencesKey("tutorialSwipePassed")),
@@ -21,8 +21,8 @@ class SettingsRepository @Inject constructor(
     @ApplicationContext val context: Context,
 ){
     fun isDebug() = context.settingsDataStore.data.map { it[debugStoreKey] ?: false }
-    fun isShowRestedBudgetCardByDefault() = context.settingsDataStore.data.map {
-        it[showRestedBudgetCardByDefaultStoreKey] ?: false
+    fun isShowSpentCardByDefault() = context.settingsDataStore.data.map {
+        it[showSpentCardByDefaultStoreKey] ?: false
     }
     fun isTutorialPassed(name: TUTORS) = context.settingsDataStore.data.map { it[name.key] ?: false }
 
@@ -32,9 +32,9 @@ class SettingsRepository @Inject constructor(
         }
     }
 
-    suspend fun switchShowRestedBudgetCardByDefault(isShow: Boolean) {
+    suspend fun switchShowSpentCardByDefault(isShow: Boolean) {
         context.settingsDataStore.edit {
-            it[showRestedBudgetCardByDefaultStoreKey] = isShow
+            it[showSpentCardByDefaultStoreKey] = isShow
         }
     }
 
