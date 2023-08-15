@@ -28,6 +28,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 const val RECALCULATE_DAILY_BUDGET_SHEET = "recalculateDailyBudget"
 
@@ -43,15 +44,26 @@ fun RecalcBudget(
     val coroutineScope = rememberCoroutineScope()
 
     var rememberChoice by remember { mutableStateOf(false) }
-    val restDays = countDaysToToday(spendsViewModel.finishPeriodDate.value!!)
 
-    val restBudget =
-        (spendsViewModel.budget.value!! - spendsViewModel.spent.value!!) - spendsViewModel.dailyBudget.value!!
+    val budget by spendsViewModel.budget.observeAsState()
+    val spent by spendsViewModel.spent.observeAsState()
+    val dailyBudget by spendsViewModel.dailyBudget.observeAsState()
+    val finishPeriodDate by spendsViewModel.finishPeriodDate.observeAsState()
+    val howMuchNotSpent by spendsViewModel.howMuchNotSpent().observeAsState(BigDecimal.ZERO)
+    val whatBudgetForDay by spendsViewModel.whatBudgetForDay().observeAsState(BigDecimal.ZERO)
+    val budgetPerDayAdd by spendsViewModel.whatBudgetForDay(excludeCurrentDay = true)
+        .observeAsState(
+            BigDecimal.ZERO
+        )
 
-    val requireDistributeBudget = spendsViewModel.howMuchNotSpent().value!!
-    val budgetPerDaySplit = spendsViewModel.whatBudgetForDay().value!!
-    val budgetPerDayAdd = spendsViewModel.whatBudgetForDay(excludeCurrentDay = true).value!!
-    val budgetPerDayAddDailyBudget = budgetPerDayAdd + requireDistributeBudget
+    val restDays = finishPeriodDate?.let { countDaysToToday(it) } ?: 0
+
+    val restBudget = budget
+        ?.minus(spent ?: BigDecimal.ZERO)
+        ?.minus(dailyBudget ?: BigDecimal.ZERO)
+        ?: BigDecimal.ZERO
+
+    val budgetPerDayAddDailyBudget = budgetPerDayAdd + howMuchNotSpent
 
     val navigationBarHeight = WindowInsets.systemBars
         .asPaddingValues()
@@ -123,7 +135,7 @@ fun RecalcBudget(
                     Spacer(Modifier.height(24.dp))
                     Text(
                         text = prettyCandyCanes(
-                            requireDistributeBudget,
+                            howMuchNotSpent,
                             currency = spendsViewModel.currency.value!!,
                         ),
                         style = MaterialTheme.typography.displayLarge,
@@ -169,17 +181,17 @@ fun RecalcBudget(
                                 stringResource(
                                     R.string.split_rest_days_description,
                                     prettyCandyCanes(
-                                        budgetPerDaySplit,
+                                        whatBudgetForDay,
                                         currency = spendsViewModel.currency.value!!,
                                     ),
                                 )
                             )
                         },
                         secondDescription = if (isDebug.value) {
-                            { Text("($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $budgetPerDaySplit") }
+                            { Text("($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $whatBudgetForDay") }
                         } else null,
                         onClick = {
-                            spendsViewModel.setDailyBudget(budgetPerDaySplit)
+                            spendsViewModel.setDailyBudget(whatBudgetForDay)
                             if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
                                 RestedBudgetDistributionMethod.REST
                             )
@@ -195,7 +207,7 @@ fun RecalcBudget(
                                 stringResource(
                                     R.string.add_current_day_description,
                                     prettyCandyCanes(
-                                        requireDistributeBudget + budgetPerDayAdd,
+                                        howMuchNotSpent + budgetPerDayAdd,
                                         currency = spendsViewModel.currency.value!!,
                                     ),
                                     prettyCandyCanes(
@@ -209,12 +221,12 @@ fun RecalcBudget(
                             {
                                 Text(
                                     "$restBudget / $restDays = $budgetPerDayAdd " +
-                                            "\n${budgetPerDayAdd} + $requireDistributeBudget = $budgetPerDayAddDailyBudget"
+                                            "\n${budgetPerDayAdd} + $howMuchNotSpent = $budgetPerDayAddDailyBudget"
                                 )
                             }
                         } else null,
                         onClick = {
-                            spendsViewModel.setDailyBudget(budgetPerDayAdd + requireDistributeBudget)
+                            spendsViewModel.setDailyBudget(budgetPerDayAdd + howMuchNotSpent)
                             if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
                                 RestedBudgetDistributionMethod.ADD_TODAY
                             )
