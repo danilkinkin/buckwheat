@@ -298,6 +298,7 @@ fun Wallet(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .heightIn(60.dp)
                                 .padding(horizontal = 16.dp),
                             enabled = dateToValue.value !== null && countDaysToToday(dateToValue.value!!) > 0 && budgetCache > BigDecimal(
                                 0
@@ -309,6 +310,12 @@ fun Wallet(
                                 } else {
                                     stringResource(R.string.apply)
                                 },
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Icon(
+                                painter = painterResource(R.drawable.ic_arrow_forward),
+                                contentDescription = null,
                             )
                         }
                     }
