@@ -24,8 +24,8 @@ fun RowScope.CancelEditSpent(
     Card(
         modifier = Modifier
             .weight(1F)
-            .padding(0.dp, 6.dp)
-            .height(44.dp),
+            .padding(0.dp, 5.dp)
+            .height(46.dp),
         shape = CircleShape,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,

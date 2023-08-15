@@ -128,8 +128,8 @@ fun RowScope.RestBudgetPill(
         Card(
             modifier = Modifier
                 .weight(1F)
-                .padding(0.dp, 6.dp)
-                .height(44.dp),
+                .padding(0.dp, 5.dp)
+                .height(46.dp),
             shape = CircleShape,
             colors = CardDefaults.cardColors(
                 containerColor = harmonizedColor.container.copy(alpha = 0.4f),
@@ -222,7 +222,7 @@ fun RowScope.RestBudgetPill(
                         ) {
                             val textStartOffset by animateDpAsState(
                                 label = "textStartOffset",
-                                targetValue = if (isOverdraft) 38.dp else 14.dp,
+                                targetValue = if (isOverdraft) 38.dp else 18.dp,
                                 animationSpec = TweenSpec(250),
                             )
 
@@ -318,7 +318,7 @@ fun RowScope.RestBudgetPill(
                             ),
                         )
                     }
-                    Spacer(modifier = Modifier.width(14.dp))
+                    Spacer(modifier = Modifier.width(16.dp))
                 }
             }
         }

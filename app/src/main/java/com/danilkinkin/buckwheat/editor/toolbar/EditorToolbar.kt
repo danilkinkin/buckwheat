@@ -72,7 +72,7 @@ fun EditorToolbar(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = if (isDebug.value) 6.dp else 20.dp, end = 6.dp, top = 12.dp)
+            .padding(start = if (isDebug.value) 6.dp else 20.dp, end = 6.dp, top = 6.dp)
             .statusBarsPadding(),
     ) {
         if (isDebug.value) {
