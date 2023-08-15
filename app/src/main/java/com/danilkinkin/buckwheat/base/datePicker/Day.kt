@@ -23,7 +23,14 @@ import java.time.LocalDate
 
 @Composable
 internal fun DayOfWeekHeading(day: String, modifier: Modifier = Modifier) {
-    DayContainer(modifier = modifier) {
+    Box(
+        modifier = modifier
+            .height(CELL_SIZE)
+            .widthIn(min = CELL_SIZE)
+            .fillMaxWidth()
+            .background(Color.Transparent),
+        contentAlignment = Alignment.Center
+    ) {
         Text(
             modifier = Modifier
                 .fillMaxSize()
@@ -77,7 +84,6 @@ private fun DayContainer(
         } else {
             content()
         }
-
     }
 }
 
