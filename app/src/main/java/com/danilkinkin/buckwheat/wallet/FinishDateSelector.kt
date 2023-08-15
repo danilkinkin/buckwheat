@@ -146,7 +146,7 @@ private fun FinishDateSelectorTopAppBar(
                             ),
                             days,
                         ),
-                        style = MaterialTheme.typography.labelLarge.copy(
+                        style = MaterialTheme.typography.titleMedium.copy(
                             color = MaterialTheme.colorScheme.onSurface
                                 .copy(alpha = if (calendarState.calendarUiState.value.hasSelectedDates) 0.6f else 0f),
                         ),
