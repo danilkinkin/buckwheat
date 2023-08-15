@@ -169,9 +169,7 @@ class SpendsRepository @Inject constructor(
             countDays(finishPeriodDate, getCurrentDateUseCase()) - if (excludeCurrentDay) 1 else 0
         var restBudget = budget - spent
 
-        if (!excludeCurrentDay) {
-            restBudget -= notCommittedSpent
-        }
+        restBudget -= notCommittedSpent
 
         restBudget -= if (excludeCurrentDay) {
             dailyBudget

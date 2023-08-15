@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.math.ceil
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun RowScope.RestBudgetPill(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
@@ -49,8 +49,7 @@ fun RowScope.RestBudgetPill(
     val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
 
-    val isOverdraft by restBudgetPillViewModel.isOverdraft.observeAsState(false)
-    val isBudgetEnd by restBudgetPillViewModel.isBudgetEnd.observeAsState(false)
+    val budgetState by restBudgetPillViewModel.state.observeAsState(DaileBudgetState.NORMAL)
     val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(0f)
     val percentWithoutNewSpent by restBudgetPillViewModel.percentWithoutNewSpent.observeAsState(0f)
     val todayBudget by restBudgetPillViewModel.todayBudget.observeAsState("")
@@ -118,7 +117,7 @@ fun RowScope.RestBudgetPill(
         )
     )
 
-    if (hideOverspendingWarn && isBudgetEnd) {
+    if (hideOverspendingWarn && budgetState == DaileBudgetState.BUDGET_END) {
         BigIconButton(
             icon = painterResource(R.drawable.ic_balance_wallet),
             contentDescription = null,
@@ -222,18 +221,16 @@ fun RowScope.RestBudgetPill(
                         ) {
                             val textStartOffset by animateDpAsState(
                                 label = "textStartOffset",
-                                targetValue = if (isOverdraft) 38.dp else 18.dp,
+                                targetValue = if (budgetState === DaileBudgetState.OVERDRAFT) 38.dp else 18.dp,
                                 animationSpec = TweenSpec(250),
                             )
 
                             Spacer(modifier = Modifier.width(textStartOffset))
                             Text(
-                                text = if (!isOverdraft && !isBudgetEnd) {
-                                    stringResource(R.string.rest_budget_for_today)
-                                } else if (isBudgetEnd) {
-                                    stringResource(R.string.budget_end)
-                                } else {
-                                    stringResource(R.string.new_daily_budget_short)
+                                text = when (budgetState) {
+                                    DaileBudgetState.NORMAL, null -> stringResource(R.string.rest_budget_for_today)
+                                    DaileBudgetState.OVERDRAFT -> stringResource(R.string.new_daily_budget_short)
+                                    DaileBudgetState.BUDGET_END -> stringResource(R.string.budget_end)
                                 },
                                 style = MaterialTheme.typography.labelLarge,
                                 color = textColor.copy(alpha = 0.6f),
@@ -243,7 +240,7 @@ fun RowScope.RestBudgetPill(
                             Spacer(modifier = Modifier.width(14.dp))
                         }
                         androidx.compose.animation.AnimatedVisibility(
-                            visible = isOverdraft,
+                            visible = budgetState === DaileBudgetState.OVERDRAFT,
                             enter = fadeIn(tween(durationMillis = 250)),
                             exit = fadeOut(tween(durationMillis = 250)),
                         ) {
@@ -255,7 +252,7 @@ fun RowScope.RestBudgetPill(
                                     contentColor = harmonizedColor.onContainer,
                                 ),
                                 onClick = {
-                                    if (isBudgetEnd) {
+                                    if (budgetState === DaileBudgetState.BUDGET_END) {
                                         appViewModel.openSheet(
                                             PathState(
                                                 BUDGET_IS_OVER_DESCRIPTION_SHEET
@@ -286,37 +283,29 @@ fun RowScope.RestBudgetPill(
                         }
                     }
                     Spacer(modifier = Modifier.weight(1f))
-                    AnimatedVisibility(
-                        visible = !isBudgetEnd,
-                        enter = fadeIn(
-                            tween(
-                                durationMillis = 150,
-                                easing = EaseInOutQuad,
-                            )
-                        ) + slideInHorizontally(
-                            tween(
-                                durationMillis = 150,
-                                easing = EaseInOutQuad,
-                            )
-                        ) { with(localDensity) { 20.dp.toPx().toInt() } },
-                        exit = fadeOut(
-                            tween(
-                                durationMillis = 150,
-                                easing = EaseInOutQuad,
-                            )
-                        ) + slideOutHorizontally(
-                            tween(
-                                durationMillis = 150,
-                                easing = EaseInOutQuad,
-                            )
-                        ) { with(localDensity) { 20.dp.toPx().toInt() } },
-                    ) {
-                        AnimatedNumber(
-                            value = if (isOverdraft) newDailyBudget else todayBudget,
-                            style = MaterialTheme.typography.displayLarge.copy(
-                                fontSize = MaterialTheme.typography.headlineSmall.fontSize
-                            ),
-                        )
+                    AnimatedContent(
+                        label = "Budget animated content",
+                        targetState = budgetState
+                    ) { targetState ->
+                        when (targetState) {
+                            DaileBudgetState.NORMAL, null -> {
+                                AnimatedNumber(
+                                    value = todayBudget,
+                                    style = MaterialTheme.typography.displayLarge.copy(
+                                        fontSize = MaterialTheme.typography.headlineSmall.fontSize
+                                    ),
+                                )
+                            }
+                            DaileBudgetState.BUDGET_END -> {}
+                            DaileBudgetState.OVERDRAFT -> {
+                                AnimatedNumber(
+                                    value = newDailyBudget,
+                                    style = MaterialTheme.typography.displayLarge.copy(
+                                        fontSize = MaterialTheme.typography.headlineSmall.fontSize
+                                    ),
+                                )
+                            }
+                        }
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                 }

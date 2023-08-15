@@ -18,14 +18,18 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import javax.inject.Inject
 
+enum class DaileBudgetState {
+    OVERDRAFT,
+    BUDGET_END,
+    NORMAL,
+}
+
 @HiltViewModel
 class RestBudgetPillViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val spendsRepository: SpendsRepository,
 ) : ViewModel() {
-    var isOverdraft = MutableLiveData(false)
-        private set
-    var isBudgetEnd = MutableLiveData(false)
+    var state = MutableLiveData(DaileBudgetState.NORMAL)
         private set
     var percentWithNewSpent = MutableLiveData(0f)
         private set
@@ -52,7 +56,7 @@ class RestBudgetPillViewModel @Inject constructor(
 
             val restFromDayBudget = dailyBudget - spentFromDailyBudget - currentSpent
             val newDailyBudget = spendsRepository.whatBudgetForDay(
-                excludeCurrentDay = false,
+                excludeCurrentDay = true,
                 notCommittedSpent = currentSpent,
             )
 
@@ -78,8 +82,11 @@ class RestBudgetPillViewModel @Inject constructor(
                 currency = currency,
             )
 
-            ths.isOverdraft.value = isOverdraft
-            ths.isBudgetEnd.value = isBudgetEnd
+            ths.state.value = when {
+                isBudgetEnd -> DaileBudgetState.BUDGET_END
+                isOverdraft -> DaileBudgetState.OVERDRAFT
+                else -> DaileBudgetState.NORMAL
+            }
             ths.percentWithNewSpent.value = percentWithNewSpent.toFloat()
             ths.percentWithoutNewSpent.value = percentWithoutNewSpent.toFloat()
             ths.newDailyBudget.value = formattedBudgetNewDailyValue
