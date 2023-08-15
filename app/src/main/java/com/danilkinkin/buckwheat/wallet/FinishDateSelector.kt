@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,8 @@ import com.danilkinkin.buckwheat.base.datePicker.model.CalendarSelectionMode
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
 import com.danilkinkin.buckwheat.base.datePicker.model.selectedDatesFormatted
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.util.countDays
+import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
 import java.time.LocalDate
@@ -38,6 +41,7 @@ fun FinishDateSelector(
             CalendarState(
                 selectionMode = CalendarSelectionMode.RANGE,
                 selectDate = selectDate,
+                disableBeforeDate = Date(),
             )
         }
 
@@ -116,14 +120,38 @@ private fun FinishDateSelectorTopAppBar(
                         bottom = 24.dp,
                     )
             ) {
-                Text(
-                    text = if (!calendarState.calendarUiState.value.hasSelectedDates) {
-                        stringResource(R.string.select_finish_date_title)
+                Column {
+                    Text(
+                        text = if (!calendarState.calendarUiState.value.hasSelectedDates) {
+                            stringResource(R.string.select_finish_date_title)
+                        } else {
+                            selectedDatesFormatted(calendarState)
+                        },
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    val days = if (calendarState.calendarUiState.value.hasSelectedDates) {
+                        countDays(
+                            calendarState.calendarUiState.value.selectedEndDate!!.toDate(),
+                            calendarState.calendarUiState.value.selectedStartDate!!.toDate(),
+                        )
                     } else {
-                        selectedDatesFormatted(calendarState)
-                    },
-                    style = MaterialTheme.typography.titleLarge,
-                )
+                        0
+                    }
+
+                    Text(
+                        text = String.format(
+                            pluralStringResource(
+                                id = R.plurals.days_count,
+                                count = days,
+                            ),
+                            days,
+                        ),
+                        style = MaterialTheme.typography.labelLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurface
+                                .copy(alpha = if (calendarState.calendarUiState.value.hasSelectedDates) 0.6f else 0f),
+                        ),
+                    )
+                }
             }
         }
     }

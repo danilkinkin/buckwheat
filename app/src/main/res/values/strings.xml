@@ -45,9 +45,9 @@
         <item quantity="one">To %1$s (%2$s day)</item>
         <item quantity="other">To %1$s (%2$s days)</item>
     </plurals>
-    <plurals name="finish_date">
-        <item quantity="one">%1$s (%2$s day)</item>
-        <item quantity="other">%1$s (%2$s days)</item>
+    <plurals name="days_count">
+        <item quantity="one">%1$s day</item>
+        <item quantity="other">%1$s days</item>
     </plurals>
     <string name="export_to_csv">Export to CSV</string>
     <string name="finish_date_not_select">No finish date selected</string>

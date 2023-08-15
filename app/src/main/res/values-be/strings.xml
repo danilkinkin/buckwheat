@@ -45,10 +45,10 @@
         <item quantity="few">Да %1$s (%2$s дня)</item>
         <item quantity="many">Да %1$s (%2$s дзён)</item>
     </plurals>
-    <plurals name="finish_date">
-        <item quantity="one">%1$s (%2$s дзень)</item>
-        <item quantity="few">%1$s (%2$s дня)</item>
-        <item quantity="many">%1$s (%2$s дзён)</item>
+    <plurals name="days_count">
+        <item quantity="one">%1$s дзень</item>
+        <item quantity="few">%1$s дня</item>
+        <item quantity="many">%1$s дзён</item>
     </plurals>
     <string name="export_to_csv">Выгрузіць у CSV</string>
     <string name="finish_date_not_select">Дата заканчэння не выбрана</string>

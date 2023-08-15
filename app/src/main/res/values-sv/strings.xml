@@ -42,9 +42,9 @@
         <item quantity="one">Upp till %1$s (%2$s dagar)</item>
         <item quantity="other">Upp till %1$s (%2$s dagar)</item>
     </plurals>
-    <plurals name="finish_date">
-        <item quantity="one">%1$s (%2$s dag)</item>
-        <item quantity="other">%1$s (%2$s dagar)</item>
+    <plurals name="days_count">
+        <item quantity="one">%1$s dag</item>
+        <item quantity="other">%1$s dagar</item>
     </plurals>
     <string name="export_to_csv">Ladda upp till CSV</string>
     <string name="finish_date_not_select">Inget slutdatum valt</string>

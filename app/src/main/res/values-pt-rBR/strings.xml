@@ -41,9 +41,9 @@
         <item quantity="one">Para %1$s (%2$s dia)</item>
         <item quantity="other">Para %1$s (%2$s dias)</item>
     </plurals>
-    <plurals name="finish_date">
-        <item quantity="one">%1$s (%2$s dia)</item>
-        <item quantity="other">%1$s (%2$s dias)</item>
+    <plurals name="days_count">
+        <item quantity="one">%1$s dia</item>
+        <item quantity="other">%1$s dias</item>
     </plurals>
     <string name="export_to_csv">Exportar para CSV</string>
     <string name="finish_date_not_select">Nenhuma data de término selecionada</string>

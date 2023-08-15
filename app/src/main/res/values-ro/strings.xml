@@ -44,10 +44,10 @@
         <item quantity="few">Până pe %1$s (%2$s zile)</item>
         <item quantity="other">Până pe %1$s (%2$s zile)</item>
     </plurals>
-    <plurals name="finish_date">
-        <item quantity="one">%1$s (o zi)</item>
-        <item quantity="few">%1$s (%2$s zile)</item>
-        <item quantity="other">%1$s (%2$s zile)</item>
+    <plurals name="days_count">
+        <item quantity="one">o zi</item>
+        <item quantity="few">%1$s zile</item>
+        <item quantity="other">%1$s zile</item>
     </plurals>
     <string name="export_to_csv">Exportează ca CSV</string>
     <string name="finish_date_not_select">Nici o dată de final selectată</string>

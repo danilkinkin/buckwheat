@@ -1,9 +1,6 @@
 package com.danilkinkin.buckwheat.base.datePicker.model
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.pluralStringResource
-import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.util.countDays
 import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toDate
@@ -25,20 +22,11 @@ fun selectedDatesFormatted(state: CalendarState): String {
     if (uiState.selectionMode == CalendarSelectionMode.SINGLE) return output
 
     output += if (uiState.selectedEndDate != null) {
-        val days = countDays(uiState.selectedEndDate.toDate(), uiState.selectedStartDate.toDate())
-
-        " - ${
-            String.format(
-                pluralStringResource(
-                    id = R.plurals.finish_date,
-                    count = days,
-                ),
-                prettyDate(
-                    uiState.selectedEndDate.toDate(),
-                    showTime = false,
-                    forceShowDate = true
-                ),
-                days,
+        " — ${
+            prettyDate(
+                uiState.selectedEndDate.toDate(),
+                showTime = false,
+                forceShowDate = true
             )
         }"
     } else {

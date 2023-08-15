@@ -47,10 +47,10 @@
         <item quantity="many">Jusqu\'au %1$s (%2$s jours)</item>
         <item quantity="other">Jusqu\'au %1$s (%2$s jours)</item>
     </plurals>
-    <plurals name="finish_date">
-        <item quantity="one">%1$s (%2$s jour)</item>
-        <item quantity="many">%1$s (%2$s jours)</item>
-        <item quantity="other">%1$s (%2$s jours)</item>
+    <plurals name="days_count">
+        <item quantity="one">%1$s jour</item>
+        <item quantity="many">%1$s jours</item>
+        <item quantity="other">%1$s jours</item>
     </plurals>
     <string name="export_to_csv">Export CSV</string>
     <string name="finish_date_not_select">Aucune date de fin sélectionnée</string>

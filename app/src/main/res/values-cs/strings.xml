@@ -47,11 +47,11 @@
         <item quantity="many">Do %1$s (%2$s dní)</item>
         <item quantity="other">Do %1$s (%2$s dní)</item>
     </plurals>
-    <plurals name="finish_date">
-        <item quantity="one">%1$s (%2$s den)</item>
-        <item quantity="few">%1$s (%2$s dny)</item>
-        <item quantity="many">%1$s (%2$s dní)</item>
-        <item quantity="other">%1$s (%2$s dní)</item>
+    <plurals name="days_count">
+        <item quantity="one">%1$s den</item>
+        <item quantity="few">%1$s dny</item>
+        <item quantity="many">%1$s dní</item>
+        <item quantity="other">%1$s dní</item>
     </plurals>
     <string name="export_to_csv">Exportovat do CSV</string>
     <string name="finish_date_not_select">Nebylo vybráno žádné datum ukončení</string>
