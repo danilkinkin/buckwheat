@@ -75,7 +75,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-util:1.4.3")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
     implementation("androidx.compose.animation:animation:1.4.3")
-    implementation("androidx.compose.material:material-icons-extended:1.4.3")
     implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
     implementation("androidx.compose.runtime:runtime-livedata:1.4.3")
     debugImplementation("androidx.compose.ui:ui-tooling:1.4.3")

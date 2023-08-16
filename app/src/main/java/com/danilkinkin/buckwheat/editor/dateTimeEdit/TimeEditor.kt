@@ -10,9 +10,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Keyboard
-import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -111,7 +109,9 @@ fun TimePickerDialog(
                 Row {
                     IconButton(onClick = { inputMode = !inputMode }) {
                         Icon(
-                            imageVector = if (inputMode) Icons.Outlined.Schedule else Icons.Outlined.Keyboard,
+                            painter = painterResource(
+                                if (inputMode) R.drawable.ic_clock else R.drawable.ic_keyboard
+                            ),
                             contentDescription = "Edit",
                         )
                     }

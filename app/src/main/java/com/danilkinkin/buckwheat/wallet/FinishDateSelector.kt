@@ -3,8 +3,6 @@ package com.danilkinkin.buckwheat.wallet
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,7 +20,6 @@ import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
 import com.danilkinkin.buckwheat.base.datePicker.model.selectedDatesFormatted
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.countDays
-import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
 import java.time.LocalDate
@@ -101,7 +98,7 @@ private fun FinishDateSelectorTopAppBar(
                     enabled = calendarState.calendarUiState.value.hasSelectedDates,
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.Check,
+                        painter = painterResource(R.drawable.ic_apply),
                         contentDescription = null,
                         modifier = Modifier.size(ButtonDefaults.IconSize)
 
