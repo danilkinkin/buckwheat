@@ -54,7 +54,7 @@ fun StatusLabel(
         ) {
             val textStartOffset by animateDpAsState(
                 label = "textStartOffset",
-                targetValue = if (budgetState === DaileBudgetState.OVERDRAFT) 38.dp else 18.dp,
+                targetValue = if (budgetState === DaileBudgetState.OVERDRAFT || budgetState === DaileBudgetState.BUDGET_END) 38.dp else 18.dp,
                 animationSpec = TweenSpec(250),
             )
 
@@ -73,7 +73,7 @@ fun StatusLabel(
             Spacer(modifier = Modifier.width(14.dp))
         }
         AnimatedVisibility(
-            visible = budgetState === DaileBudgetState.OVERDRAFT,
+            visible = budgetState === DaileBudgetState.OVERDRAFT || budgetState === DaileBudgetState.BUDGET_END,
             enter = fadeIn(tween(durationMillis = 250)),
             exit = fadeOut(tween(durationMillis = 250)),
         ) {
