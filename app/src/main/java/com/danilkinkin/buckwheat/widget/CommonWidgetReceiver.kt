@@ -92,12 +92,12 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
 
             val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(glanceAppWidget.javaClass)
 
-            val finishDate: Date? = databaseRepository.getFinishPeriodDate().first()
-            val spentFromDailyBudget: BigDecimal = databaseRepository.getSpentFromDailyBudget().first()
-            val dailyBudget: BigDecimal = databaseRepository.getDailyBudget().first()
-            val spent: BigDecimal = databaseRepository.getSpent().first()
-            val budget: BigDecimal = databaseRepository.getBudget().first()
-            val currency: ExtendCurrency = databaseRepository.getCurrency().first()
+            val finishDate = databaseRepository.getFinishPeriodDate().first()
+            val spentFromDailyBudget = databaseRepository.getSpentFromDailyBudget().first()
+            val dailyBudget = databaseRepository.getDailyBudget().first()
+            val spent = databaseRepository.getSpent().first()
+            val budget = databaseRepository.getBudget().first()
+            val currency = databaseRepository.getCurrency().first()
 
             if (finishDate === null || finishDate.time <= Date().time) {
                 glanceIds.forEach { glanceId ->
