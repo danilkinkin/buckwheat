@@ -37,7 +37,7 @@ fun ValueLabel(
                     ),
                 )
             }
-            DaileBudgetState.BUDGET_END -> {}
+            DaileBudgetState.BUDGET_END, DaileBudgetState.NOT_SET -> {}
             DaileBudgetState.OVERDRAFT -> {
                 AnimatedNumber(
                     value = newDailyBudget,

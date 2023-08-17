@@ -36,7 +36,7 @@ fun RowScope.RestBudgetPill(
 ) {
     val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
-    val budgetState by restBudgetPillViewModel.state.observeAsState(DaileBudgetState.NORMAL)
+    val budgetState by restBudgetPillViewModel.state.observeAsState(DaileBudgetState.NOT_SET)
     val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(0f)
 
     observeLiveData(spendsViewModel.dailyBudget) {
@@ -94,7 +94,10 @@ fun RowScope.RestBudgetPill(
         )
     )
 
-    if (hideOverspendingWarn && budgetState == DaileBudgetState.BUDGET_END) {
+    if (
+        (hideOverspendingWarn && budgetState == DaileBudgetState.BUDGET_END)
+        || budgetState == DaileBudgetState.NOT_SET
+    ) {
         BigIconButton(
             icon = painterResource(R.drawable.ic_balance_wallet),
             contentDescription = null,
