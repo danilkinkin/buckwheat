@@ -275,14 +275,12 @@ fun Wallet(
                 ) {
                     Column {
                         Divider()
-                        Spacer(Modifier.height(24.dp))
                         Total(
                             budget = budgetCache,
                             restBudget = restBudget,
                             days = days,
                             currency = currency!!,
                         )
-                        Spacer(Modifier.height(24.dp))
                         Button(
                             onClick = {
                                 if (spends!!.isNotEmpty() && !forceChange) {
