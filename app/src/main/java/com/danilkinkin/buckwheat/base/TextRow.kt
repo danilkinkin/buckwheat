@@ -45,7 +45,7 @@ fun TextRow(
                 Modifier
                     .fillMaxWidth()
                     .heightIn(24.dp)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 24.dp)
                     .height(IntrinsicSize.Min),
                 verticalAlignment = Alignment.Top
             ) {
@@ -113,8 +113,8 @@ fun TextRow(
                 Box(
                     Modifier
                         .height(24.dp)
-                        .width(56.dp)
-                        .padding(horizontal = 16.dp),
+                        .width(64.dp)
+                        .padding(start = 24.dp, end = 16.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Icon(
@@ -132,10 +132,10 @@ fun TextRow(
                 softWrap = true,
                 modifier = Modifier
                     .padding(
-                        start = if (!iconInset && icon === null) 24.dp else (24 + 16 * 2).dp,
+                        start = if (!iconInset && icon === null) 24.dp else (24 + 24 + 16).dp,
                         top = if (denseDescriptionOffset) 0.dp else 8.dp,
                         end = 24.dp,
-                        bottom = 16.dp,
+                        bottom = 24.dp,
                     )
             )
         }
