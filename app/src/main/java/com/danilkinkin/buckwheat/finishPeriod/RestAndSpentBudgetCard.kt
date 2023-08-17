@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
-import android.graphics.drawable.shapes.RectShape
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.LinearEasing
@@ -14,13 +13,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathOperation
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,9 +32,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.ceil
-import kotlin.math.min
 
 @Composable
 fun RestAndSpentBudgetCard(
@@ -135,30 +124,19 @@ fun RestAndSpentBudgetCard(
                         .fillMaxHeight()
                         .fillMaxWidth()
                 ) {
-                    if (percent.toFloat() < 0.9999f) {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    harmonizedColor.main,
-                                    shape = WavyShape(
-                                        period = if (bigVariant) 70.dp else 40.dp,
-                                        amplitude = if (bigVariant) 3.5.dp else 2.dp,
-                                        shift = shift.value,
-                                    ),
-                                )
-                                .fillMaxHeight()
-                                .fillMaxWidth(min(percent.toFloat(), 0.98f)),
-                        )
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    harmonizedColor.main,
-                                )
-                                .fillMaxHeight()
-                                .fillMaxWidth(),
-                        )
-                    }
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                harmonizedColor.main,
+                                shape = WavyShape(
+                                    period = if (bigVariant) 70.dp else 40.dp,
+                                    amplitude = percent.toFloat().clamp(0.96f, 1f) * (if (bigVariant) 3.5.dp else 2.dp),
+                                    shift = shift.value,
+                                ),
+                            )
+                            .fillMaxHeight()
+                            .fillMaxWidth(percent.toFloat()),
+                    )
                 }
 
                 Column(
