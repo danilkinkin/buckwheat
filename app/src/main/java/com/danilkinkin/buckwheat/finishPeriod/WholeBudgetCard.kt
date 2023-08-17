@@ -55,8 +55,8 @@ fun WholeBudgetCard(
                         Text(
                             text = prettyDate(
                                 startDate,
-                                showTime = false,
-                                forceShowDate = true,
+                                pattern = "dd MMM",
+                                simplifyIfToday = false,
                             ),
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
@@ -67,7 +67,7 @@ fun WholeBudgetCard(
 
                     Arrow(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                            .padding(horizontal = if (bigVariant) 16.dp else 8.dp)
                             .fillMaxHeight()
                     )
 
@@ -76,8 +76,8 @@ fun WholeBudgetCard(
                             text = if (finishDate !== null) {
                                 prettyDate(
                                     finishDate,
-                                    showTime = false,
-                                    forceShowDate = true,
+                                    pattern = "dd MMM",
+                                    simplifyIfToday = false,
                                 )
                             } else {
                                 "-"
