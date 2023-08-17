@@ -13,6 +13,7 @@ import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -87,47 +88,16 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
     }
 
     private fun observeData(context: Context) {
-        /* coroutineScope.launch {
+        coroutineScope.launch {
 
             val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(glanceAppWidget.javaClass)
 
-            val storageDao = databaseRepository.storageDao()
-
-            val finishDate: Date? = try {
-                Date(storageDao.get("finishDate").value.toLong())
-            } catch (e: Exception) {
-                null
-            }
-
-            val spentFromDailyBudget: BigDecimal = try {
-                storageDao.get("spentFromDailyBudget").value.toBigDecimal()
-            } catch (e: Exception) {
-                BigDecimal.ZERO
-            }
-
-            val dailyBudget: BigDecimal = try {
-                storageDao.get("dailyBudget").value.toBigDecimal()
-            } catch (e: Exception) {
-                BigDecimal.ZERO
-            }
-
-            val spent: BigDecimal = try {
-                storageDao.get("spent").value.toBigDecimal()
-            } catch (e: Exception) {
-                BigDecimal.ZERO
-            }
-
-            val budget: BigDecimal = try {
-                storageDao.get("budget").value.toBigDecimal()
-            } catch (e: Exception) {
-                BigDecimal.ZERO
-            }
-
-            val currency: ExtendCurrency = try {
-                ExtendCurrency.getInstance(storageDao.get("currency").value)
-            } catch (e: Exception) {
-                ExtendCurrency(value = null, type = CurrencyType.NONE)
-            }
+            val finishDate: Date? = databaseRepository.getFinishPeriodDate().first()
+            val spentFromDailyBudget: BigDecimal = databaseRepository.getSpentFromDailyBudget().first()
+            val dailyBudget: BigDecimal = databaseRepository.getDailyBudget().first()
+            val spent: BigDecimal = databaseRepository.getSpent().first()
+            val budget: BigDecimal = databaseRepository.getBudget().first()
+            val currency: ExtendCurrency = databaseRepository.getCurrency().first()
 
             if (finishDate === null || finishDate.time <= Date().time) {
                 glanceIds.forEach { glanceId ->
@@ -201,6 +171,6 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
                 }
             }
 
-        } */
+        }
     }
 }
