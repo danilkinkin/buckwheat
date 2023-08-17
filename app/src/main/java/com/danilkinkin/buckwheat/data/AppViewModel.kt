@@ -47,6 +47,8 @@ class AppViewModel @Inject constructor(
         snackbarResult: (SnackbarResult) -> Unit = {},
     ) {
         viewModelScope.launch {
+            _snackbarHostState.currentSnackbarData?.dismiss()
+
             val result = _snackbarHostState.showSnackbar(
                 message = message,
                 actionLabel = actionLabel,
