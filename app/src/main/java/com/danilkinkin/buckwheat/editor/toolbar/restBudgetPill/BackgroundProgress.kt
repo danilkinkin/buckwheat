@@ -40,8 +40,8 @@ fun BackgroundProgress(
     harmonizedColor: HarmonizedColorPalette,
     restBudgetPillViewModel: RestBudgetPillViewModel = hiltViewModel(),
 ) {
-    val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(0f)
-    val percentWithoutNewSpent by restBudgetPillViewModel.percentWithoutNewSpent.observeAsState(0f)
+    val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(1f)
+    val percentWithoutNewSpent by restBudgetPillViewModel.percentWithoutNewSpent.observeAsState(1f)
 
     val percentWithoutNewSpentAnimated by animateFloatAsState(
         label = "percentRealAnim",

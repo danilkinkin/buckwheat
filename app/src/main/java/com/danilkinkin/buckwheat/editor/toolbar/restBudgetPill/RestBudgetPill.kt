@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
@@ -37,7 +38,7 @@ fun RowScope.RestBudgetPill(
     val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val budgetState by restBudgetPillViewModel.state.observeAsState(DaileBudgetState.NOT_SET)
-    val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(0f)
+    val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(1f)
 
     observeLiveData(spendsViewModel.dailyBudget) {
         restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
@@ -76,7 +77,7 @@ fun RowScope.RestBudgetPill(
     }
     val percentWithNewSpentAnimated = animateFloatAsState(
         label = "percentWithNewSpentAnimated",
-        targetValue = percentWithNewSpent.coerceIn(0f, 0.98f),
+        targetValue = percentWithNewSpent,
         animationSpec = TweenSpec(300),
     ).value
 

@@ -32,9 +32,9 @@ class RestBudgetPillViewModel @Inject constructor(
 ) : ViewModel() {
     var state = MutableLiveData(DaileBudgetState.NOT_SET)
         private set
-    var percentWithNewSpent = MutableLiveData(0f)
+    var percentWithNewSpent = MutableLiveData(1f)
         private set
-    var percentWithoutNewSpent = MutableLiveData(0f)
+    var percentWithoutNewSpent = MutableLiveData(1f)
         private set
     var todayBudget = MutableLiveData("")
         private set
