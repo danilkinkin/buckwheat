@@ -27,12 +27,13 @@ fun Total(
 
     Column {
         if (budget > BigDecimal.ZERO && days > 0) {
+            Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(R.string.total_title),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(start = 64.dp, end = 16.dp)
             )
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(4.dp))
             Text(
                 text = stringResource(
                     R.string.per_day,
@@ -41,9 +42,10 @@ fun Total(
                         currency,
                     ),
                 ),
-                color = textColor.copy(alpha = 0.8f),
+                color = textColor.copy(alpha = 0.7f),
                 modifier = Modifier.padding(start = 64.dp, end = 16.dp)
             )
+            Spacer(modifier = Modifier.height(16.dp))
         } else {
             var description = ""
             if (budget <= BigDecimal.ZERO) {
