@@ -3,6 +3,7 @@ package com.danilkinkin.buckwheat.widget.extend
 import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
@@ -62,7 +63,7 @@ fun ExtendWidgetContent() {
 
     Box(
         modifier = GlanceModifier
-            .cornerRadius(24.dp)
+            .cornerRadius(32.dp)
             .fillMaxSize()
             .background(ImageProvider(R.drawable.extend_widget_preview_background))
             .padding(
@@ -78,7 +79,7 @@ fun ExtendWidgetContent() {
                 stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
             ) {
                 Row(
-                    modifier = GlanceModifier.padding(16.dp, 16.dp, 16.dp, 0.dp),
+                    modifier = GlanceModifier.padding(24.dp, 16.dp, 16.dp, 0.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (stateBudget === WidgetReceiver.Companion.StateBudget.NORMAL) {
@@ -89,9 +90,11 @@ fun ExtendWidgetContent() {
                             ),
                             style = TextStyle(
                                 color = GlanceTheme.colors.onSurface,
-                                fontWeight = FontWeight.Bold,
+                                fontWeight = FontWeight.Medium,
                                 fontSize = when (size) {
-                                    ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 16.sp
+                                    ExtendWidget.superHugeMode,
+                                    ExtendWidget.hugeMode,
+                                    ExtendWidget.largeMode -> 16.sp
                                     else -> 12.sp
                                 },
                             )
@@ -141,10 +144,10 @@ fun ExtendWidgetContent() {
                 modifier = GlanceModifier
                     .defaultWeight()
                     .padding(
-                        24.dp,
+                        32.dp,
                         if (size == ExtendWidget.tinyMode) (-4).dp else 0.dp,
                         0.dp,
-                        8.dp,
+                        if (size == ExtendWidget.tinyMode) 0.dp else 32.dp,
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.Start,
@@ -190,36 +193,20 @@ fun ExtendWidgetContent() {
                             splittedValue.add(value.substring(start, pevEnd))
 
                             splittedValue.forEach {
-                                if (it.toCharArray().any { char -> char.isSurrogate() }) {
-                                    CanvasText(
-                                        text = it,
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.onSurface,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = when (size) {
-                                                ExtendWidget.superHugeMode -> 56.sp
-                                                ExtendWidget.hugeMode -> 48.sp
-                                                ExtendWidget.tinyMode -> 24.sp
-                                                else -> 36.sp
-                                            },
-                                        ),
-                                        noTint = true,
-                                    )
-                                } else {
-                                    CanvasText(
-                                        text = it,
-                                        style = TextStyle(
-                                            color = GlanceTheme.colors.onSurface,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = when (size) {
-                                                ExtendWidget.superHugeMode -> 56.sp
-                                                ExtendWidget.hugeMode -> 48.sp
-                                                ExtendWidget.tinyMode -> 24.sp
-                                                else -> 36.sp
-                                            },
-                                        )
-                                    )
-                                }
+                                CanvasText(
+                                    text = it,
+                                    style = TextStyle(
+                                        color = GlanceTheme.colors.onSurface,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = when (size) {
+                                            ExtendWidget.superHugeMode -> 56.sp
+                                            ExtendWidget.hugeMode -> 52.sp
+                                            ExtendWidget.tinyMode -> 24.sp
+                                            else -> 42.sp
+                                        },
+                                    ),
+                                    noTint = it.toCharArray().any { char -> char.isSurrogate() },
+                                )
                             }
                         }
                         Row(
@@ -276,7 +263,7 @@ fun ExtendWidgetContent() {
                 verticalAlignment = Alignment.Bottom,
             ) {
                 Row(
-                    modifier = GlanceModifier.padding(12.dp),
+                    modifier = GlanceModifier.padding(24.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     val drawable = ResourcesCompat.getDrawable(
@@ -288,7 +275,9 @@ fun ExtendWidgetContent() {
                     Image(
                         modifier = GlanceModifier.size(
                             when (size) {
-                                ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 32.dp
+                                ExtendWidget.superHugeMode,
+                                ExtendWidget.hugeMode,
+                                ExtendWidget.largeMode -> 32.dp
                                 else -> 24.dp
                             }
                         ),
@@ -311,7 +300,7 @@ fun ExtendWidgetContent() {
                 verticalAlignment = Alignment.Bottom,
             ) {
                 Row(
-                    modifier = GlanceModifier.padding(12.dp),
+                    modifier = GlanceModifier.padding(24.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     CanvasText(
@@ -375,4 +364,12 @@ fun ExtendWidgetContent() {
             .fillMaxSize()
             .clickable(actionStartActivity(intent))
     ) {}
+}
+
+@Preview
+@Composable
+private fun Preview() {
+    GlanceTheme {
+        ExtendWidgetContent()
+    }
 }

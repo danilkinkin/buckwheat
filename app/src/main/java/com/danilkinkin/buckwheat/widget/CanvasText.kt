@@ -35,9 +35,9 @@ fun Paint.applyFontToPaint(context: Context, style: TextStyle): Paint {
         typeface = ResourcesCompat.getFont(
             context,
             when (style.fontWeight) {
-                FontWeight.Bold -> R.font.manrope_bold
-                FontWeight.Medium -> R.font.manrope_medium
-                FontWeight.Normal -> R.font.manrope_regular
+                FontWeight.Bold -> R.font.manrope_extra_bold
+                FontWeight.Medium -> R.font.manrope_bold
+                FontWeight.Normal -> R.font.manrope_medium
                 else -> R.font.manrope_regular
             },
         )!!

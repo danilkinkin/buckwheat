@@ -89,7 +89,7 @@ fun MinimalWidgetContent() {
                         ),
                         style = TextStyle(
                             color = GlanceTheme.colors.onSurface,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Medium,
                             fontSize = when (size) {
                                 MinimalWidget.largeMode -> 22.sp
                                 MinimalWidget.smallMode -> 14.sp
