@@ -15,6 +15,7 @@ val showSpentCardByDefaultStoreKey = booleanPreferencesKey("showSpentCardByDefau
 enum class TUTORS(val key: Preferences.Key<Boolean>) {
     SWIPE_EDIT_SPENT(booleanPreferencesKey("tutorialSwipePassed")),
     WIDGETS_PREVIEW(booleanPreferencesKey("tutorialWidgetsPreviewPassed")),
+    OPEN_WALLET(booleanPreferencesKey("tutorialOpenWalletPassed")),
 }
 
 class SettingsRepository @Inject constructor(

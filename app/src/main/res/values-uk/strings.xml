@@ -165,4 +165,5 @@
     <string name="add_spent_short">Витрата</string>
     <string name="home_widgets_label">Віджети на головному екрані</string>
     <string name="try_home_widgets_desc">Тепер у гречки є віджети. Спробуйте і слідкуйте за своїм бюджетом з головного екрану</string>
+    <string name="tutorial_open_wallet">Натисніть, щоб переглянути деталі бюджету</string>
 </resources>

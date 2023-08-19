@@ -53,6 +53,7 @@ fun BalloonProvider(
     val localDensity = LocalDensity.current
 
     val balloons by appViewModel.balloonController.balloons.observeAsState(initial = emptyMap())
+    val showedBalloons by appViewModel.balloonController.showedBalloons.observeAsState(initial = emptySet())
 
     Box(
         modifier = Modifier
@@ -69,7 +70,6 @@ fun BalloonProvider(
     }
 
     balloons.entries.forEach { mapItem ->
-        val showedBalloons by appViewModel.balloonController.showedBalloons.observeAsState(initial = emptySet())
         val balloon = mapItem.value
         val anchor = balloon.anchor
         var tooltipWidth by remember { mutableFloatStateOf(0f) }

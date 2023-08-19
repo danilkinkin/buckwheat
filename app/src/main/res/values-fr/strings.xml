@@ -194,4 +194,5 @@
     <string name="add_spent_short">Dépenses</string>
     <string name="home_widgets_label">Widgets d\'écran d\'accueil</string>
     <string name="try_home_widgets_desc">Le sarrasin dispose désormais de widgets. Essayez-le et suivez votre budget depuis l\'écran d\'accueil</string>
+    <string name="tutorial_open_wallet">Cliquez pour voir les détails du budget</string>
 </resources>

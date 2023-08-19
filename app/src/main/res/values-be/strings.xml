@@ -165,4 +165,5 @@
     <string name="add_spent_short">Марнаванне</string>
     <string name="home_widgets_label">Віджэты на галоўным экране</string>
     <string name="try_home_widgets_desc">У грэцыцы цяпер ёсць віджэты. Паспрабуйце і старайцеся кантраляваць свой бюджэт з галоўнага экрана</string>
+    <string name="tutorial_open_wallet">Націсніце, каб паглядзець дэталі бюджэту</string>
 </resources>

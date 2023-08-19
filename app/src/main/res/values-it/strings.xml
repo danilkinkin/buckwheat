@@ -160,4 +160,5 @@
     <string name="add_spent_short">Spesa</string>
     <string name="home_widgets_label">Widget della schermata principale</string>
     <string name="try_home_widgets_desc">Il grano saraceno ora ha widget. Provalo e tieni traccia del tuo budget dalla schermata principale</string>
+    <string name="tutorial_open_wallet">Fare clic per visualizzare i dettagli del budget</string>
 </resources>

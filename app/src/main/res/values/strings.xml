@@ -162,4 +162,5 @@
     <string name="over">over</string>
     <string name="home_widgets_label">Home screen widgets</string>
     <string name="try_home_widgets_desc">Buckwheat now has widgets. Try it out and keep track of your budget from the home screen</string>
+    <string name="tutorial_open_wallet">Click to view budget details</string>
 </resources>

@@ -13,18 +13,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.balloon.BalloonScope
 import com.danilkinkin.buckwheat.base.BigIconButton
+import com.danilkinkin.buckwheat.base.balloon.BalloonState
+import com.danilkinkin.buckwheat.base.balloon.rememberBalloonState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.ui.*
 import com.danilkinkin.buckwheat.util.*
 import com.danilkinkin.buckwheat.wallet.WALLET_SHEET
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +45,7 @@ fun RowScope.RestBudgetPill(
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val budgetState by restBudgetPillViewModel.state.observeAsState(DaileBudgetState.NOT_SET)
     val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(1f)
+    val isTutorialPassed by appViewModel.isTutorialPassed(TUTORS.OPEN_WALLET).observeAsState(false)
 
     observeLiveData(spendsViewModel.dailyBudget) {
         restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
@@ -105,32 +112,60 @@ fun RowScope.RestBudgetPill(
             onClick = { appViewModel.openSheet(PathState(WALLET_SHEET)) },
         )
     } else {
-        Card(
+        val balloonState = rememberBalloonState()
+
+        BalloonScope(
             modifier = Modifier
-                .weight(1F)
-                .padding(0.dp, 5.dp)
-                .height(46.dp),
-            shape = CircleShape,
-            colors = CardDefaults.cardColors(
-                containerColor = harmonizedColor.container.copy(alpha = 0.4f),
-                contentColor = harmonizedColor.onContainer,
-            ),
-            onClick = {
-                appViewModel.openSheet(PathState(WALLET_SHEET))
+                .weight(1F),
+            balloonState = balloonState,
+            content = {
+                Text(
+                    text = stringResource(R.string.tutorial_open_wallet),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            onClose = {
+                appViewModel.passTutorial(TUTORS.OPEN_WALLET)
             }
         ) {
-            Box(Modifier.fillMaxHeight()) {
-                BackgroundProgress(harmonizedColor)
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
-                ) {
-                    StatusLabel(harmonizedColor)
-                    Spacer(modifier = Modifier.weight(1f))
-                    ValueLabel(harmonizedColor)
+            Card(
+                modifier = Modifier
+                    .weight(1F)
+                    .height(46.dp),
+                shape = CircleShape,
+                colors = CardDefaults.cardColors(
+                    containerColor = harmonizedColor.container.copy(alpha = 0.4f),
+                    contentColor = harmonizedColor.onContainer,
+                ),
+                onClick = {
+                    balloonState.hide()
+                    appViewModel.openSheet(PathState(WALLET_SHEET))
+                }
+            ) {
+                Box(Modifier.fillMaxHeight()) {
+                    BackgroundProgress(harmonizedColor)
+                    Row(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        StatusLabel(harmonizedColor)
+                        Spacer(modifier = Modifier.weight(1f))
+                        ValueLabel(harmonizedColor)
+                    }
                 }
             }
+        }
+
+        DisposableEffect(budgetState) {
+            if (budgetState == DaileBudgetState.NORMAL && !isTutorialPassed) {
+                coroutineScope.launch {
+                    delay(2000)
+                    balloonState.show()
+                }
+            }
+
+            onDispose { }
         }
     }
 }

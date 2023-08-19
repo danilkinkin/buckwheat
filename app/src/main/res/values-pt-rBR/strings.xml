@@ -160,4 +160,5 @@
     <string name="add_spent_short">gastos</string>
     <string name="home_widgets_label">Widgets da tela inicial</string>
     <string name="try_home_widgets_desc">Agora o trigo sarraceno possui widgets. Experimente e acompanhe o seu orçamento a partir da tela inicial</string>
+    <string name="tutorial_open_wallet">Clique para ver os detalhes do orçamento</string>
 </resources>

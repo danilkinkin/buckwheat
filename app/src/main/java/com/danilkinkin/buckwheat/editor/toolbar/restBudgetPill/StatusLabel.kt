@@ -61,7 +61,7 @@ fun StatusLabel(
             Spacer(modifier = Modifier.width(textStartOffset))
             Text(
                 text = when (budgetState) {
-                    DaileBudgetState.NORMAL, null -> stringResource(R.string.rest_budget_for_today)
+                    DaileBudgetState.NORMAL, DaileBudgetState.NOT_SET, null -> stringResource(R.string.rest_budget_for_today)
                     DaileBudgetState.OVERDRAFT -> stringResource(R.string.new_daily_budget_short)
                     DaileBudgetState.BUDGET_END -> stringResource(R.string.budget_end)
                 },
