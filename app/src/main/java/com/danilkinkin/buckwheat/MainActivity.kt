@@ -7,15 +7,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
+import com.danilkinkin.buckwheat.base.balloon.BalloonProvider
 import com.danilkinkin.buckwheat.home.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -68,7 +71,9 @@ class MainActivity : ComponentActivity() {
             if (isDone.value) {
                 BuckwheatTheme {
                     OverrideLocalize {
-                        MainScreen(widthSizeClass, activityResultRegistryOwner)
+                        BalloonProvider {
+                            MainScreen(widthSizeClass, activityResultRegistryOwner)
+                        }
                     }
                 }
             }

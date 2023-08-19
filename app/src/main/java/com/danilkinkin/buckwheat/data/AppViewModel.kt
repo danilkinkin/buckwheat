@@ -11,6 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.danilkinkin.buckwheat.base.balloon.BalloonController
 import com.danilkinkin.buckwheat.di.SettingsRepository
 import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.effects.ConfettiController
@@ -60,6 +61,9 @@ class AppViewModel @Inject constructor(
     }
 
     var confettiController = ConfettiController()
+        private set
+
+    var balloonController = BalloonController()
         private set
 
     var lockSwipeable: MutableState<Boolean> = mutableStateOf(false)
