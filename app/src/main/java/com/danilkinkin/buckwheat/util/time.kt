@@ -2,14 +2,18 @@ package com.danilkinkin.buckwheat.util
 
 import android.text.format.DateFormat
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.toUpperCase
 import com.danilkinkin.buckwheat.R
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.math.ceil
 
@@ -54,21 +58,17 @@ fun isSameDay(timestampA: Long, timestampB: Long): Boolean {
 fun isSameDay(dateA: Date, dateB: Date): Boolean {
     return roundToDay(dateA) == roundToDay(dateB)
 }
+@Composable
+fun getWeek(): Array<DayOfWeek> {
+    val locale = LocalConfiguration.current.locales[0]
 
-enum class DateTimeShow {
-    ALWAYS,
-    NEVER,
-    IF_DIFFERENT,
-}
+    val firstDayOfWeek = WeekFields.of(locale).firstDayOfWeek
 
-fun makeDatePattern(
-    target: Date,
-    origin: Date,
-) {
-    val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
-
-
-
+    return if (firstDayOfWeek == DayOfWeek.MONDAY) {
+        arrayOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+    } else {
+        arrayOf(DayOfWeek.SUNDAY, DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY)
+    }
 }
 
 @Composable
@@ -77,7 +77,9 @@ fun prettyDate(
     pattern: String,
     simplifyIfToday: Boolean = true,
 ): String {
-    val dateWithMonthAndYearFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+    val locale = LocalConfiguration.current.locales[0]
+
+    val dateWithMonthAndYearFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", locale)
     val currentFullDate = dateWithMonthAndYearFormatter.format(LocalDate.now())
     val convertedFullDate = dateWithMonthAndYearFormatter.format(date.toLocalDate())
 
@@ -86,7 +88,7 @@ fun prettyDate(
     final += if (simplifyIfToday && convertedFullDate == currentFullDate) {
         stringResource(R.string.today)
     } else {
-        DateTimeFormatter.ofPattern(pattern).format(date.toLocalDate())
+        DateTimeFormatter.ofPattern(pattern, locale).format(date.toLocalDate())
     }
 
     return final.trim()
@@ -102,21 +104,23 @@ fun prettyDate(
     human: Boolean = false,
     shortMonth: Boolean = false,
 ): String {
-    val yearOnlyFormatter = DateTimeFormatter.ofPattern("yyyy")
+    val locale = LocalConfiguration.current.locales[0]
+
+    val yearOnlyFormatter = DateTimeFormatter.ofPattern("yyyy", locale)
     val dateWithMonthAndYearFormatter = if (shortMonth) {
-        DateTimeFormatter.ofPattern("dd MMM yyyy")
+        DateTimeFormatter.ofPattern("dd MMM yyyy", locale)
     } else {
-        DateTimeFormatter.ofPattern("dd MMMM yyyy")
+        DateTimeFormatter.ofPattern("dd MMMM yyyy", locale)
     }
     val dateWithMonthFormatter = if (shortMonth) {
-        DateTimeFormatter.ofPattern("dd MMM")
+        DateTimeFormatter.ofPattern("dd MMM", locale)
     } else {
-        DateTimeFormatter.ofPattern("dd MMMM")
+        DateTimeFormatter.ofPattern("dd MMMM", locale)
     }
     val timeFormatter = if (DateFormat.is24HourFormat(LocalContext.current)) {
-        DateTimeFormatter.ofPattern("HH:mm")
+        DateTimeFormatter.ofPattern("HH:mm", locale)
     } else {
-        DateTimeFormatter.ofPattern("KK:mm")
+        DateTimeFormatter.ofPattern("KK:mm", locale)
     }
 
 
@@ -151,10 +155,13 @@ fun prettyDate(
     return final.trim()
 }
 
+@Composable
 fun prettyYearMonth(yearMonth: YearMonth): String {
-    val yearOnlyFormatter = DateTimeFormatter.ofPattern("yyyy")
-    val monthFormatter = DateTimeFormatter.ofPattern("LLLL")
-    val monthWithYearFormatter = DateTimeFormatter.ofPattern("LLLL yyyy")
+    val locale = LocalConfiguration.current.locales[0]
+
+    val yearOnlyFormatter = DateTimeFormatter.ofPattern("yyyy", locale)
+    val monthFormatter = DateTimeFormatter.ofPattern("LLLL", locale)
+    val monthWithYearFormatter = DateTimeFormatter.ofPattern("LLLL yyyy", locale)
 
     return if (yearMonth.year.toString() == yearOnlyFormatter.format(LocalDate.now())) {
         yearMonth.format(monthFormatter)
@@ -162,9 +169,22 @@ fun prettyYearMonth(yearMonth: YearMonth): String {
         yearMonth.format(monthWithYearFormatter)
     }.replaceFirstChar {
         if (it.isLowerCase()) it.titlecase(
-            Locale.getDefault()
+            locale
         ) else it.toString()
     }
+}
+
+@Composable
+fun prettyWeekDay(dayOfWeek: DayOfWeek): String {
+    val locale = LocalConfiguration.current.locales[0]
+
+    val dayOfWeekFormatter = if (locale.language == "ru") {
+        DateTimeFormatter.ofPattern("ccc", locale)
+    } else {
+        DateTimeFormatter.ofPattern("ccccc", locale)
+    }
+
+    return dayOfWeekFormatter.format(dayOfWeek).uppercase(locale)
 }
 
 fun roundToDay(date: Date): Date {

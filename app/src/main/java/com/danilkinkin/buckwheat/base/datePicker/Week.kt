@@ -2,20 +2,24 @@ package com.danilkinkin.buckwheat.base.datePicker
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
-import com.danilkinkin.buckwheat.base.datePicker.model.Week
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import java.time.DayOfWeek
+import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
+import com.danilkinkin.buckwheat.base.datePicker.model.Week
+import com.danilkinkin.buckwheat.util.getWeek
+import com.danilkinkin.buckwheat.util.prettyWeekDay
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 
+
 @Composable
 internal fun DaysOfWeek(modifier: Modifier = Modifier) {
+    val week = getWeek()
+
     Row(modifier = modifier) {
-        for (day in DayOfWeek.values()) {
+        for (day in week) {
             DayOfWeekHeading(
-                day = day.name.take(1),
+                day = prettyWeekDay(day),
                 modifier = Modifier.weight(1f)
             )
         }
@@ -30,7 +34,7 @@ internal fun Week(
     modifier: Modifier = Modifier
 ) {
     val beginningWeek = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
-    var currentDay = beginningWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+    var currentDay = beginningWeek.with(TemporalAdjusters.previousOrSame(getWeek()[0]))
 
     Box(Modifier.fillMaxWidth()) {
         Row(modifier = modifier) {
@@ -43,7 +47,9 @@ internal fun Week(
                         onDayClicked = onDayClicked,
                     )
                 } else {
-                    Box(modifier = Modifier.size(CELL_SIZE).weight(1f))
+                    Box(modifier = Modifier
+                        .size(CELL_SIZE)
+                        .weight(1f))
                 }
                 currentDay = currentDay.plusDays(1)
             }

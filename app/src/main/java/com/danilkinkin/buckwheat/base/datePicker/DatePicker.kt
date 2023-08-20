@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import java.time.DayOfWeek
+import com.danilkinkin.buckwheat.util.getWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
@@ -87,7 +87,7 @@ private fun LazyListScope.itemsCalendarMonth(
         month.yearMonth.year.toString() + "/" + month.yearMonth.month.value + "/" + (index + 1).toString()
     }) { _, week ->
         val beginningWeek = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
-        val currentDay = beginningWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val currentDay = beginningWeek.with(TemporalAdjusters.previousOrSame(getWeek()[0]))
 
         if (
             calendarUiState.hasSelectedPeriodOverlap(currentDay, currentDay.plusDays(6))
@@ -112,9 +112,24 @@ private fun LazyListScope.itemsCalendarMonth(
 
 internal val CALENDAR_STARTS_ON = WeekFields.ISO
 
-@Preview
+@Preview(name = "EN locale", locale = "en")
 @Composable
 fun DayPreview() {
+    val state = remember { mutableStateOf(CalendarState()) }
+
+    BuckwheatTheme {
+        Surface {
+            DatePicker(
+                state.value,
+                onDayClicked = { state.value.setSelectedDay(it) },
+            )
+        }
+    }
+}
+
+@Preview(name = "RU locale", locale = "ru")
+@Composable
+fun DayPreviewRu() {
     val state = remember { mutableStateOf(CalendarState()) }
 
     BuckwheatTheme {
