@@ -2,6 +2,8 @@
     <string name="app_name">Buckwheat</string>
 
     <!-- Main -->
+    <string name="app_widget_extend_name">Buckwheat întinsă</string>
+    <string name="app_widget_minimal_name">Buckwheat minimă</string>
     <string name="budget_for_today">Bugetul pentru azi</string>
     <string name="rest_budget_for_today">Pentru azi</string>
     <string name="new_daily_budget_short">Nou pentru azi</string>
@@ -35,6 +37,8 @@
     <string name="total_per_day">Totalul de azi:</string>
 
     <!-- Wallet -->
+    <string name="change_date">Schimba data</string>
+    <string name="change_time">Schimbă timpul</string>
     <string name="wallet_title">Buget</string>
     <string name="wallet_edit_title">Buget nou</string>
     <string name="label_budget">Buget</string>

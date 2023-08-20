@@ -38,6 +38,8 @@
     <string name="total_per_day">Cumul de la journée :</string>
 
     <!-- Wallet -->
+    <string name="change_date">Date de modification</string>
+    <string name="change_time">Changer le temps</string>
     <string name="wallet_title">Budget</string>
     <string name="wallet_edit_title">Nouveau budget</string>
     <string name="label_budget">Budget</string>

@@ -33,6 +33,8 @@
     <string name="total_per_day">Total del día:</string>
 
     <!-- Wallet -->
+    <string name="change_date">Cambiar fecha</string>
+    <string name="change_time">Cambio de hora</string>
     <string name="wallet_title">Presupuesto</string>
     <string name="wallet_edit_title">Nuevo presupuesto</string>
     <string name="label_budget">Presupuesto</string>

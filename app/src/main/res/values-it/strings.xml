@@ -33,6 +33,8 @@
     <string name="total_per_day">Totale giornaliero:</string>
 
     <!-- Wallet -->
+    <string name="change_date">Cambia data</string>
+    <string name="change_time">Cambia tempo</string>
     <string name="wallet_title">Budget</string>
     <string name="wallet_edit_title">Nuovo budget</string>
     <string name="label_budget">Budget</string>

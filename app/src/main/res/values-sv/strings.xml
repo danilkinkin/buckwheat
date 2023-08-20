@@ -34,6 +34,8 @@
     <string name="total_per_day">Totalt dagligt:</string>
 
     <!-- Plånbok -->
+    <string name="change_date">Byt datum</string>
+    <string name="change_time">Ändra tid</string>
     <string name="wallet_title">Budget</string>
     <string name="wallet_edit_title">Ny budget</string>
     <string name="label_budget">Budget</string>

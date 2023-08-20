@@ -36,6 +36,8 @@
     <string name="total_per_day">Денний результат:</string>
 
     <!-- Wallet -->
+    <string name="change_date">Змінити дату</string>
+    <string name="change_time">Змінити час</string>
     <string name="wallet_title">Бюджет</string>
     <string name="wallet_edit_title">Новий бюджет</string>
     <string name="label_budget">Бюджет</string>

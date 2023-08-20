@@ -37,7 +37,9 @@
     <string name="total_per_day">Denní součet:</string>
 
     <!-- Wallet -->
-    <string name="wallet_title">Rozpočet</string>
+     <string name="change_date">Změnit datum</string>
+     <string name="change_time">Změňte čas</string>
+     <string name="wallet_title">Rozpočet</string>
     <string name="wallet_edit_title">Nový rozpočet</string>
     <string name="label_budget">Rozpočet</string>
     <string name="select_finish_date_title">Vyberte datum ukončení</string>
