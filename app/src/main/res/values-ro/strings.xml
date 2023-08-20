@@ -167,4 +167,5 @@
     <string name="home_widgets_label">Widgeturi pe ecranul de pornire</string>
     <string name="try_home_widgets_desc">Buckwheat are acum widgeturi. Încearcă-le și ține evidența bugetului tău direct de pe ecranul de pornire</string>
     <string name="tutorial_open_wallet">Faceți clic pentru a vedea detaliile bugetului</string>
+    <string name="tutorial_open_history">Trageți pentru a vedea istoricul cheltuielilor</string>
 </resources>

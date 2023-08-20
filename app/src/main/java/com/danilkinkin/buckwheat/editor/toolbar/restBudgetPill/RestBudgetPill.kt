@@ -25,6 +25,7 @@ import com.danilkinkin.buckwheat.base.balloon.rememberBalloonState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.di.TUTORIAL_STAGE
 import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.ui.*
@@ -45,7 +46,7 @@ fun RowScope.RestBudgetPill(
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val budgetState by restBudgetPillViewModel.state.observeAsState(DaileBudgetState.NOT_SET)
     val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(1f)
-    val isTutorialPassed by appViewModel.isTutorialPassed(TUTORS.OPEN_WALLET).observeAsState(false)
+    val tutorial by appViewModel.getTutorialStage(TUTORS.OPEN_WALLET).observeAsState(TUTORIAL_STAGE.NONE)
 
     observeLiveData(spendsViewModel.dailyBudget) {
         restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
@@ -115,8 +116,7 @@ fun RowScope.RestBudgetPill(
         val balloonState = rememberBalloonState()
 
         BalloonScope(
-            modifier = Modifier
-                .weight(1F),
+            modifier = Modifier.weight(1F),
             balloonState = balloonState,
             content = {
                 Text(
@@ -158,7 +158,7 @@ fun RowScope.RestBudgetPill(
         }
 
         DisposableEffect(budgetState) {
-            if (budgetState == DaileBudgetState.NORMAL && !isTutorialPassed) {
+            if (tutorial === TUTORIAL_STAGE.READY_TO_SHOW) {
                 coroutineScope.launch {
                     delay(2000)
                     balloonState.show()

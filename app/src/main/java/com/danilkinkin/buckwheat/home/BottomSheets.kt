@@ -14,6 +14,7 @@ import com.danilkinkin.buckwheat.base.BottomSheetWrapper
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.*
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BudgetIsOverDescription
@@ -158,6 +159,7 @@ fun BottomSheets(
         Onboarding(
             onSetBudget = {
                 appViewModel.openSheet(PathState(WALLET_SHEET))
+                appViewModel.activateTutorial(TUTORS.SWIPE_EDIT_SPENT)
             },
             onClose = {
                 coroutineScope.launch { state.hide() }

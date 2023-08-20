@@ -13,7 +13,9 @@ import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.material3.Text
 import androidx.compose.material3.Card
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -27,11 +29,20 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.balloon.BalloonScope
+import com.danilkinkin.buckwheat.base.balloon.rememberBalloonState
+import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.di.TUTORIAL_STAGE
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Float.max
 import kotlin.math.roundToInt
@@ -47,6 +58,7 @@ enum class TopSheetValue {
 @ExperimentalMaterialApi
 fun TopSheetLayout(
     modifier: Modifier = Modifier,
+    appViewModel: AppViewModel = hiltViewModel(),
     swipeableState: SwipeableState<TopSheetValue> = rememberSwipeableState(TopSheetValue.HalfExpanded),
     customHalfHeight: Float? = null,
     lockSwipeable: MutableState<Boolean>,
@@ -55,6 +67,8 @@ fun TopSheetLayout(
 ) {
     val localDensity = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
+
+    val tutorial by appViewModel.getTutorialStage(TUTORS.OPEN_HISTORY).observeAsState(TUTORIAL_STAGE.NONE)
 
     var lock by remember { mutableStateOf(false) }
     var scroll by remember { mutableStateOf(false) }
@@ -232,6 +246,7 @@ fun TopSheetLayout(
                                         false
                                     }
                                 }
+
                                 else -> false
                             }
                         }
@@ -239,17 +254,47 @@ fun TopSheetLayout(
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
                 ) {
-                    Box(
+                    val balloonState = rememberBalloonState()
+
+                    BalloonScope(
                         Modifier
                             .height(4.dp)
                             .width(30.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                                    .copy(alpha = 0.3f),
-                                shape = CircleShape
+                            .align(Alignment.Center),
+                        balloonState = balloonState,
+                        content = {
+                            Text(
+                                text = stringResource(R.string.tutorial_open_history),
+                                style = MaterialTheme.typography.bodyMedium,
                             )
-                            .align(Alignment.Center)
-                    )
+                        },
+                        onClose = {
+                            appViewModel.passTutorial(TUTORS.OPEN_HISTORY)
+                        }
+                    ) {
+                        Box(
+                            Modifier
+                                .height(4.dp)
+                                .width(30.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                        .copy(alpha = 0.3f),
+                                    shape = CircleShape
+                                )
+                                .align(Alignment.Center)
+                        )
+                    }
+
+                    DisposableEffect(tutorial) {
+                        if (tutorial == TUTORIAL_STAGE.READY_TO_SHOW) {
+                            coroutineScope.launch {
+                                delay(1000)
+                                balloonState.show()
+                            }
+                        }
+
+                        onDispose { }
+                    }
                 }
             }
         }

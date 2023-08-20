@@ -26,6 +26,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.di.TUTORIAL_STAGE
 import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
@@ -60,7 +61,7 @@ fun History(
     val startPeriodDate = spendsViewModel.startPeriodDate.observeAsState(initial = Date())
     val finishPeriodDate = spendsViewModel.finishPeriodDate.observeAsState(initial = Date())
     val scrollToBottom = remember { mutableStateOf(true) }
-    val isTutorialPassed by appViewModel.isTutorialPassed(TUTORS.SWIPE_EDIT_SPENT).observeAsState(false)
+    val tutorial by appViewModel.getTutorialStage(TUTORS.SWIPE_EDIT_SPENT).observeAsState(TUTORIAL_STAGE.NONE)
     var isUserTrySwipe by remember { mutableStateOf(false) }
 
     DisposableEffect(Unit) {
@@ -214,7 +215,7 @@ fun History(
                                 }
                             ),
                             onTried = { isUserTrySwipe = true },
-                            showTutorial = index == 2 && !isTutorialPassed,
+                            showTutorial = index == 2 && tutorial === TUTORIAL_STAGE.READY_TO_SHOW,
                         ) { state ->
                             val size = with(LocalDensity.current) {
                                 java.lang.Float.max(

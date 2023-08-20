@@ -51,7 +51,6 @@ const val SETTINGS_TRY_WIDGET_SHEET = "settings.tryWidget"
 
 @Composable
 fun TryWidget(appViewModel: AppViewModel = hiltViewModel(), onTried: () -> Unit) {
-    val isTutorialPassed by appViewModel.isTutorialPassed(TUTORS.WIDGETS_PREVIEW).observeAsState(false)
 
     Box(contentAlignment = Alignment.TopStart) {
         ButtonRow(
@@ -59,21 +58,9 @@ fun TryWidget(appViewModel: AppViewModel = hiltViewModel(), onTried: () -> Unit)
             text = stringResource(R.string.home_widgets_label),
             onClick = {
                 appViewModel.openSheet(PathState(SETTINGS_TRY_WIDGET_SHEET))
-                appViewModel.passTutorial(TUTORS.WIDGETS_PREVIEW)
                 onTried()
             },
         )
-        if (!isTutorialPassed) {
-            Box(
-                modifier = Modifier
-                    .offset(38.dp, 10.dp)
-                    .background(
-                        androidx.compose.material.MaterialTheme.colors.error,
-                        shape = CircleShape
-                    )
-                    .size(8.dp)
-            )
-        }
     }
 
 }

@@ -164,4 +164,5 @@
     <string name="home_widgets_label">Startskärmswidgetar</string>
     <string name="try_home_widgets_desc">Bovetet har nu widgets. Prova det och håll koll på din budget från startskärmen</string>
     <string name="tutorial_open_wallet">Klicka för att se budgetinformation</string>
+    <string name="tutorial_open_history">Dra för att visa utgiftshistorik</string>
 </resources>

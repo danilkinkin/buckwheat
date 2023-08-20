@@ -171,4 +171,5 @@
      <string name="home_widgets_label">Widgety na domovské obrazovce</string>
      <string name="try_home_widgets_desc">Hrachovka nyní obsahuje widgety. Vyzkoušejte to a sledujte svůj rozpočet přímo z domovské obrazovky.</string>
      <string name="tutorial_open_wallet">Kliknutím zobrazíte podrobnosti o rozpočtu</string>
+     <string name="tutorial_open_history">Přetažením zobrazíte historii výdajů</string>
  </resources>

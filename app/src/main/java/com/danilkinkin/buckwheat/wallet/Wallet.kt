@@ -28,6 +28,7 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
@@ -289,6 +290,7 @@ fun Wallet(
                                 } else {
                                     spendsViewModel.changeDisplayCurrency(currency!!)
                                     spendsViewModel.changeBudget(budgetCache, dateToValue.value!!)
+                                    appViewModel.activateTutorial(TUTORS.OPEN_WALLET)
 
                                     onClose()
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)

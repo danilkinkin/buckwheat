@@ -78,7 +78,7 @@ class AppViewModel @Inject constructor(
 
     var showSpentCardByDefault = settingsRepository.isShowSpentCardByDefault().asLiveData()
 
-    fun isTutorialPassed(name: TUTORS) = settingsRepository.isTutorialPassed(name).asLiveData()
+    fun getTutorialStage(name: TUTORS) = settingsRepository.getTutorialStage(name).asLiveData()
 
     fun setShowSpentCardByDefault(showByDefault: Boolean) {
         viewModelScope.launch {
@@ -103,6 +103,12 @@ class AppViewModel @Inject constructor(
     fun passTutorial(name: TUTORS) {
         viewModelScope.launch {
             settingsRepository.passTutorial(name)
+        }
+    }
+
+    fun activateTutorial(name: TUTORS) {
+        viewModelScope.launch {
+            settingsRepository.activateTutorial(name)
         }
     }
 }

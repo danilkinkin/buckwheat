@@ -18,6 +18,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditMode
 import com.danilkinkin.buckwheat.editor.EditStage
 import com.danilkinkin.buckwheat.editor.EditorViewModel
@@ -289,6 +290,7 @@ fun Keyboard(
                                             spendsViewModel.addSpent(newVersionOfSpent)
                                         } else {
                                             spendsViewModel.addSpent(Spent(editorViewModel.currentSpent, Date(), editorViewModel.currentComment))
+                                            appViewModel.activateTutorial(TUTORS.OPEN_HISTORY)
                                         }
 
                                         editorViewModel.resetEditingSpent()

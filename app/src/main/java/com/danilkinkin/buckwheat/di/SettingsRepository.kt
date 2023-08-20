@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.danilkinkin.buckwheat.settingsDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.map
@@ -12,10 +13,16 @@ import javax.inject.Inject
 val debugStoreKey = booleanPreferencesKey("debug")
 val showSpentCardByDefaultStoreKey = booleanPreferencesKey("showSpentCardByDefault")
 
-enum class TUTORS(val key: Preferences.Key<Boolean>) {
-    SWIPE_EDIT_SPENT(booleanPreferencesKey("tutorialSwipePassed")),
-    WIDGETS_PREVIEW(booleanPreferencesKey("tutorialWidgetsPreviewPassed")),
-    OPEN_WALLET(booleanPreferencesKey("tutorialOpenWalletPassed")),
+enum class TUTORIAL_STAGE {
+    NONE,
+    READY_TO_SHOW,
+    PASSED
+}
+
+enum class TUTORS(val key: Preferences.Key<String>) {
+    SWIPE_EDIT_SPENT(stringPreferencesKey("tutorialSwipePassed")),
+    OPEN_WALLET(stringPreferencesKey("tutorialOpenWalletPassed")),
+    OPEN_HISTORY(stringPreferencesKey("tutorialOpenHistoryPassed")),
 }
 
 class SettingsRepository @Inject constructor(
@@ -25,7 +32,11 @@ class SettingsRepository @Inject constructor(
     fun isShowSpentCardByDefault() = context.settingsDataStore.data.map {
         it[showSpentCardByDefaultStoreKey] ?: false
     }
-    fun isTutorialPassed(name: TUTORS) = context.settingsDataStore.data.map { it[name.key] ?: false }
+    fun getTutorialStage(name: TUTORS) = context.settingsDataStore.data.map {
+        it[name.key]?.let { value ->
+            TUTORIAL_STAGE.valueOf(value)
+        } ?: TUTORIAL_STAGE.NONE
+    }
 
     suspend fun switchDebug(isDebug: Boolean) {
         context.settingsDataStore.edit {
@@ -39,9 +50,17 @@ class SettingsRepository @Inject constructor(
         }
     }
 
+    suspend fun activateTutorial(name: TUTORS) {
+        context.settingsDataStore.edit {
+            if (it[name.key] === TUTORIAL_STAGE.PASSED.name) return@edit
+
+            it[name.key] = TUTORIAL_STAGE.READY_TO_SHOW.name
+        }
+    }
+
     suspend fun passTutorial(name: TUTORS) {
         context.settingsDataStore.edit {
-            it[name.key] = true
+            it[name.key] = TUTORIAL_STAGE.PASSED.name
         }
     }
 }
