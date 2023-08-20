@@ -52,7 +52,7 @@ class SettingsRepository @Inject constructor(
 
     suspend fun activateTutorial(name: TUTORS) {
         context.settingsDataStore.edit {
-            if (it[name.key] === TUTORIAL_STAGE.PASSED.name) return@edit
+            if (it[name.key] == TUTORIAL_STAGE.PASSED.name) return@edit
 
             it[name.key] = TUTORIAL_STAGE.READY_TO_SHOW.name
         }
