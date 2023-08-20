@@ -61,6 +61,7 @@ class RestBudgetPillViewModel @Inject constructor(
             val restFromDayBudget = dailyBudget - spentFromDailyBudget - currentSpent
             val newDailyBudget = spendsRepository.whatBudgetForDay(
                 excludeCurrentDay = true,
+                applyTodaySpends = true,
                 notCommittedSpent = currentSpent,
             )
 

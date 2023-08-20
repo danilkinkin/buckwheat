@@ -155,6 +155,7 @@ class SpendsRepository @Inject constructor(
 
     suspend fun whatBudgetForDay(
         excludeCurrentDay: Boolean = false,
+        applyTodaySpends: Boolean = false,
         notCommittedSpent: BigDecimal = BigDecimal.ZERO
     ): BigDecimal {
         val budget = getBudget().first()
@@ -171,10 +172,11 @@ class SpendsRepository @Inject constructor(
 
         restBudget -= notCommittedSpent
 
-        restBudget -= if (excludeCurrentDay) {
-            dailyBudget
-        } else {
-            spentFromDailyBudget
+
+        if (applyTodaySpends) {
+            restBudget -= spentFromDailyBudget
+        } else if (excludeCurrentDay) {
+            restBudget -= dailyBudget
         }
 
         val whatBudgetForDay = restBudget
@@ -189,6 +191,7 @@ class SpendsRepository @Inject constructor(
             "Check what budget for day ["
                     + "what budget for day: $whatBudgetForDay "
                     + "excludeCurrentDay: $excludeCurrentDay "
+                    + "applyTodaySpends: $applyTodaySpends "
                     + "notCommittedSpent: $notCommittedSpent "
                     + "rest budget: $restBudget "
                     + "rest days: $restDays"

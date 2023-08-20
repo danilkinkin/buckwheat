@@ -110,6 +110,7 @@ class SpendsViewModel @Inject constructor(
 
     fun whatBudgetForDay(
         excludeCurrentDay: Boolean = false,
+        applyTodaySpends: Boolean = false,
         notCommittedSpent: BigDecimal = BigDecimal.ZERO
     ): LiveData<BigDecimal> {
         val data = MutableLiveData<BigDecimal>()
@@ -117,6 +118,7 @@ class SpendsViewModel @Inject constructor(
         viewModelScope.launch {
             data.value = spendsRepository.whatBudgetForDay(
                 excludeCurrentDay,
+                applyTodaySpends,
                 notCommittedSpent
             )
         }
