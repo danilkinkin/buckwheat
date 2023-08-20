@@ -14,6 +14,7 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -82,7 +83,8 @@ fun BalloonProvider(
                 .absoluteOffset(
                     x = with(localDensity) { (anchor.x - tooltipWidth / 2f).toDp() },
                     y = with(localDensity) { anchor.y.toDp() } + 4.dp,
-                ),
+                )
+                .padding(horizontal = 24.dp)
         ) {
             AnimatedVisibility(
                 visible = showedBalloons.contains(balloon.id),
