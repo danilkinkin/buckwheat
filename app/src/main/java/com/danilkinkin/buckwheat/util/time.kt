@@ -1,6 +1,8 @@
 package com.danilkinkin.buckwheat.util
 
+import android.text.format.DateFormat
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.danilkinkin.buckwheat.R
 import java.time.LocalDate
@@ -111,7 +113,12 @@ fun prettyDate(
     } else {
         DateTimeFormatter.ofPattern("dd MMMM")
     }
-    val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val timeFormatter = if (DateFormat.is24HourFormat(LocalContext.current)) {
+        DateTimeFormatter.ofPattern("HH:mm")
+    } else {
+        DateTimeFormatter.ofPattern("KK:mm")
+    }
+
 
     val currentFullDate = dateWithMonthAndYearFormatter.format(LocalDate.now())
     val currentYear = yearOnlyFormatter.format(LocalDate.now())
