@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
-import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -36,42 +35,24 @@ const val RECALCULATE_DAILY_BUDGET_SHEET = "recalculateDailyBudget"
 fun RecalcBudget(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
+    recalcBudgetViewModel: RecalcBudgetViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
     val haptic = LocalHapticFeedback.current
     val localDensity = LocalDensity.current
-    val isDebug = appViewModel.isDebug.observeAsState(false)
     val coroutineScope = rememberCoroutineScope()
+    val navigationBarHeight = rememberNavigationBarHeight().coerceAtLeast(16.dp)
+
+    val howMuchNotSpent by recalcBudgetViewModel.howMuchNotSpent.observeAsState(BigDecimal.ZERO)
 
     var rememberChoice by remember { mutableStateOf(false) }
-
-    val budget by spendsViewModel.budget.observeAsState()
-    val spent by spendsViewModel.spent.observeAsState()
-    val dailyBudget by spendsViewModel.dailyBudget.observeAsState()
-    val finishPeriodDate by spendsViewModel.finishPeriodDate.observeAsState()
-    val howMuchNotSpent by spendsViewModel.howMuchNotSpent().observeAsState(BigDecimal.ZERO)
-    val whatBudgetForDay by spendsViewModel.whatBudgetForDay().observeAsState(BigDecimal.ZERO)
-    val budgetPerDayAdd by spendsViewModel.whatBudgetForDay(excludeCurrentDay = true)
-        .observeAsState(
-            BigDecimal.ZERO
-        )
-
-    val restDays = finishPeriodDate?.let { countDaysToToday(it) } ?: 0
-
-    val restBudget = budget
-        ?.minus(spent ?: BigDecimal.ZERO)
-        ?.minus(dailyBudget ?: BigDecimal.ZERO)
-        ?: BigDecimal.ZERO
-
-    val budgetPerDayAddDailyBudget = budgetPerDayAdd + howMuchNotSpent
-
-    val navigationBarHeight = WindowInsets.systemBars
-        .asPaddingValues()
-        .calculateBottomPadding()
-        .coerceAtLeast(16.dp)
-
-    var contentHeight by remember { mutableStateOf(0f) }
+    var contentHeight by remember { mutableFloatStateOf(0f) }
     var isSpawned by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        recalcBudgetViewModel.calculateSplitOnRestDays()
+        recalcBudgetViewModel.calculateAddToToday()
+    }
 
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val rootHeight = constraints.maxHeight.toFloat()
@@ -174,66 +155,21 @@ fun RecalcBudget(
                         .padding(horizontal = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    DescriptionButton(
-                        title = { Text(stringResource(R.string.split_rest_days_title)) },
-                        description = {
-                            Text(
-                                stringResource(
-                                    R.string.split_rest_days_description,
-                                    prettyCandyCanes(
-                                        whatBudgetForDay,
-                                        currency = spendsViewModel.currency.value!!,
-                                    ),
-                                )
-                            )
-                        },
-                        secondDescription = if (isDebug.value) {
-                            { Text("($restBudget + ${spendsViewModel.dailyBudget.value!!} - ${spendsViewModel.spentFromDailyBudget.value!!}) / $restDays = $whatBudgetForDay") }
-                        } else null,
-                        onClick = {
-                            spendsViewModel.setDailyBudget(whatBudgetForDay)
-                            if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
-                                RestedBudgetDistributionMethod.REST
-                            )
+                    SplitToRestDaysButton {
+                        if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
+                            RestedBudgetDistributionMethod.REST
+                        )
 
-                            onClose()
-                        },
-                    )
+                        onClose()
+                    }
                     Spacer(Modifier.height(16.dp))
-                    DescriptionButton(
-                        title = { Text(stringResource(R.string.add_current_day_title)) },
-                        description = {
-                            Text(
-                                stringResource(
-                                    R.string.add_current_day_description,
-                                    prettyCandyCanes(
-                                        howMuchNotSpent + budgetPerDayAdd,
-                                        currency = spendsViewModel.currency.value!!,
-                                    ),
-                                    prettyCandyCanes(
-                                        budgetPerDayAdd,
-                                        currency = spendsViewModel.currency.value!!,
-                                    ),
-                                )
-                            )
-                        },
-                        secondDescription = if (isDebug.value) {
-                            {
-                                Text(
-                                    "$restBudget / $restDays = $budgetPerDayAdd " +
-                                            "\n${budgetPerDayAdd} + $howMuchNotSpent = $budgetPerDayAddDailyBudget"
-                                )
-                            }
-                        } else null,
-                        onClick = {
-                            spendsViewModel.setDailyBudget(budgetPerDayAdd + howMuchNotSpent)
-                            if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
-                                RestedBudgetDistributionMethod.ADD_TODAY
-                            )
+                    AddToTodayButton {
+                        if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
+                            RestedBudgetDistributionMethod.ADD_TODAY
+                        )
 
-                            onClose()
-                        },
-                    )
+                        onClose()
+                    }
                 }
             }
         }
