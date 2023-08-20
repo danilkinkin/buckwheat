@@ -200,6 +200,12 @@ fun TopSheetLayout(
                             .alpha(max(progress * 2f - 1f, 0f))
                     ) {
                         sheetContentExpand()
+
+                        if (tutorial !== TUTORIAL_STAGE.PASSED) {
+                            LaunchedEffect(Unit) {
+                                appViewModel.passTutorial(TUTORS.OPEN_HISTORY)
+                            }
+                        }
                     }
                 }
 
@@ -286,12 +292,13 @@ fun TopSheetLayout(
                     }
 
                     DisposableEffect(tutorial) {
-                        if (tutorial == TUTORIAL_STAGE.READY_TO_SHOW) {
-                            coroutineScope.launch {
-                                delay(1000)
+                        coroutineScope.launch {
+                            delay(1000)
+                            if (tutorial == TUTORIAL_STAGE.READY_TO_SHOW) {
                                 balloonState.show()
                             }
                         }
+
 
                         onDispose { }
                     }
