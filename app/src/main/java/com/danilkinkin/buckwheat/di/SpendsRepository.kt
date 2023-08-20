@@ -73,7 +73,7 @@ class SpendsRepository @Inject constructor(
 
     fun getCurrency() = context.budgetDataStore.data.map {
         it[currencyStoreKey]?.let { value ->
-            ExtendCurrency(value = value, type = CurrencyType.NONE)
+            ExtendCurrency.getInstance(value)
         } ?: ExtendCurrency(value = null, type = CurrencyType.NONE)
     }
 
