@@ -200,11 +200,17 @@ fun TopSheetLayout(
                             .alpha(max(progress * 2f - 1f, 0f))
                     ) {
                         sheetContentExpand()
+                    }
 
+                    DisposableEffect(Unit) {
                         if (tutorial !== TUTORIAL_STAGE.PASSED) {
-                            LaunchedEffect(Unit) {
-                                appViewModel.passTutorial(TUTORS.OPEN_HISTORY)
-                            }
+                            appViewModel.passTutorial(TUTORS.OPEN_HISTORY)
+                        }
+
+                        appViewModel.topSheetDown.value = true
+
+                        onDispose {
+                            appViewModel.topSheetDown.value = false
                         }
                     }
                 }

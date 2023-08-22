@@ -46,6 +46,7 @@ fun RowScope.RestBudgetPill(
     val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val budgetState by restBudgetPillViewModel.state.observeAsState(DaileBudgetState.NOT_SET)
+    val editorIsNotVisible by appViewModel.topSheetDown
     val percentWithNewSpent by restBudgetPillViewModel.percentWithNewSpent.observeAsState(1f)
     val tutorial by appViewModel.getTutorialStage(TUTORS.OPEN_WALLET).observeAsState(TUTORIAL_STAGE.NONE)
 
@@ -158,8 +159,8 @@ fun RowScope.RestBudgetPill(
             }
         }
 
-        DisposableEffect(budgetState) {
-            if (tutorial === TUTORIAL_STAGE.READY_TO_SHOW) {
+        DisposableEffect(budgetState, editorIsNotVisible) {
+            if (tutorial === TUTORIAL_STAGE.READY_TO_SHOW && !editorIsNotVisible) {
                 coroutineScope.launch {
                     delay(2000)
                     balloonState.show()
