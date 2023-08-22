@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danilkinkin.buckwheat.di.SpendsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,18 +24,19 @@ class RecalcBudgetViewModel @Inject constructor(
     fun calculateSplitOnRestDays() = viewModelScope.launch {
         val whatBudgetForDay = spendsRepository.whatBudgetForDay(applyTodaySpends = true)
 
-        newDailyBudgetIfSplitPerDay.value = whatBudgetForDay
+        newDailyBudgetIfSplitPerDay.value = whatBudgetForDay.setScale(0, RoundingMode.HALF_EVEN)
     }
 
     fun calculateAddToToday() = viewModelScope.launch {
         val notSpent = spendsRepository.howMuchNotSpent()
+        val dailyBudget = spendsRepository.getDailyBudget().first()
         val budgetPerDayAdd = spendsRepository.whatBudgetForDay(
             excludeCurrentDay = false,
             applyTodaySpends = true,
-            notCommittedSpent = notSpent,
+            notCommittedSpent = notSpent - dailyBudget,
         )
 
-        howMuchNotSpent.value = notSpent
-        newDailyBudgetIfAddToday.value = budgetPerDayAdd
+        howMuchNotSpent.value = notSpent - dailyBudget
+        newDailyBudgetIfAddToday.value = budgetPerDayAdd.setScale(0, RoundingMode.HALF_EVEN)
     }
 }
