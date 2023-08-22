@@ -20,6 +20,7 @@ import com.danilkinkin.buckwheat.util.roundToDay
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.lang.Long.min
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.Date
@@ -44,19 +45,19 @@ class SpendsRepository @Inject constructor(
 ) {
     fun getAllSpends(): LiveData<List<Spent>> = spentDao.getAll()
     fun getBudget() = context.budgetDataStore.data.map {
-        it[budgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
+        (it[budgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO).setScale(2)
     }
 
     fun getSpent() = context.budgetDataStore.data.map {
-        it[spentStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
+        (it[spentStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO).setScale(2)
     }
 
     fun getDailyBudget() = context.budgetDataStore.data.map {
-        it[dailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
+        (it[dailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO).setScale(2)
     }
 
     fun getSpentFromDailyBudget() = context.budgetDataStore.data.map {
-        it[spentFromDailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
+        (it[spentFromDailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO).setScale(2)
     }
 
     fun getStartPeriodDate() = context.budgetDataStore.data.map {
@@ -182,17 +183,22 @@ class SpendsRepository @Inject constructor(
         val whatBudgetForDay = restBudget
             .divide(
                 restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)),
-                0,
-                RoundingMode.FLOOR
+                2,
+                RoundingMode.HALF_EVEN
             )
 
         Log.d(
             "SpendsRepository",
             "Check what budget for day ["
+                    + "date: ${getCurrentDateUseCase()} "
                     + "what budget for day: $whatBudgetForDay "
                     + "excludeCurrentDay: $excludeCurrentDay "
                     + "applyTodaySpends: $applyTodaySpends "
                     + "notCommittedSpent: $notCommittedSpent "
+                    + "budget: $budget "
+                    + "spent: $spent "
+                    + "daily budget: $dailyBudget "
+                    + "spent from daily budget: $spentFromDailyBudget "
                     + "rest budget: $restBudget "
                     + "rest days: $restDays"
                     + "]"
@@ -220,18 +226,25 @@ class SpendsRepository @Inject constructor(
             getLastChangeDailyBudgetDate().first() ?: getStartPeriodDate().first()
 
 
-        val restDays = countDays(finishPeriodDate, getCurrentDateUseCase())
-        val skippedDays = countDays(getCurrentDateUseCase(), lastChangeDailyBudgetDate) - 1
+        val restDays = countDays(finishPeriodDate, getCurrentDateUseCase()).coerceAtLeast(0)
+        val skippedDays = countDays(
+            Date(min(getCurrentDateUseCase().time, finishPeriodDate.time)),
+            lastChangeDailyBudgetDate
+        ) - 1
         val restBudget = budget - spent
 
-        val howMuchNotSpent = restBudget
-            .divide(
-                (restDays + skippedDays).coerceAtLeast(1).toBigDecimal(),
-                2,
-                RoundingMode.HALF_EVEN,
-            )
-            .multiply((skippedDays - 1).coerceAtLeast(0).toBigDecimal())
-            .plus(dailyBudget - spentFromDailyBudget)
+        val howMuchNotSpent = if (restDays == 0) {
+            restBudget - spentFromDailyBudget
+        } else {
+            restBudget
+                .divide(
+                    (restDays + skippedDays).coerceAtLeast(1).toBigDecimal(),
+                    2,
+                    RoundingMode.HALF_EVEN,
+                )
+                .multiply((skippedDays).coerceAtLeast(0).toBigDecimal())
+                .plus(dailyBudget - spentFromDailyBudget)
+        }
 
         Log.d(
             "SpendsRepository",
@@ -266,7 +279,7 @@ class SpendsRepository @Inject constructor(
                 val spreadDeltaSpentPerRestDays = newSpent.value
                     .divide(
                         countDays(finishPeriodDate, getCurrentDateUseCase()).toBigDecimal(),
-                        0,
+                        2,
                         RoundingMode.HALF_EVEN,
                     )
 
@@ -303,17 +316,24 @@ class SpendsRepository @Inject constructor(
                 val spent = it[spentStoreKey]?.toBigDecimal()!!
 
                 val restDays = countDays(finishPeriodDate, getCurrentDateUseCase())
-                val spreadDeltaSpentPerRestDays = spentForRemove.value / restDays.toBigDecimal()
+                val spreadDeltaSpentPerRestDays = spentForRemove.value
+                    .divide(
+                        restDays.toBigDecimal(),
+                        2,
+                        RoundingMode.HALF_EVEN,
+                    )
 
                 Log.d(
                     "SpendsRepository",
-                    "Remove spent from previous day ["
+                    "Remove spent from previous day { "
+                            + spentForRemove
+                        + " } ["
                             + "spent: $spent "
                             + "dailyBudget: $dailyBudget "
                             + "spreadDeltaSpentPerRestDays: $spreadDeltaSpentPerRestDays "
                             + "spentDate: ${spentForRemove.date} "
                             + "getCurrentDateUseCase: ${getCurrentDateUseCase()} "
-                            + "countDays: ${countDays(finishPeriodDate, getCurrentDateUseCase())} "
+                            + "countDays: $restDays "
                             + "]"
                 )
 
