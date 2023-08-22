@@ -9,6 +9,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.tooling.preview.Preview
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import java.math.BigDecimal
 import kotlin.math.min
 

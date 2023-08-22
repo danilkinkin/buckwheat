@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.*
@@ -159,7 +160,7 @@ fun BudgetConstructor(
                 textAlign = TextAlign.Center,
             ),
             visualTransformation = visualTransformationAsCurrency(
-                currency = ExtendCurrency(type = CurrencyType.NONE),
+                currency = ExtendCurrency.none(),
                 hintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
             ),
             keyboardOptions = KeyboardOptions(

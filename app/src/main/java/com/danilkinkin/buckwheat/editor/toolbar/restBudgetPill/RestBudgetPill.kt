@@ -23,6 +23,7 @@ import com.danilkinkin.buckwheat.base.BigIconButton
 import com.danilkinkin.buckwheat.base.balloon.BalloonState
 import com.danilkinkin.buckwheat.base.balloon.rememberBalloonState
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.di.TUTORIAL_STAGE

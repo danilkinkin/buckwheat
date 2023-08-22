@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorOnEditor
@@ -74,7 +75,7 @@ private fun PreviewDefault() {
     BuckwheatTheme {
         SpentItem(
             Spent(value = BigDecimal(12340), date = Date()),
-            ExtendCurrency(type = CurrencyType.NONE)
+            ExtendCurrency.none()
         )
     }
 }
@@ -89,7 +90,7 @@ private fun PreviewNightMode() {
                 date = LocalDateTime.now().minusMonths(2).toLocalDate().toDate(),
                 comment = "Comment for spent",
             ),
-            ExtendCurrency(type = CurrencyType.NONE)
+            ExtendCurrency.none()
         )
     }
 }
@@ -104,7 +105,7 @@ private fun PreviewWithBigSpentAndLongCommentNightMode() {
                 date = Date(),
                 comment = "Very loooong comment for veryyy loooooooooooooooooong spent. And yet row for more length",
             ),
-            ExtendCurrency(type = CurrencyType.NONE)
+            ExtendCurrency.none()
         )
     }
 }
@@ -115,7 +116,7 @@ private fun PreviewSmallScreen() {
     BuckwheatTheme {
         SpentItem(
             Spent(value = BigDecimal(12340), date = Date()),
-            ExtendCurrency(type = CurrencyType.NONE)
+            ExtendCurrency.none()
         )
     }
 }

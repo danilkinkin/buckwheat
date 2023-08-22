@@ -20,8 +20,7 @@ import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.util.CurrencyType
-import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.util.titleCase
 import java.util.*
 
@@ -74,10 +73,10 @@ fun CurrencyEditor(
                         )
                 )
                 CheckedRow(
-                    checked = currency.type === CurrencyType.FROM_LIST,
+                    checked = currency.type === ExtendCurrency.Type.FROM_LIST,
                     onValueChange = { openCurrencyChooserDialog.value = true },
                     text = stringResource(R.string.currency_from_list),
-                    endCaption = if (currency.type === CurrencyType.FROM_LIST) {
+                    endCaption = if (currency.type === ExtendCurrency.Type.FROM_LIST) {
                         "${
                             Currency.getInstance(
                                 currency.value
@@ -92,19 +91,19 @@ fun CurrencyEditor(
                     },
                 )
                 CheckedRow(
-                    checked = currency.type === CurrencyType.CUSTOM,
+                    checked = currency.type === ExtendCurrency.Type.CUSTOM,
                     onValueChange = { openCustomCurrencyEditorDialog.value = true },
                     text = stringResource(R.string.currency_custom),
-                    endCaption = if (currency.type === CurrencyType.CUSTOM) {
+                    endCaption = if (currency.type === ExtendCurrency.Type.CUSTOM) {
                         currency.value!!
                     } else {
                         ""
                     },
                 )
                 CheckedRow(
-                    checked = currency.type === CurrencyType.NONE,
+                    checked = currency.type === ExtendCurrency.Type.NONE,
                     onValueChange = {
-                        currency = ExtendCurrency(type = CurrencyType.NONE)
+                        currency = ExtendCurrency.none()
                         spendsViewModel.changeDisplayCurrency(currency)
 
                         onClose()
@@ -118,13 +117,13 @@ fun CurrencyEditor(
     if (openCurrencyChooserDialog.value) {
         WorldCurrencyChooser(
             windowSizeClass = windowSizeClass,
-            defaultCurrency = if (currency.type === CurrencyType.FROM_LIST) {
+            defaultCurrency = if (currency.type === ExtendCurrency.Type.FROM_LIST) {
                 Currency.getInstance(currency.value)
             } else {
                 null
             },
             onSelect = {
-                currency = ExtendCurrency(type = CurrencyType.FROM_LIST, value = it.currencyCode)
+                currency = ExtendCurrency(type = ExtendCurrency.Type.FROM_LIST, value = it.currencyCode)
                 spendsViewModel.changeDisplayCurrency(currency)
 
                 onClose()
@@ -136,13 +135,13 @@ fun CurrencyEditor(
     if (openCustomCurrencyEditorDialog.value) {
         CustomCurrencyEditor(
             windowSizeClass = windowSizeClass,
-            defaultCurrency = if (currency.type === CurrencyType.CUSTOM) {
+            defaultCurrency = if (currency.type === ExtendCurrency.Type.CUSTOM) {
                 currency.value
             } else {
                 null
             },
             onChange = {
-                currency = ExtendCurrency(type = CurrencyType.CUSTOM, value = it)
+                currency = ExtendCurrency(type = ExtendCurrency.Type.CUSTOM, value = it)
                 spendsViewModel.changeDisplayCurrency(currency)
 
                 onClose()

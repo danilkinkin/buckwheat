@@ -9,8 +9,7 @@ import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.util.CurrencyType
-import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -50,7 +49,7 @@ private fun Preview() {
                 Spent(value = BigDecimal(15), date = Date()),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
         )
     }
 }

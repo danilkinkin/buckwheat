@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.TextRow
-import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import java.math.BigDecimal
 import java.math.RoundingMode

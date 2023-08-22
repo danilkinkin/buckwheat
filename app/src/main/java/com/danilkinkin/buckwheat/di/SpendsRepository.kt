@@ -11,9 +11,8 @@ import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.dao.SpentDao
 import com.danilkinkin.buckwheat.data.entities.Spent
-import com.danilkinkin.buckwheat.util.CurrencyType
 import com.danilkinkin.buckwheat.util.DAY
-import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.util.countDays
 import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.roundToDay
@@ -75,7 +74,7 @@ class SpendsRepository @Inject constructor(
     fun getCurrency() = context.budgetDataStore.data.map {
         it[currencyStoreKey]?.let { value ->
             ExtendCurrency.getInstance(value)
-        } ?: ExtendCurrency(value = null, type = CurrencyType.NONE)
+        } ?: ExtendCurrency(value = null, type = ExtendCurrency.Type.NONE)
     }
 
     fun getRestedBudgetDistributionMethod() = context.budgetDataStore.data.map { it ->

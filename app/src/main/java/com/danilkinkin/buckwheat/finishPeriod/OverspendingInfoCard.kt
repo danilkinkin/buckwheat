@@ -21,6 +21,7 @@ import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.ui.*
 import java.time.LocalDate
 import java.util.*
@@ -223,7 +224,7 @@ private fun PreviewZero() {
                 Spent(value = BigDecimal(5), date = LocalDate.now().minusDays(1).toDate()),
                 Spent(value = BigDecimal(8), date = Date()),
             ),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(7).toDate(),
             finishDate = LocalDate.now().plusDays(3).toDate(),
         )
@@ -241,7 +242,7 @@ private fun PreviewOne() {
                 Spent(value = BigDecimal(15), date = Date()),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(7).toDate(),
             finishDate = LocalDate.now().plusDays(3).toDate(),
         )
@@ -262,7 +263,7 @@ private fun PreviewFew() {
                 Spent(value = BigDecimal(15), date = Date()),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(10).toDate(),
             finishDate = Date(),
         )
@@ -286,7 +287,7 @@ private fun PreviewMany() {
                 Spent(value = BigDecimal(15), date = Date()),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(7).toDate(),
             finishDate = LocalDate.now().plusDays(3).toDate(),
         )
@@ -310,7 +311,7 @@ private fun PreviewAll() {
                 Spent(value = BigDecimal(15), date = Date()),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(9).toDate(),
             finishDate = LocalDate.now().plusDays(1).toDate(),
         )
@@ -328,7 +329,7 @@ private fun PreviewNightMode() {
                 Spent(value = BigDecimal(15), date = Date()),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(7).toDate(),
             finishDate = LocalDate.now().plusDays(3).toDate(),
         )

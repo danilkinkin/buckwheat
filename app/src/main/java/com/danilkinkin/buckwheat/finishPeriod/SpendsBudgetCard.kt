@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.WavyShape
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.ui.*
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.launch
@@ -125,7 +126,7 @@ private fun Preview() {
         SpendsBudgetCard(
             spend = BigDecimal(3740),
             budget = BigDecimal(60000),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
         )
     }
 }
@@ -137,7 +138,7 @@ private fun PreviewHalf() {
         SpendsBudgetCard(
             spend = BigDecimal(30740),
             budget = BigDecimal(60000),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
         )
     }
 }
@@ -149,7 +150,7 @@ private fun PreviewFull() {
         SpendsBudgetCard(
             spend = BigDecimal(45740),
             budget = BigDecimal(60000),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
         )
     }
 }
@@ -161,7 +162,7 @@ private fun PreviewOverspending() {
         SpendsBudgetCard(
             spend = BigDecimal.ZERO,
             budget = BigDecimal(60000),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
         )
     }
 }
@@ -173,7 +174,7 @@ private fun PreviewNightMode() {
         SpendsBudgetCard(
             spend = BigDecimal(14740),
             budget = BigDecimal(60000),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
         )
     }
 }

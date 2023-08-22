@@ -25,6 +25,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -219,7 +220,7 @@ fun Wallet(
                         appViewModel.openSheet(PathState(CURRENCY_EDITOR))
                     },
                     endCaption = when (currency?.type) {
-                        CurrencyType.FROM_LIST -> "${
+                        ExtendCurrency.Type.FROM_LIST -> "${
                             Currency.getInstance(
                                 currency!!.value
                             ).displayName.titleCase()
@@ -228,7 +229,7 @@ fun Wallet(
                                 currency!!.value
                             ).symbol
                         })"
-                        CurrencyType.CUSTOM -> currency!!.value!!
+                        ExtendCurrency.Type.CUSTOM -> currency!!.value!!
                         else -> ""
                     },
                 )

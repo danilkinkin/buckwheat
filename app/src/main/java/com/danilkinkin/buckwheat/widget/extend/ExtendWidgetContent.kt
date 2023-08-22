@@ -38,7 +38,7 @@ import androidx.glance.text.TextStyle
 import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.MainActivity
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.WidgetReceiver

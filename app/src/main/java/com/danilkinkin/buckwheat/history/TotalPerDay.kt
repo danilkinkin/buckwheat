@@ -10,8 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorOnEditor
-import com.danilkinkin.buckwheat.util.CurrencyType
-import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.util.prettyCandyCanes
 import java.math.BigDecimal
 import com.danilkinkin.buckwheat.R
@@ -52,7 +51,7 @@ private fun PreviewDefault() {
     BuckwheatTheme {
         TotalPerDay(
             BigDecimal(12340),
-            ExtendCurrency(type = CurrencyType.NONE)
+            ExtendCurrency.none()
         )
     }
 }
