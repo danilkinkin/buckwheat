@@ -43,7 +43,7 @@ fun SpendsBudgetCard(
     spend: BigDecimal,
     currency: ExtendCurrency,
 ) {
-    val percent = remember { BigDecimal(1).minus(spend.divide(budget, 5, RoundingMode.HALF_EVEN)) }
+    val percent = remember { BigDecimal(1).minus(spend.divide(budget, 2, RoundingMode.HALF_EVEN)) }
 
     val percentFormatted = remember {
         val formatter = NumberFormat.getNumberInstance(Locale.getDefault())

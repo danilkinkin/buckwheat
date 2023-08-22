@@ -47,7 +47,7 @@ fun RestAndSpentBudgetCard(
     val wholeBudget = spendsViewModel.budget.value!!
     val restBudget = spendsViewModel.howMuchBudgetRest().value!!
 
-    val percent = remember { restBudget.divide(wholeBudget, 5, RoundingMode.HALF_EVEN) }
+    val percent = remember { restBudget.divide(wholeBudget, 4, RoundingMode.HALF_EVEN) }
 
     val overString = stringResource(R.string.over)
 

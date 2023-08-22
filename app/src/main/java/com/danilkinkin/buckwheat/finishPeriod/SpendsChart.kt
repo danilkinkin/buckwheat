@@ -98,7 +98,7 @@ fun SpendsChart(
                 } else {
                     spent.value
                         .minus(minSpentValue)
-                        .divide(range, 5, RoundingMode.HALF_EVEN)
+                        .divide(range, 2, RoundingMode.HALF_EVEN)
                         .toFloat()
                 }
 
@@ -138,7 +138,7 @@ fun SpendsChart(
             } else {
                 1f - markedSpent.value
                     .minus(minSpentValue)
-                    .divide(range, 5, RoundingMode.HALF_EVEN)
+                    .divide(range, 2, RoundingMode.HALF_EVEN)
                     .toFloat()
             }
 
@@ -163,7 +163,7 @@ fun SpendsChart(
             } else {
                 markedSpent.value
                     .minus(minSpentValue)
-                    .divide(range, 5, RoundingMode.HALF_EVEN)
+                    .divide(range, 2, RoundingMode.HALF_EVEN)
                     .toFloat()
             }
 
