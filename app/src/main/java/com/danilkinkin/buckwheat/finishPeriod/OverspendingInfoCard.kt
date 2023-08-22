@@ -130,7 +130,7 @@ fun OverspendingInfoCard(
                     Text(
                         text = stringResource(
                             R.string.overspending_value,
-                            prettyCandyCanes(
+                            numberFormat(
                                 overspendingDays.first().spending - spentPerDay,
                                 currency = currency,
                             ),

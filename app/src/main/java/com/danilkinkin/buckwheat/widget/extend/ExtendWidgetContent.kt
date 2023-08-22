@@ -39,7 +39,7 @@ import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.MainActivity
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import com.danilkinkin.buckwheat.util.numberFormat
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.WidgetReceiver
 import java.math.BigDecimal
@@ -164,7 +164,7 @@ fun ExtendWidgetContent() {
                     ) {
                         Row {
                             val splittedValue = emptyList<String>().toMutableList()
-                            val value = prettyCandyCanes(
+                            val value = numberFormat(
                                 todayBudget,
                                 ExtendCurrency.getInstance(currency),
                             )

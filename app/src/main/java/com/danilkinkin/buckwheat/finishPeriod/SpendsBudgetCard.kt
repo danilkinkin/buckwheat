@@ -88,7 +88,7 @@ fun SpendsBudgetCard(
             containerColor = harmonizedColor.container,
             contentColor = harmonizedColor.onContainer,
         ),
-        value = prettyCandyCanes(
+        value = numberFormat(
             spend,
             currency = currency,
         ),

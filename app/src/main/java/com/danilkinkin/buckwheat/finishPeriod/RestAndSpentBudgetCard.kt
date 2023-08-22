@@ -148,7 +148,7 @@ fun RestAndSpentBudgetCard(
                 ) {
                     if (bigVariant) Spacer(modifier = Modifier.height(36.dp))
                     Text(
-                        text = prettyCandyCanes(
+                        text = numberFormat(
                             if (showSpentCard) {
                                 wholeBudget - restBudget
                             } else {

@@ -2,19 +2,10 @@ package com.danilkinkin.buckwheat.util
 
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import java.math.BigDecimal
-import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
 
-
-
-fun BigDecimal.isZero(): Boolean = this.signum() == 0
-
-fun Float.clamp(min: Float, max: Float): Float = (1f - ((this.coerceIn(min, max) - min) / (max - min)))
-
-fun Double.round(scale: Int): Double =
-    BigDecimal(this).setScale(scale, RoundingMode.HALF_EVEN).toDouble()
-
+// Get localised float divider (',' or '.')
 fun getFloatDivider(): String {
     val numberFormat: NumberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
 
@@ -26,7 +17,7 @@ fun getFloatDivider(): String {
     return formattedValue.substring(1, 2)
 }
 
-fun prettyCandyCanes(
+fun numberFormat(
     value: BigDecimal,
     currency: ExtendCurrency,
     forceShowAfterDot: Boolean = false,

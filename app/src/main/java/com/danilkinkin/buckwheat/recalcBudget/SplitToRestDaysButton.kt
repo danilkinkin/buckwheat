@@ -12,7 +12,7 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import com.danilkinkin.buckwheat.util.numberFormat
 import java.math.BigDecimal
 
 @Composable
@@ -34,7 +34,7 @@ fun SplitToRestDaysButton(
             Text(
                 stringResource(
                     R.string.split_rest_days_description,
-                    prettyCandyCanes(
+                    numberFormat(
                         newDailyBudgetIfSplitPerDay,
                         currency = currency,
                     ),

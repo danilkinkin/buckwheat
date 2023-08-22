@@ -41,7 +41,7 @@ fun WholeBudgetCard(
         modifier = modifier.fillMaxWidth(),
         contentPadding = contentPadding,
         label = stringResource(R.string.whole_budget),
-        value = prettyCandyCanes(
+        value = numberFormat(
             budget,
             currency = currency,
         ),

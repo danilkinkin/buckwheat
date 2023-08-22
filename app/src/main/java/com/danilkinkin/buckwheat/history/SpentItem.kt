@@ -33,7 +33,7 @@ fun SpentItem(
                     .weight(1f)
             ) {
                 Text(
-                    text = prettyCandyCanes(spent.value, currency = currency),
+                    text = numberFormat(spent.value, currency = currency),
                     style = MaterialTheme.typography.headlineLarge,
                     color = colorOnEditor,
                     softWrap = false,

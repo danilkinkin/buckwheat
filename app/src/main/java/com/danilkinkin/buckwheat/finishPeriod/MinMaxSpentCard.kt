@@ -74,7 +74,7 @@ fun MinMaxSpentCard(
     StatCard(
         modifier = modifier,
         value = if (spent != null) {
-            prettyCandyCanes(
+            numberFormat(
                 spent.value,
                 currency = currency,
             )

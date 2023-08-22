@@ -115,7 +115,7 @@ fun RecalcBudget(
                     )
                     Spacer(Modifier.height(24.dp))
                     Text(
-                        text = prettyCandyCanes(
+                        text = numberFormat(
                             howMuchNotSpent,
                             currency = spendsViewModel.currency.value!!,
                         ),

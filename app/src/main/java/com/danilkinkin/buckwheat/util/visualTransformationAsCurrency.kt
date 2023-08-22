@@ -60,13 +60,13 @@ private fun visualTransformationAsCurrency(
 ): TransformedText {
     val floatDivider = getFloatDivider()
     val fixed = tryConvertStringToNumber(input.text)
-    val currSymbol = prettyCandyCanes(
+    val currSymbol = numberFormat(
         BigDecimal.ZERO,
         currency,
         maximumFractionDigits = 0,
         minimumFractionDigits = 0,
     ).filter { it != '0' }
-    var output = prettyCandyCanes(
+    var output = numberFormat(
         input.text.ifEmpty { "0" }.toBigDecimal(),
         currency,
         maximumFractionDigits = 2,

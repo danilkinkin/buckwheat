@@ -10,7 +10,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import com.danilkinkin.buckwheat.util.numberFormat
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -24,7 +24,7 @@ fun AverageSpendCard(
     StatCard(
         modifier = modifier,
         value = if (spends.isNotEmpty()) {
-            prettyCandyCanes(
+            numberFormat(
                 spends
                     .reduce { acc, spent -> acc.copy(value = acc.value + spent.value) }
                     .value

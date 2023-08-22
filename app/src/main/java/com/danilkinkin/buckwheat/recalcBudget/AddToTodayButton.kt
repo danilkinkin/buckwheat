@@ -11,7 +11,7 @@ import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import com.danilkinkin.buckwheat.util.numberFormat
 import java.math.BigDecimal
 
 @Composable
@@ -32,11 +32,11 @@ fun AddToTodayButton(
             Text(
                 stringResource(
                     R.string.add_current_day_description,
-                    prettyCandyCanes(
+                    numberFormat(
                         howMuchNotSpent + budgetPerDayAdd,
                         currency = currency,
                     ),
-                    prettyCandyCanes(
+                    numberFormat(
                         budgetPerDayAdd,
                         currency = currency,
                     ),
