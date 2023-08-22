@@ -132,7 +132,7 @@ fun TextRow(
                 softWrap = true,
                 modifier = Modifier
                     .padding(
-                        start = if (!iconInset && icon === null) 24.dp else (24 + 24 + 16).dp,
+                        start = if (!iconInset && icon === null) 32.dp else (24 + 24 + 16).dp,
                         top = if (denseDescriptionOffset) 0.dp else 8.dp,
                         end = 24.dp,
                         bottom = 24.dp,
@@ -159,6 +159,18 @@ private fun PreviewWithDescription() {
         TextRow(
             text = "Text row",
             description = "Description of text row",
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewWithDescriptionIconInset() {
+    BuckwheatTheme {
+        TextRow(
+            text = "Text row",
+            description = "Description of text row",
+            iconInset = false,
         )
     }
 }
