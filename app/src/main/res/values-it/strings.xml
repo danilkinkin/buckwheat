@@ -9,7 +9,7 @@
     <string name="new_daily_budget_description">Oggi hai superato il budget giornaliero, non preoccuparti. Per i giorni seguenti, il budget verrà ricalcolato tenendo conto del budget totale rimanente.</string>
     <string name="budget_end">Il budget è finito</string>
     <string name="budget_not_set">Nessun budget stabilito</string>
-    <string name="budget_end_description">Sei andato/a oltre il budget, non preoccuparti, le spese non sono sempre le stesse. Inizia a spendere di più per capire quanto spenderai alla fine e di quale budget avrai bisogno.</string>
+    <string name="budget_end_description">Sei andato oltre il budget, non preoccuparti, le spese non sono sempre le stesse. Inizia a spendere di più per capire quanto spenderai alla fine e di quale budget avrai bisogno.</string>
     <string name="new_spent">Nuova spesa</string>
     <plurals name="spends_today">
         <item quantity="one">%1$s spesa oggi</item>
@@ -27,7 +27,7 @@
     <!-- History -->
     <string name="label_start_date">Inizio</string>
     <string name="label_finish_date">Fine</string>
-    <string name="remove_spent">Expenditure returned to budget</string>
+    <string name="remove_spent">Spesa annullata</string>
     <string name="remove_spent_undo">Annulla</string>
     <string name="no_spends">Nessuna spesa per ora</string>
     <string name="total_per_day">Totale giornaliero:</string>
@@ -38,8 +38,8 @@
     <string name="label_budget">Budget</string>
     <string name="select_finish_date_title">Scegli una data di fine</string>
     <plurals name="finish_date_label">
-        <item quantity="one">A %1$s (%2$s giorno)</item>
-        <item quantity="other">A %1$s (%2$s giorni)</item>
+        <item quantity="one">Fino al %1$s (%2$s giorno)</item>
+        <item quantity="other">Fino al %1$s (%2$s giorni)</item>
     </plurals>
     <plurals name="finish_date">
         <item quantity="one">%1$s (%2$s giorno)</item>
@@ -60,7 +60,7 @@
     <string name="done">Fatto</string>
     <string name="change_budget">Cambia budget</string>
     <string name="select_currency_title">Seleziona valuta</string>
-    <string name="select_currency_description">La valuta non influisce in alcun modo sui calcoli, è solo una designazione per una più facile comprensione dei numeri.</string>
+    <string name="select_currency_description">La valuta non influisce in alcun modo sui calcoli, è solo un dettaglio per una più facile comprensione dei numeri.</string>
     <string name="search_currency_placeholder">Codice o nome valuta</string>
     <string name="currency_not_found">Nessuna valuta corrispondente</string>
     <string name="currency_custom_title">Inserisci la tua valuta</string>
@@ -83,7 +83,7 @@
     <string name="about">Informazioni sull\'app</string>
     <string name="description">Buckwheat è un\'app che ti aiuta a spendere più saggiamente. Annotare ogni spesa fa riflettere e dà un\'idea di quanto e come si può spendere.</string>
     <string name="report_bug">Segnala un bug</string>
-    <string name="contribute">Dare un contributo</string>
+    <string name="contribute">Contribuisci</string>
     <string name="developer">Sviluppo &amp; design:</string>
 
     <!-- Bug reporting -->
@@ -94,14 +94,14 @@
     <!-- New day -->
     <string name="new_day_title">Congratulazioni! Hai risparmiato</string>
     <string name="recalc_budget">Scopri come organizzare il budget</string>
-    <string name="split_rest_days_title">Dividi per giorni rimanenti</string>
-    <string name="split_rest_days_description">Ottieni %1$s al giorno</string>
-    <string name="add_current_day_title">Lascia per oggi</string>
-    <string name="add_current_day_description">Ci saranno %1$s per oggi e %2$s per i giorni seguenti</string>
+    <string name="split_rest_days_title">Distribuisci nei giorni rimanenti</string>
+    <string name="split_rest_days_description">Avrai %1$s al giorno</string>
+    <string name="add_current_day_title">Usali oggi</string>
+    <string name="add_current_day_description">Avrai %1$s oggi e %2$s per ogni giorno seguente</string>
 
     <!-- Finish period -->
-    <string name="finish_period_title">Periodo finito</string>
-    <string name="period_summary_title">Ecco le statistiche per questo periodo</string>
+    <string name="finish_period_title">Periodo terminato</string>
+    <string name="period_summary_title">Ecco le tue statistiche per questo periodo</string>
     <string name="period_summary_no_spends_title">Wow, non hai speso nulla in questo periodo</string>
     <string name="new_period_title">Imposta un nuovo budget</string>
     <string name="whole_budget">Inizio budget</string>
@@ -128,7 +128,7 @@
     <string name="help_set_budget_title">Imposta un budget</string>
     <string name="help_set_budget_description">Calcola approssimativamente quanti soldi ti servono per un periodo, come un mese, e inseriscilo nell\'applicazione. Se non riesci a stimarlo, indicalo molto approssimativamente, per esempio metà dello stipendio. Col passare del tempo lo indicherai sempre più precisamente.</string>
     <string name="help_record_spends_title">Registra ogni spesa</string>
-    <string name="help_record_spends_description">L\'applicazione calcolerà quanto puoi spendere al giorno per rientrare nel budget, registre le spese e tieni d\'occhio il budget</string>
+    <string name="help_record_spends_description">L\'applicazione calcolerà quanto puoi spendere al giorno per rientrare nel budget, registra le spese e tieni d\'occhio il budget</string>
     <string name="help_good_luck_title">Spendi saggiamente</string>
     <string name="help_good_luck_description">Col passare del tempo, imparerai a capire quanto spendi e quanto è necessario spendere.</string>
 
@@ -140,24 +140,24 @@
     <string name="today">Oggi</string>
     <string name="export_to_csv_success">Spesa esportata</string>
     <string name="export_to_csv_failed">Impossibile esportare le spese</string>
-    <string name="add_spent">Aggiungi rifiuti</string>
+    <string name="add_spent">Aggiungi spesa</string>
     <string name="remember_choice_reacalc_budget_description">Più tardi puoi cambiare nel portafoglio</string>
     <string name="remember_choice">Ricorda la scelta</string>
     <string name="rest_label">Resto</string>
-    <string name="choose_recalc_budget_method_label">Scegli un metodo di distribuzione dei residui</string>
-    <string name="choose_recalc_budget_method_description">Puoi scegliere come distribuire il saldo del budget dopo la giornata. \n\nAd esempio, hai un budget per 500 giorni, ieri hai speso 400, oggi puoi distribuire 100 nei giorni rimanenti o spendere 600 (500 + 100) oggi</string>
+    <string name="choose_recalc_budget_method_label">Scegli un metodo di distribuzione del resto</string>
+    <string name="choose_recalc_budget_method_description">Puoi scegliere come distribuire il resto che ti rimane dopo una giornata. \n\nAd esempio, hai un budget di 500 al giorno, ieri hai speso 400, oggi puoi distribuire 100 nei giorni rimanenti o spendere 600 (500 + 100) oggi</string>
     <string name="always_ask">Chiedi sempre</string>
-    <string name="method_split_to_rest_days_title">Distribuire</string>
-    <string name="method_split_to_rest_days_description">Il residuo irrequieto sarà distribuito nei giorni rimanenti</string>
-    <string name="method_add_to_current_day_title">Aggiungi al budget giornaliero attuale</string>
-    <string name="method_add_to_current_day_description">Il residuo irrequieto verrà aggiunto al budget giornaliero attuale</string>
+    <string name="method_split_to_rest_days_title">Distribuisci</string>
+    <string name="method_split_to_rest_days_description">Il resto sarà distribuito nei giorni rimanenti</string>
+    <string name="method_add_to_current_day_title">Aggiungi al budget giornaliero</string>
+    <string name="method_add_to_current_day_description">Il resto di una giornata verrà aggiunto al budget giornaliero del giorno successivo</string>
     <string name="spent_budget">Speso</string>
-    <string name="edit_spent">Rifiuti modificabili</string>
+    <string name="edit_spent">Spesa modificabile</string>
     <string name="cancel_editing">Annulla la modifica</string>
     <string name="over">oltre il</string>
     <string name="app_widget_extend_name">Estendere il grano saraceno</string>
     <string name="app_widget_minimal_name">Minimo di grano saraceno</string>
     <string name="add_spent_short">Spesa</string>
-    <string name="home_widgets_label">Widget della schermata principale</string>
-    <string name="try_home_widgets_desc">Il grano saraceno ora ha widget. Provalo e tieni traccia del tuo budget dalla schermata principale</string>
+    <string name="home_widgets_label">Widget schermata home</string>
+    <string name="try_home_widgets_desc">Buckwheat ora ha dei widget. Provali e tieni traccia del tuo budget dalla schermata principale</string>
 </resources>
