@@ -1,10 +1,12 @@
 package com.danilkinkin.buckwheat.recalcBudget
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danilkinkin.buckwheat.di.SpendsRepository
+import com.danilkinkin.buckwheat.util.countDaysToToday
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -20,14 +22,24 @@ class RecalcBudgetViewModel @Inject constructor(
     val newDailyBudgetIfSplitPerDay: MutableLiveData<BigDecimal> = MutableLiveData()
     val newDailyBudgetIfAddToday: MutableLiveData<BigDecimal> = MutableLiveData()
     val howMuchNotSpent: MutableLiveData<BigDecimal> = MutableLiveData()
+    val isLastDay: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun calculateSplitOnRestDays() = viewModelScope.launch {
+    fun calculate() = viewModelScope.launch {
+        isLastDay.value = spendsRepository.getFinishPeriodDate().first()
+            ?.let { countDaysToToday(it) == 1 }
+            ?: false
+
+        calculateSplitOnRestDays()
+        calculateAddToToday()
+    }
+
+    private fun calculateSplitOnRestDays() = viewModelScope.launch {
         val whatBudgetForDay = spendsRepository.whatBudgetForDay(applyTodaySpends = true)
 
         newDailyBudgetIfSplitPerDay.value = whatBudgetForDay.setScale(0, RoundingMode.HALF_EVEN)
     }
 
-    fun calculateAddToToday() = viewModelScope.launch {
+    private fun calculateAddToToday() = viewModelScope.launch {
         val notSpent = spendsRepository.howMuchNotSpent()
         val dailyBudget = spendsRepository.getDailyBudget().first()
         val budgetPerDayAdd = spendsRepository.whatBudgetForDay(

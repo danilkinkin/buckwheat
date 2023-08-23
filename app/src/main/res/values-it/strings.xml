@@ -164,4 +164,6 @@
     <string name="try_home_widgets_desc">Il grano saraceno ora ha widget. Provalo e tieni traccia del tuo budget dalla schermata principale</string>
     <string name="tutorial_open_wallet">Fare clic per visualizzare i dettagli del budget</string>
     <string name="tutorial_open_history">Trascina per visualizzare la cronologia delle spese</string>
+    <string name="recalc_budget_on_last_day">Oggi è l\'ultimo giorno, non ha senso distribuire</string>
+    <string name="start_last_day_description">Oggi puoi spendere %1$s</string>
 </resources>

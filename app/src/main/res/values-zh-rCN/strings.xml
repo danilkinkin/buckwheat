@@ -161,4 +161,6 @@
     <string name="try_home_widgets_desc">Buckwheat现在拥有小组件啦！请使用并在主屏幕上跟踪您的预算吧！</string>
     <string name="tutorial_open_wallet">點擊查看預算詳情</string>
     <string name="tutorial_open_history">拖動查看消費記錄</string>
+    <string name="recalc_budget_on_last_day">今天是最後一天，分發沒有意義</string>
+    <string name="start_last_day_description">今天您可以花費 %1$s</string>
 </resources>
