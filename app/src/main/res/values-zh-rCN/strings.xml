@@ -1,73 +1,72 @@
-<?xml version='1.0' encoding='utf-8' ?>
 <resources>
-    <string name="app_name">Buckwheat</string>
-    <string name="app_widget_extend_name">Buckwheat扩展</string>
-    <string name="app_widget_minimal_name">Buckwheat小组件</string>
+    <string name="app_name">荞麦</string>
+    <string name="app_widget_extend_name">荞麦 大</string>
+    <string name="app_widget_minimal_name">荞麦 小</string>
 
     <!-- Main -->
     <string name="budget_for_today">今日预算</string>
     <string name="rest_budget_for_today">今日剩余</string>
     <string name="new_daily_budget_short">新的每日预算</string>
     <string name="new_daily_budget">新的每日预算</string>
-    <string name="new_daily_budget_description">您今天超预算啦，不必为此担心。对于接下来的日子，预算将会以剩余的总预算重新计算。</string>
-    <string name="budget_end">本次预算结束</string>
-    <string name="budget_not_set">未设置预算</string>
-    <string name="budget_end_description">您超预算啦，不过您不必担心，因为您又不是每天都花钱大手大脚。继续支出以了解最终会花费多少以及您需要的预算</string>
-    <string name="new_spent">新的开支</string>
+    <string name="new_daily_budget_description">您今天超预算啦，不必为此担心。对于接下来的日子，预算将会根据剩余的总预算重新计算</string>
+    <string name="budget_end">预算已花完</string>
+    <string name="budget_not_set">预算未设置</string>
+    <string name="budget_end_description">您超出了提前规划的预算，不用担心，这不可怕，花费从来不是一成不变的。继续花费，了解最终您会花费多少以及您需要多少预算吧</string>
+    <string name="new_spent">新的花费</string>
     <plurals name="spends_today">
-        <item quantity="other">今日开支 %1$s</item>
+        <item quantity="other">今日有 %1$s 笔花费</item>
     </plurals>
     <plurals name="day">
-        <item quantity="other">%1$s 天</item>
+        <item quantity="other">%1$s 日</item>
     </plurals>
-    <string name="enter_spent_placeholder">输入开支</string>
-    <string name="hide_overspending_warn">隐藏预算结束消息</string>
-    <string name="hide_overspending_warn_description">该消息将在预算周期结束之前被隐藏起来，以免分散注意力或增加压力</string>
+    <string name="enter_spent_placeholder">输入花费额</string>
+    <string name="hide_overspending_warn">隐藏超支提醒消息</string>
+    <string name="hide_overspending_warn_description">直到本周期结束，这个消息会被隐藏，不会再分散您的注意力或者给您施加压力</string>
     <string name="add_comment">备注</string>
 
     <!-- History -->
     <string name="label_start_date">开始</string>
-    <string name="label_finish_date">完成</string>
-    <string name="remove_spent">支出已返回至预算中</string>
+    <string name="label_finish_date">结束</string>
+    <string name="remove_spent">开支已返回到预算中</string>
     <string name="remove_spent_undo">撤销</string>
-    <string name="no_spends">还没有开支</string>
-    <string name="total_per_day">当日总计:</string>
-    <string name="change_date">改變日期</string>
-    <string name="change_time">變更時間</string>
+    <string name="no_spends">尚无花费</string>
+    <string name="total_per_day">今日总计:</string>
+    <string name="change_date">改变日期</string>
+    <string name="change_time">改变时间</string>
 
     <!-- Wallet -->
     <string name="wallet_title">预算</string>
     <string name="wallet_edit_title">新的预算</string>
     <string name="label_budget">预算</string>
-    <string name="select_finish_date_title">选择一个完成日期</string>
+    <string name="select_finish_date_title">选择结束日期</string>
     <plurals name="finish_date_label">
-        <item quantity="other">至 %1$s (%2$s 天)</item>
+        <item quantity="other">到 %1$s (%2$s 日)</item>
     </plurals>
     <plurals name="days_count">
-        <item quantity="other">%1$s 天</item>
+        <item quantity="other">%1$s 日</item>
     </plurals>
-    <string name="export_to_csv">导出开支</string>
-    <string name="finish_date_not_select">未选择完成日期</string>
+    <string name="export_to_csv">导出至 CSV</string>
+    <string name="finish_date_not_select">尚未选择结束日期</string>
     <string name="in_currency_label">货币</string>
     <string name="currency_from_list">世界货币</string>
     <string name="currency_custom">自定义货币</string>
-    <string name="currency_none">不设置货币</string>
-    <string name="per_day">%1$s 每天</string>
+    <string name="currency_none">无货币</string>
+    <string name="per_day">每日 %1$s</string>
     <string name="total_title">总计</string>
-    <string name="unable_calc_budget">无法计划预算</string>
+    <string name="unable_calc_budget">无法计算预算</string>
     <string name="budget_must_greater_zero">输入您的预算</string>
     <string name="days_must_greater_zero">计算至少一天的预算</string>
     <string name="apply">应用</string>
-    <string name="done">明白</string>
-    <string name="change_budget">调整预算</string>
+    <string name="done">知道了</string>
+    <string name="change_budget">更改预算</string>
     <string name="select_currency_title">选择货币</string>
     <string name="search_currency_placeholder">货币代码或名称</string>
     <string name="currency_not_found">无对应货币</string>
     <string name="currency_custom_title">输入您的货币</string>
-    <string name="currency_custom_description">示例，消费150个自定义货币将显示如下：</string>
-    <string name="confirm_change_budget_title">改变预算</string>
-    <string name="confirm_change_budget_description">请注意，当您修改预算时，当前的消费记录将被删除，并将重新开始倒计时</string>
-    <string name="confirm_change_budget">改变预算</string>
+    <string name="currency_custom_description">举例来说，花费 150 个常规单位会显示如下：</string>
+    <string name="confirm_change_budget_title">预算更改</string>
+    <string name="confirm_change_budget_description">请注意，当您更改预算时，当前的消费记录将被删除，并将重新开始倒计时</string>
+    <string name="confirm_change_budget">更改预算</string>
     <string name="use_last">先前的预算</string>
     <string name="days_left">剩余天数</string>
 
@@ -81,84 +80,84 @@
     <string name="locale_system">系统默认</string>
     <string name="version">版本: %1$s</string>
     <string name="about">关于</string>
-    <string name="description">Buckwheat是一款用于帮助您计算开支以及剩余预算的应用程序。记录下每笔开销可以清醒您的头脑，并让您了解自己能够花费多少以及如何花费。</string>
+    <string name="description">「荞麦」是一款帮助您聪明地花费的应用。记录下每笔花费可以清醒您的头脑，并让您了解自己能够花费多少以及如何花费。</string>
     <string name="report_bug">报告漏洞</string>
     <string name="contribute">捐赠</string>
     <string name="developer">开发 &amp; 设计:</string>
 
     <!-- Bug reporting -->
     <string name="report_bug_title">报告漏洞</string>
-    <string name="report_via_github">通过GitHub issue反馈</string>
-    <string name="report_via_email">通过邮件反馈</string>
+    <string name="report_via_github">通过 GitHub issue</string>
+    <string name="report_via_email">通过电子邮件</string>
 
     <!-- New day -->
-    <string name="new_day_title">好耶! 您把钱存下来啦！</string>
+    <string name="new_day_title">好耶！您存下了</string>
     <string name="recalc_budget">了解如何制定预算</string>
-    <string name="split_rest_days_title">按剩余天数进行分配</string>
-    <string name="split_rest_days_description">每天获得 %1$s </string>
-    <string name="add_current_day_title">算在今天</string>
-    <string name="add_current_day_description">今天还能花 %1$s 小金库还剩 %2$s </string>
+    <string name="split_rest_days_title">由剩余的天数平分</string>
+    <string name="split_rest_days_description">每日获得 %1$s</string>
+    <string name="add_current_day_title">留给今日</string>
+    <string name="add_current_day_description">今日会有 %1$s，之后的每日会有 %2$s</string>
 
     <!-- Finish period -->
-    <string name="finish_period_title">周期结束</string>
-    <string name="period_summary_title">以下是本期的统计数据</string>
-    <string name="period_summary_no_spends_title">哇塞！您在这个周期内没有花费任何金额</string>
-    <string name="new_period_title">制定一个全新的预算</string>
+    <string name="finish_period_title">本周期已结束</string>
+    <string name="period_summary_title">以下是本周期的统计数据</string>
+    <string name="period_summary_no_spends_title">哇塞！您在这个周期内没有花费一块钱</string>
+    <string name="new_period_title">制定新的预算</string>
     <string name="whole_budget">起始预算</string>
-    <string name="rest_budget">剩余预算</string>
-    <string name="rest_budget_percent">预算的 %1$s%% </string>
-    <string name="min_spent">最小花费</string>
-    <string name="max_spent">最大花费</string>
-    <string name="count_spends">总开支</string>
-    <string name="average_spent">平均开支</string>
-    <string name="advice_title">干的漂亮！</string>
-    <string name="advice_description">记录下您所有的开支，不用担心超出预算，因为您不会每天花钱都大手大脚</string>
-    <string name="overspending_value">占 %1$s</string>
+    <string name="rest_budget">剩余</string>
+    <string name="rest_budget_percent">预算的 %1$s%%</string>
+    <string name="min_spent">最低花费</string>
+    <string name="max_spent">最高花费</string>
+    <string name="count_spends">总花费笔数</string>
+    <string name="average_spent">平均花费额</string>
+    <string name="advice_title">您做得很好</string>
+    <string name="advice_description">记录下您所有的开支，不用担心超出预算，花费并不是一成不变的。</string>
+    <string name="overspending_value">%1$s</string>
     <string name="overspending_never_exceeded_daily_budget">您从未超出每日预算</string>
     <string name="overspending_first_time">您首次超出了每日预算</string>
-    <string name="overspending_after_not_go_out_budget">您没有超出预算的更多部分</string>
-    <string name="overspending_after_few_times_out_budget">在那之后，您的预算剩余 %1$s 相当于预算的 %2$s </string>
-    <string name="overspending_after_many_times_out_budget">在剩下的 %1$s 预算中，还剩下 %2$s 您还保持在预算内</string>
-    <string name="overspending_after_all_times_out_budget">您没有超出预算，还剩下 %1$s </string>
+    <string name="overspending_after_not_go_out_budget">您没有再超出过预算</string>
+    <string name="overspending_after_few_times_out_budget">之后，剩下 %2$s 中的 %1$s 您超出了预算</string>
+    <string name="overspending_after_many_times_out_budget">之后，剩余 %2$s 中仅有 %1$s 您在预算内</string>
+    <string name="overspending_after_all_times_out_budget">之后，剩下的 %1$s 您都超出了预算</string>
 
     <!-- Onboarding -->
-    <string name="hello">你好!</string>
-    <string name="onboarding_title">欢迎使用Buckwheat,让我们开始一起省钱吧！</string>
-    <string name="set_period_title">设置预算</string>
-    <string name="help_set_budget_title">建立一个预算</string>
-    <string name="help_set_budget_description">请计算出您在某个特定周期（例如一个月）中大致需要多少金额，并输入进应用程序中。如果您无法准确计算，可以近似地估算，例如工资的一半，随着时间的推移，您会更加准确地输入这些信息</string>
+    <string name="hello">您好！</string>
+    <string name="onboarding_title">欢迎使用「荞麦」, 让我们一起来省钱吧</string>
+    <string name="set_period_title">制定预算</string>
+    <string name="help_set_budget_title">制定预算</string>
+    <string name="help_set_budget_description">请估算出您在某个特定周期（例如一个月）中大致需要多少金额，并输入应用中。如果您无法准确计算，可以近似地估算，例如工资的一半，随着时间的推移，您会更加准确地输入这些信息</string>
     <string name="help_record_spends_title">记录每一笔开支</string>
-    <string name="help_record_spends_description">该应用程序会计算每天您需要花费多少来符合预算，记录开支并跟踪预算</string>
+    <string name="help_record_spends_description">本应用将计算您每天需要花费多少才能符合预算，记录开支跟踪预算</string>
     <string name="help_good_luck_title">明智地花费</string>
-    <string name="help_good_luck_description">随着时间的推移，您会逐渐学会感知自己实际花费了多少以及该不该花费。学会去判断是否可以立刻花钱购买一件小玩意儿</string>
+    <string name="help_good_luck_description">久而久之，您会逐渐学会感知您实际花费了多少以及需要多少。现在开始，学会理解您是否可以花钱买一件小东西吧</string>
 
     <!-- Common -->
-    <string name="copy_in_clipboard">复制到剪贴板</string>
+    <string name="copy_in_clipboard">已复制到剪贴板</string>
     <string name="not_found_email_clients">未找到电子邮件客户端</string>
     <string name="cancel">取消</string>
     <string name="accept">接受</string>
-    <string name="today">今天</string>
-    <string name="export_to_csv_success">完成开支导出</string>
-    <string name="export_to_csv_failed">导出开支失败</string>
-    <string name="add_spent">添加开支</string>
-    <string name="add_spent_short">开支</string>
-    <string name="select_currency_description">货币并不影响计算结果，它只是为了更方便地理解数值而设置的标识符</string>
-    <string name="remember_choice_reacalc_budget_description">稍后您可以在钱包中进行更改</string>
-    <string name="remember_choice">记住选择</string>
-    <string name="rest_label">剩余预算</string>
-    <string name="choose_recalc_budget_method_label">选择余额分配方式</string>
-    <string name="choose_recalc_budget_method_description">您可以自行决定如何分配当日的剩余预算 \n\n例如，您设定了一天的预算为500，昨天您花了400，那么今天您可以选择将剩余的100在未来的日子里平均分配，或是加在今天的预算里变为600（500 + 100）</string>
+    <string name="today">今日</string>
+    <string name="export_to_csv_success">花费已导出</string>
+    <string name="export_to_csv_failed">花费导出失败</string>
+    <string name="add_spent">添加花费</string>
+    <string name="add_spent_short">花费</string>
+    <string name="select_currency_description">货币不会以任何方式影响计算，它只是为了更容易理解数字的一个名称。</string>
+    <string name="remember_choice_reacalc_budget_description">之后您可以在钱包中更改</string>
+    <string name="remember_choice">记住该选项</string>
+    <string name="rest_label">剩余</string>
+    <string name="choose_recalc_budget_method_label">选择剩余分配方式</string>
+    <string name="choose_recalc_budget_method_description">" 您可以选择如何分配分配当日的剩余预算。例如，您的预算是每日 500，昨天花掉了 400，那么今天您可以选择把 100 平均分配到剩余的天数里，或是添加到今天的预算里变为600（500 + 100）"</string>
     <string name="always_ask">总是询问</string>
     <string name="method_split_to_rest_days_title">平均分配</string>
-    <string name="method_split_to_rest_days_description">剩余预算将平均分配到剩余的天数中</string>
-    <string name="method_add_to_current_day_title">将其添加到当前的每日预算中</string>
-    <string name="method_add_to_current_day_description">剩余的预算将添加到当前的每日预算中</string>
-    <string name="spent_budget">开支</string>
-    <string name="edit_spent">可编辑的已花费金额</string>
+    <string name="method_split_to_rest_days_description">剩余预算会被平均分配到剩余的天数里</string>
+    <string name="method_add_to_current_day_title">添加到当日的预算</string>
+    <string name="method_add_to_current_day_description">剩余预算会被添加到当日的预算中</string>
+    <string name="spent_budget">已花费</string>
+    <string name="edit_spent">可编辑的已花费</string>
     <string name="cancel_editing">取消编辑</string>
     <string name="over">结束</string>
-    <string name="home_widgets_label">小组件</string>
-    <string name="try_home_widgets_desc">Buckwheat现在拥有小组件啦！请使用并在主屏幕上跟踪您的预算吧！</string>
-    <string name="tutorial_open_wallet">點擊查看預算詳情</string>
-    <string name="tutorial_open_history">拖動查看消費記錄</string>
+    <string name="home_widgets_label">主屏幕微件</string>
+    <string name="try_home_widgets_desc">「荞麦」现在有微件了。试试看，从主屏幕跟踪您的预算吧</string>
+    <string name="tutorial_open_wallet">点击查看预算详情</string>
+    <string name="tutorial_open_history">拖动查看花费历史</string>
 </resources>
