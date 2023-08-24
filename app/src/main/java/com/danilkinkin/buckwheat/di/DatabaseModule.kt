@@ -22,7 +22,8 @@ class AutoMigration2to3 : AutoMigrationSpec
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
-    ]
+    ],
+    exportSchema = true
 )
 @TypeConverters(RoomConverters::class)
 abstract class DatabaseModule : RoomDatabase() {

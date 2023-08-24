@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -21,6 +22,10 @@ android {
                 arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
                 arguments["room.schemaLocation"] = "$projectDir/schemas"
             }
+        }
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 
@@ -95,7 +100,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.3.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
     kapt("com.google.dagger:dagger-compiler:2.46.1")
-    kapt("androidx.room:room-compiler:2.5.2")
+    ksp("androidx.room:room-compiler:2.5.2")
     kapt("com.google.dagger:hilt-android-compiler:2.46.1")
     kapt("androidx.hilt:hilt-compiler:1.0.0")
     debugImplementation("androidx.compose.ui:ui-tooling:1.5.0")
