@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:8.1.1")
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.46")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
         classpath("com.diffplug.spotless:spotless-plugin-gradle:6.20.0")
         classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
     }
@@ -40,6 +40,5 @@ subprojects {
 }
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.43.0"
-
+    id("com.github.ben-manes.versions") version "0.47.0"
 }
