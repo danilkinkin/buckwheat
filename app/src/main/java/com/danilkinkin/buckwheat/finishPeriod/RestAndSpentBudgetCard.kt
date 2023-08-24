@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.WavyShape
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorBad
@@ -46,7 +47,7 @@ fun RestAndSpentBudgetCard(
     val wholeBudget = spendsViewModel.budget.value!!
     val restBudget = spendsViewModel.howMuchBudgetRest().value!!
 
-    val percent = remember { restBudget.divide(wholeBudget, 5, RoundingMode.HALF_EVEN) }
+    val percent = remember { restBudget.divide(wholeBudget, 4, RoundingMode.HALF_EVEN) }
 
     val overString = stringResource(R.string.over)
 
@@ -147,7 +148,7 @@ fun RestAndSpentBudgetCard(
                 ) {
                     if (bigVariant) Spacer(modifier = Modifier.height(36.dp))
                     Text(
-                        text = prettyCandyCanes(
+                        text = numberFormat(
                             if (showSpentCard) {
                                 wholeBudget - restBudget
                             } else {

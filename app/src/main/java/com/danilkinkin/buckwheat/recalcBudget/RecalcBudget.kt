@@ -44,14 +44,14 @@ fun RecalcBudget(
     val navigationBarHeight = rememberNavigationBarHeight().coerceAtLeast(16.dp)
 
     val howMuchNotSpent by recalcBudgetViewModel.howMuchNotSpent.observeAsState(BigDecimal.ZERO)
+    val isLastDay by recalcBudgetViewModel.isLastDay.observeAsState(false)
 
     var rememberChoice by remember { mutableStateOf(false) }
     var contentHeight by remember { mutableFloatStateOf(0f) }
     var isSpawned by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        recalcBudgetViewModel.calculateSplitOnRestDays()
-        recalcBudgetViewModel.calculateAddToToday()
+        recalcBudgetViewModel.calculate()
     }
 
     BoxWithConstraints(Modifier.fillMaxWidth()) {
@@ -115,7 +115,7 @@ fun RecalcBudget(
                     )
                     Spacer(Modifier.height(24.dp))
                     Text(
-                        text = prettyCandyCanes(
+                        text = numberFormat(
                             howMuchNotSpent,
                             currency = spendsViewModel.currency.value!!,
                         ),
@@ -123,31 +123,41 @@ fun RecalcBudget(
                         textAlign = TextAlign.Center,
                     )
                     Spacer(Modifier.height(24.dp))
-                    Text(
-                        text = stringResource(R.string.recalc_budget),
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center,
-                    )
+                    if (isLastDay) {
+                        Text(
+                            text = stringResource(R.string.recalc_budget_on_last_day),
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.recalc_budget),
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
                     Spacer(Modifier.height(48.dp))
                 }
-                ButtonRow(
-                    text = stringResource(R.string.remember_choice),
-                    description = stringResource(R.string.remember_choice_reacalc_budget_description),
-                    wrapMainText = true,
-                    iconInset = false,
-                    onClick = {
-                        rememberChoice = !rememberChoice
-                    },
-                    endContent = {
-                        Switch(
-                            checked = rememberChoice,
-                            onCheckedChange = {
-                                rememberChoice = !rememberChoice
-                            },
-                        )
+                if (!isLastDay) {
+                    ButtonRow(
+                        text = stringResource(R.string.remember_choice),
+                        description = stringResource(R.string.remember_choice_reacalc_budget_description),
+                        wrapMainText = true,
+                        iconInset = false,
+                        onClick = {
+                            rememberChoice = !rememberChoice
+                        },
+                        endContent = {
+                            Switch(
+                                checked = rememberChoice,
+                                onCheckedChange = {
+                                    rememberChoice = !rememberChoice
+                                },
+                            )
 
-                    }
-                )
+                        }
+                    )
+                }
                 Spacer(Modifier.height(16.dp))
                 Column(
                     modifier = Modifier
@@ -155,20 +165,27 @@ fun RecalcBudget(
                         .padding(horizontal = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    SplitToRestDaysButton {
-                        if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
-                            RestedBudgetDistributionMethod.REST
-                        )
+                    if (isLastDay) {
+                        StartLastDayButton {
+                            onClose()
+                        }
+                        Spacer(Modifier.height(24.dp))
+                    } else {
+                        SplitToRestDaysButton {
+                            if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
+                                RestedBudgetDistributionMethod.REST
+                            )
 
-                        onClose()
-                    }
-                    Spacer(Modifier.height(16.dp))
-                    AddToTodayButton {
-                        if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
-                            RestedBudgetDistributionMethod.ADD_TODAY
-                        )
+                            onClose()
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        AddToTodayButton {
+                            if (rememberChoice) spendsViewModel.changeRestedBudgetDistributionMethod(
+                                RestedBudgetDistributionMethod.ADD_TODAY
+                            )
 
-                        onClose()
+                            onClose()
+                        }
                     }
                 }
             }

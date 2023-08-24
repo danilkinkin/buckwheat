@@ -164,4 +164,6 @@
     <string name="try_home_widgets_desc">Buckwheat now has widgets. Try it out and keep track of your budget from the home screen</string>
     <string name="tutorial_open_wallet">Click to view budget details</string>
     <string name="tutorial_open_history">Drag to view spending history</string>
+    <string name="recalc_budget_on_last_day">Today is the last day, it makes no sense to distribute</string>
+    <string name="start_last_day_description">Today you can spend %1$s</string>
 </resources>

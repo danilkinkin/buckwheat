@@ -1,13 +1,17 @@
 package com.danilkinkin.buckwheat.recalcBudget
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danilkinkin.buckwheat.di.SpendsRepository
+import com.danilkinkin.buckwheat.util.countDaysToToday
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,22 +22,33 @@ class RecalcBudgetViewModel @Inject constructor(
     val newDailyBudgetIfSplitPerDay: MutableLiveData<BigDecimal> = MutableLiveData()
     val newDailyBudgetIfAddToday: MutableLiveData<BigDecimal> = MutableLiveData()
     val howMuchNotSpent: MutableLiveData<BigDecimal> = MutableLiveData()
+    val isLastDay: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun calculateSplitOnRestDays() = viewModelScope.launch {
-        val whatBudgetForDay = spendsRepository.whatBudgetForDay(applyTodaySpends = true)
+    fun calculate() = viewModelScope.launch {
+        isLastDay.value = spendsRepository.getFinishPeriodDate().first()
+            ?.let { countDaysToToday(it) == 1 }
+            ?: false
 
-        newDailyBudgetIfSplitPerDay.value = whatBudgetForDay
+        calculateSplitOnRestDays()
+        calculateAddToToday()
     }
 
-    fun calculateAddToToday() = viewModelScope.launch {
+    private fun calculateSplitOnRestDays() = viewModelScope.launch {
+        val whatBudgetForDay = spendsRepository.whatBudgetForDay(applyTodaySpends = true)
+
+        newDailyBudgetIfSplitPerDay.value = whatBudgetForDay.setScale(0, RoundingMode.HALF_EVEN)
+    }
+
+    private fun calculateAddToToday() = viewModelScope.launch {
         val notSpent = spendsRepository.howMuchNotSpent()
+        val dailyBudget = spendsRepository.getDailyBudget().first()
         val budgetPerDayAdd = spendsRepository.whatBudgetForDay(
             excludeCurrentDay = false,
             applyTodaySpends = true,
-            notCommittedSpent = notSpent,
+            notCommittedSpent = notSpent - dailyBudget,
         )
 
-        howMuchNotSpent.value = notSpent
-        newDailyBudgetIfAddToday.value = budgetPerDayAdd
+        howMuchNotSpent.value = notSpent - dailyBudget
+        newDailyBudgetIfAddToday.value = budgetPerDayAdd.setScale(0, RoundingMode.HALF_EVEN)
     }
 }

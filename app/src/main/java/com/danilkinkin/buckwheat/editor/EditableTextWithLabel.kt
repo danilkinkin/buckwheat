@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.base.TextFieldWithPaddings
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.keyboard.KeyboardAction
 import com.danilkinkin.buckwheat.keyboard.rememberAppKeyboard
@@ -56,7 +57,7 @@ fun EditableTextWithLabel(
                     onChangeValue = { onChangeValue(it) },
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     visualTransformation = visualTransformationAsCurrency(
-                        currency = currency ?: ExtendCurrency(type = CurrencyType.NONE),
+                        currency = currency ?: ExtendCurrency.none(),
                         hintColor = color.copy(alpha = 0.2f),
                     ),
                     currency = currency,

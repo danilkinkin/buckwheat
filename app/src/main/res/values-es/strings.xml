@@ -164,4 +164,6 @@
     <string name="try_home_widgets_desc">El trigo sarraceno ahora tiene widgets. Pruébalo y lleva un seguimiento de tu presupuesto desde la pantalla de inicio</string>
     <string name="tutorial_open_wallet">Haga clic para ver los detalles del presupuesto</string>
     <string name="tutorial_open_history">Arrastra para ver el historial de gastos</string>
+    <string name="recalc_budget_on_last_day">Hoy es el último día, no tiene sentido distribuir.</string>
+    <string name="start_last_day_description">Hoy puedes gastar %1$s</string>
 </resources>

@@ -81,14 +81,14 @@ fun prettyDate(
 
     val dateWithMonthAndYearFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", locale)
     val currentFullDate = dateWithMonthAndYearFormatter.format(LocalDate.now())
-    val convertedFullDate = dateWithMonthAndYearFormatter.format(date.toLocalDate())
+    val convertedFullDate = dateWithMonthAndYearFormatter.format(date.toLocalDateTime())
 
     var final = ""
 
     final += if (simplifyIfToday && convertedFullDate == currentFullDate) {
         stringResource(R.string.today)
     } else {
-        DateTimeFormatter.ofPattern(pattern, locale).format(date.toLocalDate())
+        DateTimeFormatter.ofPattern(pattern, locale).format(date.toLocalDateTime())
     }
 
     return final.trim()

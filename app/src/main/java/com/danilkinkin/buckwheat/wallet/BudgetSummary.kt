@@ -9,7 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.finishPeriod.RestAndSpentBudgetCard
 import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
-import com.danilkinkin.buckwheat.util.ExtendCurrency
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 
 @Composable
 fun BudgetSummary(

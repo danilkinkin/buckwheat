@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.danilkinkin.buckwheat.di.SpendsRepository
-import com.danilkinkin.buckwheat.util.prettyCandyCanes
+import com.danilkinkin.buckwheat.util.isZero
+import com.danilkinkin.buckwheat.util.numberFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -55,8 +56,7 @@ class RestBudgetPillViewModel @Inject constructor(
                 return@launch
             }
 
-            if (dailyBudget == BigDecimal.ZERO) return@launch
-
+            if (dailyBudget.isZero()) return@launch
 
             val restFromDayBudget = dailyBudget - spentFromDailyBudget - currentSpent
             val newDailyBudget = spendsRepository.whatBudgetForDay(
@@ -70,19 +70,19 @@ class RestBudgetPillViewModel @Inject constructor(
 
 
             val percentWithNewSpent = restFromDayBudget
-                .divide(dailyBudget, 5, RoundingMode.HALF_EVEN)
+                .divide(dailyBudget, 2, RoundingMode.HALF_EVEN)
                 .coerceAtLeast(BigDecimal.ZERO)
 
             val percentWithoutNewSpent = (restFromDayBudget + currentSpent)
-                .divide(dailyBudget, 5, RoundingMode.HALF_EVEN)
+                .divide(dailyBudget, 2, RoundingMode.HALF_EVEN)
                 .coerceAtLeast(BigDecimal.ZERO)
 
-            val formattedBudgetTodayValue = prettyCandyCanes(
+            val formattedBudgetTodayValue = numberFormat(
                 restFromDayBudget.coerceAtLeast(BigDecimal.ZERO),
                 currency = currency,
             )
 
-            val formattedBudgetNewDailyValue = prettyCandyCanes(
+            val formattedBudgetNewDailyValue = numberFormat(
                 newDailyBudget.coerceAtLeast(BigDecimal.ZERO),
                 currency = currency,
             )

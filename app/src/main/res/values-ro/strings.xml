@@ -168,4 +168,6 @@
     <string name="try_home_widgets_desc">Buckwheat are acum widgeturi. Încearcă-le și ține evidența bugetului tău direct de pe ecranul de pornire</string>
     <string name="tutorial_open_wallet">Faceți clic pentru a vedea detaliile bugetului</string>
     <string name="tutorial_open_history">Trageți pentru a vedea istoricul cheltuielilor</string>
+    <string name="recalc_budget_on_last_day">Astăzi este ultima zi, nu are sens să distribui</string>
+    <string name="start_last_day_description">Astăzi puteți cheltui %1$s</string>
 </resources>

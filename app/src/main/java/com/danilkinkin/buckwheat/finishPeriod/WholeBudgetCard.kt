@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
@@ -40,7 +41,7 @@ fun WholeBudgetCard(
         modifier = modifier.fillMaxWidth(),
         contentPadding = contentPadding,
         label = stringResource(R.string.whole_budget),
-        value = prettyCandyCanes(
+        value = numberFormat(
             budget,
             currency = currency,
         ),
@@ -196,7 +197,7 @@ private fun Preview() {
     BuckwheatTheme {
         WholeBudgetCard(
             budget = BigDecimal(60000),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(28).toDate(),
             finishDate = Date(),
         )
@@ -209,7 +210,7 @@ private fun PreviewNightMode() {
     BuckwheatTheme {
         WholeBudgetCard(
             budget = BigDecimal(60000),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(28).toDate(),
             finishDate = Date(),
         )
@@ -222,7 +223,7 @@ private fun PreviewSmallScreen() {
     BuckwheatTheme {
         WholeBudgetCard(
             budget = BigDecimal(60000),
-            currency = ExtendCurrency(type = CurrencyType.NONE),
+            currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(28).toDate(),
             finishDate = Date(),
         )

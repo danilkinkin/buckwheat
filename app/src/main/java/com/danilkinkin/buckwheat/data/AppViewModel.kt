@@ -66,6 +66,8 @@ class AppViewModel @Inject constructor(
     var balloonController = BalloonController()
         private set
 
+    var topSheetDown: MutableState<Boolean> = mutableStateOf(false)
+
     var lockSwipeable: MutableState<Boolean> = mutableStateOf(false)
 
     var showSystemKeyboard: MutableState<Boolean> = mutableStateOf(false)

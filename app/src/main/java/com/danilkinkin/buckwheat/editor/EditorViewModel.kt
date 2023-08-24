@@ -64,7 +64,7 @@ class EditorViewModel @Inject constructor(
         if (stage.value !== EditStage.EDIT_SPENT) return false
 
         val formatSpent = currentSpent
-            .setScale(2, RoundingMode.HALF_UP)
+            .setScale(2, RoundingMode.HALF_EVEN)
             .stripTrailingZeros()
             .toPlainString()
 

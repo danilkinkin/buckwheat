@@ -198,4 +198,6 @@
     <string name="try_home_widgets_desc">Le sarrasin dispose désormais de widgets. Essayez-le et suivez votre budget depuis l\'écran d\'accueil</string>
     <string name="tutorial_open_wallet">Cliquez pour voir les détails du budget</string>
     <string name="tutorial_open_history">Faites glisser pour afficher l\'historique des dépenses</string>
+    <string name="recalc_budget_on_last_day">Aujourd\'hui c\'est le dernier jour, ça n\'a aucun sens de distribuer</string>
+    <string name="start_last_day_description">Aujourd\'hui, vous pouvez dépenser %1$s</string>
 </resources>
