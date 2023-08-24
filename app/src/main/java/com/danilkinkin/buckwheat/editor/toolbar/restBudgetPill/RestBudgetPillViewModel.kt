@@ -83,7 +83,9 @@ class RestBudgetPillViewModel @Inject constructor(
             )
 
             val formattedBudgetNewDailyValue = numberFormat(
-                newDailyBudget.coerceAtLeast(BigDecimal.ZERO),
+                newDailyBudget
+                    .setScale(0, RoundingMode.HALF_EVEN)
+                    .coerceAtLeast(BigDecimal.ZERO),
                 currency = currency,
             )
 
