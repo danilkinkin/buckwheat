@@ -7,18 +7,18 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.danilkinkin.buckwheat.base.balloon.BalloonProvider
+import com.danilkinkin.buckwheat.data.dao.StorageDao
+import com.danilkinkin.buckwheat.di.migrateToDataStore
 import com.danilkinkin.buckwheat.home.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import syncOverrideLocale
 import java.util.*
+import javax.inject.Inject
 
 val Context.budgetDataStore by preferencesDataStore("budget")
 val Context.settingsDataStore by preferencesDataStore("settings")
@@ -39,6 +40,10 @@ var Context.systemLocale: Locale? by mutableStateOf(null)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val isDone: MutableState<Boolean> = mutableStateOf(false)
+
+    //TODO: Remove after 01.01.2024. Need for migration to DataStore
+    @Inject
+    lateinit var storageDao: StorageDao
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +63,7 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 syncTheme(localContext)
                 syncOverrideLocale(localContext)
+                migrateToDataStore(context, storageDao)
 
                 isDone.value = true
             }
