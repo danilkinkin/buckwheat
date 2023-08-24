@@ -169,4 +169,6 @@
     <string name="try_home_widgets_desc">У грэцыцы цяпер ёсць віджэты. Паспрабуйце і старайцеся кантраляваць свой бюджэт з галоўнага экрана</string>
     <string name="tutorial_open_wallet">Націсніце, каб паглядзець дэталі бюджэту</string>
     <string name="tutorial_open_history">Пацягніце, каб прагледзець гісторыю марнаванняў</string>
+    <string name="recalc_budget_on_last_day">Сёння апошні дзень, размяркоўваць няма сэнсу</string>
+    <string name="start_last_day_description">Сёння можна выдаткаваць %1$s</string>
 </resources>

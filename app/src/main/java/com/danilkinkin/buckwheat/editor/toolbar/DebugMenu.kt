@@ -3,6 +3,7 @@ package com.danilkinkin.buckwheat.editor.toolbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
@@ -21,6 +22,10 @@ import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.util.countDays
 import com.danilkinkin.buckwheat.util.countDaysToToday
+import com.danilkinkin.buckwheat.util.prettyDate
+import com.danilkinkin.buckwheat.util.rememberNavigationBarHeight
+import java.math.BigDecimal
+import java.util.Date
 import kotlin.math.abs
 
 const val DEBUG_MENU_SHEET = "debugMenu"
@@ -32,10 +37,22 @@ fun DebugMenu(
     editorViewModel: EditorViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
-    val navigationBarHeight = androidx.compose.ui.unit.max(
-        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
-        16.dp,
-    )
+    val navigationBarHeight = rememberNavigationBarHeight().coerceAtLeast(16.dp)
+
+    val startPeriodDate by spendsViewModel.startPeriodDate.observeAsState()
+    val finishPeriodDate by spendsViewModel.finishPeriodDate.observeAsState()
+    val lastChangeDailyBudgetDate by spendsViewModel.lastChangeDailyBudgetDate.observeAsState()
+
+    val wholeDays = startPeriodDate?.let { start -> finishPeriodDate?.let { finish -> countDays(finish, start) } } ?: 0
+    val restDays = finishPeriodDate?.let { countDaysToToday(it) } ?: 0
+    val spentDays = wholeDays - restDays
+    val countDaysFromLastChangeDailyBudget = lastChangeDailyBudgetDate?.let { countDaysToToday(it) } ?: 0
+
+    val budget by spendsViewModel.budget.observeAsState(BigDecimal.ZERO)
+    val spent by spendsViewModel.spent.observeAsState(BigDecimal.ZERO)
+    val spentFromDailyBudget by spendsViewModel.spentFromDailyBudget.observeAsState(BigDecimal.ZERO)
+    val howMuchBudgetRest by spendsViewModel.howMuchBudgetRest().observeAsState(BigDecimal.ZERO)
+
 
     Surface {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
@@ -84,25 +101,33 @@ fun DebugMenu(
             )
             Header("Debug budget")
             Spacer(Modifier.height(16.dp))
-            MonospaceText("Начало --------------- ${spendsViewModel.startPeriodDate.value!!}")
-            MonospaceText("Конец ---------------- ${spendsViewModel.finishPeriodDate.value!!}")
-            MonospaceText("Последний пересчет --- ${spendsViewModel.lastChangeDailyBudgetDate}")
+            MonospaceText("Начало ------------- ${startPeriodDate?.let { prettyDate(
+                date = it,
+                pattern = "dd.MM.yyyy HH:mm:ss",
+                simplifyIfToday = false,
+            ) }}")
+            MonospaceText("Конец -------------- ${finishPeriodDate?.let { prettyDate(
+                date = it,
+                pattern = "dd.MM.yyyy HH:mm:ss",
+                simplifyIfToday = false,
+            ) }}")
+            MonospaceText("Посл. пересчет ----- ${lastChangeDailyBudgetDate?.let { prettyDate(
+                date = it,
+                pattern = "dd.MM.yyyy HH:mm:ss",
+                simplifyIfToday = false,
+            ) }}")
             Spacer(Modifier.height(16.dp))
 
-            val days = countDays(spendsViewModel.finishPeriodDate.value!!, spendsViewModel.startPeriodDate.value!!)
-            val restDays = countDaysToToday(spendsViewModel.finishPeriodDate.value!!)
-            val lastChangeDailyBudgetDate = spendsViewModel.lastChangeDailyBudgetDate.value!!
-            MonospaceText("Всего дней -------------------- $days")
-            MonospaceText("Прошло дней ------------------- ${days - restDays}")
+
+            MonospaceText("Всего дней -------------------- $wholeDays")
+            MonospaceText("Прошло дней ------------------- $spentDays")
             MonospaceText("Осталось дней ----------------- $restDays")
-            MonospaceText("Дней с последнего пересчета --- $lastChangeDailyBudgetDate")
+            MonospaceText("Дней с последнего пересчета --- $countDaysFromLastChangeDailyBudget")
             Spacer(Modifier.height(16.dp))
 
-            val spentFromDailyBudget = spendsViewModel.spentFromDailyBudget.value!!
-            val howMuchBudgetRest = spendsViewModel.howMuchBudgetRest().value!!
 
-            MonospaceText("Весь бюджет ------------------- ${spendsViewModel.budget}")
-            MonospaceText("Потрачено из бюджета ---------- ${spendsViewModel.spent.value!! + spendsViewModel.spentFromDailyBudget.value!!}")
+            MonospaceText("Весь бюджет ------------------- $budget")
+            MonospaceText("Потрачено из бюджета ---------- ${spent + spentFromDailyBudget}")
             MonospaceText("Оставшийся бюджет ------------- $howMuchBudgetRest")
             Spacer(Modifier.height(16.dp))
 

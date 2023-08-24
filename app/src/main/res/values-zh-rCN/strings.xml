@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">荞麦</string>
-    <string name="app_widget_extend_name">荞麦 大</string>
-    <string name="app_widget_minimal_name">荞麦 小</string>
+    <string name="app_name">Buckwheat</string>
+    <string name="app_widget_extend_name">Buckwheat 大</string>
+    <string name="app_widget_minimal_name">Buckwheat 小</string>
 
     <!-- Main -->
     <string name="budget_for_today">今日预算</string>
@@ -80,7 +80,7 @@
     <string name="locale_system">系统默认</string>
     <string name="version">版本: %1$s</string>
     <string name="about">关于</string>
-    <string name="description">「荞麦」是一款帮助您聪明地花费的应用。记录下每笔花费可以清醒您的头脑，并让您了解自己能够花费多少以及如何花费。</string>
+    <string name="description">Buckwheat 是一款帮助您聪明地花费的应用。记录下每笔花费可以清醒您的头脑，并让您了解自己能够花费多少以及如何花费。</string>
     <string name="report_bug">报告漏洞</string>
     <string name="contribute">捐赠</string>
     <string name="developer">开发 &amp; 设计:</string>
@@ -122,7 +122,7 @@
 
     <!-- Onboarding -->
     <string name="hello">您好！</string>
-    <string name="onboarding_title">欢迎使用「荞麦」, 让我们一起来省钱吧</string>
+    <string name="onboarding_title">欢迎使用 Buckwheat, 让我们一起来省钱吧</string>
     <string name="set_period_title">制定预算</string>
     <string name="help_set_budget_title">制定预算</string>
     <string name="help_set_budget_description">请估算出您在某个特定周期（例如一个月）中大致需要多少金额，并输入应用中。如果您无法准确计算，可以近似地估算，例如工资的一半，随着时间的推移，您会更加准确地输入这些信息</string>
@@ -157,7 +157,9 @@
     <string name="cancel_editing">取消编辑</string>
     <string name="over">结束</string>
     <string name="home_widgets_label">主屏幕微件</string>
-    <string name="try_home_widgets_desc">「荞麦」现在有微件了。试试看，从主屏幕跟踪您的预算吧</string>
+    <string name="try_home_widgets_desc">Buckwheat 现在有微件了。试试看，从主屏幕跟踪您的预算吧</string>
     <string name="tutorial_open_wallet">点击查看预算详情</string>
     <string name="tutorial_open_history">拖动查看花费历史</string>
+    <string name="recalc_budget_on_last_day">今天是最后一天，平均分配没有意义</string>
+    <string name="start_last_day_description">今天您可以花费 %1$s</string>
 </resources>

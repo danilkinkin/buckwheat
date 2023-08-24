@@ -172,4 +172,6 @@
      <string name="try_home_widgets_desc">Hrachovka nyní obsahuje widgety. Vyzkoušejte to a sledujte svůj rozpočet přímo z domovské obrazovky.</string>
      <string name="tutorial_open_wallet">Kliknutím zobrazíte podrobnosti o rozpočtu</string>
      <string name="tutorial_open_history">Přetažením zobrazíte historii výdajů</string>
+     <string name="recalc_budget_on_last_day">Dnes je poslední den, nemá smysl rozdávat</string>
+     <string name="start_last_day_description">Dnes můžete utratit %1$s</string>
  </resources>

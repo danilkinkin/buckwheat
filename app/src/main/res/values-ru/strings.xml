@@ -168,4 +168,6 @@
     <string name="try_home_widgets_desc">Теперь у гречки есть виджеты. Попробуйте и следите за своим бюджетом с главного экрана</string>
     <string name="tutorial_open_wallet">Нажмите, чтобы изучить бюджет подробнее</string>
     <string name="tutorial_open_history">Потяните, чтобы просмотреть историю трат</string>
+    <string name="recalc_budget_on_last_day">Сегодня последний день, распределять нет смысла</string>
+    <string name="start_last_day_description">Сегодня можно потрать %1$s</string>
 </resources>
