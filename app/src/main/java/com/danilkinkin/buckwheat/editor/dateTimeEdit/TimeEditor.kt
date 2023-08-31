@@ -59,7 +59,6 @@ fun TimePickerDialog(
                     containerColor = MaterialTheme.colorScheme.surface,
                 ),
                 modifier = Modifier
-                    .widthIn(max = 500.dp)
                     .padding(36.dp)
                     .imePadding(),
             ) {
