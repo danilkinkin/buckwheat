@@ -3,11 +3,14 @@ package com.danilkinkin.buckwheat.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.*
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.state.PreferencesGlanceStateDefinition
+import androidx.glance.unit.ColorProvider
 import com.danilkinkin.buckwheat.di.SpendsRepository
 import com.danilkinkin.buckwheat.util.*
 import kotlinx.coroutines.CoroutineScope
@@ -19,6 +22,9 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.Date
 import javax.inject.Inject
+
+val LocalContentColor = compositionLocalOf { ColorProvider(Color.Black) }
+val LocalAccentColor = compositionLocalOf { ColorProvider(Color.White) }
 
 abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
 
