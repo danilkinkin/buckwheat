@@ -144,10 +144,18 @@ fun ExtendWidgetContent() {
                 modifier = GlanceModifier
                     .defaultWeight()
                     .padding(
-                        32.dp,
-                        if (size == ExtendWidget.tinyMode) (-4).dp else 0.dp,
+                        24.dp,
+                        when (size) {
+                            ExtendWidget.smallMode -> (-12).dp
+                            ExtendWidget.tinyMode -> (-8).dp
+                            else -> 0.dp
+                        },
                         0.dp,
-                        if (size == ExtendWidget.tinyMode) 0.dp else 32.dp,
+                        when (size) {
+                            ExtendWidget.smallMode -> 4.dp
+                            ExtendWidget.tinyMode -> 0.dp
+                            else -> 32.dp
+                        }
                     ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.Start,
@@ -201,6 +209,7 @@ fun ExtendWidgetContent() {
                                         fontSize = when (size) {
                                             ExtendWidget.superHugeMode -> 56.sp
                                             ExtendWidget.hugeMode -> 52.sp
+                                            ExtendWidget.smallMode -> 32.sp
                                             ExtendWidget.tinyMode -> 24.sp
                                             else -> 42.sp
                                         },
