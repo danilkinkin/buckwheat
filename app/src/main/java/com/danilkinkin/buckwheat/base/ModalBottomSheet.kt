@@ -183,7 +183,6 @@ fun rememberModalBottomSheetState(
 @ExperimentalMaterialApi
 fun ModalBottomSheetLayout(
     sheetContent: @Composable () -> Unit,
-    windowSizeClass: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
     sheetState: ModalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
     sheetShape: Shape = MaterialTheme.shapes.large,
@@ -212,7 +211,6 @@ fun ModalBottomSheetLayout(
         }
 
         RenderAdaptivePane(
-            windowSizeClass = windowSizeClass,
             contentAlignment = Alignment.TopCenter,
         ) {
             Surface(

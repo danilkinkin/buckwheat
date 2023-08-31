@@ -42,7 +42,6 @@ const val WALLET_SHEET = "wallet"
 @Composable
 fun Wallet(
     forceChange: Boolean = false,
-    windowSizeClass: WindowWidthSizeClass,
     activityResultRegistryOwner: ActivityResultRegistryOwner? = null,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
@@ -327,7 +326,6 @@ fun Wallet(
 
     if (openConfirmChangeBudgetDialog.value) {
         ConfirmChangeBudgetDialog(
-            windowSizeClass = windowSizeClass,
             onConfirm = {
                 spendsViewModel.changeDisplayCurrency(currency!!)
                 spendsViewModel.changeBudget(budgetCache, dateToValue.value!!)
@@ -344,6 +342,6 @@ fun Wallet(
 @Composable
 fun PreviewWallet() {
     BuckwheatTheme {
-        Wallet(windowSizeClass = WindowWidthSizeClass.Compact)
+        Wallet()
     }
 }

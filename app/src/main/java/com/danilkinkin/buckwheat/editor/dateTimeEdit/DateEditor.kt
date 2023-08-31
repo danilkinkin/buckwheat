@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.RenderAdaptivePane
 import com.danilkinkin.buckwheat.base.datePicker.DatePicker
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarSelectionMode
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
@@ -45,67 +46,69 @@ fun DatePickerDialog(
             decorFitsSystemWindows = false,
         )
     ) {
-        Card(
-            shape = MaterialTheme.shapes.extraLarge,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-            modifier = Modifier
-                .widthIn(max = 500.dp)
-                .padding(16.dp),
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+        RenderAdaptivePane {
+            Card(
+                shape = MaterialTheme.shapes.extraLarge,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+                modifier = Modifier
+                    .widthIn(max = 500.dp)
+                    .padding(16.dp),
             ) {
-                Text(
-                    text = stringResource(R.string.change_date),
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
-                        .fillMaxWidth(),
-                )
-                Text(
-                    text = prettyDate(
-                        date = datePickerState.calendarUiState.value.selectedStartDate!!.toDate(),
-                        pattern = "EEEE, dd MMM",
-                        simplifyIfToday = true,
-                    ),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp, start = 24.dp, end = 24.dp)
-                        .fillMaxWidth(),
-                )
-                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .weight(weight =1f, fill = false),
-                    contentAlignment = Alignment.Center,
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    DatePicker(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        calendarState = datePickerState,
-                        onDayClicked = {
-                            datePickerState.setSelectedDay(it)
-                        }
+                    Text(
+                        text = stringResource(R.string.change_date),
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp, vertical = 16.dp)
+                            .fillMaxWidth(),
                     )
-                }
-                Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-                Row(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp)) {
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    TextButton(onClick = { onClose() }) {
-                        Text(text = stringResource(R.string.cancel))
-                    }
-
-                    TextButton(
-                        onClick = {
-                            onSelect(
-                                datePickerState.calendarUiState.value.selectedStartDate!!
-                            )
-                        }
+                    Text(
+                        text = prettyDate(
+                            date = datePickerState.calendarUiState.value.selectedStartDate!!.toDate(),
+                            pattern = "EEEE, dd MMM",
+                            simplifyIfToday = true,
+                        ),
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier
+                            .padding(bottom = 16.dp, start = 24.dp, end = 24.dp)
+                            .fillMaxWidth(),
+                    )
+                    Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(weight = 1f, fill = false),
+                        contentAlignment = Alignment.Center,
                     ) {
-                        Text(text = stringResource(R.string.apply))
+                        DatePicker(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            calendarState = datePickerState,
+                            onDayClicked = {
+                                datePickerState.setSelectedDay(it)
+                            }
+                        )
+                    }
+                    Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                    Row(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp)) {
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        TextButton(onClick = { onClose() }) {
+                            Text(text = stringResource(R.string.cancel))
+                        }
+
+                        TextButton(
+                            onClick = {
+                                onSelect(
+                                    datePickerState.calendarUiState.value.selectedStartDate!!
+                                )
+                            }
+                        ) {
+                            Text(text = stringResource(R.string.apply))
+                        }
                     }
                 }
             }

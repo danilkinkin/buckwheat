@@ -234,10 +234,8 @@ private fun LazyListScope.itemsCurrency(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun WorldCurrencyChooser(
-    windowSizeClass: WindowWidthSizeClass,
     defaultCurrency: Currency? = null,
     onSelect: (currency: Currency) -> Unit,
     onClose: () -> Unit,
@@ -250,7 +248,7 @@ fun WorldCurrencyChooser(
         )
     ) {
         OverrideLocalize {
-            RenderAdaptivePane(windowSizeClass) {
+            RenderAdaptivePane {
                 WorldCurrencyChooserContent(
                     defaultCurrency = defaultCurrency,
                     onSelect = onSelect,

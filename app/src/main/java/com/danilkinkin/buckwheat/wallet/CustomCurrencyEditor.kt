@@ -152,10 +152,8 @@ fun CustomCurrencyEditorContent(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CustomCurrencyEditor(
-    windowSizeClass: WindowWidthSizeClass,
     defaultCurrency: String? = null,
     onChange: (currency: String) -> Unit,
     onClose: () -> Unit,
@@ -165,7 +163,7 @@ fun CustomCurrencyEditor(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         OverrideLocalize {
-            RenderAdaptivePane(windowSizeClass) {
+            RenderAdaptivePane {
                 CustomCurrencyEditorContent(
                     defaultCurrency = defaultCurrency,
                     onChange = onChange,

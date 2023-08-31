@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.RenderAdaptivePane
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import java.time.LocalTime
 
@@ -51,87 +52,89 @@ fun TimePickerDialog(
             decorFitsSystemWindows = false,
         )
     ) {
-        Card(
-            shape = MaterialTheme.shapes.extraLarge,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface,
-            ),
-            modifier = Modifier
-                .widthIn(max = 500.dp)
-                .padding(36.dp)
-                .imePadding(),
-        ) {
-            Column(
-                Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+        RenderAdaptivePane {
+            Card(
+                shape = MaterialTheme.shapes.extraLarge,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+                modifier = Modifier
+                    .widthIn(max = 500.dp)
+                    .padding(36.dp)
+                    .imePadding(),
             ) {
-                Text(
-                    text = stringResource(R.string.change_time),
-                    style = MaterialTheme.typography.titleSmall,
-                    modifier = Modifier
-                        .padding(start = 8.dp, end = 8.dp, bottom = 16.dp)
-                        .fillMaxWidth(),
-                )
-                AnimatedContent(
-                    label = "SwitchFromClockToInput",
-                    targetState = inputMode,
-                    transitionSpec = {
-                        if (targetState && !initialState) {
-                            fadeIn(
-                                tween(durationMillis = 200)
-                            ) with
-                            fadeOut(
-                                tween(durationMillis = 200)
-                            )
-                        } else {
-                            fadeIn(
-                                tween(durationMillis = 200)
-                            ) with
-                            fadeOut(
-                                tween(durationMillis = 200)
-                            )
-                        }.using(
-                            SizeTransform(clip = false)
-                        )
-                    }
-                ) { targetMode ->
-                    if (targetMode) {
-                        TimeInput(
-                            state = timePickerState
-                        )
-                    } else {
-                        TimePicker(
-                            state = timePickerState
-                        )
-                    }
-                }
-
-                Row {
-                    IconButton(onClick = { inputMode = !inputMode }) {
-                        Icon(
-                            painter = painterResource(
-                                if (inputMode) R.drawable.ic_clock else R.drawable.ic_keyboard
-                            ),
-                            contentDescription = "Edit",
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    TextButton(onClick = { onClose() }) {
-                        Text(text = stringResource(R.string.cancel))
-                    }
-
-                    TextButton(
-                        onClick = {
-                            onSelect(
-                                timePickerState.hour,
-                                timePickerState.minute,
-                                timePickerState.is24hour,
+                Column(
+                    Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = stringResource(R.string.change_time),
+                        style = MaterialTheme.typography.titleSmall,
+                        modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp, bottom = 16.dp)
+                            .fillMaxWidth(),
+                    )
+                    AnimatedContent(
+                        label = "SwitchFromClockToInput",
+                        targetState = inputMode,
+                        transitionSpec = {
+                            if (targetState && !initialState) {
+                                fadeIn(
+                                    tween(durationMillis = 200)
+                                ) with
+                                        fadeOut(
+                                            tween(durationMillis = 200)
+                                        )
+                            } else {
+                                fadeIn(
+                                    tween(durationMillis = 200)
+                                ) with
+                                        fadeOut(
+                                            tween(durationMillis = 200)
+                                        )
+                            }.using(
+                                SizeTransform(clip = false)
                             )
                         }
-                    ) {
-                        Text(text = stringResource(R.string.apply))
+                    ) { targetMode ->
+                        if (targetMode) {
+                            TimeInput(
+                                state = timePickerState
+                            )
+                        } else {
+                            TimePicker(
+                                state = timePickerState
+                            )
+                        }
+                    }
+
+                    Row {
+                        IconButton(onClick = { inputMode = !inputMode }) {
+                            Icon(
+                                painter = painterResource(
+                                    if (inputMode) R.drawable.ic_clock else R.drawable.ic_keyboard
+                                ),
+                                contentDescription = "Edit",
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        TextButton(onClick = { onClose() }) {
+                            Text(text = stringResource(R.string.cancel))
+                        }
+
+                        TextButton(
+                            onClick = {
+                                onSelect(
+                                    timePickerState.hour,
+                                    timePickerState.minute,
+                                    timePickerState.is24hour,
+                                )
+                            }
+                        ) {
+                            Text(text = stringResource(R.string.apply))
+                        }
                     }
                 }
             }

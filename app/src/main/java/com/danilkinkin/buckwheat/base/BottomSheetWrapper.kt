@@ -29,7 +29,6 @@ import kotlin.math.roundToInt
 @Composable
 fun BottomSheetWrapper(
     name: String,
-    windowSizeClass: WindowWidthSizeClass,
     appViewModel: AppViewModel = viewModel(),
     cancelable: Boolean = true,
     state: ModalBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden),
@@ -98,7 +97,6 @@ fun BottomSheetWrapper(
 
     ModalBottomSheetLayout(
         cancelable = cancelable,
-        windowSizeClass = windowSizeClass,
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetState = state,
         sheetShape = MaterialTheme.shapes.extraLarge.copy(

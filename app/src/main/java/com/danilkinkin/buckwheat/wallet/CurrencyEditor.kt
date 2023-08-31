@@ -28,7 +28,6 @@ const val CURRENCY_EDITOR = "currencyEditor"
 
 @Composable
 fun CurrencyEditor(
-    windowSizeClass: WindowWidthSizeClass,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
@@ -116,7 +115,6 @@ fun CurrencyEditor(
 
     if (openCurrencyChooserDialog.value) {
         WorldCurrencyChooser(
-            windowSizeClass = windowSizeClass,
             defaultCurrency = if (currency.type === ExtendCurrency.Type.FROM_LIST) {
                 Currency.getInstance(currency.value)
             } else {
@@ -134,7 +132,6 @@ fun CurrencyEditor(
 
     if (openCustomCurrencyEditorDialog.value) {
         CustomCurrencyEditor(
-            windowSizeClass = windowSizeClass,
             defaultCurrency = if (currency.type === ExtendCurrency.Type.CUSTOM) {
                 currency.value
             } else {

@@ -37,7 +37,6 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheets(
-    windowSizeClass: WindowWidthSizeClass,
     activityResultRegistryOwner: ActivityResultRegistryOwner?,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
@@ -50,12 +49,10 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = WALLET_SHEET,
-        windowSizeClass = windowSizeClass,
         cancelable = !requireSetBudget && !periodFinished,
     ) { state ->
         Wallet(
             forceChange = periodFinished || requireSetBudget,
-            windowSizeClass = windowSizeClass,
             activityResultRegistryOwner = activityResultRegistryOwner,
             onClose = {
                 coroutineScope.launch {
@@ -67,10 +64,8 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = DEFAULT_RECALC_BUDGET_CHOOSER,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         DefaultRecalcBudgetChooser(
-            windowSizeClass = windowSizeClass,
             onClose = {
                 coroutineScope.launch {
                     state.hide()
@@ -81,10 +76,8 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = CURRENCY_EDITOR,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         CurrencyEditor(
-            windowSizeClass = windowSizeClass,
             onClose = {
                 coroutineScope.launch {
                     state.hide()
@@ -95,7 +88,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = FINISH_DATE_SELECTOR_SHEET,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         FinishDateSelector(
             selectDate = state.args["initialDate"] as Date?,
@@ -114,7 +106,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = SETTINGS_SHEET,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         Settings(
             onTriedWidget = {
@@ -125,7 +116,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = RECALCULATE_DAILY_BUDGET_SHEET,
-        windowSizeClass = windowSizeClass,
         cancelable = false,
     ) { state ->
         RecalcBudget(
@@ -137,7 +127,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = FINISH_PERIOD_SHEET,
-        windowSizeClass = windowSizeClass,
         cancelable = false,
     ) { state ->
         FinishPeriod(
@@ -153,7 +142,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = ON_BOARDING_SHEET,
-        windowSizeClass = windowSizeClass,
         cancelable = false,
     ) { state ->
         Onboarding(
@@ -169,7 +157,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = NEW_DAY_BUDGET_DESCRIPTION_SHEET,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         NewDayBudgetDescription(
             onClose = {
@@ -180,7 +167,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = BUDGET_IS_OVER_DESCRIPTION_SHEET,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         BudgetIsOverDescription(
             onClose = {
@@ -192,7 +178,6 @@ fun BottomSheets(
     if (isDebug.value) {
         BottomSheetWrapper(
             name = DEBUG_MENU_SHEET,
-            windowSizeClass = windowSizeClass,
         ) { state ->
             DebugMenu(
                 onClose = {
@@ -204,7 +189,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = BUG_REPORTER_SHEET,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         BugReporter(
             onClose = {
@@ -215,7 +199,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = SETTINGS_CHANGE_THEME_SHEET,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         ThemeSwitcherDialog(
             onClose = {
@@ -226,7 +209,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = SETTINGS_CHANGE_LOCALE_SHEET,
-        windowSizeClass = windowSizeClass,
     ) { state ->
         LangSwitcherDialog(
             onClose = {
@@ -237,7 +219,6 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = SETTINGS_TRY_WIDGET_SHEET,
-        windowSizeClass = windowSizeClass
     ) { state ->
         TryWidgetDialog()
     }

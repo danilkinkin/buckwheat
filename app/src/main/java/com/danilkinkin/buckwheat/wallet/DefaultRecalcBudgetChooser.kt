@@ -26,7 +26,6 @@ const val DEFAULT_RECALC_BUDGET_CHOOSER = "defaultRecalcBudgetChooser"
 
 @Composable
 fun DefaultRecalcBudgetChooser(
-    windowSizeClass: WindowWidthSizeClass,
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},

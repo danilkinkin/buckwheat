@@ -37,6 +37,8 @@ var Context.appTheme by mutableStateOf(ThemeMode.SYSTEM)
 var Context.appLocale: Locale? by mutableStateOf(null)
 var Context.systemLocale: Locale? by mutableStateOf(null)
 
+val LocalWindowSize = compositionLocalOf { WindowWidthSizeClass.Compact }
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val isDone: MutableState<Boolean> = mutableStateOf(false)
@@ -78,7 +80,11 @@ class MainActivity : ComponentActivity() {
                 BuckwheatTheme {
                     OverrideLocalize {
                         BalloonProvider {
-                            MainScreen(widthSizeClass, activityResultRegistryOwner)
+                            CompositionLocalProvider(
+                                LocalWindowSize provides widthSizeClass
+                            ) {
+                                MainScreen(activityResultRegistryOwner)
+                            }
                         }
                     }
                 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.danilkinkin.buckwheat.LocalWindowSize
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.*
 import com.danilkinkin.buckwheat.data.AppViewModel
@@ -45,7 +46,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, FlowPreview::class)
 @Composable
 fun MainScreen(
-    windowSizeClass: WindowWidthSizeClass,
     activityResultRegistryOwner: ActivityResultRegistryOwner?,
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
@@ -54,6 +54,7 @@ fun MainScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val localDensity = LocalDensity.current
+    val windowSizeClass = LocalWindowSize.current
 
     val snackBarMessage = stringResource(R.string.remove_spent)
     val snackBarAction = stringResource(R.string.remove_spent_undo)
@@ -280,7 +281,7 @@ fun MainScreen(
             }
         }
 
-        BottomSheets(windowSizeClass, activityResultRegistryOwner)
+        BottomSheets(activityResultRegistryOwner)
 
         if (windowSizeClass == WindowWidthSizeClass.Compact) {
             SnackbarHost()

@@ -83,10 +83,8 @@ fun ConfirmChangeBudget(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ConfirmChangeBudgetDialog(
-    windowSizeClass: WindowWidthSizeClass,
     onConfirm: () -> Unit,
     onClose: () -> Unit,
 ) {
@@ -95,7 +93,7 @@ fun ConfirmChangeBudgetDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         OverrideLocalize {
-            RenderAdaptivePane(windowSizeClass) {
+            RenderAdaptivePane {
                 ConfirmChangeBudget(
                     onConfirm = onConfirm,
                     onClose = onClose

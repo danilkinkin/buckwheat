@@ -6,14 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.danilkinkin.buckwheat.LocalWindowSize
 
 @Composable
 fun RenderAdaptivePane(
-    windowSizeClass: WindowWidthSizeClass,
     contentAlignment: Alignment = Alignment.Center,
     content: @Composable () -> Unit,
 ) {
-    if (windowSizeClass == WindowWidthSizeClass.Compact) {
+    if (LocalWindowSize.current == WindowWidthSizeClass.Compact) {
         content()
     } else {
         Row {
