@@ -45,9 +45,9 @@ fun MinimalWidgetContent() {
     val intent = Intent(context, MainActivity::class.java)
 
     val prefs = currentState<Preferences>()
-    val stateBudget = WidgetReceiver.Companion.StateBudget.valueOf(
+    val stateBudget = WidgetReceiver.StateBudget.valueOf(
         prefs[WidgetReceiver.stateBudgetPreferenceKey]
-            ?: WidgetReceiver.Companion.StateBudget.NOT_SET.name
+            ?: WidgetReceiver.StateBudget.NOT_SET.name
     )
     Box(
         modifier = GlanceModifier
@@ -62,8 +62,8 @@ fun MinimalWidgetContent() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (
-                stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
-                stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
+                stateBudget !== WidgetReceiver.StateBudget.NOT_SET &&
+                stateBudget !== WidgetReceiver.StateBudget.END_PERIOD
             ) {
                 Row(
                     modifier = GlanceModifier.padding(12.dp),
@@ -119,12 +119,12 @@ fun MinimalWidgetContent() {
                 }
             }
             if (
-                stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET ||
-                stateBudget === WidgetReceiver.Companion.StateBudget.END_PERIOD
+                stateBudget === WidgetReceiver.StateBudget.NOT_SET ||
+                stateBudget === WidgetReceiver.StateBudget.END_PERIOD
             ) {
                 CanvasText(
                     modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
-                    text = if (stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET) {
+                    text = if (stateBudget === WidgetReceiver.StateBudget.NOT_SET) {
                         context.resources.getString(
                             R.string.budget_not_set
                         )

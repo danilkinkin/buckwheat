@@ -28,16 +28,16 @@ val LocalAccentColor = compositionLocalOf { ColorProvider(Color.White) }
 
 abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
 
+    enum class StateBudget {
+        NOT_SET,
+        END_PERIOD,
+        NORMAL,
+        NEW_DAILY,
+        IS_OVER,
+    }
+
     companion object {
         const val UPDATE_ACTION = "updateAction"
-
-        enum class StateBudget {
-            NOT_SET,
-            END_PERIOD,
-            NORMAL,
-            NEW_DAILY,
-            IS_OVER,
-        }
 
         val todayBudgetPreferenceKey = stringPreferencesKey("today-budget-key")
         val currencyPreferenceKey = stringPreferencesKey("currency-key")

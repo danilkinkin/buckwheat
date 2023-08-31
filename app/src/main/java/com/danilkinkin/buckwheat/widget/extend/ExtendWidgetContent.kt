@@ -57,19 +57,19 @@ fun ExtendWidgetContent() {
     val prefs = currentState<Preferences>()
     val todayBudget = BigDecimal(prefs[WidgetReceiver.todayBudgetPreferenceKey] ?: "0")
     val currency = prefs[WidgetReceiver.currencyPreferenceKey]
-    val stateBudget = WidgetReceiver.Companion.StateBudget.valueOf(
+    val stateBudget = WidgetReceiver.StateBudget.valueOf(
         prefs[WidgetReceiver.stateBudgetPreferenceKey]
-            ?: WidgetReceiver.Companion.StateBudget.NOT_SET.name
+            ?: WidgetReceiver.StateBudget.NOT_SET.name
     )
 
 
     CompositionLocalProvider(
-        LocalContentColor provides if (stateBudget === WidgetReceiver.Companion.StateBudget.NEW_DAILY) {
+        LocalContentColor provides if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
             GlanceTheme.colors.onErrorContainer
         } else {
             GlanceTheme.colors.onSurface
         },
-        LocalAccentColor provides if (stateBudget === WidgetReceiver.Companion.StateBudget.NEW_DAILY) {
+        LocalAccentColor provides if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
             GlanceTheme.colors.error
         } else {
             GlanceTheme.colors.primary
@@ -83,7 +83,7 @@ fun ExtendWidgetContent() {
                 .cornerRadius(32.dp)
                 .fillMaxSize()
                 .background(
-                    if (stateBudget === WidgetReceiver.Companion.StateBudget.NEW_DAILY) {
+                    if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
                         ImageProvider(R.drawable.extend_widget_background_overdraft)
                     } else {
                         ImageProvider(R.drawable.extend_widget_background)
@@ -98,14 +98,14 @@ fun ExtendWidgetContent() {
         ) {
             Column(modifier = GlanceModifier.fillMaxSize()) {
                 if (
-                    stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
-                    stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
+                    stateBudget !== WidgetReceiver.StateBudget.NOT_SET &&
+                    stateBudget !== WidgetReceiver.StateBudget.END_PERIOD
                 ) {
                     Row(
                         modifier = GlanceModifier.padding(24.dp, 16.dp, 16.dp, 0.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        if (stateBudget === WidgetReceiver.Companion.StateBudget.NORMAL) {
+                        if (stateBudget === WidgetReceiver.StateBudget.NORMAL) {
                             CanvasText(
                                 modifier = GlanceModifier.padding(start = 8.dp, end = 8.dp),
                                 text = context.resources.getString(
@@ -145,7 +145,7 @@ fun ExtendWidgetContent() {
                             CanvasText(
                                 modifier = GlanceModifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
                                 text = context.resources.getString(
-                                    if (stateBudget === WidgetReceiver.Companion.StateBudget.NEW_DAILY) {
+                                    if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
                                         R.string.new_daily_budget_short
                                     } else {
                                         R.string.budget_end
@@ -185,9 +185,9 @@ fun ExtendWidgetContent() {
                     horizontalAlignment = Alignment.Start,
                 ) {
                     if (
-                        stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
-                        stateBudget !== WidgetReceiver.Companion.StateBudget.IS_OVER &&
-                        stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
+                        stateBudget !== WidgetReceiver.StateBudget.NOT_SET &&
+                        stateBudget !== WidgetReceiver.StateBudget.IS_OVER &&
+                        stateBudget !== WidgetReceiver.StateBudget.END_PERIOD
                     ) {
                         Box(
                             modifier = GlanceModifier
@@ -252,7 +252,7 @@ fun ExtendWidgetContent() {
                             ) {
                                 Image(
                                     modifier = GlanceModifier.fillMaxHeight().width(36.dp),
-                                    provider = if (stateBudget === WidgetReceiver.Companion.StateBudget.NEW_DAILY) {
+                                    provider = if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
                                         ImageProvider(R.drawable.extend_widget_gradient_overdraft)
                                     } else {
                                         ImageProvider(R.drawable.extend_widget_gradient)
@@ -262,7 +262,7 @@ fun ExtendWidgetContent() {
                                 Box(
                                     modifier = GlanceModifier
                                         .background(
-                                            if (stateBudget === WidgetReceiver.Companion.StateBudget.NEW_DAILY) {
+                                            if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
                                                 R.color.errorContainer
                                             } else {
                                                 R.color.surface
@@ -276,10 +276,10 @@ fun ExtendWidgetContent() {
                             }
 
                         }
-                    } else if (stateBudget !== WidgetReceiver.Companion.StateBudget.IS_OVER) {
+                    } else if (stateBudget !== WidgetReceiver.StateBudget.IS_OVER) {
                         CanvasText(
                             text = context.resources.getString(
-                                if (stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET) {
+                                if (stateBudget === WidgetReceiver.StateBudget.NOT_SET) {
                                     R.string.budget_not_set
                                 } else R.string.finish_period_title
                             ),
@@ -298,8 +298,8 @@ fun ExtendWidgetContent() {
                 }
             }
             if (
-                stateBudget !== WidgetReceiver.Companion.StateBudget.NOT_SET &&
-                stateBudget !== WidgetReceiver.Companion.StateBudget.END_PERIOD
+                stateBudget !== WidgetReceiver.StateBudget.NOT_SET &&
+                stateBudget !== WidgetReceiver.StateBudget.END_PERIOD
             ) {
                 Column(
                     modifier = GlanceModifier.fillMaxSize(),
@@ -336,8 +336,8 @@ fun ExtendWidgetContent() {
                 }
             }
             if (
-                stateBudget === WidgetReceiver.Companion.StateBudget.NOT_SET ||
-                stateBudget === WidgetReceiver.Companion.StateBudget.END_PERIOD
+                stateBudget === WidgetReceiver.StateBudget.NOT_SET ||
+                stateBudget === WidgetReceiver.StateBudget.END_PERIOD
             ) {
                 Column(
                     modifier = GlanceModifier.fillMaxSize(),
