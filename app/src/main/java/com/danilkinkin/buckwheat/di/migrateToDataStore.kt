@@ -42,7 +42,7 @@ suspend fun migrateToDataStore(
     Log.d("MigrateToDataStore", "Start migration to settingsDataStore...")
 
     context.settingsDataStore.edit {
-        it[debugStoreKey] = storage.get("isDebug")!!.value.toBoolean()
+        it[debugStoreKey] = storage.get("isDebug")?.value.toBoolean()
         it[showSpentCardByDefaultStoreKey] = !storage.get("showRestBudgetCardByDefault")?.value.toBoolean()
         it[TUTORS.SWIPE_EDIT_SPENT.key] = if (storage.get("tutorialSwipe")?.value.toBoolean()) {
             TUTORIAL_STAGE.PASSED.name
