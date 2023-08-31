@@ -197,7 +197,7 @@ fun History(
                                 backgroundActive = MaterialTheme.colorScheme.tertiary,
                                 iconTint = MaterialTheme.colorScheme.onTertiary,
                                 icon = painterResource(R.drawable.ic_edit),
-                                stayDismissed = true,
+                                stayDismissed = false,
                                 onDismiss = {
                                     editorViewModel.startEditingSpent(row.spent!!)
                                     onClose()
