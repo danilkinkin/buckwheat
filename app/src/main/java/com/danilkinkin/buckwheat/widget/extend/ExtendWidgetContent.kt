@@ -107,7 +107,7 @@ fun ExtendWidgetContent() {
                     ) {
                         if (stateBudget === WidgetReceiver.StateBudget.NORMAL) {
                             CanvasText(
-                                modifier = GlanceModifier.padding(start = 8.dp, end = 8.dp),
+                                modifier = GlanceModifier.padding(start = 0.dp, end = 0.dp),
                                 text = context.resources.getString(
                                     R.string.rest_budget_for_today
                                 ),
@@ -269,7 +269,11 @@ fun ExtendWidgetContent() {
                                             }
                                         )
                                         .fillMaxHeight()
-                                        .width(16.dp),
+                                        .width(when (size) {
+                                            ExtendWidget.smallMode -> 48.dp
+                                            ExtendWidget.tinyMode -> 48.dp
+                                            else -> 16.dp
+                                        }),
                                 ) {
 
                                 }
