@@ -1,6 +1,9 @@
 package com.danilkinkin.buckwheat.editor
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -15,11 +18,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.base.TextFieldWithPaddings
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.keyboard.KeyboardAction
 import com.danilkinkin.buckwheat.keyboard.rememberAppKeyboard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.util.*
+import com.danilkinkin.buckwheat.util.combineColors
+import com.danilkinkin.buckwheat.util.visualTransformationAsCurrency
 
 @Composable
 fun EditableTextWithLabel(

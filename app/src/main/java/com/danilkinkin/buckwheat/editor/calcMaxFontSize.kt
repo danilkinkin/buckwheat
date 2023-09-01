@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.editor
 
-import android.util.Log
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -13,8 +12,8 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.danilkinkin.buckwheat.util.min
 import com.danilkinkin.buckwheat.util.max
+import com.danilkinkin.buckwheat.util.min
 import kotlin.math.ceil
 
 @Composable

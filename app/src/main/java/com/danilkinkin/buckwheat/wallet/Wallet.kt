@@ -38,7 +38,6 @@ import java.util.*
 
 const val WALLET_SHEET = "wallet"
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Wallet(
     forceChange: Boolean = false,
@@ -150,25 +149,25 @@ fun Wallet(
                     targetState = isEdit,
                     transitionSpec = {
                         if (targetState && !initialState) {
-                            slideInHorizontally(
+                            (slideInHorizontally(
                                 tween(durationMillis = 150)
                             ) { offset } + fadeIn(
                                 tween(durationMillis = 150)
-                            ) with slideOutHorizontally(
+                            )).togetherWith(slideOutHorizontally(
                                 tween(durationMillis = 150)
                             ) { -offset } + fadeOut(
                                 tween(durationMillis = 150)
-                            )
+                            ))
                         } else {
-                            slideInHorizontally(
+                            (slideInHorizontally(
                                 tween(durationMillis = 150)
                             ) { -offset } + fadeIn(
                                 tween(durationMillis = 150)
-                            ) with slideOutHorizontally(
+                            )).togetherWith(slideOutHorizontally(
                                 tween(durationMillis = 150)
                             ) { offset } + fadeOut(
                                 tween(durationMillis = 150)
-                            )
+                            ))
                         }.using(
                             SizeTransform(
                                 clip = true,

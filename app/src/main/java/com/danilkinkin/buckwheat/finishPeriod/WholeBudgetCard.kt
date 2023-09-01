@@ -176,7 +176,7 @@ fun growByMiddleChildRowMeasurePolicy(localDensity: Density) =
 @Composable
 private fun PreviewChart() {
     BuckwheatTheme {
-        Box() {
+        Box {
             Icon(
                 painter = painterResource(R.drawable.ic_arrow_forward),
                 tint = Color.Green,

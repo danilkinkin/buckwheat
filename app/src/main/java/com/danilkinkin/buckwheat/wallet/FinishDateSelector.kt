@@ -78,7 +78,7 @@ private fun FinishDateSelectorTopAppBar(
     onApply: () -> Unit,
 ) {
     Surface {
-        Column() {
+        Column {
             Row(
                 Modifier
                     .fillMaxWidth()

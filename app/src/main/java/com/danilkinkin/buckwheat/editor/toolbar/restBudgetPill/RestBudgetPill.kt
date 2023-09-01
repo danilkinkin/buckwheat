@@ -1,7 +1,6 @@
 package com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
@@ -18,9 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.balloon.BalloonScope
 import com.danilkinkin.buckwheat.base.BigIconButton
-import com.danilkinkin.buckwheat.base.balloon.BalloonState
+import com.danilkinkin.buckwheat.base.balloon.BalloonScope
 import com.danilkinkin.buckwheat.base.balloon.rememberBalloonState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency

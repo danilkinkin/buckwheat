@@ -1,7 +1,6 @@
 package com.danilkinkin.buckwheat.di
 
 import android.content.Context
-import androidx.room.AutoMigration
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides

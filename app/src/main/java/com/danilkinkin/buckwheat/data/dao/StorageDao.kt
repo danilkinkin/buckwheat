@@ -2,8 +2,6 @@ package com.danilkinkin.buckwheat.data.dao
 
 import androidx.room.*
 import com.danilkinkin.buckwheat.data.entities.Storage
-import java.math.BigDecimal
-import java.util.Date
 
 @Dao
 interface StorageDao {

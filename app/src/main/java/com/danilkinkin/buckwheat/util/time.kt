@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toUpperCase
 import com.danilkinkin.buckwheat.R
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -14,7 +13,8 @@ import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import kotlin.math.ceil
 
 const val DAY = 24 * 60 * 60 * 1000

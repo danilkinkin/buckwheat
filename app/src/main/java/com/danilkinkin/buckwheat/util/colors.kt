@@ -6,7 +6,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.danilkinkin.buckwheat.ui.harmonize.blend.Blend
 import com.danilkinkin.buckwheat.ui.harmonize.palettes.CorePalette
-import com.danilkinkin.buckwheat.ui.harmonize.palettes.TonalPalette
 import com.danilkinkin.buckwheat.ui.isNightMode
 import kotlin.math.ceil
 import kotlin.math.floor

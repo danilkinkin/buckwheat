@@ -121,7 +121,7 @@
     <string name="overspending_after_not_go_out_budget">Non sei andato/a oltre il budget </string>
     <string name="overspending_after_few_times_out_budget">Dopo quello, hai avuto %1$s dei %2$s rimanenti del budget</string>
     <string name="overspending_after_many_times_out_budget">Dopo solo %1$s dei %2$s rimanenti, eri nel budget</string>
-    <string name="overspending_after_all_times_out_budget">in_currency_label</string>
+    <string name="overspending_after_all_times_out_budget">After all of the %1$s left you haven\'t been out of budget</string>
 
     <!-- Onboarding -->
     <string name="hello">Ciao!</string>

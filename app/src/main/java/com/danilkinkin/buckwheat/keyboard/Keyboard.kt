@@ -34,7 +34,6 @@ val BUTTON_GAP = 6.dp
 
 enum class KeyboardAction { PUT_NUMBER, SET_DOT, REMOVE_LAST }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Keyboard(
     modifier: Modifier = Modifier,
@@ -220,13 +219,13 @@ fun Keyboard(
                         if (targetState && !initialState) {
                             fadeIn(
                                 tween(durationMillis = 250)
-                            ) with fadeOut(
+                            ) togetherWith fadeOut(
                                 tween(durationMillis = 250)
                             )
                         } else {
                             fadeIn(
                                 tween(durationMillis = 250)
-                            ) with fadeOut(
+                            ) togetherWith fadeOut(
                                 tween(durationMillis = 250)
                             )
                         }.using(

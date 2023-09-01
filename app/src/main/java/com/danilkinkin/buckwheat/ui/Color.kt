@@ -19,11 +19,6 @@ val colorBackground
     @ReadOnlyComposable
     get() = MaterialTheme.colorScheme.surface
 
-val colorOnBackground
-    @Composable
-    @ReadOnlyComposable
-    get() = MaterialTheme.colorScheme.onSurface
-
 val colorButton
     @Composable
     @ReadOnlyComposable

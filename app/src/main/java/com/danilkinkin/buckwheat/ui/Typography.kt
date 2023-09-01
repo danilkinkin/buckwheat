@@ -120,9 +120,9 @@ fun FontCard(family: String, size: String, style: TextStyle) {
 @Composable
 fun PreviewTypography() {
     BuckwheatTheme {
-        Surface() {
-            Row() {
-                Column() {
+        Surface {
+            Row {
+                Column {
                     FontCard("Display", "L", MaterialTheme.typography.displayLarge)
                     FontCard("Display", "M", MaterialTheme.typography.displayMedium)
                     FontCard("Display", "S", MaterialTheme.typography.displaySmall)
@@ -133,7 +133,7 @@ fun PreviewTypography() {
                     FontCard("Title", "M", MaterialTheme.typography.titleMedium)
                     FontCard("Title", "S", MaterialTheme.typography.titleSmall)
                 }
-                Column() {
+                Column {
                     FontCard("Body", "L", MaterialTheme.typography.bodyLarge)
                     FontCard("Body", "M", MaterialTheme.typography.bodyMedium)
                     FontCard("Body", "S", MaterialTheme.typography.bodySmall)

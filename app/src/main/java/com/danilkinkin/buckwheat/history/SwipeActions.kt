@@ -62,7 +62,6 @@ val DefaultSwipeActionsConfig = SwipeActionsConfig(
 @OptIn(
     ExperimentalMaterialApi::class,
     ExperimentalComposeUiApi::class,
-    ExperimentalAnimationApi::class,
 )
 @Composable
 fun SwipeActions(
@@ -176,7 +175,7 @@ fun SwipeActions(
                     fadeIn(
                         tween(0),
                         initialAlpha = if (targetState.second) 1f else 0f,
-                    ) with fadeOut(
+                    ) togetherWith fadeOut(
                         tween(0),
                         targetAlpha = if (targetState.second) .7f else 0f,
                     )

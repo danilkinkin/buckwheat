@@ -1,9 +1,8 @@
 package com.danilkinkin.buckwheat.keyboard
 
-import androidx.compose.runtime.*
-import androidx.compose.ui.text.input.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.input.TextInputService
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.buckwheat.data.SpendsViewModel
 
 @Composable
 fun rememberAppKeyboard(

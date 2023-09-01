@@ -1,7 +1,6 @@
 package com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
@@ -14,7 +13,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.base.AnimatedNumber
 import com.danilkinkin.buckwheat.util.HarmonizedColorPalette
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ValueLabel(
     harmonizedColor: HarmonizedColorPalette,

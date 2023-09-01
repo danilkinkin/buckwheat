@@ -18,6 +18,7 @@
         android:layout_height="128dp"
         android:layout_gravity="center"
         android:src="@drawable/ic_launcher_foreground"
-        android:tint="@color/primary" />
+        android:tint="@color/primary"
+        tools:ignore="UseAppTint" />
 
 </FrameLayout>

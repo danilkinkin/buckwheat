@@ -234,7 +234,6 @@ private fun PreviewWithIcons() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview()
 @Composable
 private fun PreviewWithIconsWithChip() {
@@ -252,7 +251,6 @@ private fun PreviewWithIconsWithChip() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview()
 @Composable
 private fun PreviewWithIconsWithChipAndEndIcon() {
@@ -271,7 +269,6 @@ private fun PreviewWithIconsWithChipAndEndIcon() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview()
 @Composable
 private fun PreviewWithIconsWithChipWithWrapText() {
@@ -291,7 +288,6 @@ private fun PreviewWithIconsWithChipWithWrapText() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(name = "With icon, end content, end icon and description")
 @Composable
 private fun PreviewWithIconsWithChipWithDescriptionWithEndContentAndEnIcon() {
@@ -313,7 +309,6 @@ private fun PreviewWithIconsWithChipWithDescriptionWithEndContentAndEnIcon() {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Preview(name = "With icon, end content, end icon and description")
 @Composable
 private fun PreviewWithIconsWithChipWithDescriptionWithEndContent() {

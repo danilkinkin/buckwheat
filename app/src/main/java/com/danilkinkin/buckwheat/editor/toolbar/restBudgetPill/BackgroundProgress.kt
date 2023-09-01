@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatTweenSpec
@@ -83,8 +82,8 @@ fun BackgroundProgress(
                     .drawBehind {
                         drawPath(
                             path = Path().apply {
-                                val halfPeriod = with(density) { 30.dp.toPx() } / 2
-                                val amplitude = with(density) { (percentWithNewSpentAnimated.clamp(0.96f, 1f) * 2.dp).toPx() }
+                                val halfPeriod = 30.dp.toPx() / 2
+                                val amplitude = (percentWithNewSpentAnimated.clamp(0.96f, 1f) * 2.dp).toPx()
 
                                 moveTo(
                                     size.width - amplitude,

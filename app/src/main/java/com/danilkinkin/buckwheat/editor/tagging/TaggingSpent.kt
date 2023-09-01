@@ -41,7 +41,6 @@ import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.editor.calcFontHeight
 import com.danilkinkin.buckwheat.util.observeLiveData
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TaggingSpent(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
@@ -149,7 +148,7 @@ fun TaggingSpent(
                         transitionSpec = {
                             (fadeIn(
                                 tween(durationMillis = 250)
-                            ) with fadeOut(
+                            ) togetherWith fadeOut(
                                 tween(durationMillis = 250)
                             )).using(
                                 SizeTransform(clip = false)
@@ -179,7 +178,6 @@ fun TaggingSpent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentEditor(defaultValue: String, onApply: (comment: String) -> Unit) {
     var value by remember { mutableStateOf(TextFieldValue(
@@ -218,10 +216,12 @@ fun CommentEditor(defaultValue: String, onApply: (comment: String) -> Unit) {
         textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600),
         singleLine = true,
         shape = RectangleShape,
-        colors = TextFieldDefaults.textFieldColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            unfocusedIndicatorColor = Color.Transparent,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            disabledContainerColor = MaterialTheme.colorScheme.surface,
             focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
             errorIndicatorColor = Color.Transparent,
         ),

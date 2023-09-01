@@ -3,12 +3,11 @@ package com.danilkinkin.buckwheat.editor.dateTimeEdit
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.text.format.DateFormat
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.with
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -30,7 +29,7 @@ import com.danilkinkin.buckwheat.base.RenderAdaptivePane
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import java.time.LocalTime
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
     initTime: LocalTime = LocalTime.now(),
@@ -80,14 +79,14 @@ fun TimePickerDialog(
                             if (targetState && !initialState) {
                                 fadeIn(
                                     tween(durationMillis = 200)
-                                ) with
+                                ) togetherWith
                                         fadeOut(
                                             tween(durationMillis = 200)
                                         )
                             } else {
                                 fadeIn(
                                     tween(durationMillis = 200)
-                                ) with
+                                ) togetherWith
                                         fadeOut(
                                             tween(durationMillis = 200)
                                         )

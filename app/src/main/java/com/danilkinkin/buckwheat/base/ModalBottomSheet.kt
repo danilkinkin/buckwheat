@@ -4,6 +4,7 @@ package com.danilkinkin.buckwheat.base
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -11,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -22,15 +24,12 @@ import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.danilkinkin.buckwheat.util.PreUpPostDownNestedScrollConnection
+import com.danilkinkin.buckwheat.util.SwipeableState
+import com.danilkinkin.buckwheat.util.swipeable
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.roundToInt
-import androidx.compose.foundation.Canvas
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.ui.Alignment
-import com.danilkinkin.buckwheat.topSheet.PreUpPostDownNestedScrollConnection
-import com.danilkinkin.buckwheat.topSheet.SwipeableState
-import com.danilkinkin.buckwheat.topSheet.swipeable
 
 @ExperimentalMaterialApi
 enum class ModalBottomSheetValue { Hidden, Expanded, HalfExpanded }
@@ -57,13 +56,6 @@ class ModalBottomSheetState(
     private val hasHalfExpandedState: Boolean
         get() = anchors.values.contains(ModalBottomSheetValue.HalfExpanded)
 
-    constructor(
-        initialValue: ModalBottomSheetValue,
-        animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-        confirmStateChange: (ModalBottomSheetValue) -> Boolean = { true },
-        render: MutableState<Boolean>,
-    ) : this(initialValue, animationSpec, isSkipHalfExpanded = false, confirmStateChange, render.value)
-
     init {
         if (isSkipHalfExpanded) {
             require(initialValue != ModalBottomSheetValue.HalfExpanded) {
@@ -81,7 +73,7 @@ class ModalBottomSheetState(
         animateTo(targetValue = targetValue)
     }
 
-    suspend fun show(args: Map<String, Any?>) {
+    fun show(args: Map<String, Any?>) {
         this.args = args
         this.render = true
     }
@@ -93,15 +85,6 @@ class ModalBottomSheetState(
     fun bindCallback(callback: (result: Map<String, Any?>) -> Unit) {
         this.callback = callback
     }
-
-    internal suspend fun halfExpand() {
-        if (!hasHalfExpandedState) {
-            return
-        }
-        animateTo(ModalBottomSheetValue.HalfExpanded)
-    }
-
-    internal suspend fun expand() = animateTo(ModalBottomSheetValue.Expanded)
 
     suspend fun hide(result: Map<String, Any?>) {
         callback(result)

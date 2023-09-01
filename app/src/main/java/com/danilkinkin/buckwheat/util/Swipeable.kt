@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.topSheet
+package com.danilkinkin.buckwheat.util
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
@@ -12,7 +12,6 @@ import androidx.compose.material.SwipeableDefaults.AnimationSpec
 import androidx.compose.material.SwipeableDefaults.StandardResistanceFactor
 import androidx.compose.material.SwipeableDefaults.VelocityThreshold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -36,10 +35,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.danilkinkin.buckwheat.topSheet.SwipeableDefaults.resistanceConfig
+import com.danilkinkin.buckwheat.util.SwipeableDefaults.resistanceConfig
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
@@ -470,44 +468,6 @@ fun <T : Any> rememberSwipeableState(
 }
 
 /**
- * Create and [remember] a [SwipeableState] which is kept in sync with another state, i.e.:
- *  1. Whenever the [value] changes, the [SwipeableState] will be animated to that new value.
- *  2. Whenever the value of the [SwipeableState] changes (e.g. after a swipe), the owner of the
- *  [value] will be notified to update their state to the new value of the [SwipeableState] by
- *  invoking [onValueChange]. If the owner does not update their state to the provided value for
- *  some reason, then the [SwipeableState] will perform a rollback to the previous, correct value.
- */
-@Composable
-@ExperimentalMaterialApi
-internal fun <T : Any> rememberSwipeableStateFor(
-    value: T,
-    onValueChange: (T) -> Unit,
-    animationSpec: AnimationSpec<Float> = AnimationSpec
-): SwipeableState<T> {
-    val swipeableState = remember {
-        SwipeableState(
-            initialValue = value,
-            animationSpec = animationSpec,
-            confirmStateChange = { true }
-        )
-    }
-    val forceAnimationCheck = remember { mutableStateOf(false) }
-    LaunchedEffect(value, forceAnimationCheck.value) {
-        if (value != swipeableState.currentValue) {
-            swipeableState.animateTo(value)
-        }
-    }
-    DisposableEffect(swipeableState.currentValue) {
-        if (value != swipeableState.currentValue) {
-            onValueChange(swipeableState.currentValue)
-            forceAnimationCheck.value = !forceAnimationCheck.value
-        }
-        onDispose { }
-    }
-    return swipeableState
-}
-
-/**
  * Enable swipe gestures between a set of predefined states.
  *
  * To use this, you must provide a map of anchors (in pixels) to states (of type [T]).
@@ -825,51 +785,6 @@ object SwipeableDefaults {
         }
     }
 }
-
-@ExperimentalMaterialApi
-val <T> SwipeableState<T>.PreUpPostTopNestedScrollConnection: NestedScrollConnection
-    get() = object : NestedScrollConnection {
-        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-            val delta = available.toFloat()
-            return if (delta > 0 && source == NestedScrollSource.Drag) {
-                performDrag(delta).toOffset()
-            } else {
-                Offset.Zero
-            }
-        }
-
-        override fun onPostScroll(
-            consumed: Offset,
-            available: Offset,
-            source: NestedScrollSource
-        ): Offset {
-            return if (source == NestedScrollSource.Drag) {
-                performDrag(available.toFloat()).toOffset()
-            } else {
-                Offset.Zero
-            }
-        }
-
-        override suspend fun onPreFling(available: Velocity): Velocity {
-            val toFling = Offset(available.x, available.y).toFloat()
-            return if (toFling > 0) {
-                performFling(velocity = toFling)
-                // since we go to the anchor with tween settling, consume all for the best UX
-                available
-            } else {
-                Velocity.Zero
-            }
-        }
-
-        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-            performFling(velocity = Offset(available.x, available.y).toFloat())
-            return available
-        }
-
-        private fun Float.toOffset(): Offset = Offset(0f, this)
-
-        private fun Offset.toFloat(): Float = this.y
-    }
 
 // temp default nested scroll connection for swipeables which desire as an opt in
 // revisit in b/174756744 as all types will have their own specific connection probably

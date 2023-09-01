@@ -2,18 +2,41 @@ package com.danilkinkin.buckwheat.wallet
 
 import OverrideLocalize
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -29,14 +52,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.base.RenderAdaptivePane
+import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.titleCase
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Currency
 
 fun getCurrencies(): MutableList<Currency> {
     val currencies = Currency.getAvailableCurrencies().toMutableList()
@@ -46,7 +69,6 @@ fun getCurrencies(): MutableList<Currency> {
     return currencies
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorldCurrencyChooserContent(
     defaultCurrency: Currency? = null,
@@ -82,6 +104,11 @@ fun WorldCurrencyChooserContent(
                 text = stringResource(R.string.select_currency_title),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(24.dp)
+            )
+            val containerColor = combineColors(
+                MaterialTheme.colorScheme.surface,
+                MaterialTheme.colorScheme.surfaceVariant,
+                0.5f,
             )
             TextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -119,14 +146,12 @@ fun WorldCurrencyChooserContent(
                 textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600),
                 singleLine = true,
                 shape = RectangleShape,
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = combineColors(
-                        MaterialTheme.colorScheme.surface,
-                        MaterialTheme.colorScheme.surfaceVariant,
-                        0.5f,
-                    ),
-                    unfocusedIndicatorColor = Color.Transparent,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = containerColor,
+                    unfocusedContainerColor = containerColor,
+                    disabledContainerColor = containerColor,
                     focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent,
                 ),

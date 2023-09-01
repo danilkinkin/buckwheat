@@ -35,7 +35,7 @@ fun BudgetSummary(
                 modifier = Modifier.weight(1f),
                 bigVariant = false,
                 budget = wholeBudget,
-                currency = currency!!,
+                currency = currency,
                 startDate = spendsViewModel.startPeriodDate.value!!,
                 finishDate = spendsViewModel.finishPeriodDate.value!!,
             )

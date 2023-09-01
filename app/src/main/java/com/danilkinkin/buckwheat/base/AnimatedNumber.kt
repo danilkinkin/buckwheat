@@ -11,7 +11,6 @@ import java.text.BreakIterator
 
 data class CharState(val preview: String, val current: String)
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun AnimatedNumber(
     value: String = "",
@@ -64,11 +63,15 @@ fun AnimatedNumber(
                 targetState = it.current,
                 transitionSpec = {
                     if (targetState > initialState) {
-                        slideInVertically(tween(durationMillis = 200)) { height -> height } + fadeIn(tween(durationMillis = 200)) with
-                                slideOutVertically(tween(durationMillis = 200)) { height -> -height } + fadeOut(tween(durationMillis = 200))
+                        (slideInVertically(tween(durationMillis = 200)) { height -> height } + fadeIn(tween(durationMillis = 200))).togetherWith(
+                            slideOutVertically(tween(durationMillis = 200)) { height -> -height } + fadeOut(
+                                tween(durationMillis = 200)
+                            ))
                     } else {
-                        slideInVertically(tween(durationMillis = 200)) { height -> -height } + fadeIn(tween(durationMillis = 200)) with
-                                slideOutVertically(tween(durationMillis = 200)) { height -> height } + fadeOut(tween(durationMillis = 200))
+                        (slideInVertically(tween(durationMillis = 200)) { height -> -height } + fadeIn(tween(durationMillis = 200))).togetherWith(
+                            slideOutVertically(tween(durationMillis = 200)) { height -> height } + fadeOut(
+                                tween(durationMillis = 200)
+                            ))
                     }.using(
                         SizeTransform(clip = false)
                     )

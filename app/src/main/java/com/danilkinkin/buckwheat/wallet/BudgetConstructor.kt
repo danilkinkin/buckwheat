@@ -222,7 +222,6 @@ fun BudgetConstructor(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UseLastSuggestionChip(
     visible: Boolean,

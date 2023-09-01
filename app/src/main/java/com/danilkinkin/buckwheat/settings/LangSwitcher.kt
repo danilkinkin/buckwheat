@@ -3,10 +3,15 @@ package com.danilkinkin.buckwheat.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -24,14 +29,13 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.appLocale
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.CheckedRow
-import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.titleCase
 import kotlinx.coroutines.launch
 import switchOverrideLocale
-import java.util.*
+import java.util.Locale
 
 const val SETTINGS_CHANGE_LOCALE_SHEET = "settings.changeLocale"
 

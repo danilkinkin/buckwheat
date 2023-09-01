@@ -34,7 +34,7 @@ public final class TonalPalette {
    * @param argb ARGB representation of a color
    * @return Tones matching that color's hue and chroma.
    */
-  public static final TonalPalette fromInt(int argb) {
+  public static TonalPalette fromInt(int argb) {
     Hct hct = Hct.fromInt(argb);
     return TonalPalette.fromHueAndChroma(hct.getHue(), hct.getChroma());
   }
@@ -46,7 +46,7 @@ public final class TonalPalette {
    * @param chroma HCT chroma
    * @return Tones matching hue and chroma.
    */
-  public static final TonalPalette fromHueAndChroma(double hue, double chroma) {
+  public static TonalPalette fromHueAndChroma(double hue, double chroma) {
     return new TonalPalette(hue, chroma);
   }
 

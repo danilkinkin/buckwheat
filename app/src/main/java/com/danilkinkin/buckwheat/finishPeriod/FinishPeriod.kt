@@ -164,7 +164,7 @@ fun FinishPeriod(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Footer(
     modifier: Modifier = Modifier,
@@ -206,13 +206,13 @@ fun Footer(
         if (targetState && !initialState) {
             fadeIn(
                 tween(durationMillis = 250)
-            ) with fadeOut(
+            ) togetherWith fadeOut(
                 snap(delayMillis = 250)
             )
         } else {
             fadeIn(
                 snap()
-            ) with fadeOut(
+            ) togetherWith fadeOut(
                 tween(durationMillis = 250)
             )
         }.using(

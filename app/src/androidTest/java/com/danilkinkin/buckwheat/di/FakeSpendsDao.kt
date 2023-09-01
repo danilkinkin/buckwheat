@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.danilkinkin.buckwheat.data.dao.SpentDao
 import com.danilkinkin.buckwheat.data.entities.Spent
-import dagger.Module
-import dagger.hilt.components.SingletonComponent
-import dagger.hilt.testing.TestInstallIn
 import java.util.Date
 
 class FakeSpendsDao: SpentDao {

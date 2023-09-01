@@ -604,16 +604,14 @@ public class Scheme {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof Scheme)) {
+    if (!(object instanceof Scheme scheme)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
 
-    Scheme scheme = (Scheme) object;
-
-    if (primary != scheme.primary) {
+      if (primary != scheme.primary) {
       return false;
     }
     if (onPrimary != scheme.onPrimary) {
@@ -691,11 +689,7 @@ public class Scheme {
     if (inverseOnSurface != scheme.inverseOnSurface) {
       return false;
     }
-    if (inversePrimary != scheme.inversePrimary) {
-      return false;
-    }
-
-    return true;
+      return inversePrimary == scheme.inversePrimary;
   }
 
   @Override

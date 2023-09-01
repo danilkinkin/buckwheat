@@ -1,16 +1,21 @@
 package com.danilkinkin.buckwheat.data
 
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.danilkinkin.buckwheat.data.entities.Spent
 import com.danilkinkin.buckwheat.di.SpendsRepository
-import com.danilkinkin.buckwheat.util.*
+import com.danilkinkin.buckwheat.util.countDaysToToday
+import com.danilkinkin.buckwheat.util.isToday
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 enum class RestedBudgetDistributionMethod { REST, ADD_TODAY, ASK }
@@ -108,39 +113,11 @@ class SpendsViewModel @Inject constructor(
 
     // Need to be refactored
 
-    fun whatBudgetForDay(
-        excludeCurrentDay: Boolean = false,
-        applyTodaySpends: Boolean = false,
-        notCommittedSpent: BigDecimal = BigDecimal.ZERO
-    ): LiveData<BigDecimal> {
-        val data = MutableLiveData<BigDecimal>()
-
-        viewModelScope.launch {
-            data.value = spendsRepository.whatBudgetForDay(
-                excludeCurrentDay,
-                applyTodaySpends,
-                notCommittedSpent
-            )
-        }
-
-        return data
-    }
-
     fun howMuchBudgetRest(): LiveData<BigDecimal> {
         val data = MutableLiveData<BigDecimal>()
 
         viewModelScope.launch {
             data.value = spendsRepository.howMuchBudgetRest()
-        }
-
-        return data
-    }
-
-    fun howMuchNotSpent(): LiveData<BigDecimal> {
-        val data = MutableLiveData<BigDecimal>()
-
-        viewModelScope.launch {
-            data.value = spendsRepository.howMuchNotSpent()
         }
 
         return data
