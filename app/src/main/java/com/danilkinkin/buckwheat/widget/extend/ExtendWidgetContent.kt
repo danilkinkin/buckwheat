@@ -170,17 +170,17 @@ fun ExtendWidgetContent() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalAlignment = Alignment.Start,
                 ) {
-                    if (
-                        stateBudget !== WidgetReceiver.StateBudget.NOT_SET &&
-                        stateBudget !== WidgetReceiver.StateBudget.IS_OVER &&
-                        stateBudget !== WidgetReceiver.StateBudget.END_PERIOD
+                    Box(
+                        modifier = GlanceModifier
+                            .defaultWeight(),
+                        contentAlignment = Alignment.CenterStart,
                     ) {
-                        Box(
-                            modifier = GlanceModifier
-                                .defaultWeight(),
-                            contentAlignment = Alignment.CenterStart,
-                        ) {
-                            Row {
+                        Row {
+                            if (
+                                stateBudget !== WidgetReceiver.StateBudget.NOT_SET &&
+                                stateBudget !== WidgetReceiver.StateBudget.IS_OVER &&
+                                stateBudget !== WidgetReceiver.StateBudget.END_PERIOD
+                            ) {
                                 val splittedValue = emptyList<String>().toMutableList()
                                 val value = numberFormat(
                                     todayBudget,
@@ -224,56 +224,59 @@ fun ExtendWidgetContent() {
                                                 else -> 42.sp
                                             },
                                         ),
-                                        noTint = it.toCharArray()
+                                        noTint = it
+                                            .toCharArray()
                                             .any { char -> char.isSurrogate() },
                                     )
                                 }
-                            }
-                            Row(
-                                modifier = GlanceModifier
-                                    .defaultWeight()
-                                    .padding(0.dp, 14.dp)
-                                    .fillMaxSize(),
-                                horizontalAlignment = Alignment.End,
-                            ) {
-                                Image(
-                                    modifier = GlanceModifier.fillMaxHeight().width(36.dp),
-                                    provider = ImageProvider(R.drawable.extend_widget_gradient),
-                                    contentDescription = null,
+                            } else if (stateBudget !== WidgetReceiver.StateBudget.IS_OVER) {
+                                CanvasText(
+                                    text = context.resources.getString(
+                                        if (stateBudget === WidgetReceiver.StateBudget.NOT_SET) {
+                                            R.string.budget_not_set
+                                        } else R.string.finish_period_title
+                                    ),
+                                    style = TextStyle(
+                                        color = contentColor,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = when (size) {
+                                            ExtendWidget.superHugeMode -> 42.sp
+                                            ExtendWidget.hugeMode -> 36.sp
+                                            ExtendWidget.tinyMode -> 18.sp
+                                            else -> 24.sp
+                                        },
+                                    )
                                 )
-                                Box(
-                                    modifier = GlanceModifier
-                                        .background(R.color.surface)
-                                        .fillMaxHeight()
-                                        .width(when (size) {
-                                            ExtendWidget.smallMode -> 48.dp
-                                            ExtendWidget.tinyMode -> 48.dp
-                                            else -> 16.dp
-                                        }),
-                                ) {
-
-                                }
                             }
 
                         }
-                    } else if (stateBudget !== WidgetReceiver.StateBudget.IS_OVER) {
-                        CanvasText(
-                            text = context.resources.getString(
-                                if (stateBudget === WidgetReceiver.StateBudget.NOT_SET) {
-                                    R.string.budget_not_set
-                                } else R.string.finish_period_title
-                            ),
-                            style = TextStyle(
-                                color = contentColor,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = when (size) {
-                                    ExtendWidget.superHugeMode -> 42.sp
-                                    ExtendWidget.hugeMode -> 36.sp
-                                    ExtendWidget.tinyMode -> 18.sp
-                                    else -> 24.sp
-                                },
+                        Row(
+                            modifier = GlanceModifier
+                                .defaultWeight()
+                                .padding(0.dp, 14.dp)
+                                .fillMaxSize(),
+                            horizontalAlignment = Alignment.End,
+                        ) {
+                            Image(
+                                modifier = GlanceModifier.fillMaxHeight().width(36.dp),
+                                provider = ImageProvider(R.drawable.extend_widget_gradient),
+                                contentDescription = null,
                             )
-                        )
+                            Box(
+                                modifier = GlanceModifier
+                                    .background(R.color.surface)
+                                    .fillMaxHeight()
+                                    .width(
+                                        when (size) {
+                                            ExtendWidget.smallMode -> 48.dp
+                                            ExtendWidget.tinyMode -> 48.dp
+                                            else -> 16.dp
+                                        }
+                                    ),
+                            ) {
+
+                            }
+                        }
                     }
                 }
             }
