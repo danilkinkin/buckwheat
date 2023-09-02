@@ -64,16 +64,8 @@ fun ExtendWidgetContent() {
 
 
     CompositionLocalProvider(
-        LocalContentColor provides if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
-            GlanceTheme.colors.onErrorContainer
-        } else {
-            GlanceTheme.colors.onSurface
-        },
-        LocalAccentColor provides if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
-            GlanceTheme.colors.error
-        } else {
-            GlanceTheme.colors.primary
-        },
+        LocalContentColor provides GlanceTheme.colors.onSurface,
+        LocalAccentColor provides GlanceTheme.colors.primary,
     ) {
         val accentColor = LocalAccentColor.current
         val contentColor = LocalContentColor.current
@@ -82,13 +74,7 @@ fun ExtendWidgetContent() {
             modifier = GlanceModifier
                 .cornerRadius(32.dp)
                 .fillMaxSize()
-                .background(
-                    if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
-                        ImageProvider(R.drawable.extend_widget_background_overdraft)
-                    } else {
-                        ImageProvider(R.drawable.extend_widget_background)
-                    }
-                )
+                .background(ImageProvider(R.drawable.extend_widget_background))
                 .padding(
                     when (size) {
                         ExtendWidget.superHugeMode, ExtendWidget.hugeMode -> 8.dp
@@ -252,22 +238,12 @@ fun ExtendWidgetContent() {
                             ) {
                                 Image(
                                     modifier = GlanceModifier.fillMaxHeight().width(36.dp),
-                                    provider = if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
-                                        ImageProvider(R.drawable.extend_widget_gradient_overdraft)
-                                    } else {
-                                        ImageProvider(R.drawable.extend_widget_gradient)
-                                    },
+                                    provider = ImageProvider(R.drawable.extend_widget_gradient),
                                     contentDescription = null,
                                 )
                                 Box(
                                     modifier = GlanceModifier
-                                        .background(
-                                            if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
-                                                R.color.errorContainer
-                                            } else {
-                                                R.color.surface
-                                            }
-                                        )
+                                        .background(R.color.surface)
                                         .fillMaxHeight()
                                         .width(when (size) {
                                             ExtendWidget.smallMode -> 48.dp
