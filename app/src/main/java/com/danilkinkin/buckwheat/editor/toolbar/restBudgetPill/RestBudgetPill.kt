@@ -97,7 +97,7 @@ fun RowScope.RestBudgetPill(
                     colorNotGood,
                     colorGood,
                 ),
-                percentWithNewSpentAnimated,
+                percentWithNewSpentAnimated.coerceIn(0f, 1f),
             ),
             colorEditor
         )
