@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.editor
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -50,6 +51,10 @@ fun Editor(
             )
             TaggingSpent(editorFocusController = focusController)
             Spacer(Modifier.height(24.dp))
+
+            BackHandler(mode == EditMode.EDIT) {
+                editorViewModel.resetEditingSpent()
+            }
         }
     }
 }
