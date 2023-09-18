@@ -98,7 +98,7 @@
     <string name="new_day_title">恭喜！您存下了</string>
     <string name="recalc_budget">想想如何规划预算</string>
     <string name="split_rest_days_title">在周期内的剩余天数平分</string>
-    <string name="split_rest_days_description">为每天增加 %1$s 预算</string>
+    <string name="split_rest_days_description">每天的预算调整为 %1$s</string>
     <string name="add_current_day_title">保留至当天</string>
     <string name="add_current_day_description">今天的预算调整为 %1$s，之后每天的预算为 %2$s</string>
 
