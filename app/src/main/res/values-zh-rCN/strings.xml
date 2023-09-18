@@ -98,7 +98,7 @@
     <string name="new_day_title">恭喜！您存下了</string>
     <string name="recalc_budget">想想如何规划预算</string>
     <string name="split_rest_days_title">在周期内的剩余天数平分</string>
-    <string name="split_rest_days_description">为每天增加 %1$s 预算</string>
+    <string name="split_rest_days_description">每天的预算调整为 %1$s</string>
     <string name="add_current_day_title">保留至当天</string>
     <string name="add_current_day_description">今天的预算调整为 %1$s，之后每天的预算为 %2$s</string>
 
@@ -148,9 +148,9 @@
     <string name="select_currency_description">货币只是为了方便理解数字背后的概念，它不会以任何方式影响计算</string>
     <string name="remember_choice_reacalc_budget_description">之后您可以在钱包中更改</string>
     <string name="remember_choice">记住该选项</string>
-    <string name="rest_label">剩余</string>
+    <string name="rest_label">余额分配</string>
     <string name="choose_recalc_budget_method_label">选择余额分配方式</string>
-    <string name="choose_recalc_budget_method_description">您可以在当天结束后选择如何分配当日预算余额。\n\n举个例子，例如，您的预算是每天 500，昨天支出 400，那么今天您就有 100 可以分配至后续的每日预算，或是直接将今天的预算变更为 600（500+100）</string>
+    <string name="choose_recalc_budget_method_description">您可以在当天结束后选择如何分配当日预算余额。\n\n举个例子，您的预算是每天 500，昨天支出 400，那么今天您就有 100 可以分配至后续的每日预算，或是直接将今天的预算变更为 600（500+100）</string>
     <string name="always_ask">总是询问</string>
     <string name="method_split_to_rest_days_title">平均分配</string>
     <string name="method_split_to_rest_days_description">预算余额分配至后续天数</string>
