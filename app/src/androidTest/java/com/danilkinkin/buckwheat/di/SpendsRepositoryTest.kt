@@ -41,10 +41,10 @@ class SpendsRepositoryTest {
 
     // Set budget 1000 for 10 days
     // Start daily budget 100
-    private suspend fun setBudget() {
+    private suspend fun setBudget(budget: Long = 1000, days: Long = 9) {
         spendsRepository.changeBudget(
-            1000.toBigDecimal(),
-            currentDateUseCase.value.toLocalDate().plusDays(9).toDate()
+            budget.toBigDecimal(),
+            currentDateUseCase.value.toLocalDate().plusDays(days).toDate()
         )
     }
 
@@ -55,7 +55,24 @@ class SpendsRepositoryTest {
         ))
     }
 
+    private suspend fun distributeBudgetAddToday() {
+        val notSpent = spendsRepository.howMuchNotSpent(
+            excludeSkippedPart = true,
+        )
+        val dailyBudget = spendsRepository.getDailyBudget().first()
+        val whatBudgetForDay = spendsRepository.whatBudgetForDay(
+            excludeCurrentDay = false,
+            applyTodaySpends = true,
+            notCommittedSpent =  dailyBudget,
+        )
+
+        Log.d("SpendsRepositoryTest", "notSpent = $notSpent dailyBudget = $dailyBudget whatBudgetForDay = $whatBudgetForDay")
+
+        spendsRepository.setDailyBudget(notSpent)
+    }
+
     private fun rewindTime(days: Long, hours: Long = 0) {
+        Log.d("SpendsRepositoryTest", "rewind time for days = $days hours = $hours")
         currentDateUseCase.value = currentDateUseCase.value
             .toLocalDateTime()
             .plusDays(days)
@@ -335,6 +352,56 @@ class SpendsRepositoryTest {
         assert(spendsRepository.whatBudgetForDay() == 97.78.toBigDecimal().setScale(2))
     }
 
+    // How much saved
+    @Test
+    fun saved() = runTest {
+        setBudget()
+
+        val spend = Spent(
+            value = 10.toBigDecimal(),
+            date = currentDateUseCase.value,
+        )
+        spendsRepository.addSpent(spend)
+
+        rewindTime(1)
+
+        assert(spendsRepository.howMuchNotSpent() - spendsRepository.getDailyBudget().first() == 90.toBigDecimal().setScale(2))
+
+        distributeBudget()
+        rewindTime(1)
+
+        assert(spendsRepository.howMuchNotSpent() - spendsRepository.getDailyBudget().first() == 110.toBigDecimal().setScale(2))
+
+        distributeBudget()
+        rewindTime(2)
+
+        assert(spendsRepository.howMuchNotSpent() - spendsRepository.getDailyBudget().first() == 247.5.toBigDecimal().setScale(2))
+    }
+
+    // Add to today every day
+    // Init budget 330 for 10 days
+    // [Day 1] dailyBudget = 330 / 10 = 33 > No spent > not spent = 33
+    // [Day 2] dailyBudget = (330 - 33) / 9 + 33 = 66 > No spent > not spent = 66
+    // [Day 3] dailyBudget = (330 - 66) / 8 + 66 = 99 > No spent > not spent = 99
+    @Test
+    fun savedWithAdd() = runTest {
+        setBudget(330)
+
+        rewindTime(1)
+
+        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
+
+        distributeBudgetAddToday()
+        rewindTime(1)
+
+        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 66.toBigDecimal().setScale(2))
+
+        distributeBudgetAddToday()
+        rewindTime(1)
+
+        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 99.toBigDecimal().setScale(2))
+    }
+
     // Overdraft, add spent on next day and skip day
     // Init budget 1000 for 10 days
     // [Day 1] dailyBudget = 1000 / 10 = 100 > Spend 140 > not spent = -40
@@ -480,5 +547,108 @@ class SpendsRepositoryTest {
         assert(spendsRepository.getDailyBudget().first() == 275.toBigDecimal().setScale(2))
         assert(spendsRepository.getSpentFromDailyBudget().first() == 100.toBigDecimal().setScale(2))
         assert(spendsRepository.howMuchNotSpent() == 450.toBigDecimal().setScale(2))
+    }
+
+    // Add to today every day
+    // Init budget 330 for 10 days
+    // [Day 1] dailyBudget = 330 / 10 = 33 > No spent > not spent = 33
+    // [Day 2] dailyBudget = (330 - 33) / 9 + 33 = 66 > No spent > not spent = 66
+    // [Day 3] dailyBudget = (330 - 66) / 8 + 66 = 99 > No spent > not spent = 99
+    // [Day 4] dailyBudget = (330 - 99) / 7 + 99 = 132 > No spent > not spent = 132
+    // [Day 5] dailyBudget = (330 - 132) / 6 + 132 = 165 > Skip > not spent = 165
+    // [Day 6] dailyBudget = (330 - 165) / 5 + 165 = 198 > Skip > not spent = 198
+    // [Day 7] dailyBudget = (330 - 198) / 4 + 198 = 231 > Skip > not spent = 231
+    // [Day 8] dailyBudget = (330 - 231) / 3 + 231 = 264 > Spend 300 > not spent = 264
+    // [Day 9] dailyBudget = (330 - 264) / 2 + 264 = 297 > Spend 100 > not spent = 297
+    // [Day 10] dailyBudget = (330 - 297) / 1 + 297 = 330 > No Spent > not spent = 330
+    @Test
+    fun complexTest2() = runTest {
+        setBudget(330)
+
+        // [Day 1] dailyBudget = 330 / 10 = 33 > No spent > not spent = 33
+
+        assert(spendsRepository.getDailyBudget().first() == 33.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 33.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 2] dailyBudget = (330 - 33) / 9 + 33 = 66 > No spent > not spent = 66
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 66.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 66.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 3] dailyBudget = (330 - 66) / 8 + 66 = 99 > No spent > not spent = 99
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 99.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 99.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 4] dailyBudget = (330 - 99) / 7 + 99 = 132 > No spent > not spent = 132
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 132.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 132.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 5] dailyBudget = (330 - 132) / 6 + 132 = 165 > Skip > not spent = 165
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 165.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 165.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 6] dailyBudget = (330 - 165) / 5 + 165 = 198 > Skip > not spent = 198
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 198.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 198.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 7] dailyBudget = (330 - 198) / 4 + 198 = 231 > Skip > not spent = 231
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 231.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 231.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 8] dailyBudget = (330 - 231) / 3 + 231 = 264 > Spend 300 > not spent = 264
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 264.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 264.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 9] dailyBudget = (330 - 264) / 2 + 264 = 297 > Spend 100 > not spent = 297
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 297.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 297.toBigDecimal().setScale(2))
+
+        rewindTime(1)
+
+        // [Day 10] dailyBudget = (330 - 297) / 1 + 297 = 330 > No Spent > not spent = 330
+
+        distributeBudgetAddToday()
+
+        assert(spendsRepository.getDailyBudget().first() == 330.toBigDecimal().setScale(2))
+        assert(spendsRepository.howMuchNotSpent() == 330.toBigDecimal().setScale(2))
     }
 }

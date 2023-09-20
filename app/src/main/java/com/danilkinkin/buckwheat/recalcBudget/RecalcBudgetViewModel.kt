@@ -21,6 +21,7 @@ class RecalcBudgetViewModel @Inject constructor(
     val newDailyBudgetIfSplitPerDay: MutableLiveData<BigDecimal> = MutableLiveData()
     val newDailyBudgetIfAddToday: MutableLiveData<BigDecimal> = MutableLiveData()
     val howMuchNotSpent: MutableLiveData<BigDecimal> = MutableLiveData()
+    val nextDayBudget: MutableLiveData<BigDecimal> = MutableLiveData()
     val isLastDay: MutableLiveData<Boolean> = MutableLiveData()
 
     fun calculate() = viewModelScope.launch {
@@ -40,14 +41,12 @@ class RecalcBudgetViewModel @Inject constructor(
 
     private fun calculateAddToToday() = viewModelScope.launch {
         val notSpent = spendsRepository.howMuchNotSpent()
-        val dailyBudget = spendsRepository.getDailyBudget().first()
-        val budgetPerDayAdd = spendsRepository.whatBudgetForDay(
-            excludeCurrentDay = false,
-            applyTodaySpends = true,
-            notCommittedSpent = notSpent - dailyBudget,
+        val budgetPerDayAdd = spendsRepository.howMuchNotSpent(
+            excludeSkippedPart = true,
         )
 
-        howMuchNotSpent.value = notSpent - dailyBudget
+        howMuchNotSpent.value = notSpent - spendsRepository.nextDayBudget()
+        nextDayBudget.value = spendsRepository.nextDayBudget()
         newDailyBudgetIfAddToday.value = budgetPerDayAdd.setScale(0, RoundingMode.HALF_EVEN)
     }
 }

@@ -172,7 +172,6 @@ class SpendsRepository @Inject constructor(
 
         restBudget -= notCommittedSpent
 
-
         if (applyTodaySpends) {
             restBudget -= spentFromDailyBudget
         } else if (excludeCurrentDay) {
@@ -214,7 +213,9 @@ class SpendsRepository @Inject constructor(
         return budget - spent - spentFromDailyBudget
     }
 
-    suspend fun howMuchNotSpent(): BigDecimal {
+    suspend fun howMuchNotSpent(
+        excludeSkippedPart: Boolean = false,
+    ): BigDecimal {
         val budget = getBudget().first()
         val spent = getSpent().first()
         val dailyBudget = getDailyBudget().first()
@@ -230,14 +231,26 @@ class SpendsRepository @Inject constructor(
             Date(min(getCurrentDateUseCase().time, finishPeriodDate.time)),
             lastChangeDailyBudgetDate
         ) - 1
-        val restBudget = budget - spent
+
+        var restBudget = budget - spent
 
         val howMuchNotSpent = if (restDays == 0) {
             restBudget - spentFromDailyBudget
+        } else if (excludeSkippedPart) {
+            restBudget
+                .minus(dailyBudget * skippedDays.toBigDecimal())
+                .divide(
+                    (restDays).coerceAtLeast(1).toBigDecimal(),
+                    2,
+                    RoundingMode.HALF_EVEN,
+                )
+                .multiply((skippedDays).coerceAtLeast(0).toBigDecimal())
+                .plus(dailyBudget - spentFromDailyBudget)
         } else {
             restBudget
+                .minus(dailyBudget)
                 .divide(
-                    (restDays + skippedDays).coerceAtLeast(1).toBigDecimal(),
+                    (restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal(),
                     2,
                     RoundingMode.HALF_EVEN,
                 )
@@ -248,6 +261,64 @@ class SpendsRepository @Inject constructor(
         Log.d(
             "SpendsRepository",
             "How much not spent check ["
+                    + "how much not spent: $howMuchNotSpent "
+                    + "rest budget: $restBudget "
+                    + "restDays: $restDays "
+                    + "skippedDays: $skippedDays "
+                    + "lastChangeDailyBudgetDate: $lastChangeDailyBudgetDate "
+                    + "getCurrentDateUseCase: ${getCurrentDateUseCase()} "
+                    + "dailyBudget: $dailyBudget "
+                    + "spentFromDailyBudget: $spentFromDailyBudget "
+                    + "]"
+        )
+
+        return howMuchNotSpent
+    }
+
+    suspend fun nextDayBudget(
+        excludeSkippedPart: Boolean = false,
+    ): BigDecimal {
+        val budget = getBudget().first()
+        val spent = getSpent().first()
+        val dailyBudget = getDailyBudget().first()
+        val spentFromDailyBudget = getSpentFromDailyBudget().first()
+        val finishPeriodDate =
+            getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
+        val lastChangeDailyBudgetDate =
+            getLastChangeDailyBudgetDate().first() ?: getStartPeriodDate().first()
+
+
+        val restDays = countDays(finishPeriodDate, getCurrentDateUseCase()).coerceAtLeast(0)
+        val skippedDays = countDays(
+            Date(min(getCurrentDateUseCase().time, finishPeriodDate.time)),
+            lastChangeDailyBudgetDate
+        ) - 1
+
+        var restBudget = budget - spent
+
+        val howMuchNotSpent = if (restDays == 0) {
+            restBudget - spentFromDailyBudget
+        } else if (excludeSkippedPart) {
+            restBudget
+                .minus(dailyBudget * skippedDays.toBigDecimal())
+                .divide(
+                    (restDays).coerceAtLeast(1).toBigDecimal(),
+                    2,
+                    RoundingMode.HALF_EVEN,
+                )
+        } else {
+            restBudget
+                .minus(dailyBudget)
+                .divide(
+                    (restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal(),
+                    2,
+                    RoundingMode.HALF_EVEN,
+                )
+        }
+
+        Log.d(
+            "SpendsRepository",
+            "Next day budget ["
                     + "how much not spent: $howMuchNotSpent "
                     + "rest budget: $restBudget "
                     + "restDays: $restDays "

@@ -22,7 +22,6 @@ fun StartLastDayButton(
     onSet: () -> Unit = {},
 ) {
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
-    val howMuchNotSpent by recalcBudgetViewModel.howMuchNotSpent.observeAsState(BigDecimal.ZERO)
     val budgetPerDayAdd by recalcBudgetViewModel.newDailyBudgetIfAddToday.observeAsState(BigDecimal.ZERO)
 
 
@@ -32,10 +31,6 @@ fun StartLastDayButton(
             Text(
                 stringResource(
                     R.string.start_last_day_description,
-                    numberFormat(
-                        howMuchNotSpent + budgetPerDayAdd,
-                        currency = currency,
-                    ),
                     numberFormat(
                         budgetPerDayAdd,
                         currency = currency,
@@ -52,7 +47,7 @@ fun StartLastDayButton(
             }
         } else null, */
         onClick = {
-            spendsViewModel.setDailyBudget(budgetPerDayAdd + howMuchNotSpent)
+            spendsViewModel.setDailyBudget(budgetPerDayAdd)
 
             onSet()
         },

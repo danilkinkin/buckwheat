@@ -22,7 +22,7 @@ fun AddToTodayButton(
     onSet: () -> Unit = {},
 ) {
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
-    val howMuchNotSpent by recalcBudgetViewModel.howMuchNotSpent.observeAsState(BigDecimal.ZERO)
+    val nextDayBudget by recalcBudgetViewModel.nextDayBudget.observeAsState(BigDecimal.ZERO)
     val budgetPerDayAdd by recalcBudgetViewModel.newDailyBudgetIfAddToday.observeAsState(BigDecimal.ZERO)
 
 
@@ -33,11 +33,11 @@ fun AddToTodayButton(
                 stringResource(
                     R.string.add_current_day_description,
                     numberFormat(
-                        howMuchNotSpent + budgetPerDayAdd,
+                        budgetPerDayAdd,
                         currency = currency,
                     ),
                     numberFormat(
-                        budgetPerDayAdd,
+                        nextDayBudget,
                         currency = currency,
                     ),
                 )
@@ -52,7 +52,7 @@ fun AddToTodayButton(
             }
         } else null, */
         onClick = {
-            spendsViewModel.setDailyBudget(budgetPerDayAdd + howMuchNotSpent)
+            spendsViewModel.setDailyBudget(budgetPerDayAdd)
 
             onSet()
         },
