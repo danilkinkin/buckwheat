@@ -82,8 +82,7 @@ fun BudgetConstructor(
     }
     val dateToValue = remember { mutableStateOf(spendsViewModel.finishPeriodDate.value) }
     var showUseSuggestion by remember {
-        val useBudget = budgetCache != budget
-                && budget != BigDecimal.ZERO
+        val useBudget = budget != budgetCache && !budget.isZero()
 
         val length = if (finishPeriodDate !== null) {
             countDays(
