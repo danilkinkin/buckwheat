@@ -296,7 +296,7 @@ class SpendsRepository @Inject constructor(
 
         var restBudget = budget - spent
 
-        val howMuchNotSpent = if (restDays == 0) {
+        val nextDailyBudget = if (restDays == 0) {
             restBudget - spentFromDailyBudget
         } else if (excludeSkippedPart) {
             restBudget
@@ -319,7 +319,7 @@ class SpendsRepository @Inject constructor(
         Log.d(
             "SpendsRepository",
             "Next day budget ["
-                    + "how much not spent: $howMuchNotSpent "
+                    + "next daily budget: $nextDailyBudget "
                     + "rest budget: $restBudget "
                     + "restDays: $restDays "
                     + "skippedDays: $skippedDays "
@@ -330,7 +330,7 @@ class SpendsRepository @Inject constructor(
                     + "]"
         )
 
-        return howMuchNotSpent
+        return nextDailyBudget
     }
 
     suspend fun addSpent(newSpent: Spent) {
