@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="app_name">
+    <item>Гречка</item>
+    <item>Buckwheat</item>
+  </string-array>
+  <string-array name="budget_for_today">
+    <item>Бюджет на сегодня</item>
+    <item>Budget for today</item>
+  </string-array>
+  <string-array name="rest_budget_for_today">
+    <item>На сегодня</item>
+    <item>For today</item>
+  </string-array>
+  <string-array name="new_daily_budget_short">
+    <item>Новый дневной</item>
+    <item>New daily</item>
+  </string-array>
+  <string-array name="new_daily_budget">
+    <item>Новый дневной бюджет</item>
+    <item>New daily budget</item>
+  </string-array>
+  <string-array name="new_daily_budget_description">
+    <item>Сегодня вы вышли за рамки дневного бюджета, не беспокойтесь, это не страшно. На последующее дни бюджет будет пересчитан с учетом оставшегося общего бюджета</item>
+    <item>Today you went beyond the daily budget, do not worry, it\'s not scary. For the following days, the budget will be recalculated taking into account the remaining total budget</item>
+  </string-array>
+  <string-array name="budget_end">
+    <item>Бюджет закончился</item>
+    <item>The budget is over</item>
+  </string-array>
+  <string-array name="budget_not_set">
+    <item>Бюджет не установлен</item>
+    <item>No budget set</item>
+  </string-array>
+  <string-array name="budget_end_description">
+    <item>Вы вышли за рамки запланированного бюджета, не беспокойтесь, это не страшно, траты никогда не бывают одинаковыми. Заводите траты дальше, чтобы понимать сколько в итоге вы потратите и какой бюджет вам нужен</item>
+    <item>You went beyond the planned budget, do not worry, it\'s not scary, spending is never the same. Start spending further to understand how much you will spend in the end and what budget you need</item>
+  </string-array>
+  <string-array name="new_spent">
+    <item>Новая трата</item>
+    <item>New spending</item>
+  </string-array>
+  <plurals name="spends_today_0">
+    <item quantity="one">%1$s трата сегодня</item>
+    <item quantity="few">%1$s трата сегодня</item>
+    <item quantity="many">%1$s трата сегодня</item>
+    <item quantity="other">%1$s трата сегодня</item>
+  </plurals>
+  <plurals name="spends_today_1">
+    <item quantity="one">%1$s spent today</item>
+    <item quantity="few">%1$s spends today</item>
+    <item quantity="many">%1$s spends today</item>
+    <item quantity="other">%1$s spends today</item>
+  </plurals>
+  <plurals name="day_0">
+    <item quantity="one">%1$s день</item>
+    <item quantity="few">%1$s день</item>
+    <item quantity="many">%1$s день</item>
+    <item quantity="other">%1$s день</item>
+  </plurals>
+  <plurals name="day_1">
+    <item quantity="one">%1$s day</item>
+    <item quantity="few">%1$s days</item>
+    <item quantity="many">%1$s days</item>
+    <item quantity="other">%1$s days</item>
+  </plurals>
+  <string-array name="enter_spent_placeholder">
+    <item>Введите трату</item>
+    <item>Enter spent</item>
+  </string-array>
+  <string-array name="hide_overspending_warn">
+    <item>Скрыть сообщение об окончании бюджета</item>
+    <item>Hide budget end message</item>
+  </string-array>
+  <string-array name="hide_overspending_warn_description">
+    <item>Сообщение будет скрыто до конца периода, чтобы не отвлекать и не напрягать</item>
+    <item>The message will be hidden until the end of the period, so as not to distract or strain</item>
+  </string-array>
+  <string-array name="add_comment">
+    <item>Комментарий</item>
+    <item>Comment</item>
+  </string-array>
+  <string-array name="label_start_date">
+    <item>Начало</item>
+    <item>Start</item>
+  </string-array>
+  <string-array name="label_finish_date">
+    <item>Конец</item>
+    <item>Finish</item>
+  </string-array>
+  <string-array name="remove_spent">
+    <item>Трата возвращена в бюджет</item>
+    <item>Expenditure returned to budget</item>
+  </string-array>
+  <string-array name="remove_spent_undo">
+    <item>Отменить</item>
+    <item>Undo</item>
+  </string-array>
+  <string-array name="no_spends">
+    <item>Трат пока не было</item>
+    <item>No spending yet</item>
+  </string-array>
+  <string-array name="total_per_day">
+    <item>Дневной итог:</item>
+    <item>Day total:</item>
+  </string-array>
+  <string-array name="change_date">
+    <item>Изменить дату</item>
+    <item>Change date</item>
+  </string-array>
+  <string-array name="change_time">
+    <item>Изменить время</item>
+    <item>Change time</item>
+  </string-array>
+  <string-array name="wallet_title">
+    <item>Бюджет</item>
+    <item>Budget</item>
+  </string-array>
+  <string-array name="wallet_edit_title">
+    <item>Новый бюджет</item>
+    <item>New budget</item>
+  </string-array>
+  <string-array name="label_budget">
+    <item>Бюджет</item>
+    <item>Budget</item>
+  </string-array>
+  <string-array name="select_finish_date_title">
+    <item>Выберите дату окончания</item>
+    <item>Choose a finish date</item>
+  </string-array>
+  <plurals name="finish_date_label_0">
+    <item quantity="one">До %1$s (%2$s день)</item>
+    <item quantity="few">До %1$s (%2$s день)</item>
+    <item quantity="many">До %1$s (%2$s день)</item>
+    <item quantity="other">До %1$s (%2$s день)</item>
+  </plurals>
+  <plurals name="finish_date_label_1">
+    <item quantity="one">To %1$s (%2$s day)</item>
+    <item quantity="few">To %1$s (%2$s days)</item>
+    <item quantity="many">To %1$s (%2$s days)</item>
+    <item quantity="other">To %1$s (%2$s days)</item>
+  </plurals>
+  <plurals name="days_count_0">
+    <item quantity="one">%1$s день</item>
+    <item quantity="few">%1$s день</item>
+    <item quantity="many">%1$s день</item>
+    <item quantity="other">%1$s день</item>
+  </plurals>
+  <plurals name="days_count_1">
+    <item quantity="one">%1$s day</item>
+    <item quantity="few">%1$s days</item>
+    <item quantity="many">%1$s days</item>
+    <item quantity="other">%1$s days</item>
+  </plurals>
+  <string-array name="export_to_csv">
+    <item>Выгрузить в CSV</item>
+    <item>Export to CSV</item>
+  </string-array>
+  <string-array name="finish_date_not_select">
+    <item>Дата окончания не выбрана</item>
+    <item>No finish date selected</item>
+  </string-array>
+  <string-array name="in_currency_label">
+    <item>Валюта</item>
+    <item>Currency</item>
+  </string-array>
+  <string-array name="currency_from_list">
+    <item>Мировая валюта</item>
+    <item>World currency</item>
+  </string-array>
+  <string-array name="currency_custom">
+    <item>Своя валюта</item>
+    <item>Custom currency</item>
+  </string-array>
+  <string-array name="currency_none">
+    <item>Без валюты</item>
+    <item>No currency</item>
+  </string-array>
+  <string-array name="per_day">
+    <item>%1$s в день</item>
+    <item>%1$s per day</item>
+  </string-array>
+  <string-array name="select_currency_title">
+    <item>Выберете валюту</item>
+    <item>Select currency</item>
+  </string-array>
+  <string-array name="select_currency_description">
+    <item>Валюта никак не влияет на расчеты, это просто обозначение для более легкого осознания чисел</item>
+    <item>The currency does not affect the calculations in any way, it is just a designation for easier understanding of numbers.</item>
+  </string-array>
+  <string-array name="search_currency_placeholder">
+    <item>Код валюты или название</item>
+    <item>Currency code or name</item>
+  </string-array>
+  <string-array name="currency_not_found">
+    <item>Нет подходящих валют</item>
+    <item>No matching currencies</item>
+  </string-array>
+  <string-array name="currency_custom_title">
+    <item>Укажите свою валюту</item>
+    <item>Enter your currency</item>
+  </string-array>
+  <string-array name="currency_custom_description">
+    <item>Например, трата в 150 условных единиц будет отображаться вот так:</item>
+    <item>For example, spending 150 conventional units will be displayed like this:</item>
+  </string-array>
+  <string-array name="total_title">
+    <item>Итого</item>
+    <item>Total</item>
+  </string-array>
+  <string-array name="unable_calc_budget">
+    <item>Не получается рассчитать бюджет</item>
+    <item>Unable to budget</item>
+  </string-array>
+  <string-array name="budget_must_greater_zero">
+    <item>Укажите бюджет</item>
+    <item>Enter your budget</item>
+  </string-array>
+  <string-array name="days_must_greater_zero">
+    <item>Посчитайте бюджет хотя бы на один день</item>
+    <item>Calculate the budget for at least one day</item>
+  </string-array>
+  <string-array name="apply">
+    <item>Применить</item>
+    <item>Apply</item>
+  </string-array>
+  <string-array name="done">
+    <item>Понятно</item>
+    <item>Got it</item>
+  </string-array>
+  <string-array name="change_budget">
+    <item>Изменить бюджет</item>
+    <item>Change budget</item>
+  </string-array>
+  <string-array name="confirm_change_budget_title">
+    <item>Изменение бюджета</item>
+    <item>Budget change</item>
+  </string-array>
+  <string-array name="confirm_change_budget_description">
+    <item>Обратите внимание, что при изменении бюджета, текущая история трат удалится и отсчет начнется сначала</item>
+    <item>Please note that when you change the budget, the current spending history will be deleted and the countdown will start over</item>
+  </string-array>
+  <string-array name="confirm_change_budget">
+    <item>Изменить бюджет</item>
+    <item>Change budget</item>
+  </string-array>
+  <string-array name="use_last">
+    <item>Предыдущие значения</item>
+    <item>Previous values</item>
+  </string-array>
+  <string-array name="days_left">
+    <item>Дней осталось</item>
+    <item>Days left</item>
+  </string-array>
+  <string-array name="settings_title">
+    <item>Настройки</item>
+    <item>Settings</item>
+  </string-array>
+  <string-array name="theme_label">
+    <item>Тема</item>
+    <item>Theme</item>
+  </string-array>
+  <string-array name="theme_light">
+    <item>Светлая</item>
+    <item>Light</item>
+  </string-array>
+  <string-array name="theme_dark">
+    <item>Темная</item>
+    <item>Dark</item>
+  </string-array>
+  <string-array name="theme_system">
+    <item>Системная</item>
+    <item>System</item>
+  </string-array>
+  <string-array name="locale_label">
+    <item>Язык</item>
+    <item>Language</item>
+  </string-array>
+  <string-array name="locale_system">
+    <item>Системный</item>
+    <item>Systemic</item>
+  </string-array>
+  <string-array name="version">
+    <item>Версия: %1$s</item>
+    <item>Version: %1$s</item>
+  </string-array>
+  <string-array name="about">
+    <item>О приложении</item>
+    <item>About app</item>
+  </string-array>
+  <string-array name="description">
+    <item>Гречка — это приложение, которое помогает осознанно тратить деньги. Записывание каждой траты отрезвляет ум и дает понимание сколько и как вы можете тратить</item>
+    <item>Buckwheat is an app that helps you spend money wisely. Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.</item>
+  </string-array>
+  <string-array name="report_bug">
+    <item>Сообщить об ошибке</item>
+    <item>Report a bug</item>
+  </string-array>
+  <string-array name="contribute">
+    <item>Сделать вклад</item>
+    <item>Contribute</item>
+  </string-array>
+  <string-array name="developer">
+    <item>Разработка и дизайн:</item>
+    <item>Development &amp; design:</item>
+  </string-array>
+  <string-array name="report_bug_title">
+    <item>Сообщить об ошибке</item>
+    <item>Report a bug</item>
+  </string-array>
+  <string-array name="report_via_github">
+    <item>Через GitHub issue</item>
+    <item>Via GitHub issue</item>
+  </string-array>
+  <string-array name="report_via_email">
+    <item>Через почту</item>
+    <item>Via email</item>
+  </string-array>
+  <string-array name="new_day_title">
+    <item>Поздравляем! Вы сэкономили</item>
+    <item>Congratulations! You saved</item>
+  </string-array>
+  <string-array name="recalc_budget">
+    <item>Уточните как пересчитать бюджет</item>
+    <item>Find out how to budget</item>
+  </string-array>
+  <string-array name="split_rest_days_title">
+    <item>Разделить на оставшиеся дни</item>
+    <item>Split by remaining days</item>
+  </string-array>
+  <string-array name="split_rest_days_description">
+    <item>Получится по %1$s в день</item>
+    <item>Get %1$s per day</item>
+  </string-array>
+  <string-array name="add_current_day_title">
+    <item>Оставить на сегодня</item>
+    <item>Leave for Today</item>
+  </string-array>
+  <string-array name="add_current_day_description">
+    <item>Будет %1$s на сегодня и по %2$s в следующие дни</item>
+    <item>There will be %1$s for today and %2$s for the following days</item>
+  </string-array>
+  <string-array name="finish_period_title">
+    <item>Период закончился</item>
+    <item>Period ended</item>
+  </string-array>
+  <string-array name="period_summary_title">
+    <item>Вот такая статистика этого периода получилась</item>
+    <item>Here are the statistics for this period</item>
+  </string-array>
+  <string-array name="period_summary_no_spends_title">
+    <item>Ого, вы ничего не потратили в этом периоде</item>
+    <item>Wow, you haven\'t spent anything in this period</item>
+  </string-array>
+  <string-array name="new_period_title">
+    <item>Настроить новый бюджет</item>
+    <item>Set up a new budget</item>
+  </string-array>
+  <string-array name="whole_budget">
+    <item>Стартовый бюджет</item>
+    <item>Starting budget</item>
+  </string-array>
+  <string-array name="rest_budget">
+    <item>Осталось</item>
+    <item>Left</item>
+  </string-array>
+  <string-array name="rest_budget_percent">
+    <item>%1$s%% от бюджета</item>
+    <item>%1$s%% of budget</item>
+  </string-array>
+  <string-array name="min_spent">
+    <item>Минимальная трата</item>
+    <item>Minimum spend</item>
+  </string-array>
+  <string-array name="max_spent">
+    <item>Максимальная трата</item>
+    <item>Maximum spending</item>
+  </string-array>
+  <string-array name="count_spends">
+    <item>Всего трат</item>
+    <item>Total spending</item>
+  </string-array>
+  <string-array name="average_spent">
+    <item>Средняя трата</item>
+    <item>Average spend</item>
+  </string-array>
+  <string-array name="advice_title">
+    <item>У вас хорошо получается</item>
+    <item>You are doing well</item>
+  </string-array>
+  <string-array name="advice_description">
+    <item>Записываете все траты и не беспокойтесь о том что вы превысили бюджет, траты это вещь не постоянная</item>
+    <item>Write down all your expenses and don\'t worry about going over budget, spending is not a constant thing.</item>
+  </string-array>
+  <string-array name="overspending_value">
+    <item>на %1$s</item>
+    <item>on %1$s</item>
+  </string-array>
+  <string-array name="overspending_never_exceeded_daily_budget">
+    <item>Вы ни разу не превысили дневной бюджет</item>
+    <item>You have never exceeded your daily budget</item>
+  </string-array>
+  <string-array name="overspending_first_time">
+    <item>Вы первый раз превысили дневной бюджет</item>
+    <item>You exceeded your daily budget for the first time</item>
+  </string-array>
+  <string-array name="overspending_after_not_go_out_budget">
+    <item>Больше из бюджета вы не выходили</item>
+    <item>More from the budget you did not go</item>
+  </string-array>
+  <string-array name="overspending_after_few_times_out_budget">
+    <item>После вы еще %1$s из %2$s оставшихся выходили из бюджета</item>
+    <item>After that, you had %1$s of the %2$s left over budget</item>
+  </string-array>
+  <string-array name="overspending_after_many_times_out_budget">
+    <item>После только %1$s из %2$s оставшихся вы не выходили из бюджета</item>
+    <item>After only %1$s of the %2$s remaining, you were on budget</item>
+  </string-array>
+  <string-array name="overspending_after_all_times_out_budget">
+    <item>После все из %1$s оставшихся вы не выходили из бюджета</item>
+    <item>After all of the %1$s left you haven\'t been out of budget</item>
+  </string-array>
+  <string-array name="hello">
+    <item>Привет!</item>
+    <item>Hello!</item>
+  </string-array>
+  <string-array name="onboarding_title">
+    <item>Добро пожаловать в гречку, давай учится экономить вместе</item>
+    <item>Welcome to Buckwheat, let\'s save money together</item>
+  </string-array>
+  <string-array name="set_period_title">
+    <item>Настроить бюджет</item>
+    <item>Set up a budget</item>
+  </string-array>
+  <string-array name="help_set_budget_title">
+    <item>Установите бюджет</item>
+    <item>Establish a budget</item>
+  </string-array>
+  <string-array name="help_set_budget_description">
+    <item>Посчитайте примерно сколько вам нужно денег на определенный период, например месяц и укажите его в приложении. Если не можете посчитать укажите его очень приближенно, например половину зарплаты, со временем вы будете указывать его все точнее и точнее</item>
+    <item>Calculate approximately how much money you need for a certain period, such as a month, and enter it in the application. If you can’t calculate, indicate it very approximately, for example, half of the salary, over time you will indicate it more and more accurately</item>
+  </string-array>
+  <string-array name="help_record_spends_title">
+    <item>Записываете каждую трату</item>
+    <item>Record every expense</item>
+  </string-array>
+  <string-array name="help_record_spends_description">
+    <item>Приложение посчитает сколько примерно в день вам нужно тратить, чтобы вписаться в бюджет, записываете траты и следите за бюджетом</item>
+    <item>The application will calculate how much you need to spend per day to fit into the budget, write down the expenses and keep track of the budget</item>
+  </string-array>
+  <string-array name="help_good_luck_title">
+    <item>Тратьте с умом</item>
+    <item>Spend wisely</item>
+  </string-array>
+  <string-array name="help_good_luck_description">
+    <item>Со временем вы научитесь ощущать сколько вы реально тратите и сколько вам нужно. Научитесь понимать можете ли вы прямо сейчас потратить деньги на безделушку</item>
+    <item>Over time, you will learn to feel how much you really spend and how much you need. Learn to understand whether you can spend money on a trinket right now</item>
+  </string-array>
+  <string-array name="copy_in_clipboard">
+    <item>Скопировано в буфер обмена</item>
+    <item>Copied to clipboard</item>
+  </string-array>
+  <string-array name="not_found_email_clients">
+    <item>Не найдено почтовых клиентов</item>
+    <item>No email clients found</item>
+  </string-array>
+  <string-array name="cancel">
+    <item>Отменить</item>
+    <item>Cancel</item>
+  </string-array>
+  <string-array name="accept">
+    <item>Применить</item>
+    <item>Accept</item>
+  </string-array>
+  <string-array name="today">
+    <item>Сегодня</item>
+    <item>Today</item>
+  </string-array>
+  <string-array name="export_to_csv_success">
+    <item>Траты экспортированы</item>
+    <item>Spending exported</item>
+  </string-array>
+  <string-array name="export_to_csv_failed">
+    <item>Не удалось экспортировать траты</item>
+    <item>Failed to export expenses</item>
+  </string-array>
+  <string-array name="add_spent">
+    <item>Добавить трату</item>
+    <item>Add spent</item>
+  </string-array>
+  <string-array name="add_spent_short">
+    <item>Трата</item>
+    <item>Spent</item>
+  </string-array>
+  <string-array name="remember_choice_reacalc_budget_description">
+    <item>Позже можно поменять в кошельке</item>
+    <item>Later you can change in the wallet</item>
+  </string-array>
+  <string-array name="remember_choice">
+    <item>Запомнить выбор</item>
+    <item>Remember the choice</item>
+  </string-array>
+  <string-array name="rest_label">
+    <item>Остаток</item>
+    <item>Rest</item>
+  </string-array>
+  <string-array name="choose_recalc_budget_method_label">
+    <item>Выберете метод распределения остатка</item>
+    <item>Choose a residue distribution method</item>
+  </string-array>
+  <string-array name="choose_recalc_budget_method_description">
+    <item>Вы можете выбрать как распределять остаток бюджета по истечению дня. \n\nНапример, у вас бюджет на день 500, вчера вы потратили 400, сегодня вы можете либо распределить 100 на оставшиеся дни, либо потратить сегодня 600 (500 + 100)</item>
+    <item>You can choose how to distribute the balance of the budget after the day. \n\nFor example, you have a budget for 500 day, yesterday you spent 400, today you can either distribute 100 on the remaining days, or spend 600 (500 + 100) today</item>
+  </string-array>
+  <string-array name="always_ask">
+    <item>Всегда спрашивать</item>
+    <item>Always ask</item>
+  </string-array>
+  <string-array name="method_split_to_rest_days_title">
+    <item>Распределять на оставшиеся дни</item>
+    <item>Distribute</item>
+  </string-array>
+  <string-array name="method_split_to_rest_days_description">
+    <item>Не потраченный остаток будет распределен на оставшееся дни</item>
+    <item>The restless residue will be distributed on the remaining days</item>
+  </string-array>
+  <string-array name="method_add_to_current_day_title">
+    <item>Добавлять к текущему дневному бюджету</item>
+    <item>Add to the current daily budget</item>
+  </string-array>
+  <string-array name="method_add_to_current_day_description">
+    <item>Не потраченный остаток будет добавлен к текущему дневному бюджету</item>
+    <item>The restless residue will be added to the current daily budget</item>
+  </string-array>
+  <string-array name="spent_budget">
+    <item>Потрачено</item>
+    <item>Spent</item>
+  </string-array>
+  <string-array name="edit_spent">
+    <item>Редактируемая трата</item>
+    <item>Editable spent</item>
+  </string-array>
+  <string-array name="cancel_editing">
+    <item>Отменить редактирование</item>
+    <item>Cancel editing</item>
+  </string-array>
+  <string-array name="over">
+    <item>более</item>
+    <item>over</item>
+  </string-array>
+  <string-array name="app_widget_extend_name">
+    <item>Гречка расширеный</item>
+    <item>Buckwheat extend</item>
+  </string-array>
+  <string-array name="app_widget_minimal_name">
+    <item>Гречка минимальная</item>
+    <item>Buckwheat minimal</item>
+  </string-array>
+  <string-array name="home_widgets_label">
+    <item>Виджеты на главном экране</item>
+    <item>Home screen widgets</item>
+  </string-array>
+  <string-array name="try_home_widgets_desc">
+    <item>Теперь у гречки есть виджеты. Попробуйте и следите за своим бюджетом с главного экрана</item>
+    <item>Buckwheat now has widgets. Try it out and keep track of your budget from the home screen</item>
+  </string-array>
+  <string-array name="tutorial_open_wallet">
+    <item>Нажмите, чтобы изучить бюджет подробнее</item>
+    <item>Click to view budget details</item>
+  </string-array>
+  <string-array name="tutorial_open_history">
+    <item>Потяните, чтобы просмотреть историю трат</item>
+    <item>Drag to view spending history</item>
+  </string-array>
+  <string-array name="recalc_budget_on_last_day">
+    <item>Сегодня последний день, распределять нет смысла</item>
+    <item>Today is the last day, it makes no sense to distribute</item>
+  </string-array>
+  <string-array name="start_last_day_description">
+    <item>Сегодня можно потрать %1$s</item>
+    <item>Today you can spend %1$s</item>
+  </string-array>
+</resources>
