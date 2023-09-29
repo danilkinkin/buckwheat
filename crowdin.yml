@@ -3,3 +3,6 @@ files:
     translation: /app/%android_code%.xml
   - source: /app/src/main/res/values/strings.xml
     translation: /app/%android_code%.xml
+bundles:
+  - 2
+  - 4
