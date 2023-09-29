@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Грэчка</string>
+    <!-- Main -->
+    <string name="budget_for_today">Бюджэт на сёння</string>
+    <string name="rest_budget_for_today">На сёння</string>
+    <string name="new_daily_budget_short">Новы дзённы</string>
+    <string name="new_daily_budget">Новы дзённы бюджэт</string>
+    <string name="new_daily_budget_description">Сёння вы выйшлі за рамкі дзённага бюджэту, не хвалюйцеся, гэта не страшна. На наступныя дні бюджэт будзе пералічаны з улікам агульнага бюджэту, які застаўся</string>
+    <string name="budget_end">Бюджэт скончыўся</string>
+    <string name="budget_not_set">Бюджэт не ўстаноўлены</string>
+    <string name="budget_end_description">Вы выйшлі за рамкі запланаванага бюджэту, не хвалюйцеся, гэта не страшна, марнаванні ніколі не бываюць аднолькавымі. Заводзіце марнаванні далей, каб разумець колькі ў выніку вы выдаткуеце і які бюджэт вам патрэбен</string>
+    <string name="new_spent">Новае марнаванне</string>
+    <plurals name="spends_today">
+        <item quantity="one">%1$s тарта сёння</item>
+        <item quantity="few">%1$s тарта сёння</item>
+        <item quantity="other">%1$s тарта сёння</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="one">%1$s дзень</item>
+        <item quantity="few">%1$s дзень</item>
+        <item quantity="other">%1$s дзень</item>
+    </plurals>
+    <string name="enter_spent_placeholder">Увядзіце марнаванне</string>
+    <string name="hide_overspending_warn">Приховати повідомлення про закінчення бюджету</string>
+    <string name="hide_overspending_warn_description">Паведамленне будзе ўтоена да канца перыяду, каб не адцягваць і не напружваць</string>
+    <string name="add_comment">каментар</string>
+    <!-- History -->
+    <string name="label_start_date">Пачатак</string>
+    <string name="label_finish_date">Канец</string>
+    <string name="remove_spent">Трата вернутая ў бюджэт</string>
+    <string name="remove_spent_undo">Адмяніць</string>
+    <string name="no_spends">Трат пакуль не было</string>
+    <string name="total_per_day">Дзённы вынік:</string>
+    <!-- Wallet -->
+    <string name="change_date">Змяніць дату</string>
+    <string name="change_time">Змяніць час</string>
+    <string name="wallet_title">Бюджэт</string>
+    <string name="wallet_edit_title">Новы бюджэт</string>
+    <string name="label_budget">Бюджэт</string>
+    <string name="select_finish_date_title">Абярыце дату заканчэння</string>
+    <plurals name="finish_date_label">
+        <item quantity="one">Да %1$s (%2$s дзень)</item>
+        <item quantity="few">Да %1$s (%2$s дзень)</item>
+        <item quantity="other">Да %1$s (%2$s дзень)</item>
+    </plurals>
+    <plurals name="days_count">
+        <item quantity="one">%1$s дзень</item>
+        <item quantity="few">%1$s дзень</item>
+        <item quantity="other">%1$s дзень</item>
+    </plurals>
+    <string name="export_to_csv">Выгрузіць у CSV</string>
+    <string name="finish_date_not_select">Дата заканчэння не выбрана</string>
+    <string name="in_currency_label">Валюце</string>
+    <string name="currency_from_list">Сусветная валюта</string>
+    <string name="currency_custom">Свая валюта</string>
+    <string name="currency_none">Без валюты</string>
+    <string name="per_day">%1$s у дзень</string>
+    <string name="select_currency_title">Абярыце валюту</string>
+    <string name="select_currency_description">Валюта ніяк не ўплывае на разлікі, гэта проста абазначэнне для больш лёгкага ўсведамлення лікаў</string>
+    <string name="search_currency_placeholder">Код валюты або назву</string>
+    <string name="currency_not_found">Няма падыходных валют</string>
+    <string name="currency_custom_title">Укажыце сваю валюту</string>
+    <string name="currency_custom_description">Напрыклад, трата ў 150 умоўных адзінак будзе адлюстроўвацца вось так:</string>
+    <string name="total_title">Разам</string>
+    <string name="unable_calc_budget">Немагчыма разлічыць бюджэт</string>
+    <string name="budget_must_greater_zero">Назавіце бюджэт</string>
+    <string name="days_must_greater_zero">Палічыце бюджэт хоць бы на адзін дзень</string>
+    <string name="apply">Ужыць</string>
+    <string name="done">Зразумела</string>
+    <string name="change_budget">Змяніць бюджэт</string>
+    <string name="confirm_change_budget_title">Змяненне бюджэту</string>
+    <string name="confirm_change_budget_description">Звярніце ўвагу, што пры змене бюджэту, бягучая гісторыя марнаванняў выдаліцца і адлік пачнецца спачатку</string>
+    <string name="confirm_change_budget">Змяніць бюджэт</string>
+    <string name="use_last">Папярэднія значэнні</string>
+    <!-- Settings -->
+    <string name="days_left">Дзён засталося</string>
+    <string name="settings_title">Налады</string>
+    <string name="theme_label">Тэма</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Цёмная</string>
+    <string name="theme_system">Сістэмная</string>
+    <string name="locale_label">Мова</string>
+    <string name="locale_system">Сістэмны</string>
+    <string name="version">Версія: %1$s</string>
+    <string name="about">Аб дадатку</string>
+    <string name="description">Грэчка — гэта дадатак, якое дапамагае свядома марнаваць грошы. Запісванне кожнай марнаванні выцвярэжвае розум і дае разуменне колькі і як вы можаце марнаваць</string>
+    <string name="report_bug">Паведаміць пра памылку</string>
+    <string name="contribute">Зрабіць уклад</string>
+    <string name="developer">Распрацоўка і дызайн:</string>
+    <!-- Bug reporting -->
+    <string name="report_bug_title">Паведаміць пра памылку</string>
+    <string name="report_via_github">Праз GitHub issue</string>
+    <string name="report_via_email">Праз пошту</string>
+    <!-- New day -->
+    <string name="new_day_title">Віншуем! Вы зэканомілі</string>
+    <string name="recalc_budget">Удакладніце як пералічыць бюджэт</string>
+    <string name="split_rest_days_title">Падзяліць на астатнія дні</string>
+    <string name="split_rest_days_description">Атрымаецца па %1$s у дзень</string>
+    <string name="add_current_day_title">Пакінуць на сёння</string>
+    <string name="add_current_day_description">Будзе %1$s на сёння і па %2$s у наступныя дні</string>
+    <!-- Finish period -->
+    <string name="finish_period_title">Перыяд скончыўся</string>
+    <string name="period_summary_title">Вось такая статыстыка гэтага перыяду атрымалася</string>
+    <string name="period_summary_no_spends_title">Ого, вы нічога не патрацілі ў гэтым перыядзе</string>
+    <string name="new_period_title">Наладзіць новы бюджэт</string>
+    <string name="whole_budget">Стартавы бюджэт</string>
+    <string name="rest_budget">Засталося</string>
+    <string name="rest_budget_percent">%1$s%% ад бюджэту</string>
+    <string name="min_spent">Мінімальная трата</string>
+    <string name="max_spent">Максімальная трата</string>
+    <string name="count_spends">Усяго марнаванняў</string>
+    <string name="average_spent">Сярэдняе марнаванне</string>
+    <string name="advice_title">У вас добра атрымліваецца</string>
+    <string name="advice_description">Запісваеце ўсе марнаванні і не турбуйцеся аб тым што вы перавысілі бюджэт, марнаванні гэта рэч не сталая</string>
+    <string name="overspending_value">на %1$s</string>
+    <string name="overspending_never_exceeded_daily_budget">Вы ні разу не перавысілі дзённы бюджэт</string>
+    <string name="overspending_first_time">Вы першы раз перавысілі дзённы бюджэт</string>
+    <string name="overspending_after_not_go_out_budget">Больш з бюджэту вы не выходзілі</string>
+    <string name="overspending_after_few_times_out_budget">Пасля вы яшчэ %1$s з %2$s пакінутых выходзілі з бюджэту</string>
+    <string name="overspending_after_many_times_out_budget">Пасля толькі %1$s з %2$s пакінутых вы не выходзілі з бюджэту</string>
+    <string name="overspending_after_all_times_out_budget">Пасля ўсе з %1$s пакінутых вы не выходзілі з бюджэту</string>
+    <!-- Onboarding -->
+    <string name="hello">Прывітанне!</string>
+    <string name="onboarding_title">Сардэчна запрашаем у грэчку, давай вучыцца эканоміць разам</string>
+    <string name="set_period_title">Наладзіць бюджэт</string>
+    <string name="help_set_budget_title">Усталюйце бюджэт</string>
+    <string name="help_set_budget_description">Палічыце прыкладна колькі вам трэба грошай на пэўны перыяд, напрыклад месяц і пазначце яго ў дадатку. Калі не можаце палічыць укажыце яго вельмі набліжана, напрыклад палову заробку, з часам вы будзеце ўказваць яго ўсё дакладней і дакладней</string>
+    <string name="help_record_spends_title">Запісваеце кожную трату</string>
+    <string name="help_record_spends_description">Дадатак палічыць колькі прыкладна ў дзень вам трэба марнаваць, каб упісацца ў бюджэт, запісваеце марнаванні і сочыце за бюджэтам</string>
+    <string name="help_good_luck_title">Траціна з розумам</string>
+    <string name="help_good_luck_description">З часам вы навучыцеся адчуваць колькі вы рэальна марнуеце і колькі вам трэба. Навучыцеся разумець ці можаце вы прама зараз выдаткаваць грошы на цацанку</string>
+    <!-- Common -->
+    <string name="copy_in_clipboard">Скапіявана ў буфер абмену</string>
+    <string name="not_found_email_clients">Не знойдзена паштовых кліентаў</string>
+    <string name="cancel">Адмяніць</string>
+    <string name="accept">Ужыць</string>
+    <string name="today">Сёння</string>
+    <string name="export_to_csv_success">Выдаткі экспартаваны</string>
+    <string name="export_to_csv_failed">Не ўдалося экспартаваць марнаванні</string>
+    <string name="add_spent">Дадаць марнаванне</string>
+    <string name="remember_choice_reacalc_budget_description">Пазней вы можаце змяніцца ў кашальку</string>
+    <string name="remember_choice">Памятайце выбар</string>
+    <string name="rest_label">Рэшта</string>
+    <string name="choose_recalc_budget_method_label">Выберыце метад размеркавання рэшткаў</string>
+    <string name="choose_recalc_budget_method_description">Вы можаце выбраць, як распаўсюджваць баланс бюджэту пасля дня. \n\nНапрыклад, у вас ёсць бюджэт на 500 дзён, учора вы патрацілі 400, сёння вы можаце альбо распаўсюджваць 100 у астатнія дні, альбо выдаткаваць 600 (500 + 100) сёння</string>
+    <string name="always_ask">Заўсёды пытайцеся</string>
+    <string name="method_split_to_rest_days_title">Падзяліце бюджэт на астатнія дні</string>
+    <string name="method_split_to_rest_days_description">Неспакойныя рэшткі будуць размеркаваны ў астатнія дні</string>
+    <string name="method_add_to_current_day_title">Дадайце да бягучага штодзённага бюджэту</string>
+    <string name="method_add_to_current_day_description">Да бягучага штодзённага бюджэту будзе дададзена неспакойныя рэшткі</string>
+    <string name="spent_budget">Выдаткавана</string>
+    <string name="edit_spent">Рэдагуемае марнаванне</string>
+    <string name="cancel_editing">Адмяніць рэдагаванне</string>
+    <string name="over">больш за</string>
+    <string name="app_widget_extend_name">Грэчка падоўжыць</string>
+    <string name="app_widget_minimal_name">Грэчкі мінімум</string>
+    <string name="add_spent_short">Марнаванне</string>
+    <string name="home_widgets_label">Віджэты на галоўным экране</string>
+    <string name="try_home_widgets_desc">У грэцыцы цяпер ёсць віджэты. Паспрабуйце і старайцеся кантраляваць свой бюджэт з галоўнага экрана</string>
+    <string name="tutorial_open_wallet">Націсніце, каб паглядзець дэталі бюджэту</string>
+    <string name="tutorial_open_history">Пацягніце, каб прагледзець гісторыю марнаванняў</string>
+    <string name="recalc_budget_on_last_day">Сёння апошні дзень, размяркоўваць няма сэнсу</string>
+    <string name="start_last_day_description">Сёння можна выдаткаваць %1$s</string>
+</resources>
