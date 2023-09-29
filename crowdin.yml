@@ -1,6 +1,4 @@
 files:
-  - source: app/src/main/res/values-*/strings.xml
-    translation: app/src/main/res/values/strings.xml
   - source: app/src/main/res/values/strings.xml
     translation: app/src/main/res/values/strings.xml
 bundles:
