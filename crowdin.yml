@@ -1,2 +1,5 @@
 bundles:
   - 1
+files:
+  - source: /app/src/main/res/values-*/strings.xml
+    translation: /app/%android_code%.xml
