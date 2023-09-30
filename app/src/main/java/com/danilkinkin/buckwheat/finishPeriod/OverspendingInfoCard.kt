@@ -183,7 +183,7 @@ fun OverspendingInfoCard(
                                 String.format(
                                     stringResource(R.string.overspending_after_few_times_out_budget),
                                     String.format(
-                                        pluralStringResource(R.plurals.day, count = overspendingDays.size - 1),
+                                        pluralStringResource(R.plurals.days_count, count = overspendingDays.size - 1),
                                         overspendingDays.size - 1,
                                     ),
                                     restDays,
@@ -199,7 +199,7 @@ fun OverspendingInfoCard(
                                 String.format(
                                     stringResource(R.string.overspending_after_many_times_out_budget),
                                     String.format(
-                                        pluralStringResource(R.plurals.day, count = restDays - overspendingDays.size),
+                                        pluralStringResource(R.plurals.days_count, count = restDays - overspendingDays.size),
                                         restDays - overspendingDays.size,
                                     ),
                                     restDays,
