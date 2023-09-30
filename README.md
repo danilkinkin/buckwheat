@@ -1,8 +1,9 @@
 [<img width="100%" height="auto" src="/screenshots/en/github-screenshot.png" alt="Buckwheat logo with screenshots" />](https://buckwheat.app/)
 
-[![Latest release][release-badge]][github-releases]
+[![Latest release][release-badge]](https://github.com/danilkinkin/buckwheat/releases)
+[![Crowdin localization][localization-badge]](https://crowdin.com/project/buckwheat)
 
-[**Buckwheat**](https://buckwheat.app/) is an app that helps you spend money wisely. 
+[**Buckwheat**](https://buckwheat.app) is an app that helps you spend money wisely. 
 Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.
 
 Are you going on a business trip or vacation? Buckwheat helps you save money during your trip.
@@ -16,7 +17,7 @@ A couple of years ago, I used the [tzlvt](https://www.fuckgrechka.ru/tzlvt/) app
 
 ### Translations
 
-Buckwheat is translated into several languages. If your language is missing or incomplete, please help to translate via PR.
+If your language is missing or incomplete, please help to translate via [crowdin service](https://crowdin.com/project/buckwheat)
 
 ### Donate
 
@@ -26,11 +27,10 @@ If you want to support my work, you can share my app with friends or check anoth
 
 **Policy**: [You can read there](./POLICY.md)
 
-**License**: [GNU GPL v3][license]
+**License**: [GNU GPL v3](LICENSE)
 
 Developed by [Danil Зakhvatkin](https://github.com/danilkinkin) and [contributors](https://github.com/danilkinkin/buckwheat/graphs/contributors)
 
+[comment]: <> (Images)
 [release-badge]: https://img.shields.io/github/v/tag/danilkinkin/buckwheat?color=orange&label=release
-[github-releases]: https://github.com/danilkinkin/buckwheat/releases/
-[license-badge]: https://img.shields.io/github/license/danilkinkin/buckwheat
-[license]: LICENSE
+[localization-badge]: https://badges.crowdin.net/buckwheat/localized.svg
