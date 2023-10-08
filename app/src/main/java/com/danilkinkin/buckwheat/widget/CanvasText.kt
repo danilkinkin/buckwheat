@@ -96,9 +96,9 @@ fun CanvasText(
 
     val size = calcTextSize(context, text, style)
     val width = 0.dp
-        .plus(modifier.collectPaddingInDp(context.resources)?.start ?: 0.dp)
+        //.plus(modifier.collectPaddingInDp(context.resources)?.start ?: 0.dp)
         .plus(Dp(size.width / context.resources.displayMetrics.density))
-        .plus(modifier.collectPaddingInDp(context.resources)?.end ?: 0.dp)
+        //.plus(modifier.collectPaddingInDp(context.resources)?.end ?: 0.dp)
 
 
     if (noTint) {
