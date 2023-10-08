@@ -70,20 +70,20 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.activity:activity-compose:1.7.2")
-    implementation("androidx.compose.runtime:runtime:1.5.1")
-    implementation("androidx.compose.foundation:foundation:1.5.1")
-    implementation("androidx.compose.foundation:foundation-layout:1.5.1")
-    implementation("androidx.compose.ui:ui-util:1.5.1")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
-    implementation("androidx.compose.animation:animation:1.5.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.1")
-    implementation("androidx.compose.material3:material3:1.1.1")
-    implementation("androidx.compose.material:material:1.5.1")
+    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.compose.runtime:runtime:1.5.3")
+    implementation("androidx.compose.foundation:foundation:1.5.3")
+    implementation("androidx.compose.foundation:foundation-layout:1.5.3")
+    implementation("androidx.compose.ui:ui-util:1.5.3")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.2")
+    implementation("androidx.compose.animation:animation:1.5.3")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.5.3")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.3")
+    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.compose.material:material:1.5.3")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("androidx.room:room-runtime:2.5.2")
@@ -106,8 +106,8 @@ dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     // Debug
-    debugImplementation("androidx.compose.ui:ui-tooling:1.5.1")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.1")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.5.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.3")
     debugImplementation("com.google.android.glance.tools:appwidget-viewer:0.2.2")
 
     // Testing
@@ -118,8 +118,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.compose.ui:ui-test:1.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test:1.5.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.3")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.46.1")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.46.1")
 }
