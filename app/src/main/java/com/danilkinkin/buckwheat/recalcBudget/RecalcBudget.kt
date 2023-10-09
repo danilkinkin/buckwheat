@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -38,6 +39,7 @@ fun RecalcBudget(
     recalcBudgetViewModel: RecalcBudgetViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
     val localDensity = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
@@ -116,6 +118,7 @@ fun RecalcBudget(
                     Spacer(Modifier.height(24.dp))
                     Text(
                         text = numberFormat(
+                            context,
                             howMuchNotSpent,
                             currency = spendsViewModel.currency.value!!,
                         ),

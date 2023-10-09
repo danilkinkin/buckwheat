@@ -54,7 +54,7 @@ fun StatusLabel(
         ) {
             val textStartOffset by animateDpAsState(
                 label = "textStartOffset",
-                targetValue = if (budgetState === DaileBudgetState.OVERDRAFT || budgetState === DaileBudgetState.BUDGET_END) 38.dp else 18.dp,
+                targetValue = if (budgetState === DaileBudgetState.OVERDRAFT || budgetState === DaileBudgetState.BUDGET_END) 44.dp else 18.dp,
                 animationSpec = TweenSpec(250),
             )
 
@@ -65,7 +65,9 @@ fun StatusLabel(
                     DaileBudgetState.OVERDRAFT -> stringResource(R.string.new_daily_budget_short)
                     DaileBudgetState.BUDGET_END -> stringResource(R.string.budget_end)
                 },
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize
+                ),
                 color = textColor.copy(alpha = 0.6f),
                 overflow = TextOverflow.Ellipsis,
                 softWrap = false,
@@ -78,7 +80,7 @@ fun StatusLabel(
             exit = fadeOut(tween(durationMillis = 250)),
         ) {
             Card(
-                modifier = Modifier.size(44.dp),
+                modifier = Modifier.size(50.dp),
                 shape = CircleShape,
                 colors = CardDefaults.cardColors(
                     containerColor = harmonizedColor.container.copy(alpha = 0f),
@@ -108,7 +110,7 @@ fun StatusLabel(
                     Icon(
                         painter = painterResource(R.drawable.ic_info),
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(14.dp))
                 }

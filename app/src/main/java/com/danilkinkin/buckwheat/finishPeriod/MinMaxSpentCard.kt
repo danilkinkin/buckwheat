@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,6 +39,8 @@ fun MinMaxSpentCard(
     spends: List<Spent>,
     currency: ExtendCurrency,
 ) {
+    val context = LocalContext.current
+    
     val minSpent = spends.minByOrNull { it.value }
     val maxSpent = spends.maxByOrNull { it.value }
 
@@ -67,6 +70,7 @@ fun MinMaxSpentCard(
         modifier = modifier,
         value = if (spent != null) {
             numberFormat(
+                context,
                 spent.value,
                 currency = currency,
             )

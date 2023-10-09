@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,6 +24,7 @@ fun Total(
     days: Int,
     currency: ExtendCurrency,
 ) {
+    val context = LocalContext.current
     val textColor = LocalContentColor.current
 
     Column {
@@ -38,6 +40,7 @@ fun Total(
                 text = stringResource(
                     R.string.per_day,
                     numberFormat(
+                        context,
                         (budget / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR),
                         currency,
                     ),

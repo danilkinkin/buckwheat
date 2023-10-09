@@ -31,7 +31,7 @@ fun ValueLabel(
                 AnimatedNumber(
                     value = todayBudget,
                     style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = MaterialTheme.typography.headlineSmall.fontSize
+                        fontSize = MaterialTheme.typography.headlineMedium.fontSize
                     ),
                 )
             }
@@ -40,7 +40,7 @@ fun ValueLabel(
                 AnimatedNumber(
                     value = newDailyBudget,
                     style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = MaterialTheme.typography.headlineSmall.fontSize
+                        fontSize = MaterialTheme.typography.headlineMedium.fontSize
                     ),
                 )
             }

@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
@@ -21,6 +22,7 @@ fun SplitToRestDaysButton(
     appViewModel: AppViewModel = hiltViewModel(),
     onSet: () -> Unit = {},
 ) {
+    val context = LocalContext.current
     val isDebug by appViewModel.isDebug.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val newDailyBudgetIfSplitPerDay by recalcBudgetViewModel.newDailyBudgetIfSplitPerDay.observeAsState(
@@ -34,6 +36,7 @@ fun SplitToRestDaysButton(
                 stringResource(
                     R.string.split_rest_days_description,
                     numberFormat(
+                        context,
                         newDailyBudgetIfSplitPerDay,
                         currency = currency,
                     ),

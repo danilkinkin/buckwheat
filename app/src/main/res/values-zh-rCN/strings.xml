@@ -166,4 +166,8 @@
     <string name="tutorial_open_history">拖动查看支出记录</string>
     <string name="recalc_budget_on_last_day">今天是最后一天，平均分配没有意义</string>
     <string name="start_last_day_description">您的当日可支出金额为 %1$s</string>
+    <string name="thousand_numerical_shorthand">千</string>
+    <string name="million_numerical_shorthand">百万</string>
+    <string name="billion_numerical_shorthand">十亿</string>
+    <string name="trillion_numerical_shorthand">万亿</string>
 </resources>

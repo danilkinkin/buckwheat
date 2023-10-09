@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,6 +50,8 @@ fun OverspendingInfoCard(
     finishDate: Date,
     currency: ExtendCurrency,
 ) {
+    val context = LocalContext.current
+    
     val days = countDays(finishDate, startDate)
     val spentPerDay = (budget / days.toBigDecimal()).setScale(0, RoundingMode.FLOOR)
 
@@ -144,6 +147,7 @@ fun OverspendingInfoCard(
                         text = stringResource(
                             R.string.overspending_value,
                             numberFormat(
+                                context,
                                 overspendingDays.first().spending - spentPerDay,
                                 currency = currency,
                             ),

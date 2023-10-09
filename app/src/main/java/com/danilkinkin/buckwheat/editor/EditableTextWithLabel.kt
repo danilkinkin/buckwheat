@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,8 @@ fun EditableTextWithLabel(
     contentPaddingValues: PaddingValues = PaddingValues(start = 36.dp, end = 36.dp),
     focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
+    val context = LocalContext.current
+
     val color = contentColorFor(
         combineColors(
             MaterialTheme.colorScheme.primaryContainer,
@@ -60,6 +63,7 @@ fun EditableTextWithLabel(
                     onChangeValue = { onChangeValue(it) },
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     visualTransformation = visualTransformationAsCurrency(
+                        context,
                         currency = currency ?: ExtendCurrency.none(),
                         hintColor = color.copy(alpha = 0.2f),
                     ),

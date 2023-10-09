@@ -10,7 +10,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +46,8 @@ fun RowScope.RestBudgetPill(
     editorViewModel: EditorViewModel = hiltViewModel(),
     restBudgetPillViewModel: RestBudgetPillViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+
     val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val budgetState by restBudgetPillViewModel.state.observeAsState(DaileBudgetState.NOT_SET)
@@ -49,19 +56,19 @@ fun RowScope.RestBudgetPill(
     val tutorial by appViewModel.getTutorialStage(TUTORS.OPEN_WALLET).observeAsState(TUTORIAL_STAGE.NONE)
 
     observeLiveData(spendsViewModel.dailyBudget) {
-        restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
+        restBudgetPillViewModel.calculateValues(context, editorViewModel.currentSpent)
     }
 
     observeLiveData(spendsViewModel.spentFromDailyBudget) {
-        restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
+        restBudgetPillViewModel.calculateValues(context, editorViewModel.currentSpent)
     }
 
     observeLiveData(editorViewModel.stage) {
-        restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
+        restBudgetPillViewModel.calculateValues(context, editorViewModel.currentSpent)
     }
 
     DisposableEffect(currency) {
-        restBudgetPillViewModel.calculateValues(editorViewModel.currentSpent)
+        restBudgetPillViewModel.calculateValues(context, editorViewModel.currentSpent)
 
         onDispose { }
     }
@@ -131,10 +138,10 @@ fun RowScope.RestBudgetPill(
             Card(
                 modifier = Modifier
                     .weight(1F)
-                    .height(46.dp),
+                    .height(50.dp),
                 shape = CircleShape,
                 colors = CardDefaults.cardColors(
-                    containerColor = harmonizedColor.container.copy(alpha = 0.4f),
+                    containerColor = harmonizedColor.container,
                     contentColor = harmonizedColor.onContainer,
                 ),
                 onClick = {
@@ -142,10 +149,32 @@ fun RowScope.RestBudgetPill(
                     appViewModel.openSheet(PathState(WALLET_SHEET))
                 }
             ) {
-                Box(Modifier.fillMaxHeight()) {
+                Box(
+                    modifier = Modifier.fillMaxHeight(),
+                    contentAlignment = Alignment.CenterEnd,
+                ) {
                     BackgroundProgress(harmonizedColor)
                     Row(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().drawWithLayer {
+                            drawContent()
+                            val leftOffset = size.width - 20.dp.toPx()
+                            drawRect(
+                                topLeft = Offset(leftOffset, 0f),
+                                size = Size(
+                                    20.dp.toPx(),
+                                    size.height,
+                                ),
+                                blendMode = BlendMode.SrcIn,
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color.Black,
+                                        Color.Black.copy(alpha = 0f),
+                                    ),
+                                    startX = leftOffset,
+                                    endX = leftOffset + 14.dp.toPx()
+                                )
+                            )
+                        },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start,
                     ) {
@@ -169,6 +198,22 @@ fun RowScope.RestBudgetPill(
         }
     }
 }
+
+fun ContentDrawScope.drawWithLayer(block: ContentDrawScope.() -> Unit) {
+    with(drawContext.canvas.nativeCanvas) {
+        val checkPoint = saveLayer(null, null)
+        block()
+        restoreToCount(checkPoint)
+    }
+}
+
+fun Modifier.drawWithLayer(block: ContentDrawScope.() -> Unit) = this.then(
+    Modifier.drawWithContent {
+        drawWithLayer {
+            block()
+        }
+    }
+)
 
 @Preview(name = "The budget is almost completely spent")
 @Composable

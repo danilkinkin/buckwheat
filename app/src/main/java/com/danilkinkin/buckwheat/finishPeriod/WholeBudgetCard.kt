@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,11 +38,14 @@ fun WholeBudgetCard(
     bigVariant: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
 ) {
+    val context = LocalContext.current
+    
     StatCard(
         modifier = modifier.fillMaxWidth(),
         contentPadding = contentPadding,
         label = stringResource(R.string.whole_budget),
         value = numberFormat(
+            context,
             budget,
             currency = currency,
         ),

@@ -18,6 +18,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,6 +46,8 @@ fun SpendsBudgetCard(
     spend: BigDecimal,
     currency: ExtendCurrency,
 ) {
+    val context = LocalContext.current
+    
     val percent = remember { BigDecimal(1).minus(spend.divide(budget, 2, RoundingMode.HALF_EVEN)) }
 
     val percentFormatted = remember {
@@ -91,6 +94,7 @@ fun SpendsBudgetCard(
             contentColor = harmonizedColor.onContainer,
         ),
         value = numberFormat(
+            context,
             spend,
             currency = currency,
         ),

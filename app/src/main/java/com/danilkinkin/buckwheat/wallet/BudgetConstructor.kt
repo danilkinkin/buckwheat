@@ -16,6 +16,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -48,6 +49,7 @@ fun BudgetConstructor(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onChange: (budget: BigDecimal, finishDate: Date?) -> Unit = { _, _ -> },
 ) {
+    val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
 
     val budget by spendsViewModel.budget.observeAsState(BigDecimal.ZERO)
@@ -159,6 +161,7 @@ fun BudgetConstructor(
                 textAlign = TextAlign.Center,
             ),
             visualTransformation = visualTransformationAsCurrency(
+                context,
                 currency = ExtendCurrency.none(),
                 hintColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
             ),

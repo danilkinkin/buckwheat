@@ -54,6 +54,7 @@ fun TextFieldWithPaddings(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
+    val context = LocalContext.current
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
     val textFieldValue = textFieldValueState.copy(text = value)
 
@@ -82,6 +83,7 @@ fun TextFieldWithPaddings(
 
     val currSymbol = currency?.let { currency ->
         numberFormat(
+            context,
             BigDecimal.ZERO,
             currency,
             maximumFractionDigits = 0,

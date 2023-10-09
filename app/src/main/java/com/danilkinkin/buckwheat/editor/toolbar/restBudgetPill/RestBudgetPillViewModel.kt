@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.danilkinkin.buckwheat.di.SpendsRepository
 import com.danilkinkin.buckwheat.util.isZero
 import com.danilkinkin.buckwheat.util.numberFormat
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -37,7 +39,7 @@ class RestBudgetPillViewModel @Inject constructor(
     var newDailyBudget = MutableLiveData("")
         private set
 
-    fun calculateValues(currentSpent: BigDecimal) {
+    fun calculateValues(context: Context, currentSpent: BigDecimal) {
         val ths = this
 
         viewModelScope.launch {
@@ -73,15 +75,19 @@ class RestBudgetPillViewModel @Inject constructor(
                 .coerceAtLeast(BigDecimal.ZERO)
 
             val formattedBudgetTodayValue = numberFormat(
+                context,
                 restFromDayBudget.coerceAtLeast(BigDecimal.ZERO),
                 currency = currency,
+                trimDecimalPlaces = true,
             )
 
             val formattedBudgetNewDailyValue = numberFormat(
+                context,
                 newDailyBudget
                     .setScale(0, RoundingMode.HALF_EVEN)
                     .coerceAtLeast(BigDecimal.ZERO),
                 currency = currency,
+                trimDecimalPlaces = true,
             )
 
             ths.state.value = when {

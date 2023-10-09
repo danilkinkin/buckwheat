@@ -13,6 +13,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +42,7 @@ fun RestAndSpentBudgetCard(
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val showSpentCard by appViewModel.showSpentCardByDefault.observeAsState(false)
 
@@ -149,6 +151,7 @@ fun RestAndSpentBudgetCard(
                     if (bigVariant) Spacer(modifier = Modifier.height(36.dp))
                     Text(
                         text = numberFormat(
+                            context,
                             if (showSpentCard) {
                                 wholeBudget - restBudget
                             } else {

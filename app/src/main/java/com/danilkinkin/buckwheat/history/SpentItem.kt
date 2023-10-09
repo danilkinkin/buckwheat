@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ fun SpentItem(
     currency: ExtendCurrency,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     Column(Modifier.padding(bottom = 14.dp)) {
         Row(modifier.fillMaxWidth()) {
             Column(
@@ -33,7 +35,7 @@ fun SpentItem(
                     .weight(1f)
             ) {
                 Text(
-                    text = numberFormat(spent.value, currency = currency),
+                    text = numberFormat(context = context, spent.value, currency = currency),
                     style = MaterialTheme.typography.headlineLarge,
                     color = colorOnEditor,
                     softWrap = false,

@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
@@ -21,6 +22,8 @@ fun AddToTodayButton(
     appViewModel: AppViewModel = hiltViewModel(),
     onSet: () -> Unit = {},
 ) {
+    val context = LocalContext.current
+
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val nextDayBudget by recalcBudgetViewModel.nextDayBudget.observeAsState(BigDecimal.ZERO)
     val budgetPerDayAdd by recalcBudgetViewModel.newDailyBudgetIfAddToday.observeAsState(BigDecimal.ZERO)
@@ -33,10 +36,12 @@ fun AddToTodayButton(
                 stringResource(
                     R.string.add_current_day_description,
                     numberFormat(
+                        context,
                         budgetPerDayAdd,
                         currency = currency,
                     ),
                     numberFormat(
+                        context,
                         nextDayBudget,
                         currency = currency,
                     ),

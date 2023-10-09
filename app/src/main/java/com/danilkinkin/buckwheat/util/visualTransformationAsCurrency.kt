@@ -1,9 +1,11 @@
 package com.danilkinkin.buckwheat.util
 
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.input.OffsetMapping
@@ -54,6 +56,7 @@ private fun calcShift(before: String, after: String, position: Int): Int {
 }
 
 private fun visualTransformationAsCurrency(
+    context: Context,
     input: AnnotatedString,
     currency: ExtendCurrency,
     hintColor: Color,
@@ -61,12 +64,14 @@ private fun visualTransformationAsCurrency(
     val floatDivider = getFloatDivider()
     val fixed = tryConvertStringToNumber(input.text)
     val currSymbol = numberFormat(
+        context,
         BigDecimal.ZERO,
         currency,
         maximumFractionDigits = 0,
         minimumFractionDigits = 0,
     ).filter { it != '0' }
     var output = numberFormat(
+        context,
         input.text.ifEmpty { "0" }.toBigDecimal(),
         currency,
         maximumFractionDigits = 2,
@@ -132,11 +137,12 @@ private fun visualTransformationAsCurrency(
 }
 
 fun visualTransformationAsCurrency(
+    context: Context,
     currency: ExtendCurrency,
     hintColor: Color,
 ): ((input: AnnotatedString) -> TransformedText) {
     return {
-        visualTransformationAsCurrency(it, currency, hintColor)
+        visualTransformationAsCurrency(context, it, currency, hintColor)
     }
 }
 
@@ -206,9 +212,12 @@ fun tryConvertStringToNumber(input: String): Triple<String, String, String> {
 @Preview
 @Composable
 fun Preview() {
+    val context = LocalContext.current
+
     Column {
         Text(
             text = visualTransformationAsCurrency(
+                context,
                 getAnnotatedString("0", Pair(0, 1), Color.Green),
                 currency = ExtendCurrency.none(),
                 Color.Green,
@@ -216,6 +225,7 @@ fun Preview() {
         )
         Text(
             text = visualTransformationAsCurrency(
+                context,
                 getAnnotatedString("0", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.getInstance("EUR"),
                 Color.Green,
@@ -223,6 +233,7 @@ fun Preview() {
         )
         Text(
             text = visualTransformationAsCurrency(
+                context,
                 getAnnotatedString("0", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.getInstance("RUB"),
                 Color.Green,
@@ -230,6 +241,7 @@ fun Preview() {
         )
         Text(
             text = visualTransformationAsCurrency(
+                context,
                 getAnnotatedString("", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.none(),
                 Color.Green,
@@ -237,6 +249,7 @@ fun Preview() {
         )
         Text(
             text = visualTransformationAsCurrency(
+                context,
                 getAnnotatedString("", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.getInstance("EUR"),
                 Color.Green,
@@ -244,6 +257,7 @@ fun Preview() {
         )
         Text(
             text = visualTransformationAsCurrency(
+                context,
                 getAnnotatedString("", Pair(0, 4), Color.Green),
                 currency = ExtendCurrency.getInstance("RUB"),
                 Color.Green,

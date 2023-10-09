@@ -171,4 +171,8 @@
     <string name="tutorial_open_history">Пацягніце, каб прагледзець гісторыю марнаванняў</string>
     <string name="recalc_budget_on_last_day">Сёння апошні дзень, размяркоўваць няма сэнсу</string>
     <string name="start_last_day_description">Сёння можна выдаткаваць %1$s</string>
+    <string name="thousand_numerical_shorthand">тыс.</string>
+    <string name="million_numerical_shorthand">млн</string>
+    <string name="billion_numerical_shorthand">млрд</string>
+    <string name="trillion_numerical_shorthand">трлн</string>
 </resources>

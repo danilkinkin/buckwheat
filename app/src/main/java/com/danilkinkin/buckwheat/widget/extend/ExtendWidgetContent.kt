@@ -183,6 +183,7 @@ fun ExtendWidgetContent() {
                             ) {
                                 val splittedValue = emptyList<String>().toMutableList()
                                 val value = numberFormat(
+                                    context,
                                     todayBudget,
                                     ExtendCurrency.getInstance(currency),
                                 )

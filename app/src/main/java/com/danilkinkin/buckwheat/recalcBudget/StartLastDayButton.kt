@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
@@ -21,6 +22,8 @@ fun StartLastDayButton(
     appViewModel: AppViewModel = hiltViewModel(),
     onSet: () -> Unit = {},
 ) {
+    val context = LocalContext.current
+
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val budgetPerDayAdd by recalcBudgetViewModel.newDailyBudgetIfAddToday.observeAsState(BigDecimal.ZERO)
 
@@ -32,6 +35,7 @@ fun StartLastDayButton(
                 stringResource(
                     R.string.start_last_day_description,
                     numberFormat(
+                        context,
                         budgetPerDayAdd,
                         currency = currency,
                     ),
