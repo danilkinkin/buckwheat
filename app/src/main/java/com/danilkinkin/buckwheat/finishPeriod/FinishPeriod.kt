@@ -88,16 +88,18 @@ fun FinishPeriod(
                             FillCircleStub()
                         }
                         Spacer(modifier = Modifier.height(16.dp))
-                        Row(Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                        ) {
                             MinMaxSpentCard(
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.weight(1f).fillMaxHeight(),
                                 isMin = true,
                                 spends = spends,
                                 currency = spendsViewModel.currency.value!!,
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             MinMaxSpentCard(
-                                modifier = Modifier.weight(1f),
+                                modifier = Modifier.weight(1f).fillMaxHeight(),
                                 isMin = false,
                                 spends = spends,
                                 currency = spendsViewModel.currency.value!!,

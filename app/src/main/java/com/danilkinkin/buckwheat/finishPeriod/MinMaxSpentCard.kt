@@ -1,17 +1,24 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -104,6 +111,25 @@ fun MinMaxSpentCard(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                 )
+
+                if (spent.comment.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier.padding(top = 8.dp),
+                    ) {
+                        Icon(
+                            modifier = Modifier.padding(top = 2.dp).size(16.dp),
+                            painter = painterResource(R.drawable.ic_comment),
+                            contentDescription = null,
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+
+                            text = spent.comment,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
+                        )
+                    }
+                }
             }
         },
         backdropContent = {
@@ -128,6 +154,7 @@ fun MinMaxSpentCard(
 private fun PreviewMin() {
     BuckwheatTheme {
         MinMaxSpentCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             isMin = true,
             currency = ExtendCurrency.none(),
             spends = listOf(
@@ -138,7 +165,7 @@ private fun PreviewMin() {
                 Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(1).toDate()),
                 Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(1).toDate()),
                 Spent(value = BigDecimal(56), date = Date()),
-                Spent(value = BigDecimal(15), date = Date()),
+                Spent(value = BigDecimal(15), date = Date(), comment = "Comment of spent"),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
         )
@@ -150,6 +177,7 @@ private fun PreviewMin() {
 private fun PreviewMax() {
     BuckwheatTheme {
         MinMaxSpentCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
             currency = ExtendCurrency.none(),
             spends = listOf(
@@ -172,6 +200,7 @@ private fun PreviewMax() {
 private fun PreviewMinNightMode() {
     BuckwheatTheme {
         MinMaxSpentCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             isMin = true,
             currency = ExtendCurrency.none(),
             spends = listOf(
@@ -182,7 +211,7 @@ private fun PreviewMinNightMode() {
                 Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(1).toDate()),
                 Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(1).toDate()),
                 Spent(value = BigDecimal(56), date = Date()),
-                Spent(value = BigDecimal(15), date = Date()),
+                Spent(value = BigDecimal(15), date = Date(), comment = "Relly looooooong comment of spent. Nisi ea mollit aute dolore sunt elit veniam"),
                 Spent(value = BigDecimal(42), date = Date()),
             ),
         )
@@ -194,6 +223,7 @@ private fun PreviewMinNightMode() {
 private fun PreviewMaxNightMode() {
     BuckwheatTheme {
         MinMaxSpentCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
             currency = ExtendCurrency.none(),
             spends = listOf(
@@ -216,6 +246,7 @@ private fun PreviewMaxNightMode() {
 private fun PreviewWithSameSpends() {
     BuckwheatTheme {
         MinMaxSpentCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
             currency = ExtendCurrency.none(),
             spends = listOf(
@@ -231,10 +262,15 @@ private fun PreviewWithSameSpends() {
 private fun PreviewWithOneSpent() {
     BuckwheatTheme {
         MinMaxSpentCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
             currency = ExtendCurrency.none(),
             spends = listOf(
-                Spent(value = BigDecimal(42), date = Date()),
+                Spent(
+                    value = BigDecimal(42),
+                    date = Date(),
+                    comment = "In id quis ea duis id pariatur exercitation ullamco excepteur id. Aliquip et consectetur adipisicing dolor est dolore veniam excepteur non culpa eu sint aliquip officia. Nulla anim pariatur sit qui ea voluptate anim veniam adipisicing. Minim nostrud ipsum enim pariatur elit culpa. Fugiat voluptate voluptate enim aliqua cupidatat amet magna commodo. Do ad mollit pariatur incididunt exercitation eu laboris et tempor elit cupidatat. Officia sint commodo quis ea ex ut labore irure qui mollit commodo. Labore elit ea nisi eiusmod ut quis minim nostrud ad consectetur incididunt.",
+                ),
             ),
         )
     }
@@ -245,6 +281,7 @@ private fun PreviewWithOneSpent() {
 private fun PreviewWithZeroSpends() {
     BuckwheatTheme {
         MinMaxSpentCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
             currency = ExtendCurrency.none(),
             spends = listOf(),

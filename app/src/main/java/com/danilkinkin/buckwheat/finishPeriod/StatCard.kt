@@ -32,12 +32,14 @@ fun StatCard(
 
         Box(
             Modifier
-                .height(IntrinsicSize.Min)
-                .fillMaxWidth()) {
+                .fillMaxWidth()
+                .fillMaxHeight()
+        ) {
             Box(
                 Modifier
                     .fillMaxHeight()
-                    .fillMaxWidth()) {
+                    .fillMaxWidth()
+            ) {
                 backdropContent()
             }
 
