@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -33,9 +34,12 @@ fun FinishDateSelector(
     onBackPressed: () -> Unit,
     onApply: (finishDate: Date) -> Unit,
 ) {
+    val context = LocalContext.current
+
     Surface(modifier = Modifier.fillMaxSize()) {
         val calendarState = remember {
             CalendarState(
+                context,
                 selectionMode = CalendarSelectionMode.RANGE,
                 selectDate = selectDate,
                 disableBeforeDate = Date(),

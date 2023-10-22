@@ -20,6 +20,7 @@ import com.danilkinkin.buckwheat.base.datePicker.model.Month
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -27,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.util.getWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
-import java.time.temporal.WeekFields
 
 @Composable
 fun DatePicker(
@@ -110,12 +110,12 @@ private fun LazyListScope.itemsCalendarMonth(
     }
 }
 
-internal val CALENDAR_STARTS_ON = WeekFields.ISO
-
 @Preview(name = "EN locale", locale = "en")
 @Composable
 fun DayPreview() {
-    val state = remember { mutableStateOf(CalendarState()) }
+    val context = LocalContext.current
+
+    val state = remember { mutableStateOf(CalendarState(context)) }
 
     BuckwheatTheme {
         Surface {
@@ -130,7 +130,8 @@ fun DayPreview() {
 @Preview(name = "RU locale", locale = "ru")
 @Composable
 fun DayPreviewRu() {
-    val state = remember { mutableStateOf(CalendarState()) }
+    val context = LocalContext.current
+    val state = remember { mutableStateOf(CalendarState(context)) }
 
     BuckwheatTheme {
         Surface {

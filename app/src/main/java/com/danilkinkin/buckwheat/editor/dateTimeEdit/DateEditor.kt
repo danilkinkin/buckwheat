@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,8 +31,11 @@ fun DatePickerDialog(
     onSelect: (date: LocalDate) -> Unit,
     onClose: () -> Unit,
 ) {
+    val context = LocalContext.current
+
     val datePickerState = remember {
         CalendarState(
+            context,
             CalendarSelectionMode.SINGLE,
             selectDate = initDate.toDate(),
             disableBeforeDate = disableBeforeDate?.toDate(),

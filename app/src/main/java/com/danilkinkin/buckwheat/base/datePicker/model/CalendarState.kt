@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.base.datePicker.model
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import com.danilkinkin.buckwheat.util.getNumberWeeks
 import com.danilkinkin.buckwheat.util.toLocalDate
@@ -9,6 +10,7 @@ import java.time.YearMonth
 import java.util.*
 
 class CalendarState(
+    context: Context,
     selectionMode: CalendarSelectionMode = CalendarSelectionMode.SINGLE,
     selectDate: Date? = null,
     disableBeforeDate: Date? = null,
@@ -29,15 +31,16 @@ class CalendarState(
         .withMonth(12).withDayOfMonth(31)
 
     private val periodBetweenCalendarStartEnd: Period = Period.between(
-        disableBeforeDate?.toLocalDate() ?: calendarStartDate,
-        disableAfterDate?.toLocalDate() ?: calendarEndDate
+        disableBeforeDate?.toLocalDate()?.withDayOfMonth(1) ?: calendarStartDate,
+        disableAfterDate?.toLocalDate()?.withDayOfMonth(28) ?: calendarEndDate
     )
 
     init {
         val tempListMonths = mutableListOf<Month>()
-        var startYearMonth = YearMonth.from(disableBeforeDate?.toLocalDate() ?: calendarStartDate)
+        var startYearMonth = YearMonth.from(disableBeforeDate?.toLocalDate()?.withDayOfMonth(1) ?: calendarStartDate)
+
         for (numberMonth in 0..periodBetweenCalendarStartEnd.toTotalMonths()) {
-            val numberWeeks = startYearMonth.getNumberWeeks()
+            val numberWeeks = startYearMonth.getNumberWeeks(context)
             val listWeekItems = mutableListOf<Week>()
             for (week in 0 until numberWeeks) {
                 listWeekItems.add(
