@@ -16,7 +16,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.entities.Transaction
+import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorMax
 import com.danilkinkin.buckwheat.ui.colorMin
@@ -31,8 +32,8 @@ import kotlin.math.abs
 @Composable
 fun SpendsChart(
     modifier: Modifier = Modifier,
-    spends: List<Spent>,
-    markedSpent: Spent? = null,
+    spends: List<Transaction>,
+    markedTransaction: Transaction? = null,
     showBeforeMarked: Int = spends.size,
     showAfterMarked: Int = spends.size,
     chartPadding: PaddingValues = PaddingValues(0.dp),
@@ -70,8 +71,8 @@ fun SpendsChart(
     val endOffset = with(localDensity) { chartPadding.calculateEndPadding(layoutDirection).toPx() }
 
 
-    val (indexMarked, firstShowIndex, lastShowIndex) = if (markedSpent != null) {
-        val index = spends.indexOfFirst { it.date === markedSpent.date }
+    val (indexMarked, firstShowIndex, lastShowIndex) = if (markedTransaction != null) {
+        val index = spends.indexOfFirst { it.date === markedTransaction.date }
 
         Triple(
             index,
@@ -132,11 +133,11 @@ fun SpendsChart(
         }
 
 
-        val chartColors = if (markedSpent != null) {
+        val chartColors = if (markedTransaction != null) {
             val scale = if (range.isZero()) {
                 0.5f
             } else {
-                1f - markedSpent.value
+                1f - markedTransaction.value
                     .minus(minSpentValue)
                     .divide(range, 2, RoundingMode.HALF_EVEN)
                     .toFloat()
@@ -157,11 +158,11 @@ fun SpendsChart(
             style = Fill
         )
 
-        if (markedSpent != null) {
+        if (markedTransaction != null) {
             val scale = if (range.isZero()) {
                 0.5f
             } else {
-                markedSpent.value
+                markedTransaction.value
                     .minus(minSpentValue)
                     .divide(range, 2, RoundingMode.HALF_EVEN)
                     .toFloat()
@@ -195,23 +196,23 @@ fun SpendsChart(
 @Composable
 private fun PreviewChart() {
     BuckwheatTheme {
-        val markedSpent = Spent(value = BigDecimal(30), date = Date())
+        val markedTransaction = Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date())
 
         SpendsChart(
             modifier = Modifier.size(100.dp),
             spends = listOf(
-                Spent(value = BigDecimal(52), date = LocalDate.now().minusDays(2).toDate()),
-                Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(2).toDate()),
-                Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(2).toDate()),
-                Spent(value = BigDecimal(52), date = LocalDate.now().minusDays(1).toDate()),
-                Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(1).toDate()),
-                Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(1).toDate()),
-                markedSpent,
-                Spent(value = BigDecimal(15), date = Date()),
-                Spent(value = BigDecimal(42), date = Date()),
-                Spent(value = BigDecimal(62), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = LocalDate.now().minusDays(2).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = LocalDate.now().minusDays(2).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = LocalDate.now().minusDays(2).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = LocalDate.now().minusDays(1).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = LocalDate.now().minusDays(1).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = LocalDate.now().minusDays(1).toDate()),
+                markedTransaction,
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(62), date = Date()),
             ),
-            markedSpent = markedSpent,
+            markedTransaction = markedTransaction,
             chartPadding = PaddingValues(vertical = 16.dp)
         )
     }
@@ -221,17 +222,17 @@ private fun PreviewChart() {
 @Composable
 private fun PreviewChartWithSameSpends() {
     BuckwheatTheme {
-        val markedSpent = Spent(value = BigDecimal(30), date = Date())
+        val markedTransaction = Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date())
 
         SpendsChart(
             modifier = Modifier.size(100.dp),
             spends = listOf(
-                Spent(value = BigDecimal(30), date = LocalDate.now().minusDays(1).toDate()),
-                Spent(value = BigDecimal(30), date = LocalDate.now().minusDays(1).toDate()),
-                markedSpent,
-                Spent(value = BigDecimal(30), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = LocalDate.now().minusDays(1).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = LocalDate.now().minusDays(1).toDate()),
+                markedTransaction,
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date()),
             ),
-            markedSpent = markedSpent,
+            markedTransaction = markedTransaction,
             chartPadding = PaddingValues(vertical = 16.dp)
         )
     }
@@ -241,14 +242,14 @@ private fun PreviewChartWithSameSpends() {
 @Composable
 private fun PreviewChartWithOneSpent() {
     BuckwheatTheme {
-        val markedSpent = Spent(value = BigDecimal(30), date = Date())
+        val markedTransaction = Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date())
 
         SpendsChart(
             modifier = Modifier.size(100.dp),
             spends = listOf(
-                markedSpent,
+                markedTransaction,
             ),
-            markedSpent = markedSpent,
+            markedTransaction = markedTransaction,
             chartPadding = PaddingValues(vertical = 16.dp)
         )
     }

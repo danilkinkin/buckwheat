@@ -8,9 +8,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.data.ExtendCurrency
+import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.util.numberFormat
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -19,7 +20,7 @@ import java.util.*
 @Composable
 fun AverageSpendCard(
     modifier: Modifier = Modifier,
-    spends: List<Spent>,
+    spends: List<Transaction>,
     currency: ExtendCurrency,
 ) {
     val context = LocalContext.current
@@ -49,9 +50,9 @@ private fun Preview() {
     BuckwheatTheme {
         AverageSpendCard(
             spends = listOf(
-                Spent(value = BigDecimal(30), date = Date()),
-                Spent(value = BigDecimal(15), date = Date()),
-                Spent(value = BigDecimal(42), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date()),
             ),
             currency = ExtendCurrency.none(),
         )

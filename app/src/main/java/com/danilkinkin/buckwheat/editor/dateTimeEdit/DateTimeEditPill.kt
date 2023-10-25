@@ -26,7 +26,7 @@ fun DateTimeEditPill(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
 ) {
-    if (editorViewModel.editedSpent === null) return
+    if (editorViewModel.editedTransaction === null) return
 
     var cachedDate by remember { mutableStateOf(editorViewModel.currentDate) }
     var isPickTime by remember { mutableStateOf(false) }

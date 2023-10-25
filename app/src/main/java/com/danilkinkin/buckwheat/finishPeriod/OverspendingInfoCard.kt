@@ -24,7 +24,8 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.entities.Transaction
+import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorBad
 import com.danilkinkin.buckwheat.ui.colorGood
@@ -45,7 +46,7 @@ import java.util.Date
 fun OverspendingInfoCard(
     modifier: Modifier = Modifier,
     budget: BigDecimal,
-    spends: List<Spent>,
+    spends: List<Transaction>,
     startDate: Date,
     finishDate: Date,
     currency: ExtendCurrency,
@@ -226,7 +227,7 @@ fun OverspendingInfoCard(
 
 data class OverspendingDay(
     val date: Date,
-    val spends: List<Spent>,
+    val spends: List<Transaction>,
     val spending: BigDecimal,
 )
 
@@ -237,9 +238,9 @@ private fun PreviewZero() {
         OverspendingInfoCard(
             budget = BigDecimal(200),
             spends = listOf(
-                Spent(value = BigDecimal(3), date = LocalDate.now().minusDays(2).toDate()),
-                Spent(value = BigDecimal(5), date = LocalDate.now().minusDays(1).toDate()),
-                Spent(value = BigDecimal(8), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(3), date = LocalDate.now().minusDays(2).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(5), date = LocalDate.now().minusDays(1).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(8), date = Date()),
             ),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(7).toDate(),
@@ -255,9 +256,9 @@ private fun PreviewOne() {
         OverspendingInfoCard(
             budget = BigDecimal(200),
             spends = listOf(
-                Spent(value = BigDecimal(30), date = Date()),
-                Spent(value = BigDecimal(15), date = Date()),
-                Spent(value = BigDecimal(42), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date()),
             ),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(7).toDate(),
@@ -273,12 +274,12 @@ private fun PreviewFew() {
         OverspendingInfoCard(
             budget = BigDecimal(200),
             spends = listOf(
-                Spent(value = BigDecimal(52), date = LocalDate.now().minusDays(5).toDate()),
-                Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(5).toDate()),
-                Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(5).toDate()),
-                Spent(value = BigDecimal(30), date = Date()),
-                Spent(value = BigDecimal(15), date = Date()),
-                Spent(value = BigDecimal(42), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = LocalDate.now().minusDays(5).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = LocalDate.now().minusDays(5).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = LocalDate.now().minusDays(5).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date()),
             ),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(10).toDate(),
@@ -294,15 +295,15 @@ private fun PreviewMany() {
         OverspendingInfoCard(
             budget = BigDecimal(200),
             spends = listOf(
-                Spent(value = BigDecimal(52), date = LocalDate.now().minusDays(4).toDate()),
-                Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(4).toDate()),
-                Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(4).toDate()),
-                Spent(value = BigDecimal(52), date = LocalDate.now().minusDays(3).toDate()),
-                Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(3).toDate()),
-                Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(3).toDate()),
-                Spent(value = BigDecimal(30), date = Date()),
-                Spent(value = BigDecimal(15), date = Date()),
-                Spent(value = BigDecimal(42), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = LocalDate.now().minusDays(4).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = LocalDate.now().minusDays(4).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = LocalDate.now().minusDays(4).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = LocalDate.now().minusDays(3).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = LocalDate.now().minusDays(3).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = LocalDate.now().minusDays(3).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date()),
             ),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(7).toDate(),
@@ -318,15 +319,15 @@ private fun PreviewAll() {
         OverspendingInfoCard(
             budget = BigDecimal(200),
             spends = listOf(
-                Spent(value = BigDecimal(52), date = LocalDate.now().minusDays(2).toDate()),
-                Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(2).toDate()),
-                Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(2).toDate()),
-                Spent(value = BigDecimal(52), date = LocalDate.now().minusDays(1).toDate()),
-                Spent(value = BigDecimal(72), date = LocalDate.now().minusDays(1).toDate()),
-                Spent(value = BigDecimal(42), date = LocalDate.now().minusDays(1).toDate()),
-                Spent(value = BigDecimal(30), date = Date()),
-                Spent(value = BigDecimal(15), date = Date()),
-                Spent(value = BigDecimal(42), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = LocalDate.now().minusDays(2).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = LocalDate.now().minusDays(2).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = LocalDate.now().minusDays(2).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = LocalDate.now().minusDays(1).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = LocalDate.now().minusDays(1).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = LocalDate.now().minusDays(1).toDate()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date()),
             ),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(9).toDate(),
@@ -342,9 +343,9 @@ private fun PreviewNightMode() {
         OverspendingInfoCard(
             budget = BigDecimal(200),
             spends = listOf(
-                Spent(value = BigDecimal(30), date = Date()),
-                Spent(value = BigDecimal(15), date = Date()),
-                Spent(value = BigDecimal(42), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date()),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date()),
             ),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(7).toDate(),

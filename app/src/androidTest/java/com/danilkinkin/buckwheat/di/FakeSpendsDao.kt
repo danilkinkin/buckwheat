@@ -2,34 +2,30 @@ package com.danilkinkin.buckwheat.di
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.danilkinkin.buckwheat.data.dao.SpentDao
-import com.danilkinkin.buckwheat.data.entities.Spent
-import java.util.Date
+import com.danilkinkin.buckwheat.data.dao.TransactionDao
+import com.danilkinkin.buckwheat.data.entities.Transaction
+import com.danilkinkin.buckwheat.data.entities.TransactionType
 
-class FakeSpendsDao: SpentDao {
-    private val spends = mutableListOf<Spent>()
+class FakeTransactionDao: TransactionDao {
+    private val spends = mutableListOf<Transaction>()
 
-    override fun getAll(): LiveData<List<Spent>> {
+    override fun getAll(): LiveData<List<Transaction>> {
         return MutableLiveData(spends)
     }
 
-    override fun getAllSync(): List<Spent> {
-        return spends
+    override fun getAll(type: TransactionType): LiveData<List<Transaction>> {
+        return MutableLiveData(spends)
     }
 
-    override fun getCountLastDaySpends(currDate: Date): LiveData<Int> {
-        return MutableLiveData(0)
-    }
-
-    override fun getById(uid: Int): Spent? {
+    override fun getById(uid: Int): Transaction? {
         return null
     }
 
-    override fun insert(vararg spent: Spent) {
-        spends.addAll(spent)
+    override fun insert(vararg transaction: Transaction) {
+        spends.addAll(transaction)
     }
 
-    override fun update(vararg spent: Spent) {
+    override fun update(vararg transaction: Transaction) {
 
     }
 

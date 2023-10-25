@@ -27,7 +27,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideSpentDao(db: DatabaseModule) = db.spentDao()
+    fun provideTransactionDao(db: DatabaseModule) = db.transactionDao()
 
     @Singleton
     @Provides

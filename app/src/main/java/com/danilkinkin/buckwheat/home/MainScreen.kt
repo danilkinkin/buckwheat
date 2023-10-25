@@ -134,7 +134,7 @@ fun MainScreen(
         key = isNightModeM.value,
     )
 
-    observeLiveData(spendsViewModel.lastRemovedSpent) {
+    observeLiveData(spendsViewModel.lastRemovedTransaction) {
         appViewModel.showSnackbar(
             message = snackBarMessage,
             actionLabel = snackBarAction,

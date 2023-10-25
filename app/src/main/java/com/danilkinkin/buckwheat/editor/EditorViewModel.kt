@@ -1,7 +1,7 @@
 package com.danilkinkin.buckwheat.editor
 
 import androidx.lifecycle.*
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.util.join
 import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,18 +20,18 @@ class EditorViewModel @Inject constructor(
     var mode = MutableLiveData(EditMode.ADD)
     var stage = MutableLiveData(EditStage.IDLE)
 
-    var editedSpent: Spent? = null
+    var editedTransaction: Transaction? = null
     var currentDate: Date = Date()
     var currentSpent: BigDecimal = BigDecimal.ZERO
     var currentComment: String = ""
     var rawSpentValue = MutableLiveData("")
 
-    fun startEditingSpent(spent: Spent) {
-        editedSpent = spent
-        currentSpent = spent.value
-        currentDate = spent.date
-        currentComment = spent.comment
-        rawSpentValue.value = tryConvertStringToNumber(spent.value.toString()).join(third = false)
+    fun startEditingSpent(transaction: Transaction) {
+        editedTransaction = transaction
+        currentSpent = transaction.value
+        currentDate = transaction.date
+        currentComment = transaction.comment
+        rawSpentValue.value = tryConvertStringToNumber(transaction.value.toString()).join(third = false)
 
         stage.value = EditStage.EDIT_SPENT
         mode.value = EditMode.EDIT
@@ -57,7 +57,7 @@ class EditorViewModel @Inject constructor(
 
         stage.value = EditStage.IDLE
         mode.value = EditMode.ADD
-        editedSpent = null
+        editedTransaction = null
     }
 
     fun canCommitEditingSpent(): Boolean {

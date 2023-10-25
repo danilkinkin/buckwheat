@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.di.TUTORIAL_STAGE
@@ -101,7 +100,7 @@ fun History(
                                 type = RowEntityType.DayTotal,
                                 key = "total-${lastSpentDate}",
                                 contentHash = "$lastDayTotal",
-                                spent = null,
+                                transaction = null,
                                 day = lastSpentDate!!,
                                 dayTotal = lastDayTotal,
                             )
@@ -115,7 +114,7 @@ fun History(
                         RowEntity(
                             type = RowEntityType.DayDivider,
                             key = "header-${lastSpentDate}",
-                            spent = null,
+                            transaction = null,
                             day = lastSpentDate!!,
                             dayTotal = null,
                         )
@@ -128,7 +127,7 @@ fun History(
                     RowEntity(
                         type = RowEntityType.Spent,
                         key = "spent-${spent.uid}",
-                        spent = spent,
+                        transaction = spent,
                         day = lastSpentDate!!,
                         dayTotal = null,
                     )
@@ -141,7 +140,7 @@ fun History(
                     type = RowEntityType.DayTotal,
                     key = "total-${lastSpentDate!!}",
                     contentHash = "$lastDayTotal",
-                    spent = null,
+                    transaction = null,
                     day = lastSpentDate!!,
                     dayTotal = lastDayTotal,
                 )
@@ -199,7 +198,7 @@ fun History(
                                 icon = painterResource(R.drawable.ic_edit),
                                 stayDismissed = false,
                                 onDismiss = {
-                                    editorViewModel.startEditingSpent(row.spent!!)
+                                    editorViewModel.startEditingSpent(row.transaction!!)
                                     onClose()
                                 }
                             ),
@@ -211,7 +210,7 @@ fun History(
                                 icon = painterResource(R.drawable.ic_delete_forever),
                                 stayDismissed = true,
                                 onDismiss = {
-                                    spendsViewModel.removeSpent(row.spent!!)
+                                    spendsViewModel.removeSpent(row.transaction!!)
                                 }
                             ),
                             onTried = { isUserTrySwipe = true },
@@ -272,7 +271,7 @@ fun History(
                                     modifier = Modifier.padding(vertical = 4.dp)
                                 ) {
                                     SpentItem(
-                                        spent = row.spent!!,
+                                        transaction = row.transaction!!,
                                         currency = currency.value
                                     )
                                 }

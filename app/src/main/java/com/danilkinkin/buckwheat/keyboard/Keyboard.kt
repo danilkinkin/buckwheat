@@ -17,7 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.entities.Transaction
+import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditMode
 import com.danilkinkin.buckwheat.editor.EditStage
@@ -241,7 +242,7 @@ fun Keyboard(
                             type = KeyboardButtonType.DELETE,
                             icon = painterResource(R.drawable.ic_delete_forever),
                             onClick = {
-                                editorViewModel.editedSpent?.let { spendsViewModel.removeSpent(it) }
+                                editorViewModel.editedTransaction?.let { spendsViewModel.removeSpent(it) }
                                 editorViewModel.resetEditingSpent()
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
@@ -279,16 +280,16 @@ fun Keyboard(
                                 runBlocking {
                                     if (editorViewModel.canCommitEditingSpent()) {
                                         if (mode == EditMode.EDIT) {
-                                            val newVersionOfSpent = editorViewModel.editedSpent!!.copy(
+                                            val newVersionOfSpent = editorViewModel.editedTransaction!!.copy(
                                                 value = editorViewModel.currentSpent,
                                                 date = editorViewModel.currentDate,
                                                 comment = editorViewModel.currentComment,
                                             )
 
-                                            spendsViewModel.removeSpent(editorViewModel.editedSpent!!, silent = true)
+                                            spendsViewModel.removeSpent(editorViewModel.editedTransaction!!, silent = true)
                                             spendsViewModel.addSpent(newVersionOfSpent)
                                         } else {
-                                            spendsViewModel.addSpent(Spent(editorViewModel.currentSpent, Date(), editorViewModel.currentComment))
+                                            spendsViewModel.addSpent(Transaction(TransactionType.SPENT, editorViewModel.currentSpent, Date(), editorViewModel.currentComment))
                                             appViewModel.activateTutorial(TUTORS.OPEN_HISTORY)
                                         }
 

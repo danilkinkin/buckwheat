@@ -12,7 +12,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.entities.Transaction
+import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.*
@@ -22,7 +23,7 @@ import java.util.*
 
 @Composable
 fun SpentItem(
-    spent: Spent,
+    transaction: Transaction,
     currency: ExtendCurrency,
     modifier: Modifier = Modifier,
 ) {
@@ -35,7 +36,7 @@ fun SpentItem(
                     .weight(1f)
             ) {
                 Text(
-                    text = numberFormat(context = context, spent.value, currency = currency),
+                    text = numberFormat(context = context, transaction.value, currency = currency),
                     style = MaterialTheme.typography.headlineLarge,
                     color = colorOnEditor,
                     softWrap = false,
@@ -52,17 +53,17 @@ fun SpentItem(
                             top = 16.dp,
                             end = 32.dp,
                         ),
-                    text = prettyDate(spent.date, shortMonth = true),
+                    text = prettyDate(transaction.date, shortMonth = true),
                     style = MaterialTheme.typography.labelSmall,
                     color = colorOnEditor,
                     softWrap = false,
                 )
             }
         }
-        if (spent.comment.isNotEmpty()) {
+        if (transaction.comment.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding( horizontal = 32.dp),
-                text = spent.comment,
+                text = transaction.comment,
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorOnEditor.copy(alpha = 0.7f),
                 softWrap = true,
@@ -76,7 +77,11 @@ fun SpentItem(
 private fun PreviewDefault() {
     BuckwheatTheme {
         SpentItem(
-            Spent(value = BigDecimal(12340), date = Date()),
+            Transaction(
+                type = TransactionType.SPENT,
+                value = BigDecimal(12340),
+                date = Date(),
+            ),
             ExtendCurrency.none()
         )
     }
@@ -87,7 +92,8 @@ private fun PreviewDefault() {
 private fun PreviewNightMode() {
     BuckwheatTheme {
         SpentItem(
-            Spent(
+            Transaction(
+                type = TransactionType.SPENT,
                 value = BigDecimal(12340),
                 date = LocalDateTime.now().minusMonths(2).toLocalDate().toDate(),
                 comment = "Comment for spent",
@@ -102,7 +108,8 @@ private fun PreviewNightMode() {
 private fun PreviewWithBigSpentAndLongCommentNightMode() {
     BuckwheatTheme {
         SpentItem(
-            Spent(
+            Transaction(
+                type = TransactionType.SPENT,
                 value = BigDecimal(123456789009876543),
                 date = Date(),
                 comment = "Very loooong comment for veryyy loooooooooooooooooong spent. And yet row for more length",
@@ -117,7 +124,11 @@ private fun PreviewWithBigSpentAndLongCommentNightMode() {
 private fun PreviewSmallScreen() {
     BuckwheatTheme {
         SpentItem(
-            Spent(value = BigDecimal(12340), date = Date()),
+            Transaction(
+                type = TransactionType.SPENT,
+                value = BigDecimal(12340),
+                date = Date(),
+            ),
             ExtendCurrency.none()
         )
     }

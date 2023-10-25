@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.entities.Transaction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigDecimal
@@ -21,7 +21,7 @@ data class RowEntity(
     val key: String,
     var contentHash: String? = null,
     val day: LocalDate,
-    val spent: Spent?,
+    val transaction: Transaction?,
     var dayTotal: BigDecimal?,
 )
 

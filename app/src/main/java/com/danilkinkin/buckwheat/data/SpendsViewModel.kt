@@ -6,7 +6,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.di.SpendsRepository
 import com.danilkinkin.buckwheat.util.countDaysToToday
 import com.danilkinkin.buckwheat.util.isToday
@@ -41,7 +41,7 @@ class SpendsViewModel @Inject constructor(
     var requireDistributionRestedBudget = MutableLiveData(false)
     var requireSetBudget = MutableLiveData(false)
     var periodFinished = MutableLiveData(false)
-    var lastRemovedSpent: MutableLiveData<Spent> = MutableLiveData()
+    var lastRemovedTransaction: MutableLiveData<Transaction> = MutableLiveData()
 
     init {
         runChangeDayAction()
@@ -67,25 +67,25 @@ class SpendsViewModel @Inject constructor(
 
     // Spend handling
 
-    fun addSpent(spentForAdd: Spent) {
+    fun addSpent(transactionForAdd: Transaction) {
         viewModelScope.launch {
-            spendsRepository.addSpent(spentForAdd)
+            spendsRepository.addSpent(transactionForAdd)
         }
     }
 
-    fun removeSpent(spentForRemove: Spent, silent: Boolean = false) {
+    fun removeSpent(transactionForRemove: Transaction, silent: Boolean = false) {
         viewModelScope.launch {
-            spendsRepository.removeSpent(spentForRemove)
+            spendsRepository.removeSpent(transactionForRemove)
 
             if (!silent) {
-                lastRemovedSpent.value = spentForRemove
+                lastRemovedTransaction.value = transactionForRemove
             }
         }
     }
 
     fun undoRemoveSpent() {
         viewModelScope.launch {
-            lastRemovedSpent.value?.let {
+            lastRemovedTransaction.value?.let {
                 spendsRepository.addSpent(it)
             }
         }

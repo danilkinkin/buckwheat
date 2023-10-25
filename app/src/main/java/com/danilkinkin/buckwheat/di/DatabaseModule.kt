@@ -2,10 +2,13 @@ package com.danilkinkin.buckwheat.di
 
 import androidx.room.*
 import androidx.room.migration.AutoMigrationSpec
-import com.danilkinkin.buckwheat.data.dao.SpentDao
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.danilkinkin.buckwheat.data.dao.StorageDao
-import com.danilkinkin.buckwheat.data.entities.Spent
+import com.danilkinkin.buckwheat.data.dao.TransactionDao
 import com.danilkinkin.buckwheat.data.entities.Storage
+import com.danilkinkin.buckwheat.data.entities.Transaction
+
 
 class AutoMigration1to2 : AutoMigrationSpec
 
@@ -20,9 +23,32 @@ class AutoMigration2to3 : AutoMigrationSpec
 // Preparing for remove storage table
 class AutoMigration3to4 : AutoMigrationSpec
 
+// Rename Spent to Transaction
+val AutoMigration4to5: Migration = object : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Create the new "transactions" table
+        database.execSQL(
+            "CREATE TABLE IF NOT EXISTS `transactions` " +
+                    "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`type` TEXT NOT NULL DEFAULT 'SPENT', " +
+                    "`other_columns` TEXT, " +  // Define other columns as needed
+                    "PRIMARY KEY(`id`))"
+        )
+
+        // Copy data from the old "Spent" table to the new "transactions" table
+        database.execSQL(
+            "INSERT INTO `transactions` (`type`, `other_columns`) " +
+                    "SELECT 'SPENT', `other_columns` FROM `Spent`"
+        )
+
+        // Drop the old "Spent" table
+        database.execSQL("DROP TABLE IF EXISTS `Spent`")
+    }
+}
+
 @Database(
-    entities = [Spent::class, Storage::class],
-    version = 4,
+    entities = [Transaction::class, Storage::class],
+    version = 5,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -32,7 +58,9 @@ class AutoMigration3to4 : AutoMigrationSpec
 )
 @TypeConverters(RoomConverters::class)
 abstract class DatabaseModule : RoomDatabase() {
-    abstract fun spentDao(): SpentDao
+
+    val MIGRATIONS = arrayOf<Migration>(AutoMigration4to5)
+    abstract fun transactionDao(): TransactionDao
 
     abstract fun storageDao(): StorageDao
 }

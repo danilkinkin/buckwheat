@@ -6,8 +6,17 @@ import androidx.room.PrimaryKey
 import java.math.BigDecimal
 import java.util.*
 
-@Entity
-data class Spent(
+enum class TransactionType {
+    SET_DAILY_BUDGET,
+    INCOME,
+    SPENT
+}
+
+@Entity(tableName = "transactions")
+data class Transaction(
+    @ColumnInfo(name = "type")
+    val type: TransactionType,
+
     @ColumnInfo(name = "value")
     val value: BigDecimal,
 
