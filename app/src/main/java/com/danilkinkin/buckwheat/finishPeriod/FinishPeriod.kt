@@ -79,15 +79,7 @@ fun FinishPeriod(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     if (spends.isNotEmpty()) {
-                        Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Min)
-                        ) {
-                            RestAndSpentBudgetCard(modifier = Modifier.weight(1f))
-                            Spacer(modifier = Modifier.width(16.dp))
-                            FillCircleStub()
-                        }
+                        RestAndSpentBudgetCard()
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
