@@ -25,6 +25,7 @@ class SpendsViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val spendsRepository: SpendsRepository,
 ) : ViewModel() {
+    var transactions = spendsRepository.getAllTransactions()
     var spends = spendsRepository.getAllSpends()
     var budget = spendsRepository.getBudget().asLiveData()
     var spent = spendsRepository.getSpent().asLiveData()

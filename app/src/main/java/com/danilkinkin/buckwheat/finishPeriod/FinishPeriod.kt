@@ -36,6 +36,7 @@ fun FinishPeriod(
     onCreateNewPeriod: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
+    val transactions by spendsViewModel.transactions.observeAsState(emptyList())
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
     val scrollState = rememberScrollState()
@@ -119,10 +120,10 @@ fun FinishPeriod(
                             )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
-                        OverspendingInfoCard(
+                        SpendsCalendar(
                             modifier = Modifier.fillMaxWidth(),
                             budget = wholeBudget,
-                            spends = spends,
+                            transactions = transactions,
                             startDate = spendsViewModel.startPeriodDate.value!!,
                             finishDate = spendsViewModel.finishPeriodDate.value!!,
                             currency = spendsViewModel.currency.value!!,

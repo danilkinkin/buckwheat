@@ -43,6 +43,7 @@ class SpendsRepository @Inject constructor(
     private val transactionDao: TransactionDao,
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
 ) {
+    fun getAllTransactions(): LiveData<List<Transaction>> = transactionDao.getAll()
     fun getAllSpends(): LiveData<List<Transaction>> = transactionDao.getAll(TransactionType.SPENT)
     fun getBudget() = context.budgetDataStore.data.map {
         (it[budgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO).setScale(2)
