@@ -3,6 +3,7 @@ package com.danilkinkin.buckwheat.finishPeriod
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +16,7 @@ import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,6 +56,7 @@ fun WholeBudgetCard(
         content = {
             Spacer(modifier = Modifier.height(16.dp))
             Layout(
+                modifier = Modifier.height(IntrinsicSize.Min),
                 measurePolicy = growByMiddleChildRowMeasurePolicy(LocalDensity.current),
                 content = {
                     Column {
@@ -70,11 +73,34 @@ fun WholeBudgetCard(
                         )
                     }
 
-                    Arrow(
-                        modifier = Modifier
-                            .padding(horizontal = if (bigVariant) 16.dp else 8.dp)
-                            .fillMaxHeight()
-                    )
+                    Box() {
+                        Arrow(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = if (bigVariant) 16.dp else 8.dp)
+                                .fillMaxHeight()
+                        )
+                        if (finishDate !== null && bigVariant) {
+                            Surface(
+                                modifier = Modifier
+                                    .align(Alignment.Center),
+                                shape = CircleShape,
+                                color = LocalContentColor.current,
+                                contentColor = MaterialTheme.colorScheme.surface,
+                            ) {
+                                val days = countDays(finishDate, startDate)
+
+                                Text(
+                                    modifier = Modifier.padding(8.dp, 0.dp),
+                                    text = String.format(
+                                        pluralStringResource(R.plurals.days_count, count = days),
+                                        days,
+                                    ),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                            }
+                        }
+                    }
 
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
@@ -200,6 +226,7 @@ private fun PreviewChart() {
 private fun Preview() {
     BuckwheatTheme {
         WholeBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             budget = BigDecimal(60000),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(28).toDate(),
@@ -213,6 +240,7 @@ private fun Preview() {
 private fun PreviewNightMode() {
     BuckwheatTheme {
         WholeBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             budget = BigDecimal(60000),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(28).toDate(),
@@ -226,10 +254,26 @@ private fun PreviewNightMode() {
 private fun PreviewSmallScreen() {
     BuckwheatTheme {
         WholeBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             budget = BigDecimal(60000),
             currency = ExtendCurrency.none(),
             startDate = LocalDate.now().minusDays(28).toDate(),
             finishDate = Date(),
+        )
+    }
+}
+
+@Preview(name = "Small varinat", uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewSmallVarinat() {
+    BuckwheatTheme {
+        WholeBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
+            budget = BigDecimal(60000),
+            currency = ExtendCurrency.none(),
+            startDate = LocalDate.now().minusDays(28).toDate(),
+            finishDate = Date(),
+            bigVariant = false,
         )
     }
 }
