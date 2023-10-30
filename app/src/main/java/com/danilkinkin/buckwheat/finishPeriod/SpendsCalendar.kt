@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.finishPeriod
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.datePicker.CELL_SIZE
 import com.danilkinkin.buckwheat.base.datePicker.WeekSelectionPill
@@ -89,6 +91,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.TemporalAdjusters
 import java.util.Date
+import kotlin.math.pow
 
 data class SpendingDay(
     val date: Date,
@@ -326,17 +329,20 @@ internal fun Day(
 
     val harmonizedColor = if (spendingDay !== null) toPalette(
         harmonize(
-            combineColors(
-                listOf(
-                    colorBad,
-                    colorNotGood,
-                    colorGood,
-                ),
-                (spendingDay.budget - spendingDay.spending)
-                    .divide(spendingDay.budget, 2, RoundingMode.HALF_EVEN)
-                    .coerceIn(BigDecimal.ZERO, BigDecimal.ONE)
-                    .toFloat(),
-            ),
+            if (spendingDay.spending <= spendingDay.budget) {
+                combineColors(
+                    listOf(
+                        colorNotGood,
+                        colorGood,
+                    ),
+                    (spendingDay.budget - spendingDay.spending)
+                        .divide(spendingDay.budget, 2, RoundingMode.HALF_EVEN)
+                        .coerceIn(BigDecimal.ZERO, BigDecimal.ONE)
+                        .toFloat(),
+                )
+            } else {
+                colorBad
+            },
             colorEditor
         )
     ) else toPalette(MaterialTheme.colorScheme.primary).copy(
@@ -344,12 +350,21 @@ internal fun Day(
         onContainer = MaterialTheme.colorScheme.onSurface,
     )
 
+    val percent = if (spendingDay !== null) {
+        spendingDay.spending
+            .divide(spendingDay.budget, 2, RoundingMode.HALF_EVEN)
+            .toFloat()
+    } else {
+        0f
+    }
+
     Box(
         modifier = modifier
             .height(CELL_SIZE)
             .widthIn(min = CELL_SIZE)
             .fillMaxWidth()
-            .background(Color.Transparent),
+            .background(Color.Transparent)
+            .zIndex(percent + 1f),
         contentAlignment = Alignment.Center
     ) {
         Box(
@@ -357,22 +372,26 @@ internal fun Day(
                 .height(CELL_SIZE - 2.dp)
                 .width(CELL_SIZE - 2.dp)
                 .background(
-                    color = harmonizedColor.container.copy(0.15f.coerceAtMost(harmonizedColor.container.alpha)),
-                    shape = RoundedCornerShape(8.dp),
+                    color = harmonizedColor.surface.copy(harmonizedColor.container.alpha),
+                    shape = RoundedCornerShape(10.dp),
+                )
+                .border(
+                    width = 2.dp,
+                    color = harmonizedColor.container
+                        .copy((if (percent < 1f) 0.4f else 1f).coerceAtMost(harmonizedColor.container.alpha)),
+                    shape = RoundedCornerShape(10.dp),
                 ),
             contentAlignment = Alignment.Center,
         ) {
             if (spendingDay !== null) {
-                val percent = spendingDay.spending
-                    .divide(spendingDay.budget, 2, RoundingMode.HALF_EVEN)
-                    .toFloat()
-
                 Box(
                     modifier = Modifier
                         .requiredSize(CELL_SIZE * percent)
                         .background(
-                            color = harmonizedColor.container.copy(0.4f),
-                            shape = RoundedCornerShape(8.dp),
+                            color = harmonizedColor.container.copy(0.5f),
+                            shape = RoundedCornerShape(
+                                10.dp * percent.coerceAtLeast(0.7f).pow(1.8f),
+                            ),
                         )
                 )
             }
