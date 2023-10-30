@@ -99,18 +99,10 @@ fun FinishPeriod(
                             )
                         }
                         Spacer(modifier = Modifier.height(16.dp))
-                        Row(Modifier.fillMaxWidth()) {
-                            SpendsCountCard(
-                                modifier = Modifier,
-                                count = spends.size,
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            AverageSpendCard(
-                                modifier = Modifier.weight(1f),
-                                spends = spends,
-                                currency = spendsViewModel.currency.value!!,
-                            )
-                        }
+                        SpendsCountCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            count = spends.size,
+                        )
                         Spacer(modifier = Modifier.height(16.dp))
                         SpendsCalendar(
                             modifier = Modifier.fillMaxWidth(),

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -356,10 +357,25 @@ internal fun Day(
                 .height(CELL_SIZE - 2.dp)
                 .width(CELL_SIZE - 2.dp)
                 .background(
-                    color = harmonizedColor.container,
+                    color = harmonizedColor.container.copy(0.15f.coerceAtMost(harmonizedColor.container.alpha)),
                     shape = RoundedCornerShape(8.dp),
-                )
+                ),
+            contentAlignment = Alignment.Center,
         ) {
+            if (spendingDay !== null) {
+                val percent = spendingDay.spending
+                    .divide(spendingDay.budget, 2, RoundingMode.HALF_EVEN)
+                    .toFloat()
+
+                Box(
+                    modifier = Modifier
+                        .requiredSize(CELL_SIZE * percent)
+                        .background(
+                            color = harmonizedColor.container.copy(0.4f),
+                            shape = RoundedCornerShape(8.dp),
+                        )
+                )
+            }
             Text(
                 modifier = Modifier
                     .fillMaxSize()

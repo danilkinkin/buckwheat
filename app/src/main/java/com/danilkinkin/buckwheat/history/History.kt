@@ -49,6 +49,7 @@ fun History(
     spendsViewModel: SpendsViewModel = viewModel(),
     appViewModel: AppViewModel = viewModel(),
     editorViewModel: EditorViewModel = viewModel(),
+    readOnly: Boolean = false,
     onClose: () -> Unit = {}
 ) {
     val scrollState = rememberLazyListState()
@@ -189,7 +190,7 @@ fun History(
                             spentPerDay = row.dayTotal!!,
                             currency = currency.value,
                         )
-                        RowEntityType.Spent -> SwipeActions(
+                        RowEntityType.Spent -> if (!readOnly) SwipeActions(
                             startActionsConfig = SwipeActionsConfig(
                                 threshold = 0.4f,
                                 background = MaterialTheme.colorScheme.tertiaryContainer,
@@ -276,31 +277,38 @@ fun History(
                                     )
                                 }
                             }
+                        } else {
+                            SpentItem(
+                                transaction = row.transaction!!,
+                                currency = currency.value
+                            )
                         }
                     }
                 }
 
-                item("budget-info") {
-                    WholeBudgetCard(
-                        modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                        budget = budget.value,
-                        currency = currency.value,
-                        startDate = startPeriodDate.value,
-                        finishDate = finishPeriodDate.value,
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                        ),
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(
-                                WindowInsets.systemBars
-                                    .asPaddingValues()
-                                    .calculateTopPadding()
-                            )
-                    )
+                if (!readOnly) {
+                    item("budget-info") {
+                        WholeBudgetCard(
+                            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                            budget = budget.value,
+                            currency = currency.value,
+                            startDate = startPeriodDate.value,
+                            finishDate = finishPeriodDate.value,
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                            ),
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(
+                                    WindowInsets.systemBars
+                                        .asPaddingValues()
+                                        .calculateTopPadding()
+                                )
+                        )
+                    }
                 }
             }
 
@@ -309,29 +317,31 @@ fun History(
             }
         }
 
-        Column(
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .navigationBarsPadding(),
-        ) {
-            FloatingActionButton(
+        if (!readOnly) {
+            Column(
+                horizontalAlignment = Alignment.End,
                 modifier = Modifier
-                    .padding(end = 24.dp, bottom = 32.dp)
-                    .scale(fapScale),
-                onClick = {
-                    coroutineScope.launch {
-                        scrollState.animateScrollToItem(0)
-                    }
-                },
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_down),
-                    contentDescription = null,
-                    modifier = Modifier.size(ButtonDefaults.IconSize)
-                )
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(end = 24.dp, bottom = 32.dp)
+                        .scale(fapScale),
+                    onClick = {
+                        coroutineScope.launch {
+                            scrollState.animateScrollToItem(0)
+                        }
+                    },
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_arrow_down),
+                        contentDescription = null,
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                    )
 
+                }
             }
         }
     }

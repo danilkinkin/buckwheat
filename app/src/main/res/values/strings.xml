@@ -112,7 +112,7 @@
     <string name="rest_budget_percent">%1$s%% of budget</string>
     <string name="min_spent">Minimum spend</string>
     <string name="max_spent">Maximum spending</string>
-    <string name="count_spends">Total spending</string>
+    <string name="count_spends">Transactions</string>
     <string name="average_spent">Average spend</string>
     <string name="advice_title">You are doing well</string>
     <string name="advice_description">Write down all your expenses and don\'t worry about going over budget, spending is not a constant thing.</string>
@@ -170,4 +170,5 @@
     <string name="million_numerical_shorthand">m</string>
     <string name="billion_numerical_shorthand">b</string>
     <string name="trillion_numerical_shorthand">t</string>
+    <string name="history_title">History</string>
 </resources>

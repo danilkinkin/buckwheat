@@ -23,6 +23,8 @@ import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NewDayBudgetDescr
 import com.danilkinkin.buckwheat.effects.Confetti
 import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
 import com.danilkinkin.buckwheat.finishPeriod.FinishPeriod
+import com.danilkinkin.buckwheat.finishPeriod.VIEWER_HISTORY_SHEET
+import com.danilkinkin.buckwheat.finishPeriod.ViewerHistory
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.onboarding.Onboarding
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
@@ -135,6 +137,14 @@ fun BottomSheets(
             onClose = {
                 coroutineScope.launch { state.hide() }
             },
+        )
+    }
+
+    BottomSheetWrapper(name = VIEWER_HISTORY_SHEET) {
+        ViewerHistory(
+            onClose = {
+                coroutineScope.launch { it.hide() }
+            }
         )
     }
 
