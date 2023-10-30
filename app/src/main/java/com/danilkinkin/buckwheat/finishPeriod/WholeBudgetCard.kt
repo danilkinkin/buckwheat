@@ -73,7 +73,9 @@ fun WholeBudgetCard(
                         )
                     }
 
-                    Box() {
+                    Box(
+                        modifier = Modifier
+                    ) {
                         Arrow(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -83,21 +85,26 @@ fun WholeBudgetCard(
                         if (finishDate !== null && bigVariant) {
                             Surface(
                                 modifier = Modifier
-                                    .align(Alignment.Center),
+                                    .align(Alignment.Center)
+                                    .requiredHeight(24.dp),
                                 shape = CircleShape,
                                 color = LocalContentColor.current,
                                 contentColor = MaterialTheme.colorScheme.surface,
                             ) {
                                 val days = countDays(finishDate, startDate)
 
-                                Text(
-                                    modifier = Modifier.padding(8.dp, 0.dp),
-                                    text = String.format(
-                                        pluralStringResource(R.plurals.days_count, count = days),
-                                        days,
-                                    ),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                )
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(
+                                        modifier = Modifier.padding(12.dp, 0.dp),
+                                        text = String.format(
+                                            pluralStringResource(R.plurals.days_count, count = days),
+                                            days,
+                                        ),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                    )
+                                }
                             }
                         }
                     }
