@@ -3,34 +3,21 @@ package com.danilkinkin.buckwheat.finishPeriod
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,21 +31,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.datePicker.CELL_SIZE
-import com.danilkinkin.buckwheat.base.datePicker.WeekSelectionPill
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
 import com.danilkinkin.buckwheat.base.datePicker.model.Month
@@ -71,15 +49,11 @@ import com.danilkinkin.buckwheat.ui.colorBad
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorGood
 import com.danilkinkin.buckwheat.ui.colorNotGood
-import com.danilkinkin.buckwheat.ui.typography
-import com.danilkinkin.buckwheat.util.HarmonizedColorPalette
 import com.danilkinkin.buckwheat.util.combineColors
-import com.danilkinkin.buckwheat.util.countDays
 import com.danilkinkin.buckwheat.util.getWeek
 import com.danilkinkin.buckwheat.util.harmonize
 import com.danilkinkin.buckwheat.util.isSameDay
-import com.danilkinkin.buckwheat.util.numberFormat
-import com.danilkinkin.buckwheat.util.prettyDate
+import com.danilkinkin.buckwheat.util.isZero
 import com.danilkinkin.buckwheat.util.prettyWeekDay
 import com.danilkinkin.buckwheat.util.prettyYearMonth
 import com.danilkinkin.buckwheat.util.toDate
@@ -111,8 +85,6 @@ fun SpendsCalendar(
 ) {
     val context = LocalContext.current
     val localDensity = LocalDensity.current
-
-    val dayWidth = remember { mutableStateOf(CELL_SIZE) }
 
     val spendingDays = remember(transactions) {
         val days: MutableMap<LocalDate, SpendingDay> = emptyMap<LocalDate, SpendingDay>().toMutableMap()
@@ -173,18 +145,12 @@ fun SpendsCalendar(
         ))
     }
 
-    Column(
-        modifier = modifier
-            .onGloballyPositioned {
-                dayWidth.value = with(localDensity) { it.size.width.toDp() / 7 }
-            },
-    ) {
+    Column {
         calendarState.listMonths.forEach { month ->
             ItemsCalendarMonth(
                 calendarState.calendarUiState.value,
                 {},
                 month,
-                dayWidth.value,
                 spendingDays,
             )
         }
@@ -196,7 +162,6 @@ private fun ItemsCalendarMonth(
     calendarUiState: CalendarUiState,
     onDayClicked: (LocalDate) -> Unit,
     month: Month,
-    dayWidth: Dp,
     spendingDays: Map<LocalDate, SpendingDay>,
 ) {
     MonthHeader(
@@ -323,7 +288,11 @@ internal fun Day(
     spendingDays: Map<LocalDate, SpendingDay>,
     modifier: Modifier = Modifier
 ) {
-    val spendingDay = spendingDays[day]
+    val spendingDay = if (spendingDays[day] === null || spendingDays[day]!!.spending.isZero()) {
+        null
+    } else {
+        spendingDays[day]
+    }
 
     Log.d("SpendsCalendar", "spendingDay: $day $spendingDay")
 
@@ -363,14 +332,12 @@ internal fun Day(
             .height(CELL_SIZE)
             .widthIn(min = CELL_SIZE)
             .fillMaxWidth()
-            .background(Color.Transparent)
             .zIndex(percent + 1f),
         contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = modifier
-                .height(CELL_SIZE - 2.dp)
-                .width(CELL_SIZE - 2.dp)
+                .size(CELL_SIZE - 2.dp)
                 .background(
                     color = harmonizedColor.surface.copy(harmonizedColor.container.alpha),
                     shape = RoundedCornerShape(10.dp),
