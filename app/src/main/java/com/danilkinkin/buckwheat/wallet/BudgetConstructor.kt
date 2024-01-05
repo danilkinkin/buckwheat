@@ -3,6 +3,8 @@ package com.danilkinkin.buckwheat.wallet
 import androidx.compose.animation.*
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -10,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -52,6 +55,8 @@ fun BudgetConstructor(
     val context = LocalContext.current
     val haptic = LocalHapticFeedback.current
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
     val budget by spendsViewModel.budget.observeAsState(BigDecimal.ZERO)
     val spent by spendsViewModel.spent.observeAsState(BigDecimal.ZERO)
     val spentFromDailyBudget by spendsViewModel.spentFromDailyBudget.observeAsState(BigDecimal.ZERO)
@@ -59,6 +64,10 @@ fun BudgetConstructor(
     val finishPeriodDate by spendsViewModel.finishPeriodDate.observeAsState(Date())
 
     var rawBudget by remember {
+        if (budget.isZero()) {
+            return@remember mutableStateOf("")
+        }
+
         val restBudget =
             (budget - spent - spentFromDailyBudget)
                 .setScale(2, RoundingMode.HALF_UP)
@@ -148,7 +157,15 @@ fun BudgetConstructor(
 
         BasicTextField(
             value = rawBudget,
+            interactionSource = interactionSource,
             onValueChange = {
+                if (it.isEmpty()) {
+                    rawBudget = ""
+                    budgetCache = BigDecimal.ZERO
+                    onChange(BigDecimal.ZERO, dateToValue.value)
+                    return@BasicTextField
+                }
+
                 val converted = tryConvertStringToNumber(it)
 
                 rawBudget = converted.join(third = false)
@@ -176,12 +193,21 @@ fun BudgetConstructor(
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { input ->
                 Column {
-                    Row(
+                    Box(
                         Modifier
                             .fillMaxWidth()
-                            .padding(top = 56.dp, bottom = 80.dp),
-                        horizontalArrangement = Arrangement.Center,
+                            .padding(top = 56.dp, bottom = 80.dp, start = 24.dp, end = 24.dp),
+                        contentAlignment = Alignment.Center
                     ) {
+                        if (!isFocused && rawBudget.isEmpty()) {
+                            Text(
+                                text = "0",
+                                style = MaterialTheme.typography.displayLarge.copy(
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12F),
+                                    textAlign = TextAlign.Center,
+                                ),
+                            )
+                        }
                         input()
                     }
                 }
