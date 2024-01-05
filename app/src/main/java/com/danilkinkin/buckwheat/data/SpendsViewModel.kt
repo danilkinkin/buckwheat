@@ -148,15 +148,11 @@ class SpendsViewModel @Inject constructor(
                                 setDailyBudget(whatBudgetForDay)
                             }
                             RestedBudgetDistributionMethod.ADD_TODAY -> {
-                                val notSpent = spendsRepository.howMuchNotSpent()
-                                val dailyBudget = spendsRepository.getDailyBudget().first()
-                                val budgetPerDayAdd = spendsRepository.whatBudgetForDay(
-                                    excludeCurrentDay = false,
-                                    applyTodaySpends = true,
-                                    notCommittedSpent = notSpent - dailyBudget,
+                                val notSpent = spendsRepository.howMuchNotSpent(
+                                    excludeSkippedPart = true,
                                 )
 
-                                setDailyBudget(budgetPerDayAdd + notSpent - dailyBudget)
+                                setDailyBudget(notSpent)
                             }
                         }
                     } else {
