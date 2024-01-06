@@ -80,20 +80,34 @@ fun FinishPeriod(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     if (spends.isNotEmpty()) {
-                        RestAndSpentBudgetCard()
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(IntrinsicSize.Min),
+                        ) {
+                            RestAndSpentBudgetCard(modifier = Modifier.weight(1f))
+                            Spacer(modifier = Modifier.width(16.dp))
+                            FillCircleStub()
+                        }
                         Spacer(modifier = Modifier.height(16.dp))
                         Row(
-                            modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(IntrinsicSize.Min),
                         ) {
                             MinMaxSpentCard(
-                                modifier = Modifier.weight(1f).fillMaxHeight(),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight(),
                                 isMin = true,
                                 spends = spends,
                                 currency = spendsViewModel.currency.value!!,
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             MinMaxSpentCard(
-                                modifier = Modifier.weight(1f).fillMaxHeight(),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxHeight(),
                                 isMin = false,
                                 spends = spends,
                                 currency = spendsViewModel.currency.value!!,
