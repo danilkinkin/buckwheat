@@ -11,15 +11,20 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.FlingBehavior
 import androidx.compose.foundation.gestures.ScrollScope
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,6 +40,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.EditStage
@@ -63,18 +69,20 @@ fun TaggingToolbar(
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val width = maxWidth - 48.dp
 
-        LazyRow(
+        Row(
             Modifier
                 .fillMaxWidth()
-                .heightIn(44.dp),
-            contentPadding = PaddingValues(horizontal = 24.dp),
-            reverseLayout = true,
-            state = rememberLazyListState(),
-            userScrollEnabled = !isEdit,
+                .heightIn(44.dp)
+                .horizontalScroll(
+                    state = rememberScrollState(),
+                    enabled = !isEdit,
+                    reverseScrolling = true,
+                )
+                .padding(horizontal = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         ) {
-            item(key = "custom_tag") {
+            tags.forEach { tag ->
                 AnimatedVisibility(
                     visible = showAddComment,
                     enter = fadeIn(
@@ -100,45 +108,41 @@ fun TaggingToolbar(
                         )
                     ) { with(localDensity) { 30.dp.toPx().toInt() } },
                 ) {
-                    CustomTag(
-                        onlyIcon = tags.isNotEmpty(),
-                        editorFocusController = editorFocusController,
-                        extendWidth = width,
-                        onEdit = { isEdit = it },
-                    )
+                    Tag(value = tag)
                 }
-                Spacer(modifier = Modifier.width(24.dp))
             }
-            items(tags.size) { index ->
-                val item = tags[index]
-
-                AnimatedVisibility(
-                    visible = showAddComment,
-                    enter = fadeIn(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) + slideInHorizontally(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) { with(localDensity) { 30.dp.toPx().toInt() } },
-                    exit = fadeOut(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) + slideOutHorizontally(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) { with(localDensity) { 30.dp.toPx().toInt() } },
-                ) {
-                    Tag(value = item)
-                }
+            Spacer(modifier = Modifier.width(24.dp))
+            AnimatedVisibility(
+                visible = showAddComment,
+                enter = fadeIn(
+                    tween(
+                        durationMillis = 150,
+                        easing = EaseInOutQuad,
+                    )
+                ) + slideInHorizontally(
+                    tween(
+                        durationMillis = 150,
+                        easing = EaseInOutQuad,
+                    )
+                ) { with(localDensity) { 30.dp.toPx().toInt() } },
+                exit = fadeOut(
+                    tween(
+                        durationMillis = 150,
+                        easing = EaseInOutQuad,
+                    )
+                ) + slideOutHorizontally(
+                    tween(
+                        durationMillis = 150,
+                        easing = EaseInOutQuad,
+                    )
+                ) { with(localDensity) { 30.dp.toPx().toInt() } },
+            ) {
+                CustomTag(
+                    onlyIcon = tags.isNotEmpty(),
+                    editorFocusController = editorFocusController,
+                    extendWidth = width,
+                    onEdit = { isEdit = it },
+                )
             }
         }
     }
