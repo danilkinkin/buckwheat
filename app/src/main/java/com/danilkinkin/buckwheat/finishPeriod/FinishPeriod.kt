@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
@@ -105,7 +106,7 @@ fun FinishPeriod(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         SpendsCalendar(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.zIndex(-1f),
                             budget = wholeBudget,
                             transactions = transactions,
                             startDate = spendsViewModel.startPeriodDate.value!!,

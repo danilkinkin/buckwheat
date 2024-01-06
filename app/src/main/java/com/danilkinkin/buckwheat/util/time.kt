@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import kotlin.math.ceil
 
 const val DAY = 24 * 60 * 60 * 1000
@@ -62,6 +63,10 @@ fun isSameDay(dateA: Date, dateB: Date): Boolean {
 fun getWeek(): Array<DayOfWeek> {
     val locale = LocalConfiguration.current.locales[0]
 
+    return getWeek(locale)
+}
+
+fun getWeek(locale: Locale): Array<DayOfWeek> {
     val firstDayOfWeek = WeekFields.of(locale).firstDayOfWeek
 
     return if (firstDayOfWeek == DayOfWeek.MONDAY) {
