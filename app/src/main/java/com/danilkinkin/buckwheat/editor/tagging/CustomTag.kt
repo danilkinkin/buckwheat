@@ -44,11 +44,11 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 
 @Composable
 fun CustomTag(
-    spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
     editorFocusController: FocusController,
     extendWidth: Dp = 0.dp,
+    onlyIcon: Boolean = false,
     onEdit: (Boolean) -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
@@ -60,8 +60,6 @@ fun CustomTag(
         if (it === EditStage.CREATING_SPENT) {
             value = ""
         }
-
-        showAddComment = it === EditStage.EDIT_SPENT
     }
 
     DisposableEffect(editorViewModel.currentComment) {
@@ -75,6 +73,7 @@ fun CustomTag(
         color = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
+
             .clip(CircleShape)
             .then(if (isEdit) {
                 Modifier
@@ -89,7 +88,7 @@ fun CustomTag(
             })
     ) {
         Row(
-            modifier = Modifier.padding(start = 12.dp),
+            modifier = Modifier.widthIn(0.dp, extendWidth).padding(start = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AnimatedVisibility(
@@ -100,7 +99,9 @@ fun CustomTag(
                 Spacer(Modifier.width(8.dp))
             }
             Icon(
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier
+                    .width(20.dp)
+                    .height(44.dp),
                 painter = painterResource(R.drawable.ic_comment),
                 contentDescription = null,
             )
@@ -109,54 +110,42 @@ fun CustomTag(
                 enter = scaleIn(tween(durationMillis = 150)),
                 exit = scaleOut(tween(durationMillis = 150)),
             ) {
-                Spacer(Modifier.width(8.dp))
+                if (onlyIcon) {
+                    Spacer(Modifier.width(12.dp))
+                } else {
+                    Spacer(Modifier.width(8.dp))
+                }
             }
             AnimatedContent(
                 targetState = isEdit,
                 transitionSpec = {
                     (fadeIn(
                         tween(durationMillis = 250)
-                    ) with fadeOut(
+                    ) togetherWith fadeOut(
                         tween(durationMillis = 250)
                     )).using(
                         SizeTransform(clip = false)
                     )
-                    AnimatedVisibility(
-                        visible = !isEdit,
-                        enter = scaleIn(tween(durationMillis = 150)),
-                        exit = scaleOut(tween(durationMillis = 150)),
-                    ) {
-                        Spacer(Modifier.width(8.dp))
-                    }
-                    AnimatedContent(
-                        targetState = isEdit,
-                        transitionSpec = {
-                            (fadeIn(
-                                tween(durationMillis = 250)
-                            ) togetherWith fadeOut(
-                                tween(durationMillis = 250)
-                            )).using(
-                                SizeTransform(clip = false)
-                            )
+                }
+            ) { targetIsEdit ->
+                if (targetIsEdit) {
+                    CommentEditor(
+                        defaultValue = value,
+                        onApply = { comment ->
+                            value = comment
+                            isEdit = false
+                            onEdit(false)
+                            appViewModel.showSystemKeyboard.value = false
+                            editorViewModel.currentComment = comment
                         }
-                    ) { targetIsEdit -> if (targetIsEdit) {
-                        CommentEditor(
-                            defaultValue = value,
-                            onApply = { comment ->
-                                value = comment
-                                isEdit = false
-                                appViewModel.showSystemKeyboard.value = false
-                                editorViewModel.currentComment = comment
-                            }
-                        )
-                    } else {
-                        Text(
-                            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
-                            text = value.ifEmpty { stringResource(R.string.add_comment) },
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    } }
+                    )
+                } else if (!onlyIcon) {
+                    Text(
+                        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
+                        text = value.ifEmpty { stringResource(R.string.add_comment) },
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
             }
         }

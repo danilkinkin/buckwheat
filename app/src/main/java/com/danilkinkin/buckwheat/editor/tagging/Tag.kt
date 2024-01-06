@@ -3,6 +3,7 @@ package com.danilkinkin.buckwheat.editor.tagging
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -54,6 +55,7 @@ fun Tag(
         color = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
+            .height(44.dp)
             .clip(CircleShape)
             .clickable {
 
@@ -63,7 +65,7 @@ fun Tag(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                modifier = Modifier.padding(16.dp, 8.dp),
+                modifier = Modifier.padding(horizontal = 16.dp),
                 text = value,
                 softWrap = false,
                 overflow = TextOverflow.Ellipsis,
