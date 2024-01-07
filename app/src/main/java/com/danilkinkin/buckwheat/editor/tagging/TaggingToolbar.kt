@@ -59,6 +59,7 @@ fun TaggingToolbar(
     val localDensity = LocalDensity.current
 
     val tags by spendsViewModel.tags.observeAsState(emptyList())
+    val currentComment by editorViewModel.currentComment.observeAsState("")
 
     Log.d("TAG", "TaggingToolbar: tags = $tags size = ${tags.size}")
 
@@ -68,7 +69,6 @@ fun TaggingToolbar(
     observeLiveData(editorViewModel.stage) {
         showAddComment = it === EditStage.EDIT_SPENT
     }
-
 
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val width = maxWidth - 48.dp
@@ -86,7 +86,7 @@ fun TaggingToolbar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         ) {
-            tags.take(5).forEach { tag ->
+            tags.take(5).filter { it != currentComment }.forEach { tag ->
                 AnimatedVisibility(
                     visible = showAddComment,
                     enter = fadeIn(

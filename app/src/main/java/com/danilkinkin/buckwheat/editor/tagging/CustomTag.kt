@@ -251,23 +251,25 @@ fun CustomTag(
                     contentAlignment = Alignment.BottomCenter,
                 ) {
                     AnimatedVisibility(
-                        visible = isShowSuggestions && filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == tempValue),
+                        visible = isShowSuggestions,
                         enter = expandVertically(tween(150)),
                         exit = shrinkVertically(tween(150)),
                     ) {
-                        Surface(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp)
-                        ) {
-
-                            LazyColumn(
-                                userScrollEnabled = true,
-                                contentPadding = PaddingValues(vertical = 8.dp),
+                        if (filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == tempValue)) {
+                            Surface(
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(16.dp)
                             ) {
-                                filteredItems.forEach {
-                                    itemSuggest(it) {
-                                        editorViewModel.currentComment.value = it
-                                        value = it
+
+                                LazyColumn(
+                                    userScrollEnabled = true,
+                                    contentPadding = PaddingValues(vertical = 8.dp),
+                                ) {
+                                    filteredItems.forEach {
+                                        itemSuggest(it) {
+                                            editorViewModel.currentComment.value = it
+                                            value = it
+                                        }
                                     }
                                 }
                             }
