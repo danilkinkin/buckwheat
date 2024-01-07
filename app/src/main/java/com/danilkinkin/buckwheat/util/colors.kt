@@ -31,11 +31,19 @@ fun combineColors(colors: List<Color>, angle: Float = 0.5F): Color {
 
 @Composable
 fun harmonize(designColor: Color, sourceColor: Color = MaterialTheme.colorScheme.primary): Color {
+    return harmonizeWithColor(designColor, sourceColor)
+}
+
+fun harmonizeWithColor(designColor: Color, sourceColor: Color): Color {
     return Color(Blend.harmonize(designColor.toArgb(), sourceColor.toArgb()))
 }
 
 @Composable
 fun toPalette(color: Color, darkTheme: Boolean = isNightMode()): HarmonizedColorPalette {
+    return toPaletteWithTheme(color, darkTheme)
+}
+
+fun toPaletteWithTheme(color: Color, darkTheme: Boolean): HarmonizedColorPalette {
     return if (darkTheme) {
         darkFromCorePalette(color)
     } else {

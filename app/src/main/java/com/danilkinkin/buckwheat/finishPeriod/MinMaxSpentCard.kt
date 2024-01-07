@@ -97,17 +97,9 @@ fun MinMaxSpentCard(
                 Text(
                     text = prettyDate(
                         spent.date,
-                        showTime = false,
-                        forceShowDate = true,
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
-                )
-                Text(
-                    text = prettyDate(
-                        spent.date,
                         showTime = true,
-                        forceHideDate = true,
+                        forceShowDate = true,
+                        shortMonth = true,
                     ),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
@@ -115,7 +107,7 @@ fun MinMaxSpentCard(
 
                 if (spent.comment.isNotEmpty()) {
                     Row(
-                        modifier = Modifier.padding(top = 8.dp),
+                        modifier = Modifier.padding(top = 4.dp),
                     ) {
                         Icon(
                             modifier = Modifier.padding(top = 2.dp).size(16.dp),

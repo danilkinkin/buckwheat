@@ -128,6 +128,12 @@ fun FinishPeriod(
                             currency = spendsViewModel.currency.value!!,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
+                        CategoriesChartCard(
+                            modifier = Modifier.fillMaxWidth(),
+                            spends = spends,
+                            currency = spendsViewModel.currency.value!!,
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
