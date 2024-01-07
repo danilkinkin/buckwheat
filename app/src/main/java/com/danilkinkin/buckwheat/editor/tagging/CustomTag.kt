@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -111,6 +110,7 @@ fun CustomTag(
     var value by remember { mutableStateOf("") }
     var tempValue by remember { mutableStateOf("") }
     var isShowSuggestions by remember { mutableStateOf(false) }
+    var renderPopup by remember { mutableStateOf(false) }
 
     observeLiveData(editorViewModel.stage) {
         if (it === EditStage.CREATING_SPENT) {
@@ -165,7 +165,7 @@ fun CustomTag(
                     modifier = Modifier
                         .width(20.dp)
                         .height(44.dp),
-                    painter = painterResource(R.drawable.ic_comment),
+                    painter = painterResource(R.drawable.ic_label),
                     contentDescription = null,
                 )
 
@@ -194,7 +194,7 @@ fun CustomTag(
                     }
                 ) { targetIsEdit ->
                     if (this.transition.currentState == this.transition.targetState && targetIsEdit) {
-                        isShowSuggestions = true
+                        renderPopup = true
                     }
 
                     if (targetIsEdit) {
@@ -222,58 +222,72 @@ fun CustomTag(
             }
         }
 
-        val filteredItems = tags.filter {
-            it.contains(tempValue, ignoreCase = true)
-        }
+        if (renderPopup) {
+            val filteredItems = tags.filter {
+                it.contains(tempValue, ignoreCase = true)
+            }
 
-        val topBarHeight = WindowInsets.systemBars
-            .asPaddingValues()
-            .calculateTopPadding()
+            val topBarHeight = WindowInsets.systemBars
+                .asPaddingValues()
+                .calculateTopPadding()
 
-        val height = remember { mutableStateOf(1000.dp) }
-        val popupPositionProvider = DropdownMenuPositionProvider(
-            DpOffset(0.dp, 8.dp),
-            localDensity,
-            topBarHeight,
-        ) { parentBounds, menuBounds ->
-            height.value = with(localDensity) { menuBounds.height.toDp() }
-        }
+            val height = remember { mutableStateOf(1000.dp) }
+            val popupPositionProvider = DropdownMenuPositionProvider(
+                DpOffset(0.dp, 8.dp),
+                localDensity,
+                topBarHeight,
+            ) { parentBounds, menuBounds ->
+                height.value = with(localDensity) { menuBounds.height.toDp() }
+            }
 
-        Popup(
-            popupPositionProvider = popupPositionProvider,
-            onDismissRequest = { },
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(extendWidth)
-                    .height(height.value),
-                contentAlignment = Alignment.BottomCenter,
+            Popup(
+                popupPositionProvider = popupPositionProvider,
+                onDismissRequest = { },
             ) {
-                AnimatedVisibility(
-                    visible = isShowSuggestions && filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == tempValue),
-                    enter = expandVertically(tween(150)),
-                    exit = shrinkVertically(tween(150)),
+                Box(
+                    modifier = Modifier
+                        .width(extendWidth)
+                        .height(height.value),
+                    contentAlignment = Alignment.BottomCenter,
                 ) {
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(16.dp)
+                    AnimatedVisibility(
+                        visible = isShowSuggestions && filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == tempValue),
+                        enter = expandVertically(tween(150)),
+                        exit = shrinkVertically(tween(150)),
                     ) {
-
-                        LazyColumn(
-                            userScrollEnabled = true,
-                            contentPadding = PaddingValues(vertical = 8.dp),
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp)
                         ) {
-                            filteredItems.forEach {
-                                itemSuggest(it) {
-                                    editorViewModel.currentComment.value = it
-                                    value = it
+
+                            LazyColumn(
+                                userScrollEnabled = true,
+                                contentPadding = PaddingValues(vertical = 8.dp),
+                            ) {
+                                filteredItems.forEach {
+                                    itemSuggest(it) {
+                                        editorViewModel.currentComment.value = it
+                                        value = it
+                                    }
                                 }
+                            }
+                        }
+
+                        DisposableEffect(Unit) {
+                            onDispose {
+                                renderPopup = false
                             }
                         }
                     }
                 }
             }
+
+            LaunchedEffect(Unit) {
+                isShowSuggestions = true
+            }
         }
+
+
     }
 }
 
