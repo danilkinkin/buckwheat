@@ -119,7 +119,7 @@ fun MinMaxSpentCard(
                     ) {
                         Icon(
                             modifier = Modifier.padding(top = 2.dp).size(16.dp),
-                            painter = painterResource(R.drawable.ic_comment),
+                            painter = painterResource(R.drawable.ic_label),
                             contentDescription = null,
                         )
                         Spacer(modifier = Modifier.width(6.dp))
