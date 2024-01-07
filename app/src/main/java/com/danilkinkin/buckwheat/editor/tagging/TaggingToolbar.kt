@@ -28,6 +28,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -57,6 +58,10 @@ fun TaggingToolbar(
 ) {
     val localDensity = LocalDensity.current
 
+    val tags by spendsViewModel.tags.observeAsState(emptyList())
+
+    Log.d("TAG", "TaggingToolbar: tags = $tags size = ${tags.size}")
+
     var showAddComment by remember { mutableStateOf(false) }
     var isEdit by remember { mutableStateOf(false) }
 
@@ -64,7 +69,6 @@ fun TaggingToolbar(
         showAddComment = it === EditStage.EDIT_SPENT
     }
 
-    val tags = arrayOf("Groceries", "Food", "Transport", "Entertainment", "Other")
 
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val width = maxWidth - 48.dp
@@ -82,7 +86,7 @@ fun TaggingToolbar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         ) {
-            tags.forEach { tag ->
+            tags.take(5).forEach { tag ->
                 AnimatedVisibility(
                     visible = showAddComment,
                     enter = fadeIn(
@@ -108,7 +112,9 @@ fun TaggingToolbar(
                         )
                     ) { with(localDensity) { 30.dp.toPx().toInt() } },
                 ) {
-                    Tag(value = tag)
+                    Tag(value = tag, onClick = {
+                        editorViewModel.currentComment.value = tag
+                    })
                 }
             }
             Spacer(modifier = Modifier.width(24.dp))

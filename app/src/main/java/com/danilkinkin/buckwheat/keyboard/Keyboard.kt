@@ -283,13 +283,13 @@ fun Keyboard(
                                             val newVersionOfSpent = editorViewModel.editedTransaction!!.copy(
                                                 value = editorViewModel.currentSpent,
                                                 date = editorViewModel.currentDate,
-                                                comment = editorViewModel.currentComment,
+                                                comment = editorViewModel.currentComment.value ?: ""
                                             )
 
                                             spendsViewModel.removeSpent(editorViewModel.editedTransaction!!, silent = true)
                                             spendsViewModel.addSpent(newVersionOfSpent)
                                         } else {
-                                            spendsViewModel.addSpent(Transaction(TransactionType.SPENT, editorViewModel.currentSpent, Date(), editorViewModel.currentComment))
+                                            spendsViewModel.addSpent(Transaction(TransactionType.SPENT, editorViewModel.currentSpent, Date(), editorViewModel.currentComment.value ?: ""))
                                             appViewModel.activateTutorial(TUTORS.OPEN_HISTORY)
                                         }
 

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.entities.Transaction
@@ -45,6 +46,20 @@ class SpendsRepository @Inject constructor(
 ) {
     fun getAllTransactions(): LiveData<List<Transaction>> = transactionDao.getAll()
     fun getAllSpends(): LiveData<List<Transaction>> = transactionDao.getAll(TransactionType.SPENT)
+
+    fun getAllTags(): LiveData<List<String>> = transactionDao.getAll().map { transactions ->
+        Log.d("SpendsRepository", "Get all tags [transactions: $transactions]")
+        transactions
+            .asSequence()
+            .filter { transaction -> transaction.comment.isNotEmpty() }
+            .groupBy { it.comment }
+            .map { it.key to it.value.size }
+            .sortedBy { it.second }
+            .map { it.first }
+            .distinct()
+            .toList()
+    }
+
     fun getBudget() = context.budgetDataStore.data.map {
         (it[budgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO).setScale(2)
     }
@@ -129,11 +144,13 @@ class SpendsRepository @Inject constructor(
         }
 
         transactionDao.deleteAll()
-        transactionDao.insert(Transaction(
-            TransactionType.INCOME,
-            newBudget,
-            getCurrentDateUseCase(),
-        ))
+        transactionDao.insert(
+            Transaction(
+                TransactionType.INCOME,
+                newBudget,
+                getCurrentDateUseCase(),
+            )
+        )
 
         setDailyBudget(whatBudgetForDay())
 
@@ -160,11 +177,13 @@ class SpendsRepository @Inject constructor(
             )
         }
 
-        transactionDao.insert(Transaction(
-            TransactionType.SET_DAILY_BUDGET,
-            newDailyBudget,
-            getCurrentDateUseCase(),
-        ))
+        transactionDao.insert(
+            Transaction(
+                TransactionType.SET_DAILY_BUDGET,
+                newDailyBudget,
+                getCurrentDateUseCase(),
+            )
+        )
     }
 
     suspend fun whatBudgetForDay(
@@ -411,7 +430,7 @@ class SpendsRepository @Inject constructor(
                     "SpendsRepository",
                     "Remove spent from previous day { "
                             + transactionForRemove
-                        + " } ["
+                            + " } ["
                             + "spent: $spent "
                             + "dailyBudget: $dailyBudget "
                             + "spreadDeltaSpentPerRestDays: $spreadDeltaSpentPerRestDays "

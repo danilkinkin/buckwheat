@@ -2,12 +2,16 @@ package com.danilkinkin.buckwheat.editor.tagging
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +48,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -79,15 +84,17 @@ import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.EditStage
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.observeLiveData
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun CustomTag(
+    spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
     editorFocusController: FocusController,
@@ -98,9 +105,12 @@ fun CustomTag(
     val focusManager = LocalFocusManager.current
     val localDensity = LocalDensity.current
 
+    val tags by spendsViewModel.tags.observeAsState(emptyList())
+
     var isEdit by remember { mutableStateOf(false) }
     var value by remember { mutableStateOf("") }
     var tempValue by remember { mutableStateOf("") }
+    var isShowSuggestions by remember { mutableStateOf(false) }
 
     observeLiveData(editorViewModel.stage) {
         if (it === EditStage.CREATING_SPENT) {
@@ -108,13 +118,17 @@ fun CustomTag(
         }
     }
 
+    observeLiveData(editorViewModel.currentComment) {
+        value = it ?: ""
+    }
+
     DisposableEffect(editorViewModel.currentComment) {
-        value = editorViewModel.currentComment
+        value = editorViewModel.currentComment.value ?: ""
 
         onDispose { }
     }
 
-    ExposedDropdownMenuBox(expanded = isEdit, onExpandedChange = {}) {
+    ExposedDropdownMenuBox(expanded = isShowSuggestions, onExpandedChange = {}) {
         Surface(
             shape = CircleShape,
             color = MaterialTheme.colorScheme.surface,
@@ -154,6 +168,7 @@ fun CustomTag(
                     painter = painterResource(R.drawable.ic_comment),
                     contentDescription = null,
                 )
+
                 AnimatedVisibility(
                     visible = !isEdit,
                     enter = scaleIn(tween(durationMillis = 150)),
@@ -178,6 +193,10 @@ fun CustomTag(
                         )
                     }
                 ) { targetIsEdit ->
+                    if (this.transition.currentState == this.transition.targetState && targetIsEdit) {
+                        isShowSuggestions = true
+                    }
+
                     if (targetIsEdit) {
                         CommentEditor(
                             defaultValue = value,
@@ -185,12 +204,13 @@ fun CustomTag(
                             onApply = { comment ->
                                 value = comment
                                 isEdit = false
+                                isShowSuggestions = false
                                 onEdit(false)
                                 appViewModel.showSystemKeyboard.value = false
-                                editorViewModel.currentComment = comment
+                                editorViewModel.currentComment.value = comment
                             }
                         )
-                    } else if (!onlyIcon) {
+                    } else if (!onlyIcon || value.isNotEmpty()) {
                         Text(
                             modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
                             text = value.ifEmpty { stringResource(R.string.add_comment) },
@@ -202,72 +222,51 @@ fun CustomTag(
             }
         }
 
-        if (isEdit) {
-            val topBarHeight = WindowInsets.systemBars
-                .asPaddingValues()
-                .calculateTopPadding()
+        val filteredItems = tags.filter {
+            it.contains(tempValue, ignoreCase = true)
+        }
 
-            val height = remember { mutableStateOf(1000.dp) }
-            val popupPositionProvider = DropdownMenuPositionProvider(
-                DpOffset(0.dp, 8.dp),
-                localDensity,
-                topBarHeight,
-            ) { parentBounds, menuBounds ->
-                height.value = with(localDensity) { menuBounds.height.toDp() }
-            }
+        val topBarHeight = WindowInsets.systemBars
+            .asPaddingValues()
+            .calculateTopPadding()
 
-            Popup(
-                popupPositionProvider = popupPositionProvider,
-                onDismissRequest = { },
+        val height = remember { mutableStateOf(1000.dp) }
+        val popupPositionProvider = DropdownMenuPositionProvider(
+            DpOffset(0.dp, 8.dp),
+            localDensity,
+            topBarHeight,
+        ) { parentBounds, menuBounds ->
+            height.value = with(localDensity) { menuBounds.height.toDp() }
+        }
+
+        Popup(
+            popupPositionProvider = popupPositionProvider,
+            onDismissRequest = { },
+        ) {
+            Box(
+                modifier = Modifier
+                    .width(extendWidth)
+                    .height(height.value),
+                contentAlignment = Alignment.BottomCenter,
             ) {
-                Box(
-                    modifier = Modifier
-                        .width(extendWidth)
-                        .height(height.value),
-                    contentAlignment = Alignment.BottomCenter,
+                AnimatedVisibility(
+                    visible = isShowSuggestions && filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == tempValue),
+                    enter = expandVertically(tween(150)),
+                    exit = shrinkVertically(tween(150)),
                 ) {
-                    val tags = arrayOf(
-                        "Groceries",
-                        "Food",
-                        "Transport",
-                        "Entertainment",
-                        "Something else",
-                        "Thing 1",
-                        "Thing 2",
-                        "Thing 3",
-                        "Thing 4",
-                        "Thing 5",
-                        "Thing 6",
-                        "Thing 7",
-                        "Thing 8",
-                        "Thing 9",
-                        "Thing 10",
-                        "Thing 11",
-                        "Thing 12",
-                        "Thing 13",
-                        "Thing 14",
-                        "Thing 15",
-                        "Thing 16",
-                        "Thing 17",
-                        "Other"
-                    )
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
 
-                    var filteredItems = tags.filter {
-                        it.contains(tempValue, ignoreCase = true)
-                    }
-
-                    if (filteredItems.isNotEmpty()) {
-                        Surface(
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(16.dp)
+                        LazyColumn(
+                            userScrollEnabled = true,
+                            contentPadding = PaddingValues(vertical = 8.dp),
                         ) {
-
-                            LazyColumn(
-                                userScrollEnabled = true,
-                                contentPadding = PaddingValues(vertical = 8.dp),
-                            ) {
-                                filteredItems.forEach {
-                                    itemSuggest(it, {})
+                            filteredItems.forEach {
+                                itemSuggest(it) {
+                                    editorViewModel.currentComment.value = it
+                                    value = it
                                 }
                             }
                         }
@@ -349,7 +348,6 @@ internal data class DropdownMenuPositionProvider(
         } ?: toLeft
 
         // Compute vertical position.
-        val yTop = (anchorBounds.top - contentOffsetY - popupContentSize.height).coerceAtLeast(0)
         val yBottom = anchorBounds.top - contentOffsetY
 
         onPositionCalculated(
@@ -360,7 +358,6 @@ internal data class DropdownMenuPositionProvider(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentEditor(
     modifier: Modifier = Modifier,
@@ -368,7 +365,7 @@ fun CommentEditor(
     onChange: (comment: String) -> Unit,
     onApply: (comment: String) -> Unit,
 ) {
-    var value by remember {
+    var value by remember(defaultValue) {
         mutableStateOf(
             TextFieldValue(
                 defaultValue,
