@@ -37,7 +37,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -58,22 +57,42 @@ import java.util.Date
 data class TagUsage(
     val name: String,
     val amount: BigDecimal,
-    val color: HarmonizedColorPalette? = null,
+    var color: HarmonizedColorPalette? = null,
 )
 
 var colors = listOf(
-    Color.Red,
-    Color.Green,
-    Color.Blue,
-    Color.Yellow,
-    Color.Magenta,
-    Color.Cyan,
-    Color.Gray,
-    Color.LightGray,
-    Color.DarkGray,
-    Color.Black,
-    Color.White,
+    Color(0xFF5C3BF5),
+    Color(0xFF51B0F9),
+    Color(0xFFEF893F),
+    Color(0xFFB5DD5F),
+    Color(0xFFF53B94),
+    Color(0xFFB93BF5),
+    Color(0xFFE64731),
+    Color(0xFF0ED2AF),
+    Color(0xFFDECC29),
 )
+
+var restColor = Color(0xFF222222)
+
+fun getIndexColor(index: Int, isNightMode: Boolean, primaryColor: Color): HarmonizedColorPalette {
+    return toPaletteWithTheme(
+        color = harmonizeWithColor(
+            designColor = colors.getOrNull(index) ?: colors.last(),
+            sourceColor = primaryColor
+        ),
+        darkTheme = isNightMode,
+    )
+}
+
+fun getRestColor(isNightMode: Boolean, primaryColor: Color): HarmonizedColorPalette {
+    return toPaletteWithTheme(
+        color = harmonizeWithColor(
+            designColor = restColor,
+            sourceColor = primaryColor
+        ),
+        darkTheme = isNightMode,
+    )
+}
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -85,26 +104,46 @@ fun CategoriesChartCard(
     val primaryColor = MaterialTheme.colorScheme.primary
     val isNightMode = isNightMode()
 
+    var offsetColor = 0
+
     val tags by remember {
-        val result = spends
+        var result = spends
+            .map { it.copy(comment = it.comment.ifEmpty { "Other" }) }
             .groupBy { it.comment }
-            .map {
+            .map { tag ->
                 TagUsage(
-                    it.key,
-                    it.value.map { it.value }.reduce { acc, next -> acc + next },
+                    tag.key,
+                    tag.value.map { it.value }.reduce { acc, next -> acc + next },
                 )
             }
             .sortedBy { it.amount }
             .reversed()
-            .mapIndexed { index, tagUsage ->
-                tagUsage.copy(color = toPaletteWithTheme(
-                        color = harmonizeWithColor(
-                            designColor = colors[index % colors.size],
-                            sourceColor = primaryColor),
-                    darkTheme = isNightMode,
-                ))
-            }
             .toList()
+
+        if (result.size > 9) {
+            result.find { it.name == "Other" }?.let {
+                result = result.filter { tagUsage -> tagUsage.name != "Other" }
+                result = result + it
+            }
+        }
+
+        result.subList(0, result.size.coerceAtMost(9)).forEachIndexed { index, tagUsage ->
+            tagUsage.color = if (tagUsage.name == "Other") {
+                offsetColor++
+                getRestColor(isNightMode, primaryColor)
+            } else getIndexColor( index - offsetColor, isNightMode, primaryColor)
+        }
+
+        if (result.size > 9) {
+            result = result.slice(0..8) + TagUsage(
+                name = "Rest",
+                amount = result
+                    .slice(9 until result.size)
+                    .map { it.amount }
+                    .reduce { acc, next -> acc + next },
+                color = getRestColor(isNightMode, primaryColor),
+            )
+        }
 
         mutableStateOf(result)
     }
@@ -157,7 +196,6 @@ fun DonutChart(
         with(localDensity) { chartPadding.calculateStartPadding(layoutDirection).toPx() }
     val endOffset = with(localDensity) { chartPadding.calculateEndPadding(layoutDirection).toPx() }
 
-    val textMeasurer = rememberTextMeasurer()
     Canvas(modifier = modifier) {
         val width = this.size.width
         val height = this.size.height
@@ -173,7 +211,9 @@ fun DonutChart(
         var halfStrokeWidth = strokeWidth / 2f
 
         items.forEach { tag ->
-            val sweepAngle = tag.amount.divide(total, 5, RoundingMode.HALF_DOWN).multiply(360.toBigDecimal()).toFloat()
+            val sweepAngle =
+                tag.amount.divide(total, 5, RoundingMode.HALF_DOWN).multiply(360.toBigDecimal())
+                    .toFloat()
 
             drawArc(
                 tag.color?.main ?: Color.Black,
@@ -250,28 +290,83 @@ private fun Preview() {
     }
 }
 
-@Preview(name = "3 categories")
+@Preview(name = "With other")
 @Composable
-private fun PreviewMin() {
+private fun PreviewWithOther() {
+    val tags = listOf(
+        "Food",
+        "Transport",
+        "Food",
+        "",
+        "Cinema",
+        "Transport",
+        "Food",
+        "Entertainment",
+        "Food",
+        "",
+        "Transport",
+        "Food",
+        "Cinema",
+        "Transport",
+        "Education"
+    )
+
     BuckwheatTheme {
         CategoriesChartCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             currency = ExtendCurrency.getInstance("EUR"),
-            spends = listOf(
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = Date(), comment = "Food"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = Date(), comment = "Transport"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date(), comment = "Food"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(52), date = Date(), comment = "Cinema"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(72), date = Date(), comment = "Transport"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date(), comment = "Food"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(56), date = Date(), comment = "Entertainment"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date(), comment = "Food"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date(), comment = "Transport"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(56), date = Date(), comment = "Food"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(15), date = Date(), comment = "Cinema"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(42), date = Date(), comment = "Transport"),
-                Transaction(type = TransactionType.SPENT, value = BigDecimal(120), date = Date(), comment = "Education"),
-            ),
+            spends = tags.mapIndexed { index, it ->
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(50 + index),
+                    date = Date(),
+                    comment = it
+                )
+            },
+        )
+    }
+}
+
+@Preview(name = "Many tags")
+@Composable
+private fun PreviewManyTags() {
+    val tags = listOf(
+        "Food",
+        "Alcohol",
+        "Transport",
+        "Plants",
+        "Food",
+        "Bar",
+        "Lost",
+        "",
+        "Cinema",
+        "Transport",
+        "Food",
+        "Subscriptions",
+        "Tools",
+        "Entertainment",
+        "Food",
+        "",
+        "Transport",
+        "Software",
+        "Food",
+        "Taxes",
+        "Transport",
+        "Education"
+    )
+
+    BuckwheatTheme {
+        CategoriesChartCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
+            currency = ExtendCurrency.getInstance("EUR"),
+            spends = tags.mapIndexed { index, it ->
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(50 + index),
+                    date = Date(),
+                    comment = it
+                )
+            },
         )
     }
 }
