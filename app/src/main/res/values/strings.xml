@@ -123,6 +123,8 @@
     <string name="overspending_after_few_times_out_budget">After that, you had %1$s of the %2$s left over budget</string>
     <string name="overspending_after_many_times_out_budget">After only %1$s of the %2$s remaining, you were on budget</string>
     <string name="overspending_after_all_times_out_budget">After all of the %1$s left you haven\'t been out of budget</string>
+    <string name="without_tag">Without tag</string>
+    <string name="rest_tags">Rest</string>
 
     <!-- Onboarding -->
     <string name="hello">Hello!</string>

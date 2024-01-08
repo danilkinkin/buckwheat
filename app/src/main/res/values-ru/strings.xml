@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Гречка</string>
-
-    <!-- Main -->
-    <string name="budget_for_today">Бюджет на сегодня</string>
+    <string name="app_widget_extend_name">Гречка расширенный</string>
+    <string name="app_widget_minimal_name">Гречка минимальная</string>
     <string name="rest_budget_for_today">На сегодня</string>
     <string name="new_daily_budget_short">Новый дневной</string>
     <string name="new_daily_budget">Новый дневной бюджет</string>
@@ -10,46 +10,29 @@
     <string name="budget_end">Бюджет закончился</string>
     <string name="budget_not_set">Бюджет не установлен</string>
     <string name="budget_end_description">Вы вышли за рамки запланированного бюджета, не беспокойтесь, это не страшно, траты никогда не бывают одинаковыми. Заводите траты дальше, чтобы понимать сколько в итоге вы потратите и какой бюджет вам нужен</string>
-    <string name="new_spent">Новая трата</string>
-    <plurals name="spends_today">
-        <item quantity="one">%1$s трата сегодня</item>
-        <item quantity="few">%1$s траты сегодня</item>
-        <item quantity="many">%1$s трат сегодня</item>
-    </plurals>
-    <plurals name="day">
-        <item quantity="one">%1$s день</item>
-        <item quantity="few">%1$s дня</item>
-        <item quantity="many">%1$s дней</item>
-    </plurals>
-    <string name="enter_spent_placeholder">Введите трату</string>
     <string name="hide_overspending_warn">Скрыть сообщение об окончании бюджета</string>
     <string name="hide_overspending_warn_description">Сообщение будет скрыто до конца периода, чтобы не отвлекать и не напрягать</string>
-    <string name="add_comment">Комментарий</string>
-
-    <!-- History -->
-    <string name="label_start_date">Начало</string>
-    <string name="label_finish_date">Конец</string>
+    <string name="add_comment">Пометка</string>
     <string name="remove_spent">Трата возвращена в бюджет</string>
     <string name="remove_spent_undo">Отменить</string>
     <string name="no_spends">Трат пока не было</string>
     <string name="total_per_day">Дневной итог:</string>
-
-    <!-- Wallet -->
     <string name="change_date">Изменить дату</string>
     <string name="change_time">Изменить время</string>
     <string name="wallet_title">Бюджет</string>
     <string name="wallet_edit_title">Новый бюджет</string>
-    <string name="label_budget">Бюджет</string>
     <string name="select_finish_date_title">Выберите дату окончания</string>
     <plurals name="finish_date_label">
         <item quantity="one">До %1$s (%2$s день)</item>
         <item quantity="few">До %1$s (%2$s дня)</item>
         <item quantity="many">До %1$s (%2$s дней)</item>
+        <item quantity="other">До %1$s (%2$s дней)</item>
     </plurals>
     <plurals name="days_count">
         <item quantity="one">%1$s день</item>
         <item quantity="few">%1$s дня</item>
         <item quantity="many">%1$s дней</item>
+        <item quantity="other">%1$s дней</item>
     </plurals>
     <string name="export_to_csv">Выгрузить в CSV</string>
     <string name="finish_date_not_select">Дата окончания не выбрана</string>
@@ -58,25 +41,21 @@
     <string name="currency_custom">Своя валюта</string>
     <string name="currency_none">Без валюты</string>
     <string name="per_day">%1$s в день</string>
-    <string name="select_currency_title">Выберете валюту</string>
-    <string name="select_currency_description">Валюта никак не влияет на расчеты, это просто обозначение для более легкого осознания чисел</string>
-    <string name="search_currency_placeholder">Код валюты или название</string>
-    <string name="currency_not_found">Нет подходящих валют</string>
-    <string name="currency_custom_title">Укажите свою валюту</string>
-    <string name="currency_custom_description">Например, трата в 150 условных единиц будет отображаться вот так:</string>
     <string name="total_title">Итого</string>
     <string name="unable_calc_budget">Не получается рассчитать бюджет</string>
     <string name="budget_must_greater_zero">Укажите бюджет</string>
     <string name="days_must_greater_zero">Посчитайте бюджет хотя бы на один день</string>
     <string name="apply">Применить</string>
-    <string name="done">Понятно</string>
     <string name="change_budget">Изменить бюджет</string>
+    <string name="select_currency_title">Выберете валюту</string>
+    <string name="search_currency_placeholder">Код валюты или название</string>
+    <string name="currency_not_found">Нет подходящих валют</string>
+    <string name="currency_custom_title">Укажите свою валюту</string>
+    <string name="currency_custom_description">Например, трата в 150 условных единиц будет отображаться вот так:</string>
     <string name="confirm_change_budget_title">Изменение бюджета</string>
     <string name="confirm_change_budget_description">Обратите внимание, что при изменении бюджета, текущая история трат удалится и отсчет начнется сначала</string>
     <string name="confirm_change_budget">Изменить бюджет</string>
     <string name="use_last">Предыдущие значения</string>
-
-    <!-- Settings -->
     <string name="days_left">Дней осталось</string>
     <string name="settings_title">Настройки</string>
     <string name="theme_label">Тема</string>
@@ -91,21 +70,15 @@
     <string name="report_bug">Сообщить об ошибке</string>
     <string name="contribute">Сделать вклад</string>
     <string name="developer">Разработка и дизайн:</string>
-
-    <!-- Bug reporting -->
     <string name="report_bug_title">Сообщить об ошибке</string>
     <string name="report_via_github">Через GitHub issue</string>
     <string name="report_via_email">Через почту</string>
-
-    <!-- New day -->
     <string name="new_day_title">Поздравляем! Вы сэкономили</string>
     <string name="recalc_budget">Уточните как пересчитать бюджет</string>
     <string name="split_rest_days_title">Разделить на оставшиеся дни</string>
     <string name="split_rest_days_description">Получится по %1$s в день</string>
     <string name="add_current_day_title">Оставить на сегодня</string>
     <string name="add_current_day_description">Будет %1$s на сегодня и по %2$s в следующие дни</string>
-
-    <!-- Finish period -->
     <string name="finish_period_title">Период закончился</string>
     <string name="period_summary_title">Вот такая статистика этого периода получилась</string>
     <string name="period_summary_no_spends_title">Ого, вы ничего не потратили в этом периоде</string>
@@ -126,8 +99,6 @@
     <string name="overspending_after_few_times_out_budget">После вы еще %1$s из %2$s оставшихся выходили из бюджета</string>
     <string name="overspending_after_many_times_out_budget">После только %1$s из %2$s оставшихся вы не выходили из бюджета</string>
     <string name="overspending_after_all_times_out_budget">После все из %1$s оставшихся вы не выходили из бюджета</string>
-
-    <!-- Onboarding -->
     <string name="hello">Привет!</string>
     <string name="onboarding_title">Добро пожаловать в гречку, давай учится экономить вместе</string>
     <string name="set_period_title">Настроить бюджет</string>
@@ -137,8 +108,6 @@
     <string name="help_record_spends_description">Приложение посчитает сколько примерно в день вам нужно тратить, чтобы вписаться в бюджет, записываете траты и следите за бюджетом</string>
     <string name="help_good_luck_title">Тратьте с умом</string>
     <string name="help_good_luck_description">Со временем вы научитесь ощущать сколько вы реально тратите и сколько вам нужно. Научитесь понимать можете ли вы прямо сейчас потратить деньги на безделушку</string>
-
-    <!-- Common -->
     <string name="copy_in_clipboard">Скопировано в буфер обмена</string>
     <string name="not_found_email_clients">Не найдено почтовых клиентов</string>
     <string name="cancel">Отменить</string>
@@ -148,6 +117,7 @@
     <string name="export_to_csv_failed">Не удалось экспортировать траты</string>
     <string name="add_spent">Добавить трату</string>
     <string name="add_spent_short">Трата</string>
+    <string name="select_currency_description">Валюта никак не влияет на расчеты, это просто обозначение для более легкого осознания чисел</string>
     <string name="remember_choice_reacalc_budget_description">Позже можно поменять в кошельке</string>
     <string name="remember_choice">Запомнить выбор</string>
     <string name="rest_label">Остаток</string>
@@ -159,11 +129,8 @@
     <string name="method_add_to_current_day_title">Добавлять к текущему дневному бюджету</string>
     <string name="method_add_to_current_day_description">Не потраченный остаток будет добавлен к текущему дневному бюджету</string>
     <string name="spent_budget">Потрачено</string>
-    <string name="edit_spent">Редактируемая трата</string>
     <string name="cancel_editing">Отменить редактирование</string>
     <string name="over">более</string>
-    <string name="app_widget_extend_name">Гречка расширеный</string>
-    <string name="app_widget_minimal_name">Гречка минимальная</string>
     <string name="home_widgets_label">Виджеты на главном экране</string>
     <string name="try_home_widgets_desc">Теперь у гречки есть виджеты. Попробуйте и следите за своим бюджетом с главного экрана</string>
     <string name="tutorial_open_wallet">Нажмите, чтобы изучить бюджет подробнее</string>
@@ -174,4 +141,6 @@
     <string name="million_numerical_shorthand">млн</string>
     <string name="billion_numerical_shorthand">млрд</string>
     <string name="trillion_numerical_shorthand">трлн</string>
+    <string name="without_tag">Без метки</string>
+    <string name="rest_tags">Прочие</string>
 </resources>
