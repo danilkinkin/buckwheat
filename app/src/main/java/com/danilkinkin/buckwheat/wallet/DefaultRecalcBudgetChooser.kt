@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CheckedRow
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -36,6 +37,8 @@ fun DefaultRecalcBudgetChooser(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val localPageTopPadding = LocalPageTopPadding.current
+
     val restedBudgetDistributionMethod by spendsViewModel.restedBudgetDistributionMethod.observeAsState()
 
     val navigationBarHeight = WindowInsets.systemBars
@@ -43,7 +46,7 @@ fun DefaultRecalcBudgetChooser(
         .calculateBottomPadding()
         .coerceAtLeast(16.dp)
 
-    Surface {
+    Surface(Modifier.padding(top = localPageTopPadding)) {
         Column {
             Box(
                 modifier = Modifier

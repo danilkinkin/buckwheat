@@ -24,6 +24,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.appTheme
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.CheckedRow
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -56,6 +57,7 @@ fun ThemeSwitcherDialog(onClose: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
+    val localPageTopPadding = LocalPageTopPadding.current
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
@@ -68,7 +70,7 @@ fun ThemeSwitcherDialog(onClose: () -> Unit) {
         }
     }
 
-    Surface {
+    Surface(Modifier.padding(top = localPageTopPadding)) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier

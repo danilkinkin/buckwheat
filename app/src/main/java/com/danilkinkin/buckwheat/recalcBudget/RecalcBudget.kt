@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -43,6 +44,7 @@ fun RecalcBudget(
     val haptic = LocalHapticFeedback.current
     val localDensity = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
+    val localPageTopPadding = LocalPageTopPadding.current
     val navigationBarHeight = rememberNavigationBarHeight().coerceAtLeast(16.dp)
 
     val howMuchNotSpent by recalcBudgetViewModel.howMuchNotSpent.observeAsState(BigDecimal.ZERO)
@@ -56,7 +58,7 @@ fun RecalcBudget(
         recalcBudgetViewModel.calculate()
     }
 
-    BoxWithConstraints(Modifier.fillMaxWidth()) {
+    BoxWithConstraints(Modifier.fillMaxWidth().padding(top = localPageTopPadding)) {
         val rootHeight = constraints.maxHeight.toFloat()
 
         Surface(

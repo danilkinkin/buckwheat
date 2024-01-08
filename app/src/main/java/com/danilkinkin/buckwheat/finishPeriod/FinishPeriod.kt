@@ -25,6 +25,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.finishPeriod.categoriesChart.CategoriesChartCard
@@ -45,6 +46,8 @@ fun FinishPeriod(
     onClose: () -> Unit = {},
 ) {
     val localDensity = LocalDensity.current
+    val localPageTopPadding = LocalPageTopPadding.current
+
     val transactions by spendsViewModel.transactions.observeAsState(emptyList())
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
@@ -63,6 +66,7 @@ fun FinishPeriod(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = localPageTopPadding)
                         .onGloballyPositioned {
                             headerSize = Size(
                                 width = with(localDensity) { it.size.width.toDp() },

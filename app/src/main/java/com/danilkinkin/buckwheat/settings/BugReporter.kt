@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
@@ -41,12 +42,13 @@ const val BUG_REPORTER_SHEET = "bugReporter"
 @Composable
 fun BugReporter(onClose: () -> Unit = {}) {
     val context = LocalContext.current
+    val localPageTopPadding = LocalPageTopPadding.current
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
     )
 
-    Surface {
+    Surface(Modifier.padding(top = localPageTopPadding)) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier

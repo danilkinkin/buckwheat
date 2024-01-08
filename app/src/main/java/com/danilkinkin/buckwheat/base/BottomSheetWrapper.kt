@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.danilkinkin.buckwheat.LocalWindowSize
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.ui.isNightMode
@@ -23,6 +25,8 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+
+val LocalPageTopPadding = compositionLocalOf { 0.dp }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -118,13 +122,12 @@ fun BottomSheetWrapper(
                 confirmChange = { statusBarFillProgress > 0.5F },
             )
 
-            Box(
-                modifier = Modifier
-                    .padding(
-                        top = statusBarHeight * statusBarFillProgress
-                    )
-            ) {
-                content(state)
+            Box {
+                CompositionLocalProvider(
+                    LocalPageTopPadding provides statusBarHeight * statusBarFillProgress
+                ) {
+                    content(state)
+                }
             }
 
             if (cancelable) {

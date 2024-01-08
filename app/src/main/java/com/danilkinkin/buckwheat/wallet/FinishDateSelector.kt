@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.base.datePicker.DatePicker
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarSelectionMode
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
@@ -35,8 +36,9 @@ fun FinishDateSelector(
     onApply: (finishDate: Date) -> Unit,
 ) {
     val context = LocalContext.current
+    val localPageTopPadding = LocalPageTopPadding.current
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(modifier = Modifier.fillMaxSize().padding(top = localPageTopPadding)) {
         val calendarState = remember {
             CalendarState(
                 context,

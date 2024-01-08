@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
@@ -36,6 +37,7 @@ fun BudgetIsOverDescription(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val localPageTopPadding = LocalPageTopPadding.current
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
@@ -43,7 +45,7 @@ fun BudgetIsOverDescription(
 
     val hideOverspendingWarn by spendsViewModel.hideOverspendingWarn.observeAsState(false)
 
-    Surface {
+    Surface(Modifier.padding(top = localPageTopPadding)) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier

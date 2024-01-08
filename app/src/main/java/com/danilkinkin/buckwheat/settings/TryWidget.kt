@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.widget.extend.ExtendWidgetReceiver
@@ -60,12 +61,13 @@ fun TryWidget(appViewModel: AppViewModel = hiltViewModel(), onTried: () -> Unit)
 @Composable
 fun TryWidgetDialog() {
     val context = LocalContext.current
+    val localPageTopPadding = LocalPageTopPadding.current
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
     )
 
-    Surface {
+    Surface(Modifier.padding(top = localPageTopPadding)) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier

@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
@@ -28,12 +29,14 @@ const val SETTINGS_SHEET = "settings"
 
 @Composable
 fun Settings(onTriedWidget: () -> Unit = {}) {
+    val localPageTopPadding = LocalPageTopPadding.current
+
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
     )
 
-    Surface {
+    Surface(Modifier.padding(top = localPageTopPadding)) {
         Column {
             Box(
                 modifier = Modifier

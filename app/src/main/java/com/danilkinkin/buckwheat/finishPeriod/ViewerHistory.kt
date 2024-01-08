@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.history.History
@@ -40,8 +41,9 @@ fun ViewerHistory(
     appViewModel: AppViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
+    val localPageTopPadding = LocalPageTopPadding.current
 
-    Surface() {
+    Surface(Modifier.padding(top = localPageTopPadding)) {
         Column {
             Row(
                 modifier = Modifier

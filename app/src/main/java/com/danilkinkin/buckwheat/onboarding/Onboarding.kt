@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
+import com.danilkinkin.buckwheat.base.LocalPageTopPadding
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
 const val ON_BOARDING_SHEET = "onBoarding"
@@ -22,12 +23,13 @@ fun Onboarding(
     onSetBudget: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
+    val localPageTopPadding = LocalPageTopPadding.current
     val navigationBarHeight = WindowInsets.systemBars
         .asPaddingValues()
         .calculateBottomPadding()
         .coerceAtLeast(16.dp)
 
-    Surface {
+    Surface(Modifier.padding(top = localPageTopPadding)) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
