@@ -125,6 +125,8 @@
     <string name="overspending_after_all_times_out_budget">After all of the %1$s left you haven\'t been out of budget</string>
     <string name="without_tag">Without tag</string>
     <string name="rest_tags">Rest</string>
+    <string name="not_enough_data_for_tags_chart">We can\'t split your spends by categories</string>
+    <string name="not_enough_data_for_tags_chart_use_tags_hint">Use tags to see chart by categories</string>
 
     <!-- Onboarding -->
     <string name="hello">Hello!</string>

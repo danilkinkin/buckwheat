@@ -1,8 +1,15 @@
 package com.danilkinkin.buckwheat.finishPeriod.categoriesChart
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -10,10 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -75,6 +84,12 @@ fun CategoriesChartCard(
         ),
     ).copy(
         onMain = Color(0xFFF4F4F4)
+    )
+    val stubColor = toPalette(
+        color = harmonize(
+            designColor = Color(0xFFCCCCCC),
+            sourceColor = MaterialTheme.colorScheme.primary
+        ),
     )
 
     var offsetColor = 0
@@ -138,28 +153,70 @@ fun CategoriesChartCard(
             ),
         )
     ) {
-        DonutChart(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-                .size(64.dp),
-            items = tags,
-        )
-        FlowRow(Modifier.padding(4.dp, 4.dp)) {
-            tags.forEach { tag ->
-                TagAmount(
-                    modifier = Modifier.padding(4.dp, 4.dp),
-                    value = tag.name,
-                    amount = tag.amount,
-                    palette = tag.color,
-                    isSpecial = tag.isSpecial,
-                    currency = currency,
-                )
+        if (tags.size == 1 && tags.first().name == labelWithoutTag) {
+            Box {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Row(Modifier.fillMaxWidth()) {
+                        DonutChart(
+                            modifier = Modifier
+                                .padding(end = 16.dp, bottom = 8.dp)
+                                .size(64.dp),
+                            items = listOf(TagUsage("", BigDecimal(360), stubColor)),
+                        )
+                        Column {
+                            Text(
+                                text = "We can't split your spends by categories",
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                ),
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                            ) {
+                                Text(
+                                    text = "Use tags to see chart by categories ",
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.8f),
+                                    ),
+                                )
+                            }
+                        }
+                    }
+
+
+                }
+            }
+        } else {
+            DonutChart(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+                    .size(64.dp),
+                items = tags,
+            )
+            FlowRow(Modifier.padding(4.dp, 4.dp)) {
+                tags.forEach { tag ->
+                    TagAmount(
+                        modifier = Modifier.padding(4.dp, 4.dp),
+                        value = tag.name,
+                        amount = tag.amount,
+                        palette = tag.color,
+                        isSpecial = tag.isSpecial,
+                        currency = currency,
+                    )
+                }
             }
         }
     }
 }
 
-@Preview(name = "With other")
+@Preview(name = "With other", widthDp = 360)
 @Composable
 private fun PreviewWithOther() {
     val tags = listOf(
@@ -196,7 +253,7 @@ private fun PreviewWithOther() {
     }
 }
 
-@Preview(name = "Many tags")
+@Preview(name = "Many tags", widthDp = 360)
 @Composable
 private fun PreviewManyTags() {
     val tags = listOf(
@@ -229,6 +286,87 @@ private fun PreviewManyTags() {
             modifier = Modifier.height(IntrinsicSize.Min),
             currency = ExtendCurrency.getInstance("EUR"),
             spends = tags.mapIndexed { index, it ->
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(50 + index),
+                    date = Date(),
+                    comment = it
+                )
+            },
+        )
+    }
+}
+@Preview(name = "Many tags (Dark mode)", widthDp = 360, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewManyTagsDarkMode() {
+    val tags = listOf(
+        "Food",
+        "Alcohol",
+        "Transport",
+        "Plants",
+        "Food",
+        "Bar",
+        "Lost",
+        "",
+        "Cinema",
+        "Transport",
+        "Food",
+        "Subscriptions",
+        "Tools",
+        "Entertainment",
+        "Food",
+        "",
+        "Transport",
+        "Software",
+        "Food",
+        "Taxes",
+        "Transport",
+        "Education"
+    )
+
+    BuckwheatTheme {
+        CategoriesChartCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
+            currency = ExtendCurrency.getInstance("EUR"),
+            spends = tags.mapIndexed { index, it ->
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(50 + index),
+                    date = Date(),
+                    comment = it
+                )
+            },
+        )
+    }
+}
+
+@Preview(name = "Without tags", widthDp = 360)
+@Composable
+private fun PreviewWithoutTags() {
+    BuckwheatTheme {
+        CategoriesChartCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
+            currency = ExtendCurrency.getInstance("EUR"),
+            spends = List(10) { "" }.mapIndexed { index, it ->
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(50 + index),
+                    date = Date(),
+                    comment = it
+                )
+            },
+        )
+    }
+}
+
+@Preview(name = "Without tags (Dark mode)", widthDp = 360, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun PreviewWithoutTagsDarkMode() {
+    BuckwheatTheme {
+        CategoriesChartCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
+            currency = ExtendCurrency.getInstance("EUR"),
+            spends = List(10) { "" }.mapIndexed { index, it ->
                 Transaction(
                     type = TransactionType.SPENT,
                     value = BigDecimal(50 + index),
