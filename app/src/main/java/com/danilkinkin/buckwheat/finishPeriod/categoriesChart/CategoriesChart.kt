@@ -33,6 +33,7 @@ import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.HarmonizedColorPalette
 import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.harmonize
@@ -65,6 +66,7 @@ fun CategoriesChartCard(
     spends: List<Transaction>,
     currency: ExtendCurrency,
 ) {
+    val isNightMode = isNightMode()
     val labelWithoutTag = stringResource(R.string.without_tag)
     val labelRest = stringResource(R.string.rest_tags)
     val maxDisplay = 7
@@ -83,13 +85,16 @@ fun CategoriesChartCard(
             sourceColor = MaterialTheme.colorScheme.primary
         ),
     ).copy(
-        onMain = Color(0xFFF4F4F4)
+        main = if (isNightMode) Color(0xFFF0F0F0) else Color(0xFF222222),
+        onSurface = if (isNightMode) Color(0xFF1A1A1A) else Color(0xFFF4F4F4)
     )
     val stubColor = toPalette(
         color = harmonize(
             designColor = Color(0xFFCCCCCC),
             sourceColor = MaterialTheme.colorScheme.primary
         ),
+    ).copy(
+        main = if (isNightMode) MaterialTheme.colorScheme.surfaceVariant else Color(0xFFCCCCCC),
     )
 
     var offsetColor = 0
@@ -254,6 +259,7 @@ private fun PreviewWithOther() {
 }
 
 @Preview(name = "Many tags", widthDp = 360)
+@Preview(name = "Many tags (Dark mode)", widthDp = 360, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewManyTags() {
     val tags = listOf(
@@ -296,72 +302,11 @@ private fun PreviewManyTags() {
         )
     }
 }
-@Preview(name = "Many tags (Dark mode)", widthDp = 360, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewManyTagsDarkMode() {
-    val tags = listOf(
-        "Food",
-        "Alcohol",
-        "Transport",
-        "Plants",
-        "Food",
-        "Bar",
-        "Lost",
-        "",
-        "Cinema",
-        "Transport",
-        "Food",
-        "Subscriptions",
-        "Tools",
-        "Entertainment",
-        "Food",
-        "",
-        "Transport",
-        "Software",
-        "Food",
-        "Taxes",
-        "Transport",
-        "Education"
-    )
-
-    BuckwheatTheme {
-        CategoriesChartCard(
-            modifier = Modifier.height(IntrinsicSize.Min),
-            currency = ExtendCurrency.getInstance("EUR"),
-            spends = tags.mapIndexed { index, it ->
-                Transaction(
-                    type = TransactionType.SPENT,
-                    value = BigDecimal(50 + index),
-                    date = Date(),
-                    comment = it
-                )
-            },
-        )
-    }
-}
 
 @Preview(name = "Without tags", widthDp = 360)
-@Composable
-private fun PreviewWithoutTags() {
-    BuckwheatTheme {
-        CategoriesChartCard(
-            modifier = Modifier.height(IntrinsicSize.Min),
-            currency = ExtendCurrency.getInstance("EUR"),
-            spends = List(10) { "" }.mapIndexed { index, it ->
-                Transaction(
-                    type = TransactionType.SPENT,
-                    value = BigDecimal(50 + index),
-                    date = Date(),
-                    comment = it
-                )
-            },
-        )
-    }
-}
-
 @Preview(name = "Without tags (Dark mode)", widthDp = 360, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun PreviewWithoutTagsDarkMode() {
+private fun PreviewWithoutTags() {
     BuckwheatTheme {
         CategoriesChartCard(
             modifier = Modifier.height(IntrinsicSize.Min),

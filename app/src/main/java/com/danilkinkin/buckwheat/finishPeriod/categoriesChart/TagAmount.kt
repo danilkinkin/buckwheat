@@ -35,7 +35,7 @@ fun TagAmount(
     Surface(
         shape = CircleShape,
         color = palette?.main ?: MaterialTheme.colorScheme.surface,
-        contentColor = palette?.onMain ?: MaterialTheme.colorScheme.onSurface,
+        contentColor = palette?.onSurface ?: MaterialTheme.colorScheme.onSurface,
         modifier = modifier,
     ) {
         Row(
