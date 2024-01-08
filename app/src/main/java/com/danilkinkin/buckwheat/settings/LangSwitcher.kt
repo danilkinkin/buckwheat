@@ -29,7 +29,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.appLocale
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.CheckedRow
-import com.danilkinkin.buckwheat.base.LocalPageTopPadding
+import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -73,7 +73,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
     val configuration = LocalConfiguration.current
     val overrideLocale = LocalContext.current.appLocale
     val coroutineScope = rememberCoroutineScope()
-    val localPageTopPadding = LocalPageTopPadding.current
+    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
@@ -103,7 +103,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
         Locale("zh", "CN"),
     )
 
-    Surface(Modifier.padding(top = localPageTopPadding)) {
+    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier

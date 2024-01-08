@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -26,7 +27,11 @@ import com.danilkinkin.buckwheat.util.setSystemStyle
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-val LocalPageTopPadding = compositionLocalOf { 0.dp }
+data class BottomSheetScrollState(
+    val topPadding: Dp,
+)
+
+val LocalBottomSheetScrollState = compositionLocalOf { BottomSheetScrollState(0.dp) }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -124,7 +129,9 @@ fun BottomSheetWrapper(
 
             Box {
                 CompositionLocalProvider(
-                    LocalPageTopPadding provides statusBarHeight * statusBarFillProgress
+                    LocalBottomSheetScrollState provides BottomSheetScrollState(
+                        topPadding = statusBarHeight * statusBarFillProgress,
+                    )
                 ) {
                     content(state)
                 }

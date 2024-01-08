@@ -2,6 +2,11 @@ package com.danilkinkin.buckwheat.finishPeriod
 
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.animation.*
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -12,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -25,7 +31,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
-import com.danilkinkin.buckwheat.base.LocalPageTopPadding
+import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.finishPeriod.categoriesChart.CategoriesChartCard
@@ -46,12 +52,14 @@ fun FinishPeriod(
     onClose: () -> Unit = {},
 ) {
     val localDensity = LocalDensity.current
-    val localPageTopPadding = LocalPageTopPadding.current
+    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
     val transactions by spendsViewModel.transactions.observeAsState(emptyList())
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
     val scrollState = rememberScrollState()
+
+    val scroll = with(localDensity) { scrollState.value.toDp() }
 
     Surface(Modifier.height(IntrinsicSize.Min)) {
         Column(
@@ -66,7 +74,7 @@ fun FinishPeriod(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = localPageTopPadding)
+                        .padding(top = localBottomSheetScrollState.topPadding)
                         .onGloballyPositioned {
                             headerSize = Size(
                                 width = with(localDensity) { it.size.width.toDp() },
@@ -79,7 +87,8 @@ fun FinishPeriod(
                     val halfHeight = headerSize.height / 2
 
                     Column(
-                        modifier = Modifier.padding(horizontal = 16.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                            .absoluteOffset(y = scroll * 0.25f),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Spacer(Modifier.height(36.dp))
@@ -111,10 +120,25 @@ fun FinishPeriod(
                         0.5f,
                     )
 
+                    val angleStar1 by rememberInfiniteTransition("angleStar1").animateFloat(
+                        label = "angleStar1",
+                        initialValue = -20f,
+                        targetValue = 20f,
+                        animationSpec = infiniteRepeatable(tween(10000), RepeatMode.Reverse)
+                    )
+
+                    val angleStar2 by rememberInfiniteTransition("angleStar2").animateFloat(
+                        label = "angleStar2",
+                        initialValue = -50f,
+                        targetValue = 50f,
+                        animationSpec = infiniteRepeatable(tween(18000), RepeatMode.Reverse)
+                    )
+
                     Icon(
                         modifier = Modifier
                             .requiredSize(256.dp)
                             .absoluteOffset(x = halfWidth * 0.7f, y = -halfHeight * 0.6f)
+                            .rotate(angleStar1)
                             .zIndex(-1f),
                         painter = painterResource(R.drawable.shape_soft_star_1),
                         tint = starColor,
@@ -123,7 +147,8 @@ fun FinishPeriod(
                     Icon(
                         modifier = Modifier
                             .requiredSize(256.dp)
-                            .absoluteOffset(x = -halfWidth * 0.7f, y = halfHeight * 0.6f)
+                            .absoluteOffset(x = -halfWidth * 0.7f, y = halfHeight * 0.6f + scroll * 0.5f)
+                            .rotate(angleStar2)
                             .zIndex(-1f),
                         painter = painterResource(R.drawable.shape_soft_star_2),
                         tint = starColor,

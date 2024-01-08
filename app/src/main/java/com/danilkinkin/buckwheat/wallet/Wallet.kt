@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.Divider
-import com.danilkinkin.buckwheat.base.LocalPageTopPadding
+import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.PathState
@@ -48,7 +48,7 @@ fun Wallet(
     onClose: () -> Unit = {},
 ) {
     val haptic = LocalHapticFeedback.current
-    val localPageTopPadding = LocalPageTopPadding.current
+    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
     var budgetCache by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val budget by spendsViewModel.budget.observeAsState(BigDecimal.ZERO)
@@ -90,7 +90,7 @@ fun Wallet(
 
     val offset = with(LocalDensity.current) { 50.dp.toPx().toInt() }
 
-    Surface(Modifier.padding(top = localPageTopPadding)) {
+    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
         Column {
             val days = if (dateToValue.value !== null) {
                 countDaysToToday(dateToValue.value!!)

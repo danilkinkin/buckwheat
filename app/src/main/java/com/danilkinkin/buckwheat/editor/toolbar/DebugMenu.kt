@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.Divider
-import com.danilkinkin.buckwheat.base.LocalPageTopPadding
+import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -44,7 +44,7 @@ fun DebugMenu(
     editorViewModel: EditorViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
-    val localPageTopPadding = LocalPageTopPadding.current
+    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
     val navigationBarHeight = rememberNavigationBarHeight().coerceAtLeast(16.dp)
 
     val startPeriodDate by spendsViewModel.startPeriodDate.observeAsState()
@@ -62,7 +62,7 @@ fun DebugMenu(
     val howMuchBudgetRest by spendsViewModel.howMuchBudgetRest().observeAsState(BigDecimal.ZERO)
 
 
-    Surface(Modifier.padding(top = localPageTopPadding)) {
+    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier

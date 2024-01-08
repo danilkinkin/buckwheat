@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CheckedRow
-import com.danilkinkin.buckwheat.base.LocalPageTopPadding
+import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -40,7 +40,7 @@ fun CurrencyEditor(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
-    val localPageTopPadding = LocalPageTopPadding.current
+    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
     var currency by remember { mutableStateOf(spendsViewModel.currency.value!!) }
     val openCurrencyChooserDialog = remember { mutableStateOf(false) }
@@ -51,7 +51,7 @@ fun CurrencyEditor(
         .calculateBottomPadding()
         .coerceAtLeast(16.dp)
 
-    Surface(Modifier.padding(top = localPageTopPadding)) {
+    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
         Column {
             Box(
                 modifier = Modifier

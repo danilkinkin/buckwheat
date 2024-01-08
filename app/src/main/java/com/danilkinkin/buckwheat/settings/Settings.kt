@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.LocalPageTopPadding
+import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
@@ -29,14 +29,14 @@ const val SETTINGS_SHEET = "settings"
 
 @Composable
 fun Settings(onTriedWidget: () -> Unit = {}) {
-    val localPageTopPadding = LocalPageTopPadding.current
+    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
     val navigationBarHeight = androidx.compose.ui.unit.max(
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
     )
 
-    Surface(Modifier.padding(top = localPageTopPadding)) {
+    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
         Column {
             Box(
                 modifier = Modifier
