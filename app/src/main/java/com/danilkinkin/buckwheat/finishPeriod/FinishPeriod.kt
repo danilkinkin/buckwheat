@@ -13,10 +13,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,9 +29,12 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.finishPeriod.categoriesChart.CategoriesChartCard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
+import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.wallet.rememberExportCSV
 
 const val FINISH_PERIOD_SHEET = "finishPeriod"
+
+data class Size(val width: Dp, val height: Dp)
 
 @Composable
 fun FinishPeriod(
@@ -38,6 +44,7 @@ fun FinishPeriod(
     onCreateNewPeriod: () -> Unit = {},
     onClose: () -> Unit = {},
 ) {
+    val localDensity = LocalDensity.current
     val transactions by spendsViewModel.transactions.observeAsState(emptyList())
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
@@ -51,27 +58,74 @@ fun FinishPeriod(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Spacer(Modifier.height(24.dp))
-                Text(
-                    text = stringResource(R.string.finish_period_title),
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(Modifier.height(16.dp))
-                if (spends.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.period_summary_no_spends_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        textAlign = TextAlign.Center,
+                var headerSize by remember { mutableStateOf(Size(0.dp, 0.dp)) }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onGloballyPositioned {
+                            headerSize = Size(
+                                width = with(localDensity) { it.size.width.toDp() },
+                                height = with(localDensity) { it.size.height.toDp() }
+                            )
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    val halfWidth = headerSize.width / 2
+                    val halfHeight = headerSize.height / 2
+
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Spacer(Modifier.height(36.dp))
+                        Text(
+                            text = stringResource(R.string.finish_period_title),
+                            style = MaterialTheme.typography.headlineLarge,
+                            textAlign = TextAlign.Center,
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        if (spends.isEmpty()) {
+                            Text(
+                                text = stringResource(R.string.period_summary_no_spends_title),
+                                style = MaterialTheme.typography.titleMedium,
+                                textAlign = TextAlign.Center,
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(R.string.period_summary_title),
+                                style = MaterialTheme.typography.titleMedium,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                        Spacer(Modifier.height(64.dp))
+                    }
+
+                    val starColor = combineColors(
+                        MaterialTheme.colorScheme.secondaryContainer,
+                        MaterialTheme.colorScheme.surface,
+                        0.5f,
                     )
-                } else {
-                    Text(
-                        text = stringResource(R.string.period_summary_title),
-                        style = MaterialTheme.typography.titleMedium,
-                        textAlign = TextAlign.Center,
+
+                    Icon(
+                        modifier = Modifier
+                            .requiredSize(256.dp)
+                            .absoluteOffset(x = halfWidth * 0.7f, y = -halfHeight * 0.6f)
+                            .zIndex(-1f),
+                        painter = painterResource(R.drawable.shape_soft_star_1),
+                        tint = starColor,
+                        contentDescription = null,
+                    )
+                    Icon(
+                        modifier = Modifier
+                            .requiredSize(256.dp)
+                            .absoluteOffset(x = -halfWidth * 0.7f, y = halfHeight * 0.6f)
+                            .zIndex(-1f),
+                        painter = painterResource(R.drawable.shape_soft_star_2),
+                        tint = starColor,
+                        contentDescription = null,
                     )
                 }
-                Spacer(Modifier.height(24.dp))
                 Column(Modifier.fillMaxWidth()) {
                     WholeBudgetCard(
                         budget = wholeBudget,
