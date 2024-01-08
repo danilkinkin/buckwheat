@@ -3,7 +3,6 @@
   <string name="app_name">Buckwheat</string>
   <string name="app_widget_extend_name">Buckwheat extend</string>
   <string name="app_widget_minimal_name">Buckwheat minimal</string>
-  <string name="budget_for_today">Budget for today</string>
   <string name="rest_budget_for_today">For today</string>
   <string name="new_daily_budget_short">New daily</string>
   <string name="new_daily_budget">New daily budget</string>
@@ -11,21 +10,9 @@
   <string name="budget_end">The budget is over</string>
   <string name="budget_not_set">No budget set</string>
   <string name="budget_end_description">You went beyond the planned budget, do not worry, it\'s not scary, spending is never the same. Start spending further to understand how much you will spend in the end and what budget you need</string>
-  <string name="new_spent">New spending</string>
-  <plurals name="spends_today">
-    <item quantity="one">%1$s spent today</item>
-    <item quantity="other">%1$s spends today</item>
-  </plurals>
-  <plurals name="day">
-    <item quantity="one">%1$s day</item>
-    <item quantity="other">%1$s days</item>
-  </plurals>
-  <string name="enter_spent_placeholder">Enter spent</string>
   <string name="hide_overspending_warn">Hide budget end message</string>
   <string name="hide_overspending_warn_description">The message will be hidden until the end of the period, so as not to distract or strain</string>
-  <string name="add_comment">Comment</string>
-  <string name="label_start_date">Start</string>
-  <string name="label_finish_date">Finish</string>
+  <string name="add_comment">Tag</string>
   <string name="remove_spent">Expenditure returned to budget</string>
   <string name="remove_spent_undo">Undo</string>
   <string name="no_spends">No spending yet</string>
@@ -34,7 +21,6 @@
   <string name="change_time">Change time</string>
   <string name="wallet_title">Budget</string>
   <string name="wallet_edit_title">New budget</string>
-  <string name="label_budget">Budget</string>
   <string name="select_finish_date_title">Choose a finish date</string>
   <plurals name="finish_date_label">
     <item quantity="one">To %1$s (%2$s day)</item>
@@ -56,7 +42,6 @@
   <string name="budget_must_greater_zero">Enter your budget</string>
   <string name="days_must_greater_zero">Calculate the budget for at least one day</string>
   <string name="apply">Apply</string>
-  <string name="done">Got it</string>
   <string name="change_budget">Change budget</string>
   <string name="select_currency_title">Select currency</string>
   <string name="search_currency_placeholder">Currency code or name</string>
@@ -140,7 +125,6 @@
   <string name="method_add_to_current_day_title">Add to the current daily budget</string>
   <string name="method_add_to_current_day_description">The restless residue will be added to the current daily budget</string>
   <string name="spent_budget">Spent</string>
-  <string name="edit_spent">Editable spent</string>
   <string name="cancel_editing">Cancel editing</string>
   <string name="over">over</string>
   <string name="home_widgets_label">Home screen widgets</string>
@@ -149,4 +133,10 @@
   <string name="tutorial_open_history">Drag to view spending history</string>
   <string name="recalc_budget_on_last_day">Today is the last day, it makes no sense to distribute</string>
   <string name="start_last_day_description">Today you can spend %1$s</string>
+  <string name="thousand_numerical_shorthand">K</string>
+  <string name="million_numerical_shorthand">M</string>
+  <string name="billion_numerical_shorthand">B</string>
+  <string name="trillion_numerical_shorthand">T</string>
+  <string name="without_tag">Without tag</string>
+  <string name="rest_tags">Rest</string>
 </resources>
