@@ -119,7 +119,7 @@ fun FinishPeriod(
                             modifier = Modifier.fillMaxWidth(),
                             count = spends.size,
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(36.dp))
                         SpendsCalendar(
                             modifier = Modifier.zIndex(-1f),
                             budget = wholeBudget,
@@ -128,7 +128,7 @@ fun FinishPeriod(
                             finishDate = spendsViewModel.finishPeriodDate.value!!,
                             currency = spendsViewModel.currency.value!!,
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(36.dp))
                         CategoriesChartCard(
                             modifier = Modifier.fillMaxWidth(),
                             spends = spends,

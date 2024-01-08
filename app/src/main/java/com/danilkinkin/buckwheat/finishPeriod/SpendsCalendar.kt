@@ -1,19 +1,25 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,11 +35,14 @@ import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.datePicker.CELL_SIZE
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
@@ -142,40 +151,70 @@ fun SpendsCalendar(
         )
     }
 
-    Layout(
+    Card(
         modifier = modifier,
-        measurePolicy = verticalGridMeasurePolicy(7),
-        content = {
-            val calendarUiState = calendarState.calendarUiState.value
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = combineColors(
+                MaterialTheme.colorScheme.surface,
+                MaterialTheme.colorScheme.surfaceVariant,
+                angle = 0.3f,
+            ),
+        )
+    ) {
+        Row(Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
+            Icon(
+                modifier = Modifier
+                    .size(16.dp)
+                    .padding(top = 2.dp),
+                painter = painterResource(R.drawable.ic_info),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                contentDescription = null,
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = stringResource(R.string.spends_calendar_hint),
+                style = MaterialTheme.typography.bodySmall.copy(
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.8f),
+                ),
+            )
+        }
+        Layout(
+            modifier = Modifier
+                .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+            measurePolicy = verticalGridMeasurePolicy(7),
+            content = {
+                val calendarUiState = calendarState.calendarUiState.value
 
-            calendarState.listMonths.forEach { month ->
-                MonthHeader(
-                    modifier = Modifier.layoutId("fullWidth"),
-                    yearMonth = month.yearMonth
-                )
+                calendarState.listMonths.forEach { month ->
+                    MonthHeader(
+                        modifier = Modifier.layoutId("fullWidth"),
+                        yearMonth = month.yearMonth
+                    )
 
-                DaysOfWeek(locale)
+                    DaysOfWeek(locale)
 
-                month.weeks.forEach { week ->
-                    val beginningWeek = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
-                    val currentDay =
-                        beginningWeek.with(TemporalAdjusters.previousOrSame(getWeek(locale)[0]))
+                    month.weeks.forEach { week ->
+                        val beginningWeek = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
+                        val currentDay =
+                            beginningWeek.with(TemporalAdjusters.previousOrSame(getWeek(locale)[0]))
 
 
-                    if (
-                        currentDay.plusDays(6).isAfter(calendarUiState.disabledBefore) &&
-                        currentDay.isBefore(calendarUiState.disabledAfter)
-                    ) {
-                        Week(
-                            week = week,
-                            calendarUiState = calendarUiState,
-                            spendingDays = spendingDays,
-                        )
+                        if (
+                            currentDay.plusDays(6).isAfter(calendarUiState.disabledBefore) &&
+                            currentDay.isBefore(calendarUiState.disabledAfter)
+                        ) {
+                            Week(
+                                week = week,
+                                calendarUiState = calendarUiState,
+                                spendingDays = spendingDays,
+                            )
+                        }
                     }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 @Composable
@@ -282,6 +321,11 @@ internal fun Day(
             }, colorEditor
         )
     ) else toPalette(MaterialTheme.colorScheme.primary).copy(
+        surface = combineColors(
+            MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.surfaceVariant,
+            angle = 0.3f,
+        ),
         container = Color.Transparent,
         onContainer = MaterialTheme.colorScheme.onSurface,
     )
@@ -386,104 +430,103 @@ fun verticalGridMeasurePolicy(columns: Int) =
 
 
 @Preview(name = "Zero overspending")
+@Preview(name = "Zero overspending (Dark mode)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewDefault() {
     BuckwheatTheme {
-        Surface {
-            SpendsCalendar(
-                budget = BigDecimal(200),
-                transactions = listOf(
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(8),
-                        date = LocalDate.now().minusDays(4).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(10),
-                        date = LocalDate.now().minusDays(2).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SPENT,
-                        value = BigDecimal(3),
-                        date = LocalDate.now().minusDays(2).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(10),
-                        date = LocalDate.now().minusDays(1).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SPENT,
-                        value = BigDecimal(5),
-                        date = LocalDate.now().minusDays(1).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(15),
-                        date = LocalDate.now().toDate()
-                    ),
-                    Transaction(type = TransactionType.SPENT, value = BigDecimal(8), date = Date()),
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(12),
-                        date = LocalDate.now().plusDays(1).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SPENT,
-                        value = BigDecimal(6),
-                        date = LocalDate.now().plusDays(1).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(12),
-                        date = LocalDate.now().plusDays(1).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SPENT,
-                        value = BigDecimal(8),
-                        date = LocalDate.now().plusDays(2).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SPENT,
-                        value = BigDecimal(10),
-                        date = LocalDate.now().plusDays(2).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SPENT,
-                        value = BigDecimal(12),
-                        date = LocalDate.now().plusDays(2).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(9),
-                        date = LocalDate.now().plusDays(5).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SPENT,
-                        value = BigDecimal(8),
-                        date = LocalDate.now().plusDays(5).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(14),
-                        date = LocalDate.now().plusDays(7).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SPENT,
-                        value = BigDecimal(82),
-                        date = LocalDate.now().plusDays(11).toDate()
-                    ),
-                    Transaction(
-                        type = TransactionType.SET_DAILY_BUDGET,
-                        value = BigDecimal(14),
-                        date = LocalDate.now().plusDays(7).toDate()
-                    ),
+        SpendsCalendar(
+            budget = BigDecimal(200),
+            transactions = listOf(
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(8),
+                    date = LocalDate.now().minusDays(4).toDate()
                 ),
-                currency = ExtendCurrency.none(),
-                startDate = LocalDate.now().minusDays(7).toDate(),
-                finishDate = LocalDate.now().plusDays(25).toDate(),
-            )
-        }
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(10),
+                    date = LocalDate.now().minusDays(2).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(3),
+                    date = LocalDate.now().minusDays(2).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(10),
+                    date = LocalDate.now().minusDays(1).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(5),
+                    date = LocalDate.now().minusDays(1).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(15),
+                    date = LocalDate.now().toDate()
+                ),
+                Transaction(type = TransactionType.SPENT, value = BigDecimal(8), date = Date()),
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(12),
+                    date = LocalDate.now().plusDays(1).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(6),
+                    date = LocalDate.now().plusDays(1).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(12),
+                    date = LocalDate.now().plusDays(1).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(8),
+                    date = LocalDate.now().plusDays(2).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(10),
+                    date = LocalDate.now().plusDays(2).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(12),
+                    date = LocalDate.now().plusDays(2).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(9),
+                    date = LocalDate.now().plusDays(5).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(8),
+                    date = LocalDate.now().plusDays(5).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(14),
+                    date = LocalDate.now().plusDays(7).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SPENT,
+                    value = BigDecimal(82),
+                    date = LocalDate.now().plusDays(11).toDate()
+                ),
+                Transaction(
+                    type = TransactionType.SET_DAILY_BUDGET,
+                    value = BigDecimal(14),
+                    date = LocalDate.now().plusDays(7).toDate()
+                ),
+            ),
+            currency = ExtendCurrency.none(),
+            startDate = LocalDate.now().minusDays(7).toDate(),
+            finishDate = LocalDate.now().plusDays(27).toDate(),
+        )
     }
 }
