@@ -167,7 +167,7 @@ fun FinishPeriod(
                     onCreateNewPeriod()
                     onClose()
                 },
-                detached = scrollState.maxValue - scrollState.value != 0,
+                detached = false,//scrollState.maxValue - scrollState.value != 0,
             )
         }
     }
