@@ -40,15 +40,13 @@ data class TagUsage(
 )
 
 var baseColors = listOf(
-    Color(0xFFAB96FF),
-    Color(0xFF7BCFFF),
-    Color(0xFFFFB986),
-    Color(0xFFC1E575),
     Color(0xFFF86BAE),
     Color(0xFFF36FFF),
+    Color(0xFFAB96FF),
+    Color(0xFF5FC7E7),
+    Color(0xFF75E584),
+    Color(0xFFFFD386),
     Color(0xFFEF7564),
-    Color(0xFF5FE7CF),
-    Color(0xFFF7E864),
 )
 
 @OptIn(ExperimentalLayoutApi::class)
