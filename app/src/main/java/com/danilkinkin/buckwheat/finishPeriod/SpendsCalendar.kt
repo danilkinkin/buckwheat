@@ -348,7 +348,11 @@ internal fun Day(
             modifier = modifier
                 .size(CELL_SIZE - 2.dp)
                 .background(
-                    color = harmonizedColor.surface.copy(0.8f),
+                    color = combineColors(
+                        MaterialTheme.colorScheme.surface,
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        angle = 0.3f,
+                    ).copy(0.8f),
                     shape = RoundedCornerShape(10.dp),
                 )
                 .border(
