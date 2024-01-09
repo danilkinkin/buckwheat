@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Buckwheat.Starting"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="33">
         <profileable
             android:shell="true"

@@ -14,16 +14,19 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.times
 import com.danilkinkin.buckwheat.util.PreUpPostDownNestedScrollConnection
 import com.danilkinkin.buckwheat.util.SwipeableState
 import com.danilkinkin.buckwheat.util.swipeable
@@ -174,9 +177,14 @@ fun ModalBottomSheetLayout(
     sheetContentColor: Color = contentColorFor(sheetBackgroundColor),
     scrimColor: Color = ModalBottomSheetDefaults.scrimColor,
     cancelable: Boolean = true,
+    predictiveBackProgress: Float = 0f,
     content: @Composable () -> Unit
 ) {
+    val localDensity = LocalDensity.current
     val scope = rememberCoroutineScope()
+
+
+
     BoxWithConstraints(modifier, contentAlignment = Alignment.TopEnd) {
         val fullHeight = constraints.maxHeight.toFloat()
         val sheetHeightState = remember { mutableStateOf<Float?>(null) }
@@ -189,13 +197,31 @@ fun ModalBottomSheetLayout(
                         scope.launch { sheetState.hide() }
                     }
                 },
-                visible = sheetState.targetValue != ModalBottomSheetValue.Hidden
+                visible = sheetState.targetValue != ModalBottomSheetValue.Hidden,
+                predictiveBackProgress = predictiveBackProgress
             )
         }
 
         RenderAdaptivePane(
-            contentAlignment = Alignment.TopCenter,
+            contentAlignment = Alignment.BottomCenter,
         ) {
+
+            val offset = IntOffset.let {
+                val y = if (sheetState.anchors.isEmpty()) {
+                    // if we don't know our anchors yet, render the sheet as hidden
+                    fullHeight.roundToInt()
+                } else {
+                    // if we do know our anchors, respect them
+                    sheetState.offset.value.roundToInt()
+                }
+
+                IntOffset(0, y)
+            }
+            val navigationBarHeight = with(localDensity) {
+                WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().roundToPx()
+            }
+
+
             Surface(
                 Modifier
                     .fillMaxWidth()
@@ -206,16 +232,11 @@ fun ModalBottomSheetLayout(
                             Modifier
                         }
                     )
-                    .offset {
-                        val y = if (sheetState.anchors.isEmpty()) {
-                            // if we don't know our anchors yet, render the sheet as hidden
-                            fullHeight.roundToInt()
-                        } else {
-                            // if we do know our anchors, respect them
-                            sheetState.offset.value.roundToInt()
-                        }
-                        IntOffset(0, y)
-                    }
+                    .offset { offset }
+                    .offset { offset.copy(y = offset.y + navigationBarHeight) }
+                    .scale(1f - predictiveBackProgress * 0.08f)
+                    .offset(y = predictiveBackProgress * 64.dp)
+                    .offset { offset.copy(y = -offset.y - navigationBarHeight) }
                     .bottomSheetSwipeable(sheetState, fullHeight, sheetHeightState, cancelable),
                 shape = sheetShape,
                 elevation = sheetElevation,
@@ -276,7 +297,8 @@ private fun Modifier.bottomSheetSwipeable(
 private fun Scrim(
     color: Color,
     onDismiss: () -> Unit,
-    visible: Boolean
+    visible: Boolean,
+    predictiveBackProgress: Float = 0f
 ) {
     if (color.isSpecified) {
         val alpha by animateFloatAsState(
@@ -300,7 +322,7 @@ private fun Scrim(
                 .fillMaxSize()
                 .then(dismissModifier)
         ) {
-            drawRect(color = color, alpha = alpha)
+            drawRect(color = color, alpha = alpha * (1f - predictiveBackProgress * 0.6f))
         }
     }
 }

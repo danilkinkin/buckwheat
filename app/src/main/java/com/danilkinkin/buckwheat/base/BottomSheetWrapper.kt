@@ -1,14 +1,29 @@
 package com.danilkinkin.buckwheat.base
 
-import androidx.activity.compose.BackHandler
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,20 +33,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.danilkinkin.buckwheat.LocalWindowSize
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.roundToInt
 
 data class BottomSheetScrollState(
     val topPadding: Dp,
 )
-val LocalBottomSheetScrollState = compositionLocalOf { BottomSheetScrollState(0.dp) }
 
+val LocalBottomSheetScrollState = compositionLocalOf { BottomSheetScrollState(0.dp) }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -56,7 +72,7 @@ fun BottomSheetWrapper(
     DisposableEffect(state.render) {
         if (state.render) coroutineScope.launch { state.realShow() }
 
-        onDispose {  }
+        onDispose { }
     }
 
     DisposableEffect(state.currentValue) {
@@ -65,11 +81,11 @@ fun BottomSheetWrapper(
             appViewModel.closeSheet(name)
         }
 
-        onDispose {  }
+        onDispose { }
     }
 
     if (!state.render) return
-    
+
     val localDensity = LocalDensity.current
 
     val statusBarHeight = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
@@ -91,10 +107,12 @@ fun BottomSheetWrapper(
     val statusBarFillProgress = if (statusBarHeight == 0.dp) {
         0F
     } else {
-        with(localDensity) { max(
-            statusBarHeight - state.offset.value.roundToInt().toDp(),
-            0.toDp(),
-        ) } / statusBarHeight
+        with(localDensity) {
+            max(
+                statusBarHeight - state.offset.value.roundToInt().toDp(),
+                0.toDp(),
+            )
+        } / statusBarHeight
     }.coerceIn(0f, 1f)
 
     val focusManager = LocalFocusManager.current
@@ -103,10 +121,15 @@ fun BottomSheetWrapper(
         focusManager.clearFocus()
     }
 
+    var predictiveBackProgress by remember {
+        mutableFloatStateOf(0f)
+    }
+
     ModalBottomSheetLayout(
         cancelable = cancelable,
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetState = state,
+        predictiveBackProgress = predictiveBackProgress,
         sheetShape = MaterialTheme.shapes.extraLarge.copy(
             bottomStart = CornerSize(0.dp),
             bottomEnd = CornerSize(0.dp),
@@ -158,11 +181,17 @@ fun BottomSheetWrapper(
         }
     ) {}
 
-    BackHandler(state.isVisible) {
-        if (cancelable) {
+    PredictiveBackHandler(state.isVisible) { progress ->
+        try {
+            progress.collect { backEvent ->
+                predictiveBackProgress = backEvent.progress
+            }
+
             coroutineScope.launch {
                 appViewModel.closeSheet(name = name)
             }
+        } catch (e: CancellationException) {
+            predictiveBackProgress = 0f
         }
     }
 }

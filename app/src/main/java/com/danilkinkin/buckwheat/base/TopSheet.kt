@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.base
 
 import android.view.MotionEvent
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.PredictiveBackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -43,8 +44,10 @@ import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import java.lang.Float.max
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.math.roundToInt
 
 @ExperimentalMaterialApi
@@ -72,6 +75,10 @@ fun TopSheetLayout(
 
     var lock by remember { mutableStateOf(false) }
     var scroll by remember { mutableStateOf(false) }
+
+    var predictiveBackProgress by remember {
+        mutableFloatStateOf(0f)
+    }
 
     val navigationBarHeight = WindowInsets.systemBars
         .asPaddingValues()
@@ -155,9 +162,11 @@ fun TopSheetLayout(
         Box(Modifier.fillMaxSize()) {
             Scrim(
                 color = ModalBottomSheetDefaults.scrimColor,
-                targetValue = (progress * 5).coerceIn(0f, 1f),
+                targetValue = (progress * 5).coerceIn(0f, 1f) * (1f - predictiveBackProgress * 0.7f),
             )
         }
+
+        val halfExpanedOffset = (-(expandHeight - halfHeight)).coerceAtMost(0f)
 
         Card(
             shape = RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp),
@@ -172,13 +181,13 @@ fun TopSheetLayout(
                 })
                 .nestedScroll(connection)
                 .offset {
+                    val swipeOffset = swipeableState.offset.value
+                    val predictiveOffset = halfExpanedOffset * predictiveBackProgress * 0.3f
+
                     IntOffset(
                         x = 0,
-                        y = swipeableState.offset.value
-                            .coerceIn(
-                                (-(expandHeight - halfHeight)).coerceAtMost(0f),
-                                0f,
-                            )
+                        y = (swipeOffset + predictiveOffset)
+                            .coerceIn(halfExpanedOffset, 0f)
                             .roundToInt(),
                     )
                 }
@@ -186,7 +195,7 @@ fun TopSheetLayout(
                     state = swipeableState,
                     orientation = Orientation.Vertical,
                     anchors = mapOf(
-                        (-(expandHeight - halfHeight)).coerceAtMost(0f) to TopSheetValue.HalfExpanded,
+                        halfExpanedOffset to TopSheetValue.HalfExpanded,
                         0f to TopSheetValue.Expanded
                     ),
                 )
@@ -313,9 +322,18 @@ fun TopSheetLayout(
         }
     }
 
-    BackHandler(swipeableState.currentValue === TopSheetValue.Expanded) {
-        coroutineScope.launch {
-            swipeableState.animateTo(TopSheetValue.HalfExpanded)
+    PredictiveBackHandler(swipeableState.currentValue === TopSheetValue.Expanded) { progress ->
+        try {
+            progress.collect { backEvent ->
+                predictiveBackProgress = backEvent.progress
+            }
+
+            coroutineScope.launch {
+                swipeableState.animateTo(TopSheetValue.HalfExpanded)
+                predictiveBackProgress = 0f
+            }
+        } catch (e: CancellationException) {
+            predictiveBackProgress = 0f
         }
     }
 }
