@@ -1,24 +1,44 @@
 package com.danilkinkin.buckwheat.finishPeriod
 
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.compose.animation.*
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -61,6 +81,9 @@ fun FinishPeriod(
 
     val scroll = with(localDensity) { scrollState.value.toDp() }
 
+    val navigationBarHeight =
+        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().coerceAtLeast(16.dp)
+
     Surface(Modifier.height(IntrinsicSize.Min)) {
         Column(
             modifier = Modifier.verticalScroll(scrollState)
@@ -74,7 +97,7 @@ fun FinishPeriod(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = localBottomSheetScrollState.topPadding)
+                        .padding(top = localBottomSheetScrollState.topPadding.coerceAtLeast(36.dp))
                         .onGloballyPositioned {
                             headerSize = Size(
                                 width = with(localDensity) { it.size.width.toDp() },
@@ -137,7 +160,7 @@ fun FinishPeriod(
                     Icon(
                         modifier = Modifier
                             .requiredSize(256.dp)
-                            .absoluteOffset(x = halfWidth * 0.7f, y = -halfHeight * 0.6f)
+                            .absoluteOffset(x = halfWidth * 0.7f, y = -halfHeight * 0.6f + scroll * 0.35f)
                             .rotate(angleStar1)
                             .zIndex(-1f),
                         painter = painterResource(R.drawable.shape_soft_star_1),
@@ -147,7 +170,7 @@ fun FinishPeriod(
                     Icon(
                         modifier = Modifier
                             .requiredSize(256.dp)
-                            .absoluteOffset(x = -halfWidth * 0.7f, y = halfHeight * 0.6f + scroll * 0.5f)
+                            .absoluteOffset(x = -halfWidth * 0.7f, y = halfHeight * 0.6f + scroll * 0.6f)
                             .rotate(angleStar2)
                             .zIndex(-1f),
                         painter = painterResource(R.drawable.shape_soft_star_2),
@@ -232,106 +255,37 @@ fun FinishPeriod(
                     text = stringResource(R.string.export_to_csv),
                     onClick = { exportCSVLaunch() },
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
-            val navigationBarHeight =
-                WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().coerceAtLeast(16.dp)
 
-            Spacer(Modifier.height(120.dp + navigationBarHeight))
+            Spacer(Modifier.height(60.dp + navigationBarHeight).fillMaxWidth())
         }
 
         Box(
-            Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(bottom = navigationBarHeight),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            Footer(
-                title = { Text(stringResource(R.string.new_period_title)) },
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(60.dp)
+                    .padding(horizontal = 16.dp),
                 onClick = {
                     onCreateNewPeriod()
                     onClose()
-                },
-                detached = false,//scrollState.maxValue - scrollState.value != 0,
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Footer(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    title: @Composable () -> Unit,
-    detached: Boolean,
-) {
-    val colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
-    )
-    val content = @Composable {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(
-                Modifier
-                    .padding(horizontal = 24.dp, vertical = 32.dp)
-                    .weight(weight = 1F, fill = true)
-            ) {
-                ProvideTextStyle(MaterialTheme.typography.titleMedium) {
-                    title()
                 }
-            }
-            Icon(
-                modifier = Modifier
-                    .width(48.dp)
-                    .padding(end = 8.dp),
-                painter = painterResource(R.drawable.ic_arrow_right),
-                contentDescription = null,
-            )
-        }
-    }
-
-    val navigationBarHeight =
-        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().coerceAtLeast(16.dp)
-
-    AnimatedContent(targetState = detached, transitionSpec = {
-        if (targetState && !initialState) {
-            fadeIn(
-                tween(durationMillis = 250)
-            ) togetherWith fadeOut(
-                snap(delayMillis = 250)
-            )
-        } else {
-            fadeIn(
-                snap()
-            ) togetherWith fadeOut(
-                tween(durationMillis = 250)
-            )
-        }.using(
-            SizeTransform(clip = false)
-        )
-    }) { targetDetached ->
-        if (targetDetached) {
-            Card(
-                onClick = onClick,
-                modifier = modifier.fillMaxWidth(),
-                shape = RectangleShape,
-                colors = colors,
             ) {
-                Box(Modifier.padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight)) {
-                    content()
-                }
-            }
-        } else {
-            Card(
-                onClick = onClick,
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, bottom = navigationBarHeight),
-                shape = MaterialTheme.shapes.extraLarge,
-                colors = colors,
-            ) {
-                content()
+                Text(
+                    text = stringResource(R.string.new_period_title),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Spacer(Modifier.width(8.dp))
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_forward),
+                    contentDescription = null,
+                )
             }
         }
     }
