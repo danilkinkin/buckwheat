@@ -59,7 +59,7 @@ var baseColors = listOf(
     Color(0xFFEF7564),
 )
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalStdlibApi::class)
 @Composable
 fun CategoriesChartCard(
     modifier: Modifier = Modifier,
