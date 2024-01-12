@@ -225,7 +225,8 @@ internal fun MonthHeader(modifier: Modifier = Modifier, yearMonth: YearMonth) {
                 .padding(start = 24.dp)
                 .weight(1f),
             text = prettyYearMonth(yearMonth),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }
