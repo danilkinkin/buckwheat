@@ -88,7 +88,8 @@ private fun FinishDateSelectorTopAppBar(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(8.dp)) {
+                    .padding(8.dp)
+            ) {
                 IconButton(
                     onClick = { onBackPressed() }
                 ) {
@@ -99,6 +100,7 @@ private fun FinishDateSelectorTopAppBar(
                 }
                 Spacer(Modifier.weight(1F))
                 Button(
+                    modifier = Modifier.padding(end = 4.dp),
                     onClick = { onApply() },
                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                     enabled = calendarState.calendarUiState.value.hasSelectedDates,
@@ -162,16 +164,9 @@ private fun FinishDateSelectorTopAppBar(
 
 
 @Preview(name = "Default")
+@Preview(name = "Default (Night mode)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewDefault(){
-    BuckwheatTheme {
-        FinishDateSelector(onBackPressed = {}, onApply = {})
-    }
-}
-
-@Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewNightMode(){
     BuckwheatTheme {
         FinishDateSelector(onBackPressed = {}, onApply = {})
     }
