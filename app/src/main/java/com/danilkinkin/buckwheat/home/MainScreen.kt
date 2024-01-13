@@ -39,6 +39,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -192,27 +193,38 @@ fun MainScreen(
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
 
-        val currentKeyboardHeight by animateFloatAsState(
-            targetValue = if (isShowSystemKeyboard) {
-                systemKeyboardHeight
-            } else {
-                keyboardHeight
-            },
-        )
+        val currentKeyboardHeight = if (isShowSystemKeyboard) {
+            systemKeyboardHeight
+        } else {
+            keyboardHeight
+        }
 
-        val editorHeight = contentHeight
-            .minus(
-                currentKeyboardHeight
-                    .plus(with(localDensity) {
-                        if (isShowSystemKeyboard) {
-                            16.dp.toPx()
-                        } else {
-                            keyboardAdditionalOffset.toPx()
-                        }
-                    })
-                    .coerceAtLeast(0f)
-            )
-            .coerceAtMost(contentHeight - with(localDensity) { navigationBarHeight.toPx() + 96.dp.toPx()  })
+        val editorHeight by remember(
+            contentHeight,
+            currentKeyboardHeight,
+            isShowSystemKeyboard,
+            keyboardAdditionalOffset,
+            navigationBarHeight
+        ) { derivedStateOf {
+            contentHeight
+                .minus(
+                    currentKeyboardHeight
+                        .plus(with(localDensity) {
+                            if (isShowSystemKeyboard) {
+                                16.dp.toPx()
+                            } else {
+                                keyboardAdditionalOffset.toPx()
+                            }
+                        })
+                        .coerceAtLeast(0f)
+                )
+                .coerceAtMost(contentHeight - with(localDensity) { navigationBarHeight.toPx() + 96.dp.toPx()  })
+        } }
+
+        val editorHeightAnimated by animateFloatAsState(
+            targetValue = editorHeight,
+            animationSpec = tween(durationMillis = 150)
+        )
 
         Row {
             if (windowSizeClass != WindowWidthSizeClass.Compact) {
@@ -280,11 +292,11 @@ fun MainScreen(
                 if (windowSizeClass == WindowWidthSizeClass.Compact) {
                     TopSheetLayout(
                         swipeableState = topSheetState,
-                        customHalfHeight = editorHeight,
+                        customHalfHeight = editorHeightAnimated,
                         lockSwipeable = appViewModel.lockSwipeable,
                         sheetContentHalfExpand = {
                             Editor(
-                                modifier = Modifier.height(with(localDensity) { editorHeight.toDp() }),
+                                modifier = Modifier.height(with(localDensity) { editorHeightAnimated.toDp() }),
                                 onOpenHistory = {
                                     coroutineScope.launch {
                                         topSheetState.animateTo(TopSheetValue.Expanded)
@@ -310,7 +322,7 @@ fun MainScreen(
                         ),
                     ) {
                         Editor(
-                            modifier = Modifier.height(with(localDensity) { editorHeight.toDp() }),
+                            modifier = Modifier.height(with(localDensity) { editorHeightAnimated.toDp() }),
                         )
                     }
                 }
