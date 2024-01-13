@@ -29,16 +29,17 @@ val AutoMigration4to5: Migration = object : Migration(4, 5) {
         // Create the new "transactions" table
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS `transactions` " +
-                    "(`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                    "`type` TEXT NOT NULL DEFAULT 'SPENT', " +
-                    "`other_columns` TEXT, " +  // Define other columns as needed
-                    "PRIMARY KEY(`id`))"
+                    "(`type` TEXT NOT NULL, " +
+                    "`value` TEXT NOT NULL, " +
+                    "`date` INTEGER NOT NULL, " +
+                    "`comment` TEXT NOT NULL DEFAULT '', " +
+                    "`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)"
         )
 
         // Copy data from the old "Spent" table to the new "transactions" table
         database.execSQL(
-            "INSERT INTO `transactions` (`type`, `other_columns`) " +
-                    "SELECT 'SPENT', `other_columns` FROM `Spent`"
+            "INSERT INTO `transactions` (`type`, `value`, `date`, `comment`) " +
+                    "SELECT 'SPENT', `value`, `date`, `comment` FROM `Spent`"
         )
 
         // Drop the old "Spent" table
@@ -59,8 +60,11 @@ val AutoMigration4to5: Migration = object : Migration(4, 5) {
 @TypeConverters(RoomConverters::class)
 abstract class DatabaseModule : RoomDatabase() {
 
-    val MIGRATIONS = arrayOf<Migration>(AutoMigration4to5)
     abstract fun transactionDao(): TransactionDao
 
     abstract fun storageDao(): StorageDao
+
+    companion object {
+        val MANUAL_MIGRATIONS = arrayOf<Migration>(AutoMigration4to5)
+    }
 }

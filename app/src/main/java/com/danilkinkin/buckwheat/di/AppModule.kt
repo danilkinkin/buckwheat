@@ -23,6 +23,7 @@ object AppModule {
     )
         .fallbackToDestructiveMigration()
         .allowMainThreadQueries()
+        .addMigrations(*DatabaseModule.MANUAL_MIGRATIONS)
         .build()
 
     @Singleton
