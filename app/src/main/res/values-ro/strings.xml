@@ -1,10 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Buckwheat</string>
-
-    <!-- Main -->
     <string name="app_widget_extend_name">Buckwheat întinsă</string>
     <string name="app_widget_minimal_name">Buckwheat minimă</string>
-    <string name="budget_for_today">Bugetul pentru azi</string>
     <string name="rest_budget_for_today">Pentru azi</string>
     <string name="new_daily_budget_short">Nou pentru azi</string>
     <string name="new_daily_budget">Bugetul zilnic nou</string>
@@ -12,36 +10,17 @@
     <string name="budget_end">Bugetul sa terminat</string>
     <string name="budget_not_set">Nici un buget setat</string>
     <string name="budget_end_description">Ai trecut peste bugetul planificat, nu te îngrijora, nu e ceva rău, cheltuielile nu sunt niciodată la fel. Continuă să cheltuiești pentru a înțelege cât de mult vei cheltui și de ce buget ai nevoie</string>
-    <string name="new_spent">Cheltuială nouă</string>
-    <plurals name="spends_today">
-        <item quantity="one">%1$s cheltuit azi</item>
-        <item quantity="few">%1$s cheltuiți azi</item>
-        <item quantity="other">%1$s cheltuiți azi</item>
-    </plurals>
-    <plurals name="day">
-        <item quantity="one">o zi</item>
-        <item quantity="few">%1$s zile</item>
-        <item quantity="other">%1$s zile</item>
-    </plurals>
-    <string name="enter_spent_placeholder">Introdu cheltuiala</string>
     <string name="hide_overspending_warn">Ascunde mesajul de la sfârșitul bugetului</string>
     <string name="hide_overspending_warn_description">Mesajul va fi ascuns până la sfârșitul perioadei de timp, pentru a nu distrage sau deranja</string>
     <string name="add_comment">Comentariu</string>
-
-    <!-- History -->
-    <string name="label_start_date">Început</string>
-    <string name="label_finish_date">Sfârșit</string>
     <string name="remove_spent">Cheltuielile au revenit la buget</string>
     <string name="remove_spent_undo">Anulează</string>
     <string name="no_spends">Nici o cheltuială până acum</string>
     <string name="total_per_day">Totalul de azi:</string>
-
-    <!-- Wallet -->
     <string name="change_date">Schimba data</string>
     <string name="change_time">Schimbă timpul</string>
     <string name="wallet_title">Buget</string>
     <string name="wallet_edit_title">Buget nou</string>
-    <string name="label_budget">Buget</string>
     <string name="select_finish_date_title">Alege o dată finală</string>
     <plurals name="finish_date_label">
         <item quantity="one">Până pe %1$s (o zi)</item>
@@ -65,7 +44,6 @@
     <string name="budget_must_greater_zero">Introdu un buget</string>
     <string name="days_must_greater_zero">Calculează bugetul pentru cel puțin o zi</string>
     <string name="apply">Aplică</string>
-    <string name="done">Am înțeles</string>
     <string name="change_budget">Schimbă bugetul</string>
     <string name="select_currency_title">Selectează valuta</string>
     <string name="search_currency_placeholder">Codul sau numele valutei</string>
@@ -77,8 +55,6 @@
     <string name="confirm_change_budget">Schimbă bugetul</string>
     <string name="use_last">Valori anterioare</string>
     <string name="days_left">Zile rămase</string>
-
-    <!-- Settings -->
     <string name="settings_title">Setări</string>
     <string name="theme_label">Temă</string>
     <string name="theme_light">Deschisă</string>
@@ -92,21 +68,15 @@
     <string name="report_bug">Raportează o problemă</string>
     <string name="contribute">Contribuie</string>
     <string name="developer">Dezvoltare și design:</string>
-
-    <!-- Bug reporting -->
     <string name="report_bug_title">Raportează o problemă</string>
     <string name="report_via_github">Prin GitHub issue</string>
     <string name="report_via_email">Prin email</string>
-
-    <!-- New day -->
     <string name="new_day_title">Felicitări! Ai salvat</string>
     <string name="recalc_budget">Află cum să bugetezi</string>
     <string name="split_rest_days_title">Împarte cu zilele rămase</string>
     <string name="split_rest_days_description">%1$s pe zi</string>
     <string name="add_current_day_title">Păstrează pentru azi</string>
     <string name="add_current_day_description">%1$s pentru azi și %2$s pentru zilele următoare</string>
-
-    <!-- Finish period -->
     <string name="finish_period_title">Perioada s-a sfârșit</string>
     <string name="period_summary_title">Aici sunt statisticile pentru această perioadă</string>
     <string name="period_summary_no_spends_title">Wow, nu ai cheltuit nimic în această perioadă</string>
@@ -116,7 +86,7 @@
     <string name="rest_budget_percent">%1$s%% din buget</string>
     <string name="min_spent">Cheltuiala minimă</string>
     <string name="max_spent">Cheltuiala maximă</string>
-    <string name="count_spends">Total cheltuit</string>
+    <string name="count_spends">Cheltuieli totale</string>
     <string name="average_spent">Media cheltuielilor</string>
     <string name="advice_title">Sunteți pe calea cea bună</string>
     <string name="advice_description">Scrieți toate cheltuielile și nu vă îngrijorați dacă treceți peste buget, cheltuielile nu sunt un lucru constant.</string>
@@ -127,8 +97,6 @@
     <string name="overspending_after_few_times_out_budget">După asta, ai avut %1$s din %2$s rămași peste buget</string>
     <string name="overspending_after_many_times_out_budget">După doar %1$s din %2$s rămași, erai pe buget</string>
     <string name="overspending_after_all_times_out_budget">După toți %1$s rămași nu ai rămas în afara bugetului</string>
-
-    <!-- Onboarding -->
     <string name="hello">Salut!</string>
     <string name="onboarding_title">Bun venit la Buckwheat, hai să salvăm bani împreună</string>
     <string name="set_period_title">Setează un buget</string>
@@ -138,8 +106,6 @@
     <string name="help_record_spends_description">Aplicația va calcula cât de mult poți cheltui zilnic pentru a rămâne în buget, notează toate cheltuielile și ține evidența de buget</string>
     <string name="help_good_luck_title">Cheltuiește în mod înțelept</string>
     <string name="help_good_luck_description">Cu timpul, vei învăța cum să cheltuiești și de cât ai nevoie. Învață să înțelegi dacă poți să cheltuiești bani pe un mărunțiș chiar acum</string>
-
-    <!-- Common -->
     <string name="copy_in_clipboard">Copiat</string>
     <string name="not_found_email_clients">Nici o aplicație de email găsită</string>
     <string name="cancel">Anulează</string>
@@ -152,7 +118,7 @@
     <string name="select_currency_description">Valuta nu va afecta calculele în nici un fel, este doar un semn pentru a înțelege mai ușor numerele.</string>
     <string name="remember_choice_reacalc_budget_description">Mai târziu poți schimba în portofel</string>
     <string name="remember_choice">Ține minte alegerea</string>
-    <string name="rest_label">Rest</string>
+    <string name="rest_label">Repaus</string>
     <string name="choose_recalc_budget_method_label">Alege metoda de distribuție a bugetului rămas</string>
     <string name="choose_recalc_budget_method_description">Poți alege cum să distribui bugetul rămas la finalul zilei. \n\nDe exemplu, ai un buget de 500 pe zi, ieri ai cheltuit 400, azi poți ori să distribui 100 pe zilele rămase, sau să cheltuiești 600 (500 + 100) azi</string>
     <string name="always_ask">Întreabă întotdeauna</string>
@@ -161,7 +127,6 @@
     <string name="method_add_to_current_day_title">Adaugă la bugetul zilnic actual</string>
     <string name="method_add_to_current_day_description">Restul rămas va fi adăugat la bugetul zilei actuale</string>
     <string name="spent_budget">Cheltuit</string>
-    <string name="edit_spent">Cheltuit editabil</string>
     <string name="cancel_editing">Anulează editarea</string>
     <string name="over">sfârșit</string>
     <string name="home_widgets_label">Widgeturi pe ecranul de pornire</string>
@@ -170,8 +135,13 @@
     <string name="tutorial_open_history">Trageți pentru a vedea istoricul cheltuielilor</string>
     <string name="recalc_budget_on_last_day">Astăzi este ultima zi, nu are sens să distribui</string>
     <string name="start_last_day_description">Astăzi puteți cheltui %1$s</string>
-    <string name="thousand_numerical_shorthand">mii</string>
-    <string name="million_numerical_shorthand">mil.</string>
-    <string name="billion_numerical_shorthand">mld.</string>
-    <string name="trillion_numerical_shorthand">bil.</string>
+    <string name="thousand_numerical_shorthand">k</string>
+    <string name="million_numerical_shorthand">m</string>
+    <string name="billion_numerical_shorthand">b</string>
+    <string name="trillion_numerical_shorthand">t</string>
+    <string name="without_tag">Fără etichetă</string>
+    <string name="rest_tags">Odihnă</string>
+    <string name="not_enough_data_for_tags_chart">Nu vă puteți împărți cheltuielile pe categorii</string>
+    <string name="not_enough_data_for_tags_chart_use_tags_hint">Utilizați etichete pentru a vedea diagrama pe categorii</string>
+    <string name="spends_calendar_hint">Graficul arată cât ați cheltuit în fiecare zi în raport cu bugetul zilnic</string>
 </resources>

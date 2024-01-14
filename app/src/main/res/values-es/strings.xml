@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Buckwheat</string>
-
-    <!-- Main -->
-    <string name="budget_for_today">Presupuesto para hoy</string>
+    <string name="app_widget_extend_name">Widget ancho</string>
+    <string name="app_widget_minimal_name">Widget mínimo</string>
     <string name="rest_budget_for_today">Para hoy</string>
     <string name="new_daily_budget_short">nuevo día</string>
     <string name="new_daily_budget">Nuevo presupuesto diario</string>
@@ -10,34 +10,17 @@
     <string name="budget_end">Se ha acabado el presupuesto</string>
     <string name="budget_not_set">Sin presupuesto establecido</string>
     <string name="budget_end_description">Has sobrepasado el presupuesto, pero no te preocupes, las necesidades de gasto no siempre son las mismas. Sigue gastando para entender cuánto gastarás a final de mes y cuánto debes presupuestar.</string>
-    <string name="new_spent">Nuevo gasto</string>
-    <plurals name="spends_today">
-        <item quantity="one">%1$s gastado hoy</item>
-        <item quantity="other">%1$s gastados hoy</item>
-    </plurals>
-    <plurals name="day">
-        <item quantity="one">%1$s día</item>
-        <item quantity="other">%1$s días</item>
-    </plurals>
-    <string name="enter_spent_placeholder">Anota un gasto</string>
     <string name="hide_overspending_warn">No mostrar el aviso al agotar el presupuesto</string>
     <string name="hide_overspending_warn_description">El mensaje se ocultará hasta el final del periodo para no distraerte ni condicionarte</string>
     <string name="add_comment">Comentario</string>
-
-    <!-- History -->
-    <string name="label_start_date">Inicio</string>
-    <string name="label_finish_date">Final</string>
     <string name="remove_spent">Gastos devueltos al presupuesto</string>
     <string name="remove_spent_undo">Deshacer</string>
     <string name="no_spends">No hay gastos todavía</string>
     <string name="total_per_day">Total del día:</string>
-
-    <!-- Wallet -->
     <string name="change_date">Cambiar fecha</string>
     <string name="change_time">Cambio de hora</string>
     <string name="wallet_title">Presupuesto</string>
     <string name="wallet_edit_title">Nuevo presupuesto</string>
-    <string name="label_budget">Presupuesto</string>
     <string name="select_finish_date_title">Elige una fecha final</string>
     <plurals name="finish_date_label">
         <item quantity="one">Hasta el %1$s (%2$s día)</item>
@@ -59,7 +42,6 @@
     <string name="budget_must_greater_zero">Introduce tu presupuesto</string>
     <string name="days_must_greater_zero">Calcula el presupuesto para al menos un día</string>
     <string name="apply">Aplicar</string>
-    <string name="done">De acuerdo</string>
     <string name="change_budget">Cambiar el presupuesto</string>
     <string name="select_currency_title">Elige una divisa</string>
     <string name="search_currency_placeholder">Código o nombre de la divisa</string>
@@ -70,8 +52,6 @@
     <string name="confirm_change_budget_description">Por favor, ten en cuenta que al cambiar el presupuesto el historial de gastos actual se borrará y la cuenta atrás empezará de nuevo</string>
     <string name="confirm_change_budget">Cambiar el presupuesto</string>
     <string name="use_last">Valores anteriores</string>
-
-    <!-- Settings -->
     <string name="days_left">Días restantes</string>
     <string name="settings_title">Ajustes</string>
     <string name="theme_label">Tema</string>
@@ -86,21 +66,15 @@
     <string name="report_bug">Notifica un fallo</string>
     <string name="contribute">Contribuye</string>
     <string name="developer">Desarrollo &amp; diseño:</string>
-
-    <!-- Bug reporting -->
     <string name="report_bug_title">Notificar un fallo</string>
     <string name="report_via_github">Crea un issue en GitHub</string>
     <string name="report_via_email">Por email</string>
-
-    <!-- New day -->
     <string name="new_day_title">¡Felicidades! Has ahorrado</string>
     <string name="recalc_budget">Descubre como presupuestar</string>
     <string name="split_rest_days_title">Repartirlo entre los días que quedan</string>
     <string name="split_rest_days_description">Obtén %1$s al día</string>
     <string name="add_current_day_title">Dejarlo para hoy</string>
     <string name="add_current_day_description">Tendrás %1$s para hoy y %2$s para los días sucesivos</string>
-
-    <!-- Finish period -->
     <string name="finish_period_title">Fin del periodo</string>
     <string name="period_summary_title">Aquí tienes las estadísticas de este periodo</string>
     <string name="period_summary_no_spends_title">Wow, no has gastado nada en este periodo</string>
@@ -121,8 +95,6 @@
     <string name="overspending_after_few_times_out_budget">Después, quedaron %1$s de los %2$s sobre el presupuesto</string>
     <string name="overspending_after_many_times_out_budget">Tras quedar %1$s de los %2$s, te ajustaste al presupuesto</string>
     <string name="overspending_after_all_times_out_budget">Después de excederte %1$s, no sobrepasaste el presupuesto</string>
-
-    <!-- Onboarding -->
     <string name="hello">¡Hola!</string>
     <string name="onboarding_title">Bienvenido a Buckwheat, ahorremos juntos</string>
     <string name="set_period_title">Establece un presupuesto</string>
@@ -132,8 +104,6 @@
     <string name="help_record_spends_description">La aplicación calculará cuánto puedes gastar cada día para ajustarte al presupuesto, anota cada gasto y sigue el presupuesto.</string>
     <string name="help_good_luck_title">Gasta sabiamente</string>
     <string name="help_good_luck_description">Con el tiempo, aprenderás a intuir cuánto gastas y cuánto necesitas. Aprende a valorar si puedes gastar dinero en un capricho ahora mismo.</string>
-
-    <!-- Common -->
     <string name="copy_in_clipboard">Copiado al portapapeles</string>
     <string name="not_found_email_clients">No se ha encontrado ningún cliente de email</string>
     <string name="cancel">Cancelar</string>
@@ -141,8 +111,9 @@
     <string name="today">Hoy</string>
     <string name="export_to_csv_success">Gastos exportados en CSV</string>
     <string name="export_to_csv_failed">Fallo al exportar los gastos en CSV</string>
-    <string name="select_currency_description">La divisa no afecta a los cálculos en absoluto, solo ayuda a entender mejor los números.</string>
     <string name="add_spent">Añadir gastado</string>
+    <string name="add_spent_short">Gasto</string>
+    <string name="select_currency_description">La divisa no afecta a los cálculos en absoluto, solo ayuda a entender mejor los números.</string>
     <string name="remember_choice_reacalc_budget_description">Podrás cambiarlo más tarde en la cartera</string>
     <string name="remember_choice">Recordar mi elección</string>
     <string name="rest_label">Sobra</string>
@@ -154,12 +125,8 @@
     <string name="method_add_to_current_day_title">Añadir al presupuesto del día siguiente</string>
     <string name="method_add_to_current_day_description">El sobrante se añadirá al presupuesto para el siguiente día</string>
     <string name="spent_budget">Gastado</string>
-    <string name="edit_spent">Gasto editable</string>
     <string name="cancel_editing">Cancelar edición</string>
     <string name="over">Por encima de</string>
-    <string name="app_widget_extend_name">Widget ancho</string>
-    <string name="app_widget_minimal_name">Widget mínimo</string>
-    <string name="add_spent_short">Gasto</string>
     <string name="home_widgets_label">Widgets de pantalla de inicio</string>
     <string name="try_home_widgets_desc">El trigo sarraceno ahora tiene widgets. Pruébalo y lleva un seguimiento de tu presupuesto desde la pantalla de inicio</string>
     <string name="tutorial_open_wallet">Haga clic para ver los detalles del presupuesto</string>
@@ -167,7 +134,12 @@
     <string name="recalc_budget_on_last_day">Hoy es el último día, no tiene sentido distribuir.</string>
     <string name="start_last_day_description">Hoy puedes gastar %1$s</string>
     <string name="thousand_numerical_shorthand">k</string>
-    <string name="million_numerical_shorthand">M</string>
-    <string name="billion_numerical_shorthand">mm</string>
-    <string name="trillion_numerical_shorthand">B</string>
+    <string name="million_numerical_shorthand">m</string>
+    <string name="billion_numerical_shorthand">b</string>
+    <string name="trillion_numerical_shorthand">t</string>
+    <string name="without_tag">Sin etiqueta</string>
+    <string name="rest_tags">Descansar</string>
+    <string name="not_enough_data_for_tags_chart">No puedes dividir tus gastos por categorías</string>
+    <string name="not_enough_data_for_tags_chart_use_tags_hint">Utilice etiquetas para ver el gráfico por categorías</string>
+    <string name="spends_calendar_hint">El gráfico muestra cuánto gastó cada día en relación con su presupuesto diario.</string>
 </resources>

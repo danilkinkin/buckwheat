@@ -1,47 +1,26 @@
- <resources>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
     <string name="app_name">Buckwheat</string>
-
-    <!-- Main -->
-    <string name="budget_for_today">Dnešní rozpočet</string>
+    <string name="app_widget_extend_name">Buckwheat prodloužit</string>
+    <string name="app_widget_minimal_name">Buckwheat minimum</string>
     <string name="rest_budget_for_today">Pro dnešek</string>
     <string name="new_daily_budget_short">Nový den</string>
-     <string name="new_daily_budget">Nový denní rozpočet</string>
+    <string name="new_daily_budget">Nový denní rozpočet</string>
     <string name="new_daily_budget_description">Dnes jste překročili denní rozpočet, nebojte se ale, nic hrozného se neděje. Pro následující dny bude rozpočet přepočítán s ohledem na zbývající celkový rozpočet</string>
     <string name="budget_end">Rozpočet je u konce</string>
-     <string name="budget_not_set">Není nastaven žádný rozpočet</string>
-     <string name="budget_end_description">Překročili jste plánovaný rozpočet, nebojte se ale, nic hrozného se neděje, výdaje nejsou nikdy stejné. Začněte utrácet dál, abyste pochopili, kolik nakonec utratíte a jaký rozpočet potřebujete</string>
-    <string name="new_spent">Nová útrata</string>
-    <plurals name="spends_today">
-        <item quantity="one">%1$s útrata za dnešek</item>
-        <item quantity="few">%1$s útraty za dnešek</item>
-        <item quantity="many">%1$s útrat za dnešek</item>
-        <item quantity="other">%1$s útrat za dnešek</item>
-    </plurals>
-    <plurals name="day">
-        <item quantity="one">%1$s den</item>
-        <item quantity="few">%1$s dny</item>
-        <item quantity="many">%1$s dní</item>
-        <item quantity="other">%1$s dní</item>
-    </plurals>
-    <string name="enter_spent_placeholder">Zadejte útratu</string>
+    <string name="budget_not_set">Není nastaven žádný rozpočet</string>
+    <string name="budget_end_description">Překročili jste plánovaný rozpočet, nebojte se ale, nic hrozného se neděje, výdaje nejsou nikdy stejné. Začněte utrácet dál, abyste pochopili, kolik nakonec utratíte a jaký rozpočet potřebujete</string>
     <string name="hide_overspending_warn">Skrýt zprávu o konci rozpočtu</string>
     <string name="hide_overspending_warn_description">Zpráva bude skryta až do konce období, aby nerozptylovala a nenamáhala</string>
     <string name="add_comment">Komentář</string>
-
-    <!-- History -->
-    <string name="label_start_date">Začátek</string>
-    <string name="label_finish_date">Konec</string>
     <string name="remove_spent">Výdaje vrácené do rozpočtu</string>
     <string name="remove_spent_undo">Vrátit</string>
     <string name="no_spends">Zatím žádná útrata</string>
     <string name="total_per_day">Denní součet:</string>
-
-    <!-- Wallet -->
-     <string name="change_date">Změnit datum</string>
-     <string name="change_time">Změňte čas</string>
-     <string name="wallet_title">Rozpočet</string>
+    <string name="change_date">Změnit datum</string>
+    <string name="change_time">Změňte čas</string>
+    <string name="wallet_title">Rozpočet</string>
     <string name="wallet_edit_title">Nový rozpočet</string>
-    <string name="label_budget">Rozpočet</string>
     <string name="select_finish_date_title">Vyberte datum ukončení</string>
     <plurals name="finish_date_label">
         <item quantity="one">Do %1$s (%2$s den)</item>
@@ -67,7 +46,6 @@
     <string name="budget_must_greater_zero">Zadejte svůj rozpočet</string>
     <string name="days_must_greater_zero">Výpočet musí být proveden na alespoň jeden den</string>
     <string name="apply">Použít</string>
-    <string name="done">Chápu</string>
     <string name="change_budget">Změnit rozpočet</string>
     <string name="select_currency_title">Vyberte měnu</string>
     <string name="search_currency_placeholder">Kód nebo název měny</string>
@@ -78,37 +56,29 @@
     <string name="confirm_change_budget_description">Vezměte prosím na vědomí, že při změně rozpočtu bude aktuální historie výdajů smazána a odpočítávání začne znovu</string>
     <string name="confirm_change_budget">Změnit rozpočet</string>
     <string name="use_last">Předchozí hodnoty</string>
-
-    <!-- Settings -->
-     <string name="days_left">Zbývající dny</string>
-     <string name="settings_title">Nastavení</string>
+    <string name="days_left">Zbývající dny</string>
+    <string name="settings_title">Nastavení</string>
     <string name="theme_label">Motiv</string>
     <string name="theme_light">Světlý</string>
     <string name="theme_dark">Tmavý</string>
     <string name="theme_system">Systémový</string>
     <string name="locale_label">Jazyk</string>
     <string name="locale_system">Systémový</string>
-     <string name="version">Verze: %1$s</string>
+    <string name="version">Verze: %1$s</string>
     <string name="about">O aplikaci</string>
     <string name="description">Buckwheat je aplikace, která vám pomůže rozumně utrácet peníze. Zapisování jednotlivých výdajů vás vystřízliví a dá vám představu o tom, kolik a jak můžete utratit.</string>
     <string name="report_bug">Nahlásit chybu</string>
-     <string name="contribute">Přispět</string>
-     <string name="developer">Vývoj a design:</string>
-
-    <!-- Bug reporting -->
+    <string name="contribute">Přispět</string>
+    <string name="developer">Vývoj a design:</string>
     <string name="report_bug_title">Nahlásit chybu</string>
     <string name="report_via_github">Pomocí problému na GitHubu</string>
     <string name="report_via_email">Pomocí e-mailu</string>
-
-    <!-- New day -->
     <string name="new_day_title">Gratulujeme! Ušetřili jste</string>
     <string name="recalc_budget">Zjistěte, jak sestavit rozpočet</string>
     <string name="split_rest_days_title">Rozdělit na zbývající dny</string>
     <string name="split_rest_days_description">Získejte %1$s denně</string>
     <string name="add_current_day_title">Nechat na dnešek</string>
     <string name="add_current_day_description">Pro dnešní den bude k dispozici %1$s a pro následující dny %2$s</string>
-
-    <!-- Finish period -->
     <string name="finish_period_title">Období skončilo</string>
     <string name="period_summary_title">Zde jsou statistiky za toto období</string>
     <string name="period_summary_no_spends_title">Páni, v tomto období jste nic neutratili</string>
@@ -129,8 +99,6 @@
     <string name="overspending_after_few_times_out_budget">Poté vám z rozpočtu zbylo %1$s z %2$s</string>
     <string name="overspending_after_many_times_out_budget">Po vyčerpání pouze %1$s ze zbývajících %2$s jste byli v rozpočtu</string>
     <string name="overspending_after_all_times_out_budget">Po všech zbývajících %1$ jste nebyli mimo rozpočet</string>
-
-    <!-- Onboarding -->
     <string name="hello">Ahoj!</string>
     <string name="onboarding_title">Vítejte v aplikaci Buckwheat! Pojďme společně ušetřit vaše peníze</string>
     <string name="set_period_title">Nastavit rozpočet</string>
@@ -140,8 +108,6 @@
     <string name="help_record_spends_description">Aplikace vypočítá, kolik můžete denně utratit, abyste se vešli do rozpočtu, zapíše výdaje a bude rozpočet sledovat</string>
     <string name="help_good_luck_title">Utrácejte s rozmyslem</string>
     <string name="help_good_luck_description">Časem se naučíte vnímat, kolik skutečně utrácíte a kolik potřebujete. Naučte se chápat, zda můžete peníze za drobnosti utratit právě teď</string>
-
-    <!-- Common -->
     <string name="copy_in_clipboard">Zkopírováno do schránky</string>
     <string name="not_found_email_clients">Nenalezen žádný e-mailový klient</string>
     <string name="cancel">Zrušit</string>
@@ -149,9 +115,10 @@
     <string name="today">Dnes</string>
     <string name="export_to_csv_success">Útrata exportována</string>
     <string name="export_to_csv_failed">Nepodařilo se exportovat útratu</string>
+    <string name="add_spent">Přidat odpad</string>
+    <string name="add_spent_short">Výdaje</string>
     <string name="select_currency_description">Měna nijak neovlivňuje výpočty, je to jen označení pro snazší pochopení čísel.</string>
-     <string name="add_spent">Přidat odpad</string>
-     <string name="remember_choice_reacalc_budget_description">Později to můžete měnit v peněžence</string>
+    <string name="remember_choice_reacalc_budget_description">Později to můžete měnit v peněžence</string>
     <string name="remember_choice">Zapamatovat volbu</string>
     <string name="rest_label">Zbytek</string>
     <string name="choose_recalc_budget_method_label">Vyberte způsob rozdělení zbytku</string>
@@ -162,20 +129,21 @@
     <string name="method_add_to_current_day_title">Přidat do aktuálního denního rozpočtu</string>
     <string name="method_add_to_current_day_description">Zbytek bude přičten k aktuálnímu dennímu rozpočtu.</string>
     <string name="spent_budget">Utraceno</string>
-    <string name="edit_spent">Upravit výdaje</string>
     <string name="cancel_editing">Zrušit úpravu</string>
-     <string name="over">přes</string>
-     <string name="app_widget_extend_name">Pohanka prodloužit</string>
-     <string name="app_widget_minimal_name">Pohanka minimum</string>
-     <string name="add_spent_short">Výdaje</string>
-     <string name="home_widgets_label">Widgety na domovské obrazovce</string>
-     <string name="try_home_widgets_desc">Hrachovka nyní obsahuje widgety. Vyzkoušejte to a sledujte svůj rozpočet přímo z domovské obrazovky.</string>
-     <string name="tutorial_open_wallet">Kliknutím zobrazíte podrobnosti o rozpočtu</string>
-     <string name="tutorial_open_history">Přetažením zobrazíte historii výdajů</string>
-     <string name="recalc_budget_on_last_day">Dnes je poslední den, nemá smysl rozdávat</string>
-     <string name="start_last_day_description">Dnes můžete utratit %1$s</string>
-     <string name="thousand_numerical_shorthand">tis.</string>
-     <string name="million_numerical_shorthand">mil.</string>
-     <string name="billion_numerical_shorthand">mld.</string>
-     <string name="trillion_numerical_shorthand">bil.</string>
- </resources>
+    <string name="over">přes</string>
+    <string name="home_widgets_label">Widgety na domovské obrazovce</string>
+    <string name="try_home_widgets_desc">Hrachovka nyní obsahuje widgety. Vyzkoušejte to a sledujte svůj rozpočet přímo z domovské obrazovky.</string>
+    <string name="tutorial_open_wallet">Kliknutím zobrazíte podrobnosti o rozpočtu</string>
+    <string name="tutorial_open_history">Přetažením zobrazíte historii výdajů</string>
+    <string name="recalc_budget_on_last_day">Dnes je poslední den, nemá smysl rozdávat</string>
+    <string name="start_last_day_description">Dnes můžete utratit %1$s</string>
+    <string name="thousand_numerical_shorthand">tis.</string>
+    <string name="million_numerical_shorthand">m</string>
+    <string name="billion_numerical_shorthand">mld</string>
+    <string name="trillion_numerical_shorthand">b</string>
+    <string name="without_tag">Bez štítku</string>
+    <string name="rest_tags">Ostatní</string>
+    <string name="not_enough_data_for_tags_chart">Vaše výdaje nelze rozdělit do kategorií</string>
+    <string name="not_enough_data_for_tags_chart_use_tags_hint">Použijte štítky pro zobrazení grafů podle kategorií</string>
+    <string name="spends_calendar_hint">Zobrazení, kolik jste utratili každý den ve srovnání s vaším denním rozpočtem, v grafu</string>
+</resources>

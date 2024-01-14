@@ -1,8 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Buckwheat</string>
-
-    <!-- Main -->
-    <string name="budget_for_today">Budget du jour</string>
+    <string name="app_widget_extend_name">Extension de sarrasin</string>
+    <string name="app_widget_minimal_name">Minimum de sarrasin</string>
     <string name="rest_budget_for_today">Pour aujourd\'hui</string>
     <string name="new_daily_budget_short">Nouvelle journée</string>
     <string name="new_daily_budget">Nouveau budget journalier</string>
@@ -12,46 +12,25 @@
     <string name="budget_end_description">Vous avez dépassé le budget prévu, pas d\'inquiétude, ce
         n\'est pas grave. Votre budget journalier pour le reste de la période va être recalculé en
         prenant en compte le budget total restant.</string>
-    <string name="new_spent">Nouvelle dépense</string>
-    <plurals name="spends_today">
-        <item quantity="one">%1$s dépense aujourd\'hui</item>
-        <item quantity="many">%1$s dépenses aujourd\'hui</item>
-        <item quantity="other">%1$s dépenses aujourd\'hui</item>
-    </plurals>
-    <plurals name="day">
-        <item quantity="one">%1$s jour</item>
-        <item quantity="many">%1$s jours</item>
-        <item quantity="other">%1$s jours</item>
-    </plurals>
-    <string name="enter_spent_placeholder">Saisir une dépense</string>
     <string name="hide_overspending_warn">Masquer le message de fin de budget</string>
     <string name="hide_overspending_warn_description">Le message va être masqué jusqu\'à la fin de
         la période, pour ne pas vous distraire ni vous déranger</string>
     <string name="add_comment">Commentaire</string>
-
-    <!-- History -->
-    <string name="label_start_date">Début</string>
-    <string name="label_finish_date">Fin</string>
     <string name="remove_spent">Montant dépensé rajouté au budget</string>
     <string name="remove_spent_undo">Annuler</string>
     <string name="no_spends">Aucune dépense</string>
     <string name="total_per_day">Cumul de la journée :</string>
-
-    <!-- Wallet -->
     <string name="change_date">Date de modification</string>
     <string name="change_time">Changer le temps</string>
     <string name="wallet_title">Budget</string>
     <string name="wallet_edit_title">Nouveau budget</string>
-    <string name="label_budget">Budget</string>
     <string name="select_finish_date_title">Choisir une date de fin</string>
     <plurals name="finish_date_label">
         <item quantity="one">Jusqu\'au %1$s (%2$s jour)</item>
-        <item quantity="many">Jusqu\'au %1$s (%2$s jours)</item>
         <item quantity="other">Jusqu\'au %1$s (%2$s jours)</item>
     </plurals>
     <plurals name="days_count">
         <item quantity="one">%1$s jour</item>
-        <item quantity="many">%1$s jours</item>
         <item quantity="other">%1$s jours</item>
     </plurals>
     <string name="export_to_csv">Export CSV</string>
@@ -66,7 +45,6 @@
     <string name="budget_must_greater_zero">Saisissez votre budget</string>
     <string name="days_must_greater_zero">Le calcul du budget doit se faire sur au moins un jour</string>
     <string name="apply">Valider</string>
-    <string name="done">Terminé</string>
     <string name="change_budget">Changer de budget</string>
     <string name="select_currency_title">Choisir une devise</string>
     <string name="search_currency_placeholder">Code ou nom de la devise</string>
@@ -79,8 +57,6 @@
         l\'historique des dépenses actuel sera supprimé et le décompte sera remis à zéro.</string>
     <string name="confirm_change_budget">Changer de budget</string>
     <string name="use_last">Valeurs précédentes</string>
-
-    <!-- Settings -->
     <string name="days_left">Jours restants</string>
     <string name="settings_title">Réglages</string>
     <string name="theme_label">Thème</string>
@@ -89,7 +65,7 @@
     <string name="theme_system">Système</string>
     <string name="locale_label">Langage</string>
     <string name="locale_system">Système</string>
-    <string name="version">Version: %1$s</string>
+    <string name="version">Version : %1$s</string>
     <string name="about">À propos</string>
     <string name="description">Buckwheat vous aide à dépenser votre argent de façon raisonnée.
         Écrire chaque dépense soulage l\'esprit et vous donne une idée de combien et comment vous
@@ -97,13 +73,9 @@
     <string name="report_bug">Rapporter un bug</string>
     <string name="contribute">Contribuer</string>
     <string name="developer">Dévelopement &amp; design:</string>
-
-    <!-- Bug reporting -->
     <string name="report_bug_title">Rapporter un bug</string>
     <string name="report_via_github">Via une issue GitHub</string>
-    <string name="report_via_email">Via email</string>
-
-    <!-- New day -->
+    <string name="report_via_email">Par e-mail</string>
     <string name="new_day_title">Félicitations! Vous avez économisé</string>
     <string name="recalc_budget">Découvrer comment établir un budget</string>
     <string name="split_rest_days_title">Diviser par jour restant</string>
@@ -111,8 +83,6 @@
     <string name="add_current_day_title">Finir pour aujourd\'hui</string>
     <string name="add_current_day_description">Il y aura %1$s pour aujourd\'hui et %2$s pour les
         jours suivants</string>
-
-    <!-- Finish period -->
     <string name="finish_period_title">Période terminée</string>
     <string name="period_summary_title">Voici les statistiques pour cette période</string>
     <string name="period_summary_no_spends_title">Wow, vous n\'avez rien dépensé pendant cette
@@ -123,7 +93,7 @@
     <string name="rest_budget_percent">%1$s%% du budget</string>
     <string name="min_spent">Dépense minimale</string>
     <string name="max_spent">Dépense maximale</string>
-    <string name="count_spends">Total dépensé</string>
+    <string name="count_spends">Dépenses totales</string>
     <string name="average_spent">Dépense moyenne</string>
     <string name="advice_title">Tout va bien</string>
     <string name="advice_description">Écrivez toutes vos dépenses et ne vous inquiétez pas si vous
@@ -140,8 +110,6 @@
         vous étiez dans votre budget</string>
     <string name="overspending_after_all_times_out_budget">Après tous les %1$s restant vous n\'avez
         pas dépassé votre budget</string>
-
-    <!-- Onboarding -->
     <string name="hello">Bonjour!</string>
     <string name="onboarding_title">Bienvenue sur Buckwheat, allons faire quelques économies
         ensemble</string>
@@ -160,8 +128,6 @@
     <string name="help_good_luck_description">Au fil du temps, vous apprendrez à évaluer combien
         vous dépensez réellement et de combien vous avez besoin. Apprenez à savoir si vous pouvez
         vous offrir une petite bricole en ce moment.</string>
-
-    <!-- Common -->
     <string name="copy_in_clipboard">Copié</string>
     <string name="not_found_email_clients">Aucun client mail detecté</string>
     <string name="cancel">Annuler</string>
@@ -169,9 +135,10 @@
     <string name="today">Aujourd\'hui</string>
     <string name="export_to_csv_success">Dépenses exportées</string>
     <string name="export_to_csv_failed">Problème lors de l\'export</string>
+    <string name="add_spent">Ajouter des déchets</string>
+    <string name="add_spent_short">Dépenses</string>
     <string name="select_currency_description">La devise n\'affecte en aucun cas les calculs, c\'est
         juste une appelation pour faciliter la compréhension des nombres.</string>
-    <string name="add_spent">Ajouter des déchets</string>
     <string name="remember_choice_reacalc_budget_description">Vous pourrez la modifier plus tard
         depuis votre portefeuille</string>
     <string name="remember_choice">Mémorisez ce choix</string>
@@ -188,12 +155,8 @@
     <string name="method_add_to_current_day_title">Ajouter au budget du jour</string>
     <string name="method_add_to_current_day_description">Le résidu sera ajouté au budget du jour</string>
     <string name="spent_budget">Dépensé</string>
-    <string name="edit_spent">Modifier la dépense</string>
     <string name="cancel_editing">Annuler la modification</string>
     <string name="over">plus de</string>
-    <string name="app_widget_extend_name">Extension de sarrasin</string>
-    <string name="app_widget_minimal_name">Minimum de sarrasin</string>
-    <string name="add_spent_short">Dépenses</string>
     <string name="home_widgets_label">Widgets d\'écran d\'accueil</string>
     <string name="try_home_widgets_desc">Le sarrasin dispose désormais de widgets. Essayez-le et suivez votre budget depuis l\'écran d\'accueil</string>
     <string name="tutorial_open_wallet">Cliquez pour voir les détails du budget</string>
@@ -201,7 +164,12 @@
     <string name="recalc_budget_on_last_day">Aujourd\'hui c\'est le dernier jour, ça n\'a aucun sens de distribuer</string>
     <string name="start_last_day_description">Aujourd\'hui, vous pouvez dépenser %1$s</string>
     <string name="thousand_numerical_shorthand">k</string>
-    <string name="million_numerical_shorthand">M</string>
-    <string name="billion_numerical_shorthand">Md</string>
-    <string name="trillion_numerical_shorthand">B</string>
+    <string name="million_numerical_shorthand">m</string>
+    <string name="billion_numerical_shorthand">b</string>
+    <string name="trillion_numerical_shorthand">t</string>
+    <string name="without_tag">Sans étiquette</string>
+    <string name="rest_tags">Repos</string>
+    <string name="not_enough_data_for_tags_chart">Impossible de diviser vos dépenses par catégories</string>
+    <string name="not_enough_data_for_tags_chart_use_tags_hint">Utilisez des balises pour voir le graphique par catégories</string>
+    <string name="spends_calendar_hint">Le graphique montre combien vous avez dépensé chaque jour par rapport à votre budget quotidien</string>
 </resources>

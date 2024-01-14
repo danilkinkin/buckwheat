@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Гречка</string>
-
-    <!-- Main -->
-    <string name="budget_for_today">Бюджет на сьогодні</string>
+    <string name="app_widget_extend_name">Гречана крупа подовжується</string>
+    <string name="app_widget_minimal_name">Мінімум гречки</string>
     <string name="rest_budget_for_today">На сьогодні</string>
     <string name="new_daily_budget_short">Новий денний</string>
     <string name="new_daily_budget">Новий денний бюджет</string>
@@ -11,73 +10,52 @@
     <string name="budget_end">Бюджет закінчився</string>
     <string name="budget_not_set">Бюджет не встановлений</string>
     <string name="budget_end_description">Ви вийшли за межі запланованого бюджету, не турбуйтеся, це не страшно, витрати ніколи не бувають однаковими. Заводьте витрати далі, щоб розуміти скільки зрештою ви витратите і який бюджет вам потрібен</string>
-    <string name="new_spent">Нова витрата</string>
-    <plurals name="spends_today">
-        <item quantity="one">%1$s торта сьогодні</item>
-        <item quantity="few">%1$s витрати сьогодні</item>
-        <item quantity="many">%1$s витрат сьогодні</item>
-    </plurals>
-    <plurals name="day">
-        <item quantity="one">%1$s день</item>
-        <item quantity="few">%1$s дня</item>
-        <item quantity="many">%1$s днів</item>
-    </plurals>
-    <string name="enter_spent_placeholder">Введіть витрати</string>
-    <string name="hide_overspending_warn">Hide budget end message</string>
+    <string name="hide_overspending_warn">Приховати повідомлення про закінчення бюджету</string>
     <string name="hide_overspending_warn_description">Повідомлення буде приховано до кінця періоду, щоб не відволікати та не напружувати</string>
     <string name="add_comment">Коментар</string>
-
-    <!-- History -->
-    <string name="label_start_date">Початок</string>
-    <string name="label_finish_date">Кінець</string>
     <string name="remove_spent">Трата повернута до бюджету</string>
     <string name="remove_spent_undo">Скасувати</string>
     <string name="no_spends">Трат поки не було</string>
     <string name="total_per_day">Денний результат:</string>
-
-    <!-- Wallet -->
     <string name="change_date">Змінити дату</string>
     <string name="change_time">Змінити час</string>
     <string name="wallet_title">Бюджет</string>
     <string name="wallet_edit_title">Новий бюджет</string>
-    <string name="label_budget">Бюджет</string>
     <string name="select_finish_date_title">Виберіть дату закінчення</string>
     <plurals name="finish_date_label">
         <item quantity="one">До %1$s (%2$s день)</item>
         <item quantity="few">До %1$s (%2$s дня)</item>
         <item quantity="many">До %1$s (%2$s днів)</item>
+        <item quantity="other">До %1$s (%2$s днів)</item>
     </plurals>
     <plurals name="days_count">
         <item quantity="one">%1$s день</item>
         <item quantity="few">%1$s дня</item>
         <item quantity="many">%1$s днів</item>
+        <item quantity="other">%1$s днів</item>
     </plurals>
     <string name="export_to_csv">Вивантажити у CSV</string>
     <string name="finish_date_not_select">Дату закінчення не вибрано</string>
-    <string name="in_currency_label">"Валюті "</string>
+    <string name="in_currency_label">Валюті </string>
     <string name="currency_from_list">Світова валюта</string>
     <string name="currency_custom">Своя валюта</string>
     <string name="currency_none">Без валюти</string>
     <string name="per_day">%1$s на день</string>
-    <string name="select_currency_title">Виберіть валюту</string>
-    <string name="select_currency_description">Валюта ніяк не впливає на розрахунки, це просто позначення для легшого усвідомлення чисел</string>
-    <string name="search_currency_placeholder">Код валюти або назва</string>
-    <string name="currency_not_found">Немає відповідних валют</string>
-    <string name="currency_custom_title">Вкажіть свою валюту</string>
-    <string name="currency_custom_description">Наприклад, витрата в 150 умовних одиниць буде відображатися так:</string>
     <string name="total_title">Разом</string>
     <string name="unable_calc_budget">Неможливо розрахувати бюджет</string>
     <string name="budget_must_greater_zero">Вкажіть бюджет</string>
     <string name="days_must_greater_zero">Порахуйте бюджет хоча б на один день</string>
     <string name="apply">Застосувати</string>
-    <string name="done">Зрозуміло</string>
     <string name="change_budget">Змінити бюджет</string>
+    <string name="select_currency_title">Виберіть валюту</string>
+    <string name="search_currency_placeholder">Код валюти або назва</string>
+    <string name="currency_not_found">Немає відповідних валют</string>
+    <string name="currency_custom_title">Вкажіть свою валюту</string>
+    <string name="currency_custom_description">Наприклад, витрата в 150 умовних одиниць буде відображатися так:</string>
     <string name="confirm_change_budget_title">Зміна бюджету</string>
     <string name="confirm_change_budget_description">Зверніть увагу, що при зміні бюджету поточна історія витрат вилучиться і відлік почнеться спочатку</string>
     <string name="confirm_change_budget">Змінити бюджет</string>
     <string name="use_last">Попередні значення</string>
-
-    <!-- Settings -->
     <string name="days_left">Днів залишилось</string>
     <string name="settings_title">Налаштування</string>
     <string name="theme_label">Тема</string>
@@ -92,21 +70,15 @@
     <string name="report_bug">Повідомити про помилку</string>
     <string name="contribute">Зробити вклад</string>
     <string name="developer">Розробка та дизайн:</string>
-
-    <!-- Bug reporting -->
     <string name="report_bug_title">Повідомити про помилку</string>
     <string name="report_via_github">Через GitHub issue</string>
     <string name="report_via_email">Через пошту</string>
-
-    <!-- New day -->
     <string name="new_day_title">Вітаємо! Ви заощадили</string>
     <string name="recalc_budget">Уточніть, як перерахувати бюджет</string>
     <string name="split_rest_days_title">Поділити на дні, що залишилися</string>
     <string name="split_rest_days_description">Вийде %1$s на день</string>
     <string name="add_current_day_title">Залишити на сьогодні</string>
     <string name="add_current_day_description">Буде %1$s на сьогодні і по %2$s у наступні дні</string>
-
-    <!-- Finish period -->
     <string name="finish_period_title">Період закінчився</string>
     <string name="period_summary_title">Ось така статистика цього періоду вийшла</string>
     <string name="period_summary_no_spends_title">Ого, ви нічого не витратили у цьому періоді</string>
@@ -127,8 +99,6 @@
     <string name="overspending_after_few_times_out_budget">Після ви ще %1$s з %2$s решти виходили з бюджету</string>
     <string name="overspending_after_many_times_out_budget">Після тільки %1$s з %2$s тих, що залишилися, ви не виходили з бюджету</string>
     <string name="overspending_after_all_times_out_budget">Після всіх %1$s залишених ви не виходили з бюджету</string>
-
-    <!-- Onboarding -->
     <string name="hello">Привіт!</string>
     <string name="onboarding_title">Ласкаво просимо до гречки, давай вчиться економити разом</string>
     <string name="set_period_title">Налаштувати бюджет</string>
@@ -138,8 +108,6 @@
     <string name="help_record_spends_description">Додаток порахує скільки приблизно на день вам потрібно витрачати, щоб вписатися до бюджету, записуєте витрати і стежте за бюджетом</string>
     <string name="help_good_luck_title">Траття з розумом</string>
     <string name="help_good_luck_description">Згодом ви навчитеся відчувати скільки ви реально витрачаєте і скільки вам потрібно. Навчіться розуміти, чи можете ви прямо зараз витратити гроші на дрібничку</string>
-
-    <!-- Common -->
     <string name="copy_in_clipboard">Скопійовано до буфера обміну</string>
     <string name="not_found_email_clients">Не знайдено поштових клієнтів</string>
     <string name="cancel">Скасувати</string>
@@ -148,6 +116,8 @@
     <string name="export_to_csv_success">Витрати експортовані</string>
     <string name="export_to_csv_failed">Не вдалося експортувати витрати</string>
     <string name="add_spent">Додати витрату</string>
+    <string name="add_spent_short">Витрата</string>
+    <string name="select_currency_description">Валюта ніяк не впливає на розрахунки, це просто позначення для легшого усвідомлення чисел</string>
     <string name="remember_choice_reacalc_budget_description">Пізніше ви можете змінитися в гаманці</string>
     <string name="remember_choice">Запам’ятайте вибір</string>
     <string name="rest_label">Залишок</string>
@@ -159,20 +129,21 @@
     <string name="method_add_to_current_day_title">Додайте до поточного щоденного бюджету</string>
     <string name="method_add_to_current_day_description">Несподіваний залишок буде доданий до поточного щоденного бюджету</string>
     <string name="spent_budget">Витрачено</string>
-    <string name="edit_spent">Редагована витрата</string>
     <string name="cancel_editing">Скасувати редагування</string>
     <string name="over">понад</string>
-    <string name="app_widget_extend_name">Гречана крупа подовжується</string>
-    <string name="app_widget_minimal_name">Мінімум гречки</string>
-    <string name="add_spent_short">Витрата</string>
     <string name="home_widgets_label">Віджети на головному екрані</string>
     <string name="try_home_widgets_desc">Тепер у гречки є віджети. Спробуйте і слідкуйте за своїм бюджетом з головного екрану</string>
     <string name="tutorial_open_wallet">Натисніть, щоб переглянути деталі бюджету</string>
     <string name="tutorial_open_history">Потягніть, щоб переглянути історію витрат</string>
     <string name="recalc_budget_on_last_day">Сьогодні останній день, розподіляти немає сенсу</string>
     <string name="start_last_day_description">Сьогодні можна витратити %1$s</string>
-    <string name="thousand_numerical_shorthand">тис.</string>
-    <string name="million_numerical_shorthand">млн</string>
-    <string name="billion_numerical_shorthand">млрд</string>
-    <string name="trillion_numerical_shorthand">трлн</string>
+    <string name="thousand_numerical_shorthand">k</string>
+    <string name="million_numerical_shorthand">м</string>
+    <string name="billion_numerical_shorthand">b</string>
+    <string name="trillion_numerical_shorthand">t</string>
+    <string name="without_tag">Без тегу</string>
+    <string name="rest_tags">Відпочинок</string>
+    <string name="not_enough_data_for_tags_chart">Неможливо розділити ваші витрати за категоріями</string>
+    <string name="not_enough_data_for_tags_chart_use_tags_hint">Використовуйте теги, щоб переглянути діаграму за категоріями</string>
+    <string name="spends_calendar_hint">Діаграма показує, скільки ви витрачали щодня відносно вашого щоденного бюджету</string>
 </resources>

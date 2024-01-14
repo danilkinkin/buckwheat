@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Bovete</string>
-
-    <!-- Main -->
-    <string name="budget_for_today">Budget för idag</string>
+    <string name="app_name">Buckwheat</string>
+    <string name="app_widget_extend_name">Buckwheat förlänga</string>
+    <string name="app_widget_minimal_name">Buckwheat minimalt</string>
     <string name="rest_budget_for_today">För idag</string>
     <string name="new_daily_budget_short">Ny dagtid</string>
     <string name="new_daily_budget">Ny daglig budget</string>
@@ -11,34 +10,17 @@
     <string name="budget_end">Budgeten avslutad</string>
     <string name="budget_not_set">Ingen budget satt</string>
     <string name="budget_end_description">Du har slut på budget, oroa dig inte, det är okej, utgifterna är aldrig desamma. Börja spendera ytterligare för att förstå hur mycket du kommer att spendera i slutändan och vilken budget du behöver</string>
-    <string name="new_spent">Nya utgifter</string>
-    <plurals name="spends_today">
-        <item quantity="one">%1$s tårta idag</item>
-        <item quantity="other">%1$s spenderade idag</item>
-    </plurals>
-    <plurals name="day">
-        <item quantity="one">%1$s dag</item>
-        <item quantity="other">%1$s dagar</item>
-    </plurals>
-    <string name="enter_spent_placeholder">Ange utgifter</string>
     <string name="hide_overspending_warn">Dölj budgetslutmeddelande</string>
     <string name="hide_overspending_warn_description">Meddelandet kommer att döljas till slutet av perioden, för att inte distrahera eller anstränga sig</string>
     <string name="add_comment">Kommentar</string>
-
-    <!-- Historia -->
-    <string name="label_start_date">Starta</string>
-    <string name="label_finish_date">Slut</string>
     <string name="remove_spent">Utgifterna återfördes till budgeten</string>
     <string name="remove_spent_undo">Ta bort</string>
     <string name="no_spends">Inga utgifter ännu</string>
     <string name="total_per_day">Totalt dagligt:</string>
-
-    <!-- Plånbok -->
     <string name="change_date">Byt datum</string>
     <string name="change_time">Ändra tid</string>
     <string name="wallet_title">Budget</string>
     <string name="wallet_edit_title">Ny budget</string>
-    <string name="label_budget">Budget</string>
     <string name="select_finish_date_title">Välj ett slutdatum</string>
     <plurals name="finish_date_label">
         <item quantity="one">Upp till %1$s (%2$s dagar)</item>
@@ -55,25 +37,21 @@
     <string name="currency_custom">Anpassad valuta</string>
     <string name="currency_none">Ingen valuta</string>
     <string name="per_day">%1$s per dag</string>
-    <string name="select_currency_title">Välj valuta</string>
-    <string name="select_currency_description">Valutan påverkar inte beräkningarna på något sätt, det är bara en beteckning för enklare förståelse av siffror.</string>
-    <string name="search_currency_placeholder">Valutakod eller namn</string>
-    <string name="currency_not_found">Inga matchande valutor</string>
-    <string name="currency_custom_title">Ange din valuta</string>
-    <string name="currency_custom_description">Till exempel skulle spendera 150 valutaenheter visas så här:</string>
     <string name="total_title">Totalt</string>
     <string name="unable_calc_budget">Det går inte att beräkna budget</string>
     <string name="budget_must_greater_zero">Ange en budget</string>
     <string name="days_must_greater_zero">Beräkna din budget för minst en dag</string>
     <string name="apply">Ansök</string>
-    <string name="done">Förstår</string>
     <string name="change_budget">Ändra budget</string>
+    <string name="select_currency_title">Välj valuta</string>
+    <string name="search_currency_placeholder">Valutakod eller namn</string>
+    <string name="currency_not_found">Inga matchande valutor</string>
+    <string name="currency_custom_title">Ange din valuta</string>
+    <string name="currency_custom_description">Till exempel skulle spendera 150 valutaenheter visas så här:</string>
     <string name="confirm_change_budget_title">Ändra budget</string>
     <string name="confirm_change_budget_description">Observera att när du ändrar din budget kommer din nuvarande utgiftshistorik att raderas och nedräkningen börjar om</string>
     <string name="confirm_change_budget">Ändra budget</string>
     <string name="use_last">Föregående värden</string>
-
-    <!-- Inställningar -->
     <string name="days_left">Dagar kvar</string>
     <string name="settings_title">Inställningar</string>
     <string name="theme_label">Apptema</string>
@@ -88,21 +66,15 @@
     <string name="report_bug">Rapportera ett fel</string>
     <string name="contribute">Göra en insats</string>
     <string name="developer">Utveckling och design:</string>
-
-    <!-- Felrapportering -->
     <string name="report_bug_title">Rapportera ett fel</string>
     <string name="report_via_github">Via GitHub-problem</string>
     <string name="report_via_email">Via e-post</string>
-
-    <!-- Ny dag -->
     <string name="new_day_title">Grattis! Du sparade</string>
     <string name="recalc_budget">Ange hur budgeten ska återkallas</string>
     <string name="split_rest_days_title">Dela upp efter återstående dagar</string>
     <string name="split_rest_days_description">Få %1$s per dag</string>
     <string name="add_current_day_title">Åk i dag</string>
     <string name="add_current_day_description">Det kommer att finnas %1$s för idag och %2$s för följande dagar</string>
-
-    <!-- Slutperiod -->
     <string name="finish_period_title">Perioden slutade</string>
     <string name="period_summary_title">Här är statistiken för denna period</string>
     <string name="period_summary_no_spends_title">Wow, du har inte spenderat något under den här perioden</string>
@@ -123,8 +95,6 @@
     <string name="overspending_after_few_times_out_budget">Överutgifter för %1$s av de återstående %2$s spenderades för mycket efter det</string>
     <string name="overspending_after_many_times_out_budget">Efter bara %1$s av de återstående %2$s spenderade du inte för mycket</string>
     <string name="overspending_after_all_times_out_budget">Efter alla återstående %1$s spenderade du inte för mycket</string>
-
-    <!-- Onboarding -->
     <string name="hello">Hej!</string>
     <string name="onboarding_title">Välkommen till bovete, låt oss lära oss spara tillsammans</string>
     <string name="set_period_title">Ställ in budget</string>
@@ -134,8 +104,6 @@
     <string name="help_record_spends_description">Appen kommer att beräkna hur mycket du behöver spendera per dag för att passa din budget, registrera dina utgifter och hålla reda på din budget</string>
     <string name="help_good_luck_title">Spendera klokt</string>
     <string name="help_good_luck_description">Med tiden kommer du att få en känsla för hur mycket du faktiskt spenderar och hur mycket du behöver. Lär dig förstå om du kan spendera pengar på en prydnadssak just nu</string>
-
-    <!-- Vanligt -->
     <string name="copy_in_clipboard">Kopierat till urklipp</string>
     <string name="not_found_email_clients">Inga e-postklienter hittades</string>
     <string name="cancel">Avbryt</string>
@@ -144,6 +112,8 @@
     <string name="export_to_csv_success">Utgifterna exporteras</string>
     <string name="export_to_csv_failed">Det gick inte att exportera utgifter</string>
     <string name="add_spent">Lägg till avfall</string>
+    <string name="add_spent_short">Utgifter</string>
+    <string name="select_currency_description">Valutan påverkar inte beräkningarna på något sätt, det är bara en beteckning för enklare förståelse av siffror.</string>
     <string name="remember_choice_reacalc_budget_description">Senare kan du byta plånbok</string>
     <string name="remember_choice">Kom ihåg valet</string>
     <string name="rest_label">Återstod</string>
@@ -155,20 +125,21 @@
     <string name="method_add_to_current_day_title">Lägg till den nuvarande dagliga budgeten</string>
     <string name="method_add_to_current_day_description">Den rastlösa återstoden kommer att läggas till den nuvarande dagliga budgeten</string>
     <string name="spent_budget">Spenderat</string>
-    <string name="edit_spent">Redigerbart avfall</string>
     <string name="cancel_editing">Ångra redigering</string>
     <string name="over">över</string>
-    <string name="app_widget_extend_name">Bovete förlänga</string>
-    <string name="app_widget_minimal_name">Bovete minimalt</string>
-    <string name="add_spent_short">Utgifter</string>
     <string name="home_widgets_label">Startskärmswidgetar</string>
     <string name="try_home_widgets_desc">Bovetet har nu widgets. Prova det och håll koll på din budget från startskärmen</string>
     <string name="tutorial_open_wallet">Klicka för att se budgetinformation</string>
     <string name="tutorial_open_history">Dra för att visa utgiftshistorik</string>
     <string name="recalc_budget_on_last_day">Idag är sista dagen, det är ingen mening att dela ut</string>
     <string name="start_last_day_description">Idag kan du spendera %1$s</string>
-    <string name="thousand_numerical_shorthand">t</string>
+    <string name="thousand_numerical_shorthand">k</string>
     <string name="million_numerical_shorthand">m</string>
-    <string name="billion_numerical_shorthand">md</string>
-    <string name="trillion_numerical_shorthand">tn</string>
+    <string name="billion_numerical_shorthand">b</string>
+    <string name="trillion_numerical_shorthand">t</string>
+    <string name="without_tag">Utan tagg</string>
+    <string name="rest_tags">Resten</string>
+    <string name="not_enough_data_for_tags_chart">Det går inte att dela upp dina utgifter efter kategorier</string>
+    <string name="not_enough_data_for_tags_chart_use_tags_hint">Använd taggar för att se diagram efter kategorier</string>
+    <string name="spends_calendar_hint">Diagram visar hur mycket du spenderade varje dag i förhållande till din dagliga budget</string>
 </resources>

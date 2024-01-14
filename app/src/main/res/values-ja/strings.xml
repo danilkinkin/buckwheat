@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">そば</string>
-  <string name="app_widget_extend_name">そば延長</string>
-  <string name="app_widget_minimal_name">そばミニマル</string>
+  <string name="app_name">Buckwheat</string>
+  <string name="app_widget_extend_name">Buckwheat 延長された</string>
+  <string name="app_widget_minimal_name">Buckwheat 最小</string>
   <string name="rest_budget_for_today">今日のために</string>
   <string name="new_daily_budget_short">毎日新しい</string>
   <string name="new_daily_budget">新しい 1 日の予算</string>
