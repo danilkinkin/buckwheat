@@ -6,6 +6,7 @@ import androidx.compose.animation.core.FloatTweenSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -130,6 +131,7 @@ fun SpendsBudgetCard(
 private fun Preview() {
     BuckwheatTheme {
         SpendsBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal(3740),
             budget = BigDecimal(60000),
             currency = ExtendCurrency.none(),
@@ -142,6 +144,7 @@ private fun Preview() {
 private fun PreviewHalf() {
     BuckwheatTheme {
         SpendsBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal(30740),
             budget = BigDecimal(60000),
             currency = ExtendCurrency.none(),
@@ -154,6 +157,7 @@ private fun PreviewHalf() {
 private fun PreviewFull() {
     BuckwheatTheme {
         SpendsBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal(45740),
             budget = BigDecimal(60000),
             currency = ExtendCurrency.none(),
@@ -166,6 +170,7 @@ private fun PreviewFull() {
 private fun PreviewOverspending() {
     BuckwheatTheme {
         SpendsBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal.ZERO,
             budget = BigDecimal(60000),
             currency = ExtendCurrency.none(),
@@ -178,6 +183,7 @@ private fun PreviewOverspending() {
 private fun PreviewNightMode() {
     BuckwheatTheme {
         SpendsBudgetCard(
+            modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal(14740),
             budget = BigDecimal(60000),
             currency = ExtendCurrency.none(),
