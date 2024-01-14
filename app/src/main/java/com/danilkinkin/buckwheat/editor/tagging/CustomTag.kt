@@ -110,23 +110,38 @@ fun CustomTag(
     val tags by spendsViewModel.tags.observeAsState(emptyList())
 
     var isEdit by remember { mutableStateOf(false) }
-    var value by remember { mutableStateOf("") }
-    var tempValue by remember { mutableStateOf("") }
+    var value by remember {
+        mutableStateOf(
+            TextFieldValue(
+                "",
+                TextRange(0),
+            )
+        )
+    }
     var isShowSuggestions by remember { mutableStateOf(false) }
     var renderPopup by remember { mutableStateOf(false) }
 
     observeLiveData(editorViewModel.stage) {
         if (it === EditStage.CREATING_SPENT) {
-            value = ""
+            value = TextFieldValue(
+                "",
+                TextRange(0),
+            )
         }
     }
 
     observeLiveData(editorViewModel.currentComment) {
-        value = it ?: ""
+        value = TextFieldValue(
+            it ?: "",
+            TextRange((it ?: "").length),
+        )
     }
 
     DisposableEffect(editorViewModel.currentComment) {
-        value = editorViewModel.currentComment.value ?: ""
+        value = TextFieldValue(
+            editorViewModel.currentComment.value ?: "",
+            TextRange((editorViewModel.currentComment.value ?: "").length),
+        )
 
         onDispose { }
     }
@@ -137,7 +152,7 @@ fun CustomTag(
         onEdit(false)
         appViewModel.showSystemKeyboard.value = false
         appViewModel.lockDraggable.value = false
-        editorViewModel.currentComment.value = value
+        editorViewModel.currentComment.value = value.text
     }
 
     ExposedDropdownMenuBox(expanded = isShowSuggestions, onExpandedChange = {}) {
@@ -212,17 +227,14 @@ fun CustomTag(
 
                     if (targetIsEdit) {
                         CommentEditor(
-                            defaultValue = value,
-                            onChange = { tempValue = it },
-                            onApply = { comment ->
-                                value = comment
-                                close()
-                            }
+                            value = value,
+                            onChange = { value = it },
+                            onApply = { close() }
                         )
-                    } else if (!onlyIcon || value.isNotEmpty()) {
+                    } else if (!onlyIcon || value.text.isNotEmpty()) {
                         Text(
                             modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
-                            text = value.ifEmpty { stringResource(R.string.add_comment) },
+                            text = value.text.ifEmpty { stringResource(R.string.add_comment) },
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
                         )
@@ -233,7 +245,7 @@ fun CustomTag(
 
         if (renderPopup) {
             val filteredItems = tags.filter {
-                it.contains(tempValue, ignoreCase = true)
+                it.contains(value.text, ignoreCase = true)
             }
 
             val topBarHeight = WindowInsets.systemBars
@@ -263,10 +275,7 @@ fun CustomTag(
                         .height(height.value)
                         .pointerInput(Unit) {
                             detectTapUnconsumed {
-                                if (!dismissEvent.value) {
-                                    value = tempValue
-                                    close()
-                                }
+                                if (!dismissEvent.value) close()
                                 dismissEvent.value = false
                             }
                         },
@@ -277,7 +286,7 @@ fun CustomTag(
                         enter = expandVertically(tween(150)),
                         exit = shrinkVertically(tween(150)),
                     ) {
-                        if (filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == tempValue)) {
+                        if (filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == value.text)) {
                             Surface(
                                 modifier = Modifier
                                     .width(extendWidth)
@@ -297,7 +306,10 @@ fun CustomTag(
                                         itemSuggest(it) {
                                             dismissEvent.value = true
                                             editorViewModel.currentComment.value = it
-                                            value = it
+                                            value = TextFieldValue(
+                                                it,
+                                                TextRange(it.length),
+                                            )
                                         }
                                     }
                                 }
@@ -406,18 +418,10 @@ internal data class DropdownMenuPositionProvider(
 @Composable
 fun CommentEditor(
     modifier: Modifier = Modifier,
-    defaultValue: String,
-    onChange: (comment: String) -> Unit,
-    onApply: (comment: String) -> Unit,
+    value: TextFieldValue,
+    onChange: (comment: TextFieldValue) -> Unit,
+    onApply: () -> Unit,
 ) {
-    var value by remember(defaultValue) {
-        mutableStateOf(
-            TextFieldValue(
-                defaultValue,
-                TextRange(defaultValue.length),
-            )
-        )
-    }
     var focusIsTracking by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
 
@@ -428,13 +432,12 @@ fun CommentEditor(
             .focusRequester(focusRequester)
             .onFocusChanged { focusState ->
                 if (!focusState.hasFocus && focusIsTracking) {
-                    onApply(value.text)
+                    onApply()
                 }
             },
         value = value,
         onValueChange = {
-            value = it
-            onChange(it.text)
+            onChange(it)
         },
         trailingIcon = {
             FilledIconButton(
@@ -443,7 +446,7 @@ fun CommentEditor(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 ),
-                onClick = { onApply(value.text) },
+                onClick = { onApply() },
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_apply),
@@ -468,7 +471,7 @@ fun CommentEditor(
             imeAction = ImeAction.Done,
         ),
         keyboardActions = KeyboardActions(
-            onDone = { onApply(value.text) }
+            onDone = { onApply() }
         ),
     )
 
@@ -477,7 +480,7 @@ fun CommentEditor(
         focusRequester.requestFocus()
         focusIsTracking = true
 
-        value = TextFieldValue(value.text, TextRange(value.text.length))
+        //value = TextFieldValue(value.text, TextRange(value.text.length))
     }
 }
 
