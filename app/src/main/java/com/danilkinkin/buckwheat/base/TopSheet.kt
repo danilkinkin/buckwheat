@@ -84,6 +84,7 @@ fun TopSheetLayout(
     swipeableState: SwipeableState<TopSheetValue> = rememberSwipeableState(TopSheetValue.HalfExpanded),
     customHalfHeight: Float? = null,
     lockSwipeable: MutableState<Boolean>,
+    lockDraggable: MutableState<Boolean>,
     sheetContentHalfExpand: @Composable () -> Unit,
     sheetContentExpand: @Composable () -> Unit,
 ) {
@@ -115,7 +116,7 @@ fun TopSheetLayout(
         val currOffset = swipeableState.offset.value
         val maxOffset = (-(expandHeight - halfHeight)).coerceAtMost(0f)
 
-        val prevHalfHeight = remember { mutableStateOf(halfHeight) }
+        val prevHalfHeight = remember { mutableFloatStateOf(halfHeight) }
         val isLockProgress = remember(swipeableState.isAnimationRunning) {
             mutableStateOf(prevHalfHeight.value != halfHeight && swipeableState.isAnimationRunning)
         }
@@ -211,6 +212,7 @@ fun TopSheetLayout(
                     )
                 }
                 .swipeable(
+                    enabled = !lockDraggable.value,
                     state = swipeableState,
                     orientation = Orientation.Vertical,
                     anchors = mapOf(
@@ -318,7 +320,7 @@ fun TopSheetLayout(
                                 .width(30.dp)
                                 .background(
                                     color = MaterialTheme.colorScheme.onPrimaryContainer
-                                        .copy(alpha = 0.3f),
+                                        .copy(alpha = if (lockDraggable.value) 0f else 0.3f),
                                     shape = CircleShape
                                 )
                                 .align(Alignment.Center)

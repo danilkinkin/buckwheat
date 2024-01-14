@@ -285,6 +285,7 @@ fun MainScreen(
                         swipeableState = topSheetState,
                         customHalfHeight = editorHeightAnimated,
                         lockSwipeable = appViewModel.lockSwipeable,
+                        lockDraggable = appViewModel.lockDraggable,
                         sheetContentHalfExpand = {
                             Editor(
                                 modifier = Modifier.requiredHeight(currentEditorHeight),

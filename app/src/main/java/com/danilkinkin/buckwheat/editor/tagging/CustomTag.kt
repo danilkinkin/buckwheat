@@ -145,6 +145,7 @@ fun CustomTag(
                         isEdit = true
                         onEdit(true)
                         appViewModel.showSystemKeyboard.value = true
+                        appViewModel.lockDraggable.value = true
                     }
                 })
         ) {
@@ -207,6 +208,7 @@ fun CustomTag(
                                 isShowSuggestions = false
                                 onEdit(false)
                                 appViewModel.showSystemKeyboard.value = false
+                                appViewModel.lockDraggable.value = false
                                 editorViewModel.currentComment.value = comment
                             }
                         )
