@@ -1,11 +1,15 @@
 package com.danilkinkin.buckwheat.settings
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,6 +31,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
@@ -62,10 +67,14 @@ fun BugReporter(onClose: () -> Unit = {}) {
                 )
             }
             Row(
-                Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                Modifier
+                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .height(IntrinsicSize.Min),
             ) {
                 Button(
-                    modifier = Modifier.weight(1F),
+                    modifier = Modifier
+                        .weight(1F)
+                        .fillMaxHeight(),
                     icon = painterResource(R.drawable.ic_github),
                     text = stringResource(R.string.report_via_github),
                     onClick = {
@@ -78,7 +87,9 @@ fun BugReporter(onClose: () -> Unit = {}) {
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
-                    modifier = Modifier.weight(1F),
+                    modifier = Modifier
+                        .weight(1F)
+                        .fillMaxHeight(),
                     icon = painterResource(R.drawable.ic_email),
                     text = stringResource(R.string.report_via_email),
                     onClick = {
@@ -110,8 +121,9 @@ fun Button(modifier: Modifier = Modifier, icon: Painter, text: String, onClick: 
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
         ) {
             Icon(
                 modifier = Modifier.size(36.dp),
@@ -123,6 +135,7 @@ fun Button(modifier: Modifier = Modifier, icon: Painter, text: String, onClick: 
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
+                textAlign = TextAlign.Center,
             )
         }
     }
