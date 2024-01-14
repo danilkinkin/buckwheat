@@ -82,7 +82,7 @@
   <string name="rest_budget_percent">预算的 %1$s%%</string>
   <string name="min_spent">最低消费</string>
   <string name="max_spent">最高消费</string>
-  <string name="count_spends">总支出条目</string>
+  <string name="count_spends">总支出</string>
   <string name="average_spent">平均支出</string>
   <string name="advice_title">您做得很好</string>
   <string name="advice_description">记录您的每一笔支出，但也别担心超支，消费并非是一成不变的</string>
@@ -132,9 +132,12 @@
   <string name="recalc_budget_on_last_day">今天是最后一天，平均分配没有意义</string>
   <string name="start_last_day_description">您的当日可支出金额为 %1$s</string>
   <string name="thousand_numerical_shorthand">k</string>
-  <string name="million_numerical_shorthand">m</string>
-  <string name="billion_numerical_shorthand">b</string>
+  <string name="million_numerical_shorthand">米</string>
+  <string name="billion_numerical_shorthand">乙</string>
   <string name="trillion_numerical_shorthand">t</string>
-  <string name="without_tag">Without tag</string>
-  <string name="rest_tags">Rest</string>
+  <string name="without_tag">无标签</string>
+  <string name="rest_tags">休息</string>
+  <string name="not_enough_data_for_tags_chart">无法按类别拆分您的支出</string>
+  <string name="not_enough_data_for_tags_chart_use_tags_hint">使用标签按类别查看图表</string>
+  <string name="spends_calendar_hint">图表显示您每天花费的金额相对于每日预算</string>
 </resources>
