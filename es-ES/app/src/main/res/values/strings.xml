@@ -137,6 +137,9 @@
   <string name="million_numerical_shorthand">m</string>
   <string name="billion_numerical_shorthand">b</string>
   <string name="trillion_numerical_shorthand">t</string>
-  <string name="without_tag">Without tag</string>
-  <string name="rest_tags">Rest</string>
+  <string name="without_tag">Sin etiqueta</string>
+  <string name="rest_tags">Descansar</string>
+  <string name="not_enough_data_for_tags_chart">No puedes dividir tus gastos por categorías</string>
+  <string name="not_enough_data_for_tags_chart_use_tags_hint">Utilice etiquetas para ver el gráfico por categorías</string>
+  <string name="spends_calendar_hint">El gráfico muestra cuánto gastó cada día en relación con su presupuesto diario.</string>
 </resources>
