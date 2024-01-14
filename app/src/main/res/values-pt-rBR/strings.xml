@@ -12,7 +12,7 @@
   <string name="budget_end_description">Você ultrapassou o orçamento planejado, não se preocupe, não é assustador, os gastos nunca são os mesmos. Comece a gastar mais para entender quanto você vai gastar no final e qual orçamento você precisa</string>
   <string name="hide_overspending_warn">Não mostre o aviso quando o orçamento estiver esgotado</string>
   <string name="hide_overspending_warn_description">O aviso ficará oculto até o final do período, para não distrair ou sobrecarregar</string>
-  <string name="add_comment">Comente</string>
+  <string name="add_comment">Marcação</string>
   <string name="remove_spent">Gastos devolvidos ao orçamento</string>
   <string name="remove_spent_undo">Desfazer</string>
   <string name="no_spends">Sem gastos ainda</string>
@@ -84,7 +84,7 @@
   <string name="rest_budget_percent">%1$s%% do orçamento</string>
   <string name="min_spent">Gasto mínimo</string>
   <string name="max_spent">Gasto máximo</string>
-  <string name="count_spends">Gasto total</string>
+  <string name="count_spends">Gastos totais</string>
   <string name="average_spent">Gasto médio</string>
   <string name="advice_title">Você está indo bem</string>
   <string name="advice_description">Anote todas as seus gastos e não se preocupe em ultrapassar o orçamento, os gastos não são constantes.</string>
@@ -134,9 +134,12 @@
   <string name="recalc_budget_on_last_day">Hoje é o último dia, não faz sentido distribuir</string>
   <string name="start_last_day_description">Hoje você pode gastar %1$s</string>
   <string name="thousand_numerical_shorthand">k</string>
-  <string name="million_numerical_shorthand">m</string>
+  <string name="million_numerical_shorthand">eu</string>
   <string name="billion_numerical_shorthand">b</string>
   <string name="trillion_numerical_shorthand">t</string>
-  <string name="without_tag">Without tag</string>
-  <string name="rest_tags">Rest</string>
+  <string name="without_tag">Sem etiqueta</string>
+  <string name="rest_tags">Descansar</string>
+  <string name="not_enough_data_for_tags_chart">Não é possível dividir seus gastos por categorias</string>
+  <string name="not_enough_data_for_tags_chart_use_tags_hint">Use tags para ver o gráfico por categorias</string>
+  <string name="spends_calendar_hint">O gráfico mostra quanto você gastou todos os dias em relação ao seu orçamento diário</string>
 </resources>
