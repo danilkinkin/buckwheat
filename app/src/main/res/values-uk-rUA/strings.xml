@@ -138,9 +138,12 @@
   <string name="recalc_budget_on_last_day">Сьогодні останній день, розподіляти немає сенсу</string>
   <string name="start_last_day_description">Сьогодні можна витратити %1$s</string>
   <string name="thousand_numerical_shorthand">k</string>
-  <string name="million_numerical_shorthand">m</string>
+  <string name="million_numerical_shorthand">м</string>
   <string name="billion_numerical_shorthand">b</string>
   <string name="trillion_numerical_shorthand">t</string>
-  <string name="without_tag">Without tag</string>
-  <string name="rest_tags">Rest</string>
+  <string name="without_tag">Без тегу</string>
+  <string name="rest_tags">Відпочинок</string>
+  <string name="not_enough_data_for_tags_chart">Неможливо розділити ваші витрати за категоріями</string>
+  <string name="not_enough_data_for_tags_chart_use_tags_hint">Використовуйте теги, щоб переглянути діаграму за категоріями</string>
+  <string name="spends_calendar_hint">Діаграма показує, скільки ви витрачали щодня відносно вашого щоденного бюджету</string>
 </resources>
