@@ -13,6 +13,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -59,6 +60,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -82,6 +84,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.balloon.detectTapUnconsumed
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.EditStage
@@ -126,6 +129,15 @@ fun CustomTag(
         value = editorViewModel.currentComment.value ?: ""
 
         onDispose { }
+    }
+
+    val close = {
+        isEdit = false
+        isShowSuggestions = false
+        onEdit(false)
+        appViewModel.showSystemKeyboard.value = false
+        appViewModel.lockDraggable.value = false
+        editorViewModel.currentComment.value = value
     }
 
     ExposedDropdownMenuBox(expanded = isShowSuggestions, onExpandedChange = {}) {
@@ -204,12 +216,7 @@ fun CustomTag(
                             onChange = { tempValue = it },
                             onApply = { comment ->
                                 value = comment
-                                isEdit = false
-                                isShowSuggestions = false
-                                onEdit(false)
-                                appViewModel.showSystemKeyboard.value = false
-                                appViewModel.lockDraggable.value = false
-                                editorViewModel.currentComment.value = comment
+                                close()
                             }
                         )
                     } else if (!onlyIcon || value.isNotEmpty()) {
@@ -244,12 +251,25 @@ fun CustomTag(
 
             Popup(
                 popupPositionProvider = popupPositionProvider,
-                onDismissRequest = { },
+                onDismissRequest = {
+                },
             ) {
+                val dismissEvent = remember {
+                    mutableStateOf(false)
+                }
                 Box(
                     modifier = Modifier
-                        .width(extendWidth)
-                        .height(height.value),
+                        .fillMaxWidth()
+                        .height(height.value)
+                        .pointerInput(Unit) {
+                            detectTapUnconsumed {
+                                if (!dismissEvent.value) {
+                                    value = tempValue
+                                    close()
+                                }
+                                dismissEvent.value = false
+                            }
+                        },
                     contentAlignment = Alignment.BottomCenter,
                 ) {
                     AnimatedVisibility(
@@ -259,7 +279,13 @@ fun CustomTag(
                     ) {
                         if (filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == tempValue)) {
                             Surface(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .width(extendWidth)
+                                    .pointerInput(Unit) {
+                                        detectTapGestures {
+                                            dismissEvent.value = true
+                                        }
+                                    },
                                 shape = RoundedCornerShape(16.dp)
                             ) {
 
@@ -269,6 +295,7 @@ fun CustomTag(
                                 ) {
                                     filteredItems.forEach {
                                         itemSuggest(it) {
+                                            dismissEvent.value = true
                                             editorViewModel.currentComment.value = it
                                             value = it
                                         }
