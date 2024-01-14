@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.home
 
-import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.animateFloatAsState
@@ -38,13 +37,11 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -74,13 +71,9 @@ import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class, FlowPreview::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
     activityResultRegistryOwner: ActivityResultRegistryOwner?,
@@ -89,6 +82,7 @@ fun MainScreen(
 ) {
     val topSheetState = rememberSwipeableState(TopSheetValue.HalfExpanded)
     val coroutineScope = rememberCoroutineScope()
+    val nightMode = remember { mutableStateOf(false) }
 
     val localDensity = LocalDensity.current
     val windowSizeClass = LocalWindowSize.current
@@ -96,43 +90,22 @@ fun MainScreen(
     val snackBarMessage = stringResource(R.string.remove_spent)
     val snackBarAction = stringResource(R.string.remove_spent_undo)
 
-    val isNightModeM = remember { mutableStateOf(false) }
+    nightMode.value = isNightMode()
 
-    isNightModeM.value = isNightMode()
-
-    val systemKeyboardHeightFlow: MutableStateFlow<Float> = remember { MutableStateFlow(0f) }
-    var systemKeyboardHeight by remember { mutableStateOf(0f) }
-
-    with(localDensity) {
-        WindowInsets.ime.asPaddingValues().calculateBottomPadding().toPx()
-    }.let {
-        if (systemKeyboardHeight != it) {
-            coroutineScope.launch {
-                systemKeyboardHeightFlow.value = it
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        systemKeyboardHeightFlow
-            .debounce(50L)
-            .collectLatest {
-                systemKeyboardHeight = it
-            }
-    }
-
-    val isShowSystemKeyboard = systemKeyboardHeight != 0f && appViewModel.showSystemKeyboard.value
+    val navigationBarHeight = WindowInsets.systemBars
+        .asPaddingValues()
+        .calculateBottomPadding()
 
     setSystemStyle(
         style = {
             SystemBarState(
                 statusBarColor = Color.Transparent,
-                statusBarDarkIcons = !isNightModeM.value,
-                navigationBarDarkIcons = !isNightModeM.value,
+                statusBarDarkIcons = !nightMode.value,
+                navigationBarDarkIcons = !nightMode.value,
                 navigationBarColor = Color.Transparent,
             )
         },
-        key = isNightModeM.value,
+        key = nightMode.value,
     )
 
     observeLiveData(spendsViewModel.lastRemovedTransaction) {
@@ -145,8 +118,6 @@ fun MainScreen(
                 spendsViewModel.undoRemoveSpent()
             }
         }
-
-
     }
 
     observeLiveData(spendsViewModel.requireDistributionRestedBudget) {
@@ -154,29 +125,12 @@ fun MainScreen(
     }
 
     observeLiveData(spendsViewModel.requireSetBudget) {
-        if (it) {
-            appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
-        }
+        if (it) appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
     }
 
     observeLiveData(spendsViewModel.periodFinished) {
         if (it) appViewModel.openSheet(PathState(FINISH_PERIOD_SHEET))
     }
-
-    val keyboardAdditionalOffset = WindowInsets.systemBars
-        .asPaddingValues()
-        .calculateBottomPadding()
-        .minus(16.dp)
-        .coerceAtLeast(0.dp)
-
-    val navigationBarHeight = WindowInsets.systemBars
-        .asPaddingValues()
-        .calculateBottomPadding()
-        .coerceAtLeast(16.dp)
-
-    Log.d("MainScreen", "bottom padding = ${WindowInsets.systemBars
-        .asPaddingValues()
-        .calculateBottomPadding()}")
 
     BoxWithConstraints(
         modifier = Modifier
@@ -184,19 +138,33 @@ fun MainScreen(
             .background(colorBackground),
     ) {
         val contentHeight = constraints.maxHeight.toFloat()
+        val contentWidth = constraints.maxWidth.toFloat()
 
-        val keyboardHeight = if (windowSizeClass == WindowWidthSizeClass.Compact) {
-            constraints.maxWidth.toFloat()
+        val keyboardAdditionalOffset = navigationBarHeight
+            .minus(16.dp)
+            .coerceAtLeast(0.dp)
+
+        val navigationBarOffset = navigationBarHeight
+            .coerceAtLeast(16.dp)
+
+        val systemKeyboardHeight = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
+        val internalKeyboardHeight = if (windowSizeClass == WindowWidthSizeClass.Compact) {
+            contentWidth
         } else {
-            constraints.maxWidth.toFloat() / 2f
+            contentWidth / 2f
         }
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
 
+        val isShowSystemKeyboard =
+            systemKeyboardHeight != 0.dp && appViewModel.showSystemKeyboard.value
+        val isRequestedShowSystemKeyboard =
+            systemKeyboardHeight != 0.dp || appViewModel.showSystemKeyboard.value
+
         val currentKeyboardHeight = if (isShowSystemKeyboard) {
-            systemKeyboardHeight
+            with(localDensity) { systemKeyboardHeight.toPx() }
         } else {
-            keyboardHeight
+            internalKeyboardHeight
         }
 
         val editorHeight by remember(
@@ -204,26 +172,29 @@ fun MainScreen(
             currentKeyboardHeight,
             isShowSystemKeyboard,
             keyboardAdditionalOffset,
-            navigationBarHeight
-        ) { derivedStateOf {
-            contentHeight
-                .minus(
-                    currentKeyboardHeight
-                        .plus(with(localDensity) {
-                            if (isShowSystemKeyboard) {
-                                16.dp.toPx()
-                            } else {
-                                keyboardAdditionalOffset.toPx()
-                            }
-                        })
-                        .coerceAtLeast(0f)
-                )
-                .coerceAtMost(contentHeight - with(localDensity) { navigationBarHeight.toPx() + 96.dp.toPx()  })
-        } }
+            navigationBarOffset
+        ) {
+            derivedStateOf {
+                contentHeight
+                    .minus(
+                        currentKeyboardHeight
+                            .plus(with(localDensity) {
+                                if (isShowSystemKeyboard) {
+                                    16.dp.toPx()
+                                } else {
+                                    keyboardAdditionalOffset.toPx()
+                                }
+                            })
+                            .coerceAtLeast(0f)
+                    )
+                    .coerceAtMost(contentHeight - with(localDensity) { navigationBarOffset.toPx() + 96.dp.toPx() })
+            }
+        }
 
         val editorHeightAnimated by animateFloatAsState(
+            label = "editorHeightAnimatedValue",
             targetValue = editorHeight,
-            animationSpec = tween(durationMillis = 150)
+            animationSpec = tween(durationMillis = 150),
         )
 
         Row {
@@ -244,12 +215,14 @@ fun MainScreen(
                 Spacer(
                     Modifier
                         .fillMaxHeight()
-                        .width(16.dp))
+                        .width(16.dp)
+                )
             }
             Box(
                 Modifier
                     .fillMaxSize()
-                    .weight(1f)) {
+                    .weight(1f)
+            ) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = !isShowSystemKeyboard,
                     enter = fadeIn(
@@ -283,20 +256,38 @@ fun MainScreen(
                     ) {
                         Keyboard(
                             modifier = Modifier
-                                .height(with(localDensity) { keyboardHeight.toDp() })
+                                .height(with(localDensity) { internalKeyboardHeight.toDp() })
                                 .fillMaxWidth()
                         )
                     }
                 }
 
                 if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    val currentEditorHeight = with(localDensity) {
+                        if (isRequestedShowSystemKeyboard) {
+                            val halfExpanedOffset = (
+                                    -contentHeight +
+                                            navigationBarOffset.toPx() +
+                                            16.dp.toPx() +
+                                            editorHeightAnimated
+                                    ).coerceAtMost(0f)
+
+                            (topSheetState.offset.value.coerceIn(
+                                halfExpanedOffset,
+                                0f
+                            ) + contentHeight - navigationBarOffset.toPx() - 16.dp.toPx()).toDp()
+                        } else {
+                            editorHeightAnimated.toDp()
+                        }
+                    }
+
                     TopSheetLayout(
                         swipeableState = topSheetState,
                         customHalfHeight = editorHeightAnimated,
                         lockSwipeable = appViewModel.lockSwipeable,
                         sheetContentHalfExpand = {
                             Editor(
-                                modifier = Modifier.height(with(localDensity) { editorHeightAnimated.toDp() }),
+                                modifier = Modifier.requiredHeight(currentEditorHeight),
                                 onOpenHistory = {
                                     coroutineScope.launch {
                                         topSheetState.animateTo(TopSheetValue.Expanded)
@@ -304,13 +295,15 @@ fun MainScreen(
                                 },
                             )
                         }
-                    ) { History(
-                        onClose = {
-                            coroutineScope.launch {
-                                topSheetState.animateTo(TopSheetValue.HalfExpanded)
+                    ) {
+                        History(
+                            onClose = {
+                                coroutineScope.launch {
+                                    topSheetState.animateTo(TopSheetValue.HalfExpanded)
+                                }
                             }
-                        }
-                    ) }
+                        )
+                    }
 
                     StatusBarStub()
                 } else {
@@ -322,7 +315,7 @@ fun MainScreen(
                         ),
                     ) {
                         Editor(
-                            modifier = Modifier.height(with(localDensity) { editorHeightAnimated.toDp() }),
+                            modifier = Modifier.requiredHeight(with(localDensity) { editorHeightAnimated.toDp() }),
                         )
                     }
                 }
