@@ -141,6 +141,9 @@
   <string name="million_numerical_shorthand">m</string>
   <string name="billion_numerical_shorthand">mld</string>
   <string name="trillion_numerical_shorthand">b</string>
-  <string name="without_tag">Without tag</string>
-  <string name="rest_tags">Rest</string>
+  <string name="without_tag">Bez štítku</string>
+  <string name="rest_tags">Ostatní</string>
+  <string name="not_enough_data_for_tags_chart">Vaše výdaje nelze rozdělit do kategorií</string>
+  <string name="not_enough_data_for_tags_chart_use_tags_hint">Použijte štítky pro zobrazení grafů podle kategorií</string>
+  <string name="spends_calendar_hint">Zobrazení, kolik jste utratili každý den ve srovnání s vaším denním rozpočtem, v grafu</string>
 </resources>
