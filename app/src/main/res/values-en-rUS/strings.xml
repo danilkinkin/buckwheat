@@ -139,4 +139,7 @@
   <string name="trillion_numerical_shorthand">T</string>
   <string name="without_tag">Without tag</string>
   <string name="rest_tags">Rest</string>
+  <string name="not_enough_data_for_tags_chart">We can\'t split your spends by categories</string>
+  <string name="not_enough_data_for_tags_chart_use_tags_hint">Use tags to see chart by categories</string>
+  <string name="spends_calendar_hint">Chart show how much you spent every day relative to your daily budget</string>
 </resources>
