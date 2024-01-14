@@ -86,7 +86,7 @@
   <string name="rest_budget_percent">%1$s%% din buget</string>
   <string name="min_spent">Cheltuiala minimă</string>
   <string name="max_spent">Cheltuiala maximă</string>
-  <string name="count_spends">Total cheltuit</string>
+  <string name="count_spends">Cheltuieli totale</string>
   <string name="average_spent">Media cheltuielilor</string>
   <string name="advice_title">Sunteți pe calea cea bună</string>
   <string name="advice_description">Scrieți toate cheltuielile și nu vă îngrijorați dacă treceți peste buget, cheltuielile nu sunt un lucru constant.</string>
@@ -139,6 +139,9 @@
   <string name="million_numerical_shorthand">m</string>
   <string name="billion_numerical_shorthand">b</string>
   <string name="trillion_numerical_shorthand">t</string>
-  <string name="without_tag">Without tag</string>
-  <string name="rest_tags">Rest</string>
+  <string name="without_tag">Fără etichetă</string>
+  <string name="rest_tags">Odihnă</string>
+  <string name="not_enough_data_for_tags_chart">Nu vă puteți împărți cheltuielile pe categorii</string>
+  <string name="not_enough_data_for_tags_chart_use_tags_hint">Utilizați etichete pentru a vedea diagrama pe categorii</string>
+  <string name="spends_calendar_hint">Graficul arată cât ați cheltuit în fiecare zi în raport cu bugetul zilnic</string>
 </resources>
