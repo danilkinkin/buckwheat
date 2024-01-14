@@ -69,7 +69,7 @@ private fun visualTransformationAsCurrency(
         currency,
         maximumFractionDigits = 0,
         minimumFractionDigits = 0,
-    ).filter { it != '0' }
+    ).filter { it != '0' }.trim()
     var output = numberFormat(
         context,
         input.text.ifEmpty { "0" }.toBigDecimal(),
