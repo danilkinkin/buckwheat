@@ -152,7 +152,7 @@ fun CustomTag(
         onEdit(false)
         appViewModel.showSystemKeyboard.value = false
         appViewModel.lockDraggable.value = false
-        editorViewModel.currentComment.value = value.text
+        editorViewModel.currentComment.value = value.text.trim()
     }
 
     ExposedDropdownMenuBox(expanded = isShowSuggestions, onExpandedChange = {}) {
@@ -305,7 +305,6 @@ fun CustomTag(
                                     filteredItems.forEach {
                                         itemSuggest(it) {
                                             dismissEvent.value = true
-                                            editorViewModel.currentComment.value = it
                                             value = TextFieldValue(
                                                 it,
                                                 TextRange(it.length),
@@ -479,8 +478,6 @@ fun CommentEditor(
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
         focusIsTracking = true
-
-        //value = TextFieldValue(value.text, TextRange(value.text.length))
     }
 }
 

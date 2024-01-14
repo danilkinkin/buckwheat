@@ -56,9 +56,11 @@ fun Keyboard(
             KeyboardAction.PUT_NUMBER -> {
                 newValue += value
             }
+
             KeyboardAction.SET_DOT -> {
                 newValue += "."
             }
+
             KeyboardAction.REMOVE_LAST -> {
                 newValue = newValue.dropLast(1)
                 Log.d("mode", mode.toString())
@@ -75,7 +77,8 @@ fun Keyboard(
         }
 
         if (isMutate) runBlocking {
-            editorViewModel.rawSpentValue.value = tryConvertStringToNumber(newValue).join(third = false)
+            editorViewModel.rawSpentValue.value =
+                tryConvertStringToNumber(newValue).join(third = false)
 
             if (editorViewModel.stage.value === EditStage.IDLE) editorViewModel.startCreatingSpent()
             editorViewModel.modifyEditingSpent(editorViewModel.rawSpentValue.value!!.toBigDecimal())
@@ -84,14 +87,16 @@ fun Keyboard(
         }
     }
 
-    Column (
+    Column(
         modifier
             .fillMaxSize()
-            .padding(14.dp)) {
-        Row (
+            .padding(14.dp)
+    ) {
+        Row(
             Modifier
                 .fillMaxSize()
-                .weight(1F)) {
+                .weight(1F)
+        ) {
             for (i in 7..9) {
                 KeyboardButton(
                     modifier = Modifier
@@ -122,7 +127,8 @@ fun Keyboard(
                     if (mode === EditMode.ADD) {
                         editorViewModel.resetEditingSpent()
                     } else {
-                        editorViewModel.rawSpentValue.value = tryConvertStringToNumber("0").join(third = false)
+                        editorViewModel.rawSpentValue.value =
+                            tryConvertStringToNumber("0").join(third = false)
 
                         if (editorViewModel.stage.value === EditStage.IDLE) editorViewModel.startCreatingSpent()
                         editorViewModel.modifyEditingSpent(editorViewModel.rawSpentValue.value!!.toBigDecimal())
@@ -131,18 +137,21 @@ fun Keyboard(
                 },
             )
         }
-        Row (
+        Row(
             Modifier
                 .fillMaxSize()
-                .weight(3F)) {
-            Column (
+                .weight(3F)
+        ) {
+            Column(
                 Modifier
                     .fillMaxSize()
-                    .weight(3F)) {
-                Row (
+                    .weight(3F)
+            ) {
+                Row(
                     Modifier
                         .fillMaxSize()
-                        .weight(1F)) {
+                        .weight(1F)
+                ) {
                     for (i in 4..6) {
                         KeyboardButton(
                             modifier = Modifier
@@ -158,10 +167,11 @@ fun Keyboard(
                         )
                     }
                 }
-                Row (
+                Row(
                     Modifier
                         .fillMaxSize()
-                        .weight(1F)) {
+                        .weight(1F)
+                ) {
                     for (i in 1..3) {
                         KeyboardButton(
                             modifier = Modifier
@@ -177,10 +187,11 @@ fun Keyboard(
                         )
                     }
                 }
-                Row (
+                Row(
                     Modifier
                         .fillMaxSize()
-                        .weight(1F)) {
+                        .weight(1F)
+                ) {
                     KeyboardButton(
                         modifier = Modifier
                             .weight(2F)
@@ -207,7 +218,7 @@ fun Keyboard(
                     )
                 }
             }
-            Column (
+            Column(
                 Modifier
                     .fillMaxSize()
                     .weight(1F)
@@ -215,6 +226,7 @@ fun Keyboard(
                 val fixedSpent = tryConvertStringToNumber(currentRawSpent).join(third = false)
 
                 AnimatedContent(
+                    label = "Delete or Apply",
                     targetState = (fixedSpent == "0" || fixedSpent == "0." || fixedSpent == "0.0") && mode === EditMode.EDIT,
                     transitionSpec = {
                         if (targetState && !initialState) {
@@ -242,7 +254,11 @@ fun Keyboard(
                             type = KeyboardButtonType.DELETE,
                             icon = painterResource(R.drawable.ic_delete_forever),
                             onClick = {
-                                editorViewModel.editedTransaction?.let { spendsViewModel.removeSpent(it) }
+                                editorViewModel.editedTransaction?.let {
+                                    spendsViewModel.removeSpent(
+                                        it
+                                    )
+                                }
                                 editorViewModel.resetEditingSpent()
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             }
@@ -280,16 +296,29 @@ fun Keyboard(
                                 runBlocking {
                                     if (editorViewModel.canCommitEditingSpent()) {
                                         if (mode == EditMode.EDIT) {
-                                            val newVersionOfSpent = editorViewModel.editedTransaction!!.copy(
-                                                value = editorViewModel.currentSpent,
-                                                date = editorViewModel.currentDate,
-                                                comment = editorViewModel.currentComment.value ?: ""
-                                            )
+                                            val newVersionOfSpent =
+                                                editorViewModel.editedTransaction!!.copy(
+                                                    value = editorViewModel.currentSpent,
+                                                    date = editorViewModel.currentDate,
+                                                    comment = (editorViewModel.currentComment.value
+                                                        ?: "").trim()
+                                                )
 
-                                            spendsViewModel.removeSpent(editorViewModel.editedTransaction!!, silent = true)
+                                            spendsViewModel.removeSpent(
+                                                editorViewModel.editedTransaction!!,
+                                                silent = true
+                                            )
                                             spendsViewModel.addSpent(newVersionOfSpent)
                                         } else {
-                                            spendsViewModel.addSpent(Transaction(TransactionType.SPENT, editorViewModel.currentSpent, Date(), editorViewModel.currentComment.value ?: ""))
+                                            spendsViewModel.addSpent(
+                                                Transaction(
+                                                    type = TransactionType.SPENT,
+                                                    value = editorViewModel.currentSpent,
+                                                    date = Date(),
+                                                    comment = (editorViewModel.currentComment.value
+                                                        ?: "").trim()
+                                                )
+                                            )
                                             appViewModel.activateTutorial(TUTORS.OPEN_HISTORY)
                                         }
 
