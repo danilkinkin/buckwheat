@@ -137,6 +137,9 @@
   <string name="million_numerical_shorthand">m</string>
   <string name="billion_numerical_shorthand">b</string>
   <string name="trillion_numerical_shorthand">t</string>
-  <string name="without_tag">Without tag</string>
-  <string name="rest_tags">Rest</string>
+  <string name="without_tag">Utan tagg</string>
+  <string name="rest_tags">Resten</string>
+  <string name="not_enough_data_for_tags_chart">Det går inte att dela upp dina utgifter efter kategorier</string>
+  <string name="not_enough_data_for_tags_chart_use_tags_hint">Använd taggar för att se diagram efter kategorier</string>
+  <string name="spends_calendar_hint">Diagram visar hur mycket du spenderade varje dag i förhållande till din dagliga budget</string>
 </resources>
