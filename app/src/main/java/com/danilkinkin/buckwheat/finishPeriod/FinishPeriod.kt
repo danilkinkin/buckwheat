@@ -54,6 +54,7 @@ import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.finishPeriod.categoriesChart.CategoriesChartCard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.combineColors
@@ -78,6 +79,9 @@ fun FinishPeriod(
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
     val scrollState = rememberScrollState()
+    // Need to hide calendar after migration to transactions,
+    // because after migration can't restore some transactions like INCOME & SET_DAILY_BUDGET
+    val afterMigrationToTransactions = remember(transactions) { mutableStateOf(transactions.none { it.type == TransactionType.INCOME }) }
 
     val scroll = with(localDensity) { scrollState.value.toDp() }
 
@@ -225,15 +229,17 @@ fun FinishPeriod(
                             modifier = Modifier.fillMaxWidth(),
                             count = spends.size,
                         )
-                        Spacer(modifier = Modifier.height(36.dp))
-                        SpendsCalendar(
-                            modifier = Modifier.zIndex(-1f),
-                            budget = wholeBudget,
-                            transactions = transactions,
-                            startDate = spendsViewModel.startPeriodDate.value!!,
-                            finishDate = spendsViewModel.finishPeriodDate.value!!,
-                            currency = spendsViewModel.currency.value!!,
-                        )
+                        if (!afterMigrationToTransactions.value) {
+                            Spacer(modifier = Modifier.height(36.dp))
+                            SpendsCalendar(
+                                modifier = Modifier.zIndex(-1f),
+                                budget = wholeBudget,
+                                transactions = transactions,
+                                startDate = spendsViewModel.startPeriodDate.value!!,
+                                finishDate = spendsViewModel.finishPeriodDate.value!!,
+                                currency = spendsViewModel.currency.value!!,
+                            )
+                        }
                         Spacer(modifier = Modifier.height(36.dp))
                         CategoriesChartCard(
                             modifier = Modifier.fillMaxWidth(),

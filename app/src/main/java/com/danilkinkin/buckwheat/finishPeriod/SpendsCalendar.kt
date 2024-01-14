@@ -21,7 +21,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -332,7 +331,7 @@ internal fun Day(
     )
 
     val percent = if (spendingDay !== null) {
-        spendingDay.spending.divide(spendingDay.budget, 2, RoundingMode.HALF_EVEN).toFloat()
+        spendingDay.spending.divide(spendingDay.budget.coerceAtLeast(BigDecimal(0.1)), 2, RoundingMode.HALF_EVEN).coerceIn(BigDecimal(-100), BigDecimal(100)).toFloat()
     } else {
         0f
     }
@@ -434,14 +433,19 @@ fun verticalGridMeasurePolicy(columns: Int) =
     }
 
 
-@Preview(name = "Zero overspending")
-@Preview(name = "Zero overspending (Dark mode)", uiMode = UI_MODE_NIGHT_YES)
+@Preview(name = "Default")
+@Preview(name = "Default (Dark mode)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewDefault() {
     BuckwheatTheme {
         SpendsCalendar(
             budget = BigDecimal(200),
             transactions = listOf(
+                Transaction(
+                    type = TransactionType.INCOME,
+                    value = BigDecimal(800),
+                    date = LocalDate.now().minusDays(5).toDate()
+                ),
                 Transaction(
                     type = TransactionType.SET_DAILY_BUDGET,
                     value = BigDecimal(8),

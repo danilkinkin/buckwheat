@@ -103,7 +103,7 @@ fun CategoriesChartCard(
         // Convert to TagUsage, group by tag and sum amounts
         var result = spends
             .map { it.copy(comment = it.comment.ifEmpty { labelWithoutTag }) }
-            .groupBy { it.comment }
+            .groupBy { it.comment.trim() }
             .map { tag ->
                 TagUsage(
                     tag.key,
