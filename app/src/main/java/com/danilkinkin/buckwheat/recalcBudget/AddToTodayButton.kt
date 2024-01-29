@@ -6,12 +6,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.DescriptionButton
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
+import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.util.getAnnotatedString
 import com.danilkinkin.buckwheat.util.numberFormat
 import java.math.BigDecimal
 
@@ -32,30 +35,43 @@ fun AddToTodayButton(
     DescriptionButton(
         title = { Text(stringResource(R.string.add_current_day_title)) },
         description = {
+
+            val budgetTodayStr = numberFormat(
+                context,
+                budgetPerDayAdd,
+                currency = currency,
+            )
+            val nextDaysBudgetStr = numberFormat(
+                context,
+                nextDayBudget,
+                currency = currency,
+            )
+            val resultStr = stringResource(
+                R.string.add_current_day_description,
+                budgetTodayStr,
+                nextDaysBudgetStr,
+            )
+
             Text(
-                stringResource(
-                    R.string.add_current_day_description,
-                    numberFormat(
-                        context,
-                        budgetPerDayAdd,
-                        currency = currency,
+                getAnnotatedString(
+                    resultStr,
+                    listOf(
+                        Pair(
+                            resultStr.indexOf(budgetTodayStr),
+                            resultStr.indexOf(budgetTodayStr) + budgetTodayStr.length,
+                        ),
+                        Pair(
+                            resultStr.indexOf(nextDaysBudgetStr),
+                            resultStr.indexOf(nextDaysBudgetStr) + nextDaysBudgetStr.length,
+                        ),
                     ),
-                    numberFormat(
-                        context,
-                        nextDayBudget,
-                        currency = currency,
+                    listOf(
+                        SpanStyle(fontWeight = FontWeight.W900),
+                        SpanStyle(fontWeight = FontWeight.W900),
                     ),
                 )
             )
         },
-        /* secondDescription = if (isDebug.value) {
-            {
-                Text(
-                    "$restBudget / $restDays = $budgetPerDayAdd " +
-                            "\n${budgetPerDayAdd} + $howMuchNotSpent = $budgetPerDayAddDailyBudget"
-                )
-            }
-        } else null, */
         onClick = {
             spendsViewModel.setDailyBudget(budgetPerDayAdd)
 

@@ -15,7 +15,7 @@ import com.danilkinkin.buckwheat.data.ExtendCurrency
 import java.math.BigDecimal
 import kotlin.math.min
 
-private fun getAnnotatedString(
+fun getAnnotatedString(
     value: String,
     hintParts: List<Pair<Int, Int>>,
     styles: List<SpanStyle>,
@@ -27,7 +27,7 @@ private fun getAnnotatedString(
     return builder.toAnnotatedString()
 }
 
-private fun getAnnotatedString(
+fun getAnnotatedString(
     value: String,
     hintParts: List<Pair<Int, Int>>,
     hintColor: Color,
@@ -35,7 +35,7 @@ private fun getAnnotatedString(
     return getAnnotatedString(value, hintParts, hintParts.map { SpanStyle(color = hintColor) })
 }
 
-private fun getAnnotatedString(
+fun getAnnotatedString(
     value: String,
     hintPart: Pair<Int, Int>,
     hintColor: Color,
