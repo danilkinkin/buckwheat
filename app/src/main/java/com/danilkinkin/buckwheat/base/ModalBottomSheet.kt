@@ -203,7 +203,7 @@ fun ModalBottomSheetLayout(
         }
 
         RenderAdaptivePane(
-            contentAlignment = Alignment.BottomCenter,
+            contentAlignment = Alignment.TopEnd
         ) {
 
             val offset = IntOffset.let {
