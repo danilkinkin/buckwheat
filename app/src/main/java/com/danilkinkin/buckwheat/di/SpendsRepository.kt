@@ -15,6 +15,7 @@ import com.danilkinkin.buckwheat.util.DAY
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.dao.TransactionDao
 import com.danilkinkin.buckwheat.data.entities.TransactionType
+import com.danilkinkin.buckwheat.errorForReport
 import com.danilkinkin.buckwheat.util.countDays
 import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.roundToDay
@@ -370,36 +371,46 @@ class SpendsRepository @Inject constructor(
         this.transactionDao.insert(newTransaction)
 
         context.budgetDataStore.edit {
-            if (isSameDay(newTransaction.date, getCurrentDateUseCase())) {
-                val spentFromDailyBudget = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
-                it[spentFromDailyBudgetStoreKey] =
-                    (spentFromDailyBudget + newTransaction.value).toString()
-            } else {
-                val finishPeriodDate = it[finishPeriodDateStoreKey]?.let { value -> Date(value) }!!
-                val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal()!!
-                val spent = it[spentStoreKey]?.toBigDecimal()!!
+            try {
+                if (isSameDay(newTransaction.date, getCurrentDateUseCase())) {
+                    val spentFromDailyBudget = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
+                    it[spentFromDailyBudgetStoreKey] =
+                        (spentFromDailyBudget + newTransaction.value).toString()
+                } else {
+                    val finishPeriodDate =
+                        it[finishPeriodDateStoreKey]?.let { value -> Date(value) }!!
+                    val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal()!!
+                    val spent = it[spentStoreKey]?.toBigDecimal()!!
 
-                val spreadDeltaSpentPerRestDays = newTransaction.value
-                    .divide(
-                        countDays(finishPeriodDate, getCurrentDateUseCase()).toBigDecimal(),
-                        2,
-                        RoundingMode.HALF_EVEN,
+                    val spreadDeltaSpentPerRestDays = newTransaction.value
+                        .divide(
+                            countDays(finishPeriodDate, getCurrentDateUseCase()).toBigDecimal(),
+                            2,
+                            RoundingMode.HALF_EVEN,
+                        )
+
+                    Log.d(
+                        "SpendsRepository",
+                        "Add spent for previous day ["
+                                + "spent: $spent "
+                                + "dailyBudget: $dailyBudget "
+                                + "spreadDeltaSpentPerRestDays: $spreadDeltaSpentPerRestDays "
+                                + "spentDate: ${newTransaction.date} "
+                                + "getCurrentDateUseCase: ${getCurrentDateUseCase()} "
+                                + "countDays: ${
+                            countDays(
+                                finishPeriodDate,
+                                getCurrentDateUseCase()
+                            )
+                        } "
+                                + "]"
                     )
 
-                Log.d(
-                    "SpendsRepository",
-                    "Add spent for previous day ["
-                            + "spent: $spent "
-                            + "dailyBudget: $dailyBudget "
-                            + "spreadDeltaSpentPerRestDays: $spreadDeltaSpentPerRestDays "
-                            + "spentDate: ${newTransaction.date} "
-                            + "getCurrentDateUseCase: ${getCurrentDateUseCase()} "
-                            + "countDays: ${countDays(finishPeriodDate, getCurrentDateUseCase())} "
-                            + "]"
-                )
-
-                it[dailyBudgetStoreKey] = (dailyBudget - spreadDeltaSpentPerRestDays).toString()
-                it[spentStoreKey] = (spent + newTransaction.value).toString()
+                    it[dailyBudgetStoreKey] = (dailyBudget - spreadDeltaSpentPerRestDays).toString()
+                    it[spentStoreKey] = (spent + newTransaction.value).toString()
+                }
+            } catch (e: Exception) {
+                context.errorForReport = e.stackTraceToString()
             }
         }
     }

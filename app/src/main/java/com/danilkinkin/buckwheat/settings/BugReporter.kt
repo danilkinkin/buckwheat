@@ -39,6 +39,7 @@ import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
+import com.danilkinkin.buckwheat.util.collectEnvInfo
 import com.danilkinkin.buckwheat.util.openInBrowser
 import com.danilkinkin.buckwheat.util.sendEmail
 
@@ -52,6 +53,8 @@ fun BugReporter(onClose: () -> Unit = {}) {
         WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
         16.dp,
     )
+
+    val addYourCommentToReportHint = stringResource(R.string.add_your_comment_to_report)
 
     Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
@@ -97,6 +100,14 @@ fun BugReporter(onClose: () -> Unit = {}) {
                             context,
                             arrayOf("hello@danilkinkin.com"),
                             "Buckwheat bug report",
+                            """
+    
+    
+$addYourCommentToReportHint
+
+
+${collectEnvInfo(context)}
+""".trimIndent(),
                         )
                         onClose()
                     },

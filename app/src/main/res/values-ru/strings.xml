@@ -147,4 +147,7 @@
     <string name="not_enough_data_for_tags_chart_use_tags_hint">Используйте теги, чтобы просмотреть диаграмму по категориям</string>
     <string name="spends_calendar_hint">Диаграмма показывает, сколько вы тратили каждый день относительно вашего дневного бюджета</string>
     <string name="export_to_csv_file_name">Траты (%1$s — %2$s)</string>
+    <string name="crash_report_ready">Произошла ошибка</string>
+    <string name="send_crash_report">Отправить отчёт</string>
+    <string name="add_your_comment_to_report">Если хотите, добавьте сюда свой комментарий. Вы можете удалить блок с информацией об устройстве, если считаете, что эта информация не важна</string>
 </resources>

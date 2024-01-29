@@ -36,6 +36,7 @@ val Context.settingsDataStore by preferencesDataStore("settings")
 var Context.appTheme by mutableStateOf(ThemeMode.SYSTEM)
 var Context.appLocale: Locale? by mutableStateOf(null)
 var Context.systemLocale: Locale? by mutableStateOf(null)
+var Context.errorForReport: String? by mutableStateOf(null)
 
 val LocalWindowSize = compositionLocalOf { WindowWidthSizeClass.Compact }
 
@@ -75,6 +76,8 @@ class MainActivity : ComponentActivity() {
             if (widthSizeClass == WindowWidthSizeClass.Compact) {
                 locScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             }
+
+            CatchAndSendCrashReport()
 
             if (isDone.value) {
                 BuckwheatTheme {

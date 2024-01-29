@@ -177,4 +177,7 @@
     <string name="trillion_numerical_shorthand">t</string>
     <string name="history_title">History</string>
     <string name="export_to_csv_file_name">Spends (from %1$s to %2$s)</string>
+    <string name="crash_report_ready">An error occurred</string>
+    <string name="send_crash_report">Send report</string>
+    <string name="add_your_comment_to_report">Add your comment here if you wish. You can delete the block with information about the device if you think that this information does not matter</string>
 </resources>
