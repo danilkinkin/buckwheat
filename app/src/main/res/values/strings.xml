@@ -176,4 +176,5 @@
     <string name="billion_numerical_shorthand">b</string>
     <string name="trillion_numerical_shorthand">t</string>
     <string name="history_title">History</string>
+    <string name="export_to_csv_file_name">Spends (from %1$s to %2$s)</string>
 </resources>

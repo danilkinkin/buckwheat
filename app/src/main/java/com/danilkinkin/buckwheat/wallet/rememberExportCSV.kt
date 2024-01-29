@@ -58,6 +58,9 @@ fun rememberExportCSV(
     }
     val to = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(finishPeriodDate)
 
+
+    val fileName = stringResource(R.string.export_to_csv_file_name, from, to)
+
     CompositionLocalProvider(
         LocalActivityResultRegistryOwner provides activityResultRegistryOwner
     ) {
@@ -99,6 +102,6 @@ fun rememberExportCSV(
     }
 
     return {
-        createHistoryFileLauncher?.launch("spends (from $from to $to).csv")
+        createHistoryFileLauncher?.launch("$fileName.csv")
     }
 }
