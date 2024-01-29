@@ -18,6 +18,7 @@ import com.danilkinkin.buckwheat.util.toLocalDateTime
 import kotlinx.coroutines.launch
 import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -34,23 +35,28 @@ fun rememberExportCSV(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val startPeriodDate by remember { mutableStateOf(spendsViewModel.startPeriodDate.value) }
-    val finishPeriodDate by remember { mutableStateOf(spendsViewModel.finishPeriodDate.value) }
+    val startPeriodDate by remember {
+        mutableStateOf(spendsViewModel.startPeriodDate.value?.toLocalDate())
+    }
+    val finishPeriodDate by remember {
+        mutableStateOf(spendsViewModel.finishPeriodDate.value?.let {
+            LocalDate.now().coerceAtMost(it.toLocalDate())
+        })
+    }
 
     val snackBarExportToCSVSuccess = stringResource(R.string.export_to_csv_success)
     val snackBarExportToCSVFailed = stringResource(R.string.export_to_csv_failed)
 
     val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
 
-    val from = if (yearFormatter.format(startPeriodDate!!.toLocalDate()) == yearFormatter.format(
-            finishPeriodDate!!.toLocalDate()
-        )
+    val from = if (
+        yearFormatter.format(startPeriodDate) == yearFormatter.format(finishPeriodDate)
     ) {
-        DateTimeFormatter.ofPattern("dd-MM").format(startPeriodDate!!.toLocalDate())
+        DateTimeFormatter.ofPattern("dd-MM").format(startPeriodDate)
     } else {
-        DateTimeFormatter.ofPattern("dd-MM-yyyy").format(startPeriodDate!!.toLocalDate())
+        DateTimeFormatter.ofPattern("dd-MM-yyyy").format(startPeriodDate)
     }
-    val to = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(finishPeriodDate!!.toLocalDate())
+    val to = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(finishPeriodDate)
 
     CompositionLocalProvider(
         LocalActivityResultRegistryOwner provides activityResultRegistryOwner
