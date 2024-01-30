@@ -13,6 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.errorForReport
 import com.danilkinkin.buckwheat.util.toLocalDate
 import com.danilkinkin.buckwheat.util.toLocalDateTime
 import kotlinx.coroutines.launch
@@ -80,7 +81,8 @@ fun rememberExportCSV(
 
                 val printer = CSVPrinter(
                     stream?.writer(),
-                    CSVFormat.Builder.create().setHeader("amount", "comment", "commit_time").build()
+                    CSVFormat.Builder.create().setHeader("amount", "comment", "commit_time")
+                        .build()
                 )
                 val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 
@@ -102,6 +104,12 @@ fun rememberExportCSV(
     }
 
     return {
-        createHistoryFileLauncher?.launch("$fileName.csv")
+        try {
+            createHistoryFileLauncher?.launch("$fileName.csv")
+        } catch (e: Exception) {
+            context.errorForReport = e.stackTraceToString()
+
+            appViewModel.showSnackbar(snackBarExportToCSVFailed)
+        }
     }
 }
