@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.balloon.BalloonScope
 import com.danilkinkin.buckwheat.base.balloon.rememberBalloonState
@@ -100,9 +101,7 @@ fun TopSheetLayout(
         mutableFloatStateOf(0f)
     }
 
-    val navigationBarHeight = WindowInsets.systemBars
-        .asPaddingValues()
-        .calculateBottomPadding()
+    val navigationBarHeight = LocalWindowInsets.current.calculateBottomPadding()
         .coerceAtLeast(16.dp)
 
     BoxWithConstraints(

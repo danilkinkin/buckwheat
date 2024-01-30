@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.Divider
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
@@ -32,7 +33,6 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.countDays
 import com.danilkinkin.buckwheat.util.countDaysToToday
 import com.danilkinkin.buckwheat.util.prettyDate
-import com.danilkinkin.buckwheat.util.rememberNavigationBarHeight
 import java.math.BigDecimal
 
 const val DEBUG_MENU_SHEET = "debugMenu"
@@ -45,7 +45,7 @@ fun DebugMenu(
     onClose: () -> Unit = {},
 ) {
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
-    val navigationBarHeight = rememberNavigationBarHeight().coerceAtLeast(16.dp)
+    val navigationBarHeight = LocalWindowInsets.current.calculateBottomPadding().coerceAtLeast(16.dp)
 
     val startPeriodDate by spendsViewModel.startPeriodDate.observeAsState()
     val finishPeriodDate by spendsViewModel.finishPeriodDate.observeAsState()

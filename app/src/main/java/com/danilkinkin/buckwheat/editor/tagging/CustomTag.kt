@@ -83,6 +83,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.balloon.detectTapUnconsumed
 import com.danilkinkin.buckwheat.data.AppViewModel
@@ -248,9 +249,7 @@ fun CustomTag(
                 it.contains(value.text, ignoreCase = true)
             }
 
-            val topBarHeight = WindowInsets.systemBars
-                .asPaddingValues()
-                .calculateTopPadding()
+            val topBarHeight = LocalWindowInsets.current.calculateTopPadding()
 
             val height = remember { mutableStateOf(1000.dp) }
             val popupPositionProvider = DropdownMenuPositionProvider(

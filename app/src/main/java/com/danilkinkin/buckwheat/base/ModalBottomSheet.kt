@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.util.PreUpPostDownNestedScrollConnection
 import com.danilkinkin.buckwheat.util.SwipeableState
 import com.danilkinkin.buckwheat.util.swipeable
@@ -218,7 +219,7 @@ fun ModalBottomSheetLayout(
                 IntOffset(0, y)
             }
             val navigationBarHeight = with(localDensity) {
-                WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().roundToPx()
+                LocalWindowInsets.current.calculateBottomPadding().roundToPx()
             }
 
 

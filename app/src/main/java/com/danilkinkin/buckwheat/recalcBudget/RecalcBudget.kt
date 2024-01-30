@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
@@ -45,7 +46,7 @@ fun RecalcBudget(
     val localDensity = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
-    val navigationBarHeight = rememberNavigationBarHeight().coerceAtLeast(16.dp)
+    val navigationBarHeight = LocalWindowInsets.current.calculateBottomPadding().coerceAtLeast(16.dp)
 
     val howMuchNotSpent by recalcBudgetViewModel.howMuchNotSpent.observeAsState(BigDecimal.ZERO)
     val isLastDay by recalcBudgetViewModel.isLastDay.observeAsState(false)

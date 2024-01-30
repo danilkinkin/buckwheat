@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -50,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.LocalWindowSize
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.SwipeableSnackbarHost
@@ -86,15 +86,12 @@ fun MainScreen(
 
     val localDensity = LocalDensity.current
     val windowSizeClass = LocalWindowSize.current
+    val windowInsets = LocalWindowInsets.current
 
     val snackBarMessage = stringResource(R.string.remove_spent)
     val snackBarAction = stringResource(R.string.remove_spent_undo)
 
     nightMode.value = isNightMode()
-
-    val navigationBarHeight = WindowInsets.systemBars
-        .asPaddingValues()
-        .calculateBottomPadding()
 
     setSystemStyle(
         style = {
@@ -140,11 +137,13 @@ fun MainScreen(
         val contentHeight = constraints.maxHeight.toFloat()
         val contentWidth = constraints.maxWidth.toFloat()
 
-        val keyboardAdditionalOffset = navigationBarHeight
+        val keyboardAdditionalOffset = windowInsets
+            .calculateBottomPadding()
             .minus(16.dp)
             .coerceAtLeast(0.dp)
 
-        val navigationBarOffset = navigationBarHeight
+        val navigationBarOffset = windowInsets
+            .calculateBottomPadding()
             .coerceAtLeast(16.dp)
 
         val systemKeyboardHeight = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
@@ -194,7 +193,7 @@ fun MainScreen(
         val editorHeightAnimated by animateFloatAsState(
             label = "editorHeightAnimatedValue",
             targetValue = editorHeight,
-            animationSpec = tween(durationMillis = 150),
+            animationSpec = tween(durationMillis = 350),
         )
 
         Row {
@@ -352,9 +351,7 @@ fun StatusBarStub() {
         modifier = Modifier
             .fillMaxWidth()
             .requiredHeight(
-                WindowInsets.systemBars
-                    .asPaddingValues()
-                    .calculateTopPadding()
+                LocalWindowInsets.current.calculateTopPadding()
             )
             .background(colorEditor.copy(alpha = 0.9F))
     )

@@ -34,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -50,7 +51,7 @@ fun BugReporter(onClose: () -> Unit = {}) {
     val context = LocalContext.current
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
     val navigationBarHeight = androidx.compose.ui.unit.max(
-        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        LocalWindowInsets.current.calculateBottomPadding(),
         16.dp,
     )
 

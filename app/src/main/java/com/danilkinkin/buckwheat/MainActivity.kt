@@ -7,11 +7,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.datastore.preferences.preferencesDataStore
@@ -39,6 +44,7 @@ var Context.systemLocale: Locale? by mutableStateOf(null)
 var Context.errorForReport: String? by mutableStateOf(null)
 
 val LocalWindowSize = compositionLocalOf { WindowWidthSizeClass.Compact }
+val LocalWindowInsets = compositionLocalOf { PaddingValues(0.dp) }
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -77,6 +83,10 @@ class MainActivity : ComponentActivity() {
                 locScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             }
 
+            val windowInsets = WindowInsets
+                .systemBars
+                .asPaddingValues()
+
             CatchAndSendCrashReport()
 
             if (isDone.value) {
@@ -84,7 +94,8 @@ class MainActivity : ComponentActivity() {
                     OverrideLocalize {
                         BalloonProvider {
                             CompositionLocalProvider(
-                                LocalWindowSize provides widthSizeClass
+                                LocalWindowSize provides widthSizeClass,
+                                LocalWindowInsets provides windowInsets,
                             ) {
                                 MainScreen(activityResultRegistryOwner)
                             }

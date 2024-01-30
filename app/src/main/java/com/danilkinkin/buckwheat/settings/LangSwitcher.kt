@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.appLocale
 import com.danilkinkin.buckwheat.base.ButtonRow
@@ -76,7 +77,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
     val navigationBarHeight = androidx.compose.ui.unit.max(
-        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding(),
+        LocalWindowInsets.current.calculateBottomPadding(),
         16.dp,
     )
 

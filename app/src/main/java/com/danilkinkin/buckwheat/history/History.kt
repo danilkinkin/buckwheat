@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -303,9 +304,7 @@ fun History(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(
-                                    WindowInsets.systemBars
-                                        .asPaddingValues()
-                                        .calculateTopPadding()
+                                    LocalWindowInsets.current.calculateTopPadding()
                                 )
                         )
                     }

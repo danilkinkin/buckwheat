@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
@@ -86,7 +87,7 @@ fun FinishPeriod(
     val scroll = with(localDensity) { scrollState.value.toDp() }
 
     val navigationBarHeight =
-        WindowInsets.systemBars.asPaddingValues().calculateBottomPadding().coerceAtLeast(16.dp)
+        LocalWindowInsets.current.calculateBottomPadding().coerceAtLeast(16.dp)
 
     Surface(Modifier.height(IntrinsicSize.Min)) {
         Column(

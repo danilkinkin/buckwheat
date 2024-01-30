@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.ui.isNightMode
@@ -88,7 +89,7 @@ fun BottomSheetWrapper(
 
     val localDensity = LocalDensity.current
 
-    val statusBarHeight = WindowInsets.systemBars.asPaddingValues().calculateTopPadding()
+    val statusBarHeight = LocalWindowInsets.current.calculateTopPadding()
     val isNightModeNow = isNightMode()
 
     setSystemStyle(
