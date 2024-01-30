@@ -49,6 +49,7 @@ val LocalWindowInsets = compositionLocalOf { PaddingValues(0.dp) }
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val isDone: MutableState<Boolean> = mutableStateOf(false)
+    private val isReady: MutableState<Boolean> = mutableStateOf(false)
 
     //TODO: Remove after 01.01.2024. Need for migration to DataStore
     @Inject
@@ -74,7 +75,8 @@ class MainActivity : ComponentActivity() {
                 syncOverrideLocale(localContext)
                 migrateToDataStore(context, storageDao)
 
-                isDone.value = true
+                // App ready for work
+                isReady.value = true
             }
 
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
@@ -89,7 +91,7 @@ class MainActivity : ComponentActivity() {
 
             CatchAndSendCrashReport()
 
-            if (isDone.value) {
+            if (isReady.value) {
                 BuckwheatTheme {
                     OverrideLocalize {
                         BalloonProvider {
@@ -98,6 +100,11 @@ class MainActivity : ComponentActivity() {
                                 LocalWindowInsets provides windowInsets,
                             ) {
                                 MainScreen(activityResultRegistryOwner)
+
+                                LaunchedEffect(Unit) {
+                                    // App rendered and splash screen can be hidden
+                                    isDone.value = true
+                                }
                             }
                         }
                     }
