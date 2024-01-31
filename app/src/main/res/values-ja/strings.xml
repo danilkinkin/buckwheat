@@ -137,7 +137,12 @@
   <string name="trillion_numerical_shorthand">t</string>
   <string name="without_tag">タグなし</string>
   <string name="rest_tags">休む</string>
-  <string name="not_enough_data_for_tags_chart">Can\'t split your spends by categories</string>
+  <string name="not_enough_data_for_tags_chart">カテゴリごとに支出を分割することはできません</string>
   <string name="not_enough_data_for_tags_chart_use_tags_hint">タグを使用してカテゴリーごとにグラフを表示します</string>
   <string name="spends_calendar_hint">1 日の予算と比較して毎日費やした金額を示すグラフ</string>
+  <string name="export_to_csv_file_name">支出 ( %1$s から %2$sまで)</string>
+  <string name="crash_report_ready">エラーが発生しました</string>
+  <string name="send_crash_report">レポートの送信</string>
+  <string name="add_your_comment_to_report">必要に応じて、ここにコメントを追加してください。この情報が重要ではないと思われる場合は、デバイスに関する情報を含むブロックを削除できます。</string>
+  <string name="history_title">歴史</string>
 </resources>

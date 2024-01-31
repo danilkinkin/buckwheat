@@ -142,4 +142,9 @@
   <string name="not_enough_data_for_tags_chart">Não é possível dividir seus gastos por categorias</string>
   <string name="not_enough_data_for_tags_chart_use_tags_hint">Use tags para ver o gráfico por categorias</string>
   <string name="spends_calendar_hint">O gráfico mostra quanto você gastou todos os dias em relação ao seu orçamento diário</string>
+  <string name="export_to_csv_file_name">Gastos (de %1$s a %2$s)</string>
+  <string name="crash_report_ready">Um erro ocorreu</string>
+  <string name="send_crash_report">Enviar relatório</string>
+  <string name="add_your_comment_to_report">Adicione seu comentário aqui se desejar. Você pode excluir o bloco com informações sobre o dispositivo se achar que essas informações não importam</string>
+  <string name="history_title">História</string>
 </resources>

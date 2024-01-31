@@ -144,4 +144,9 @@
   <string name="not_enough_data_for_tags_chart">Не можете да поделите своју потрошњу по категоријама</string>
   <string name="not_enough_data_for_tags_chart_use_tags_hint">Користите ознаке да видите графикон по категоријама</string>
   <string name="spends_calendar_hint">Графикон приказује колико сте потрошили сваки дан у односу на ваш дневни буџет</string>
+  <string name="export_to_csv_file_name">Троши (од %1$s до %2$s)</string>
+  <string name="crash_report_ready">Дошло је до грешке</string>
+  <string name="send_crash_report">Пошаљи извештај</string>
+  <string name="add_your_comment_to_report">Додајте свој коментар овде ако желите. Можете избрисати блок са информацијама о уређају ако мислите да ти подаци нису битни</string>
+  <string name="history_title">Историја</string>
 </resources>

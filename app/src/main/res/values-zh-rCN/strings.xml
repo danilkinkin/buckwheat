@@ -140,4 +140,9 @@
   <string name="not_enough_data_for_tags_chart">无法按类别拆分您的支出</string>
   <string name="not_enough_data_for_tags_chart_use_tags_hint">使用标签按类别查看图表</string>
   <string name="spends_calendar_hint">图表显示您每天花费的金额相对于每日预算</string>
+  <string name="export_to_csv_file_name">花费（从 %1$s 到 %2$s）</string>
+  <string name="crash_report_ready">发生错误</string>
+  <string name="send_crash_report">发送报告</string>
+  <string name="add_your_comment_to_report">如果您愿意，请在此处添加您的评论。如果您认为此信息无关紧要，您可以删除包含设备信息的块</string>
+  <string name="history_title">历史</string>
 </resources>

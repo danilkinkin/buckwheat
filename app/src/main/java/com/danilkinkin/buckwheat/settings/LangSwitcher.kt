@@ -90,20 +90,22 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
 
     val currentLocale = configuration.locales[0]
     val locales = listOf(
-        Locale("en"),
-        Locale("ru"),
-        Locale("uk"),
         Locale("be"),
-        Locale("sv"),
-        Locale("it"),
         Locale("cs"),
-        Locale("fr"),
+        Locale("de"),
+        Locale("en"),
         Locale("es"),
+        Locale("fr"),
+        Locale("it"),
+        Locale("ja"),
         Locale("pt", "BR"),
         Locale("ro"),
-        Locale("zh", "CN"),
+        Locale("ru"),
         Locale("sr"),
-        Locale("ja"),
+        Locale("sv"),
+        Locale("ta"),
+        Locale("uk"),
+        Locale("zh", "CN")
     )
 
     Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
