@@ -1,0 +1,7 @@
+Features:
+- Added language: Interlingua
+- Added language: Turkish
+
+Fixes:
+- Changes for the F-Droid release
+- Minor fixes
