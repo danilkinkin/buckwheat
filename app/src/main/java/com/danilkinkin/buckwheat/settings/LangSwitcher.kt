@@ -96,6 +96,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
         Locale("en"),
         Locale("es"),
         Locale("fr"),
+        Locale("ia"),
         Locale("it"),
         Locale("ja"),
         Locale("pt", "BR"),
@@ -104,6 +105,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
         Locale("sr"),
         Locale("sv"),
         Locale("ta"),
+        Locale("tr"),
         Locale("uk"),
         Locale("zh", "CN")
     )
