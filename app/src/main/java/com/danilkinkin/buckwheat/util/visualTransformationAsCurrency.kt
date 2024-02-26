@@ -174,7 +174,7 @@ fun fixedNumberString(input: String): String {
         .replace("\\D".toRegex(), "")
         .trimEnd { addZero = addZero || it == '0'; it == '0' }
 
-    if (addZero) afterFiltered = "${afterFiltered}0"
+    if (addZero && afterFiltered.isEmpty()) afterFiltered = "${afterFiltered}0"
 
     if (afterFiltered.length > 2) afterFiltered = afterFiltered.dropLast(afterFiltered.length - 2)
 
