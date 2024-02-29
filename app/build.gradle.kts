@@ -3,7 +3,6 @@ plugins {
     id("kotlin-android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("com.google.devtools.ksp")
 }
 
@@ -123,8 +122,4 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.2")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.46.1")
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.46.1")
-}
-
-secrets {
-    defaultPropertiesFileName = "local.defaults.properties"
 }
