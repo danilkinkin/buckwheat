@@ -106,6 +106,7 @@ fun BuckwheatTheme(
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit,
 ) {
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -118,7 +119,7 @@ fun BuckwheatTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         shapes = shapes,
-        typography = typography,
+        typography = typography(LocalContext.current),
         content = content
     )
 }

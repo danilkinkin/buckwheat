@@ -6,6 +6,10 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Typeface
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -27,20 +31,25 @@ import androidx.glance.text.TextAlign
 import androidx.glance.unit.ColorProvider
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.Size
+import java.io.File
+
 
 fun Paint.applyFontToPaint(context: Context, style: TextStyle): Paint {
     this.apply {
         isAntiAlias = true
         isSubpixelText = true
-        typeface = ResourcesCompat.getFont(
-            context,
-            when (style.fontWeight) {
-                FontWeight.Bold -> R.font.manrope_extra_bold
-                FontWeight.Medium -> R.font.manrope_bold
-                FontWeight.Normal -> R.font.manrope_medium
-                else -> R.font.manrope_regular
-            },
-        )!!
+
+        val builder = Typeface.Builder(context.assets, "font/manrope_variable.ttf")
+
+
+        Log.d("CanvasText", "builder: ${builder}")
+
+        builder.setFontVariationSettings("'wght' 800")
+
+        //builder.setWeight(800)
+
+        typeface = builder.build()
+
         this.style = Paint.Style.FILL
         color = style.color.getColor(context).toArgb()
         textSize = Resources.getSystem().displayMetrics.density * style.fontSize!!.value
