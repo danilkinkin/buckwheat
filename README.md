@@ -1,7 +1,7 @@
 [<img width="100%" height="auto" src="/screenshots/en/github-screenshot.png" alt="Buckwheat logo with screenshots" />](https://buckwheat.app/)
 
 [![Latest release][release-badge]](https://github.com/danilkinkin/buckwheat/releases)
-[![Crowdin localization][localization-badge]](https://crowdin.com/project/buckwheat)
+[![Crowdin localization][localization-badge]](https://translate.buckwheat.app)
 
 [**Buckwheat**](https://buckwheat.app) is an app that helps you spend money wisely. 
 Writing down each spending sobers the mind and gives you an idea of how much and how you can spend.
@@ -18,7 +18,7 @@ A couple of years ago, I used the [tzlvt](https://www.fuckgrechka.ru/tzlvt/) app
 
 ### Translations
 
-If your language is missing or incomplete, please help to translate via [crowdin service](https://crowdin.com/project/buckwheat)
+If your language is missing or incomplete, please help to translate via [crowdin service](https://translate.buckwheat.app)
 
 ### Donate
 
