@@ -38,7 +38,7 @@ fun SpentItem(
                 Text(
                     text = numberFormat(context = context, transaction.value, currency = currency),
                     style = MaterialTheme.typography.headlineMedium,
-                    fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
                     color = colorOnEditor,
                     softWrap = false,
                     overflow = TextOverflow.Ellipsis,

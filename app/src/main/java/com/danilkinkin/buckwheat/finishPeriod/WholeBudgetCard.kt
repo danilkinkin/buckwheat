@@ -69,7 +69,8 @@ fun WholeBudgetCard(
                             ),
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
-                            style = if (bigVariant) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = if (bigVariant) MaterialTheme.typography.bodySmall.fontSize else MaterialTheme.typography.labelSmall.fontSize,
                         )
                     }
 
@@ -122,7 +123,8 @@ fun WholeBudgetCard(
                             },
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
-                            style = if (bigVariant) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontSize = if (bigVariant) MaterialTheme.typography.bodySmall.fontSize else MaterialTheme.typography.labelSmall.fontSize,
                         )
                     }
                 },

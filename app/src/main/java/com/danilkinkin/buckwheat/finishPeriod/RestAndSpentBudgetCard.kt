@@ -194,7 +194,8 @@ fun RestAndSpentBudgetCard(
                                     R.string.rest_budget_percent,
                                     percentFormatted
                                 ),
-                                style = if (bigVariant) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontSize = if (bigVariant) MaterialTheme.typography.labelMedium.fontSize else MaterialTheme.typography.labelSmall.fontSize,
                             )
                         }
                     }
