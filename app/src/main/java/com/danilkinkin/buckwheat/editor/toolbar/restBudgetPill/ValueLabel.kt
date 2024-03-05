@@ -30,7 +30,7 @@ fun ValueLabel(
             DaileBudgetState.NORMAL, null -> {
                 AnimatedNumber(
                     value = todayBudget,
-                    style = MaterialTheme.typography.displayLarge.copy(
+                    style = MaterialTheme.typography.headlineLarge.copy(
                         fontSize = MaterialTheme.typography.headlineMedium.fontSize
                     ),
                 )
@@ -39,7 +39,7 @@ fun ValueLabel(
             DaileBudgetState.OVERDRAFT -> {
                 AnimatedNumber(
                     value = newDailyBudget,
-                    style = MaterialTheme.typography.displayLarge.copy(
+                    style = MaterialTheme.typography.headlineLarge.copy(
                         fontSize = MaterialTheme.typography.headlineMedium.fontSize
                     ),
                 )

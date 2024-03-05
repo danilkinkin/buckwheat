@@ -5,6 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -20,6 +21,8 @@ fun StatCard(
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
     colors: CardColors = CardDefaults.cardColors(),
     valueFontSize: TextUnit = MaterialTheme.typography.titleLarge.fontSize,
+    valueFontStyle: TextStyle = MaterialTheme.typography.displayLarge,
+    labelFontStyle: TextStyle = MaterialTheme.typography.labelMedium,
     content: @Composable ColumnScope.() -> Unit = {},
     backdropContent: @Composable () -> Unit = {},
 ) {
@@ -50,7 +53,7 @@ fun StatCard(
             ) {
                 Text(
                     text = value,
-                    style = MaterialTheme.typography.displayLarge,
+                    style = valueFontStyle,
                     fontSize = valueFontSize,
                     overflow = TextOverflow.Ellipsis,
                     softWrap = false,
@@ -58,7 +61,7 @@ fun StatCard(
                 )
                 Text(
                     text = label,
-                    style = MaterialTheme.typography.labelMedium,
+                    style = labelFontStyle,
                     color = textColor.copy(alpha = 0.6f),
                     overflow = TextOverflow.Ellipsis,
                     softWrap = false,

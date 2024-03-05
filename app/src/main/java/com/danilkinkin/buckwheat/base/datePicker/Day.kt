@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
@@ -37,7 +36,7 @@ internal fun DayOfWeekHeading(day: String, modifier: Modifier = Modifier) {
                 .wrapContentHeight(Alignment.CenterVertically),
             textAlign = TextAlign.Center,
             text = day,
-            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.W700),
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5F),
         )
     }
@@ -110,7 +109,7 @@ internal fun Day(
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center),
             text = day.dayOfMonth.toString(),
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W800),
+            style = MaterialTheme.typography.bodyMedium,
             color = when (true) {
                 current -> MaterialTheme.colorScheme.onPrimaryContainer
                 selected -> MaterialTheme.colorScheme.onPrimary

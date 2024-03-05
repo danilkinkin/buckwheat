@@ -102,7 +102,6 @@ fun MinMaxSpentCard(
                         shortMonth = true,
                     ),
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                 )
 
                 if (spent.comment.isNotEmpty()) {
@@ -119,7 +118,6 @@ fun MinMaxSpentCard(
 
                             text = spent.comment,
                             style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                         )
                     }
                 }

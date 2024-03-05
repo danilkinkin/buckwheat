@@ -65,7 +65,7 @@ fun StatusLabel(
                     DaileBudgetState.OVERDRAFT -> stringResource(R.string.new_daily_budget_short)
                     DaileBudgetState.BUDGET_END -> stringResource(R.string.budget_end)
                 },
-                style = MaterialTheme.typography.labelLarge.copy(
+                style = MaterialTheme.typography.headlineMedium.copy(
                     fontSize = MaterialTheme.typography.titleMedium.fontSize
                 ),
                 color = textColor.copy(alpha = 0.6f),

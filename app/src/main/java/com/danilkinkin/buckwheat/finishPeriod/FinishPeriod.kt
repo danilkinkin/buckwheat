@@ -122,7 +122,8 @@ fun FinishPeriod(
                         Spacer(Modifier.height(36.dp))
                         Text(
                             text = stringResource(R.string.finish_period_title),
-                            style = MaterialTheme.typography.headlineLarge,
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontSize = MaterialTheme.typography.headlineLarge.fontSize,
                             textAlign = TextAlign.Center,
                         )
                         Spacer(Modifier.height(8.dp))

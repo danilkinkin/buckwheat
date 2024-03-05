@@ -51,7 +51,8 @@ fun WholeBudgetCard(
             budget,
             currency = currency,
         ),
-        valueFontSize = if (bigVariant) MaterialTheme.typography.displaySmall.fontSize else MaterialTheme.typography.titleLarge.fontSize,
+        valueFontStyle = MaterialTheme.typography.displayMedium,
+        valueFontSize = if (bigVariant) MaterialTheme.typography.headlineLarge.fontSize else MaterialTheme.typography.titleLarge.fontSize,
         colors = colors,
         content = {
             Spacer(modifier = Modifier.height(16.dp))
@@ -69,7 +70,6 @@ fun WholeBudgetCard(
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
                             style = if (bigVariant) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
-                            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                         )
                     }
 
@@ -123,7 +123,6 @@ fun WholeBudgetCard(
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
                             style = if (bigVariant) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodySmall,
-                            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                         )
                     }
                 },

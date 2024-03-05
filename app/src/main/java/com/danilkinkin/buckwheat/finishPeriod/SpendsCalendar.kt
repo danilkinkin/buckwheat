@@ -36,7 +36,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -173,7 +172,7 @@ fun SpendsCalendar(
             Spacer(modifier = Modifier.width(4.dp))
             Text(
                 text = stringResource(R.string.spends_calendar_hint),
-                style = MaterialTheme.typography.bodySmall.copy(
+                style = MaterialTheme.typography.labelSmall.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.8f),
                 ),
             )
@@ -284,7 +283,7 @@ internal fun DayOfWeekHeading(day: String, modifier: Modifier = Modifier) {
                 .wrapContentHeight(Alignment.CenterVertically),
             textAlign = TextAlign.Center,
             text = day,
-            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.W700),
+            style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5F),
         )
     }
@@ -388,7 +387,7 @@ internal fun Day(
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center),
                 text = day.dayOfMonth.toString(),
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W800),
+                style = MaterialTheme.typography.bodyMedium,
                 color = harmonizedColor.onContainer,
             )
         }

@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.ExperimentalTextApi
-import com.danilkinkin.buckwheat.R
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontVariation
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,20 +27,20 @@ fun typography(context: Context): Typography {
 
     return Typography(
         displayLarge = TextStyle(
-            fontFamily = getFont(900),
+            fontFamily = getFont(700),
             fontSize = 57.sp
         ),
         displayMedium = TextStyle(
-            fontFamily = getFont(800),
+            fontFamily = getFont(900),
             fontSize = 45.sp
         ),
         displaySmall = TextStyle(
-            fontFamily = getFont(700),
-            fontSize = 36.sp
+            fontFamily = getFont(650),
+            fontSize = 22.sp
         ),
         headlineLarge = TextStyle(
             fontFamily = getFont(800),
-            fontSize = 32.sp
+            fontSize = 36.sp
         ),
         headlineMedium = TextStyle(
             fontFamily = getFont(700),
@@ -54,7 +51,7 @@ fun typography(context: Context): Typography {
             fontSize = 24.sp
         ),
         titleLarge = TextStyle(
-            fontFamily = getFont(800),
+            fontFamily = getFont(700),
             fontSize = 22.sp
         ),
         titleMedium = TextStyle(
@@ -70,15 +67,15 @@ fun typography(context: Context): Typography {
             fontSize = 16.sp
         ),
         bodyMedium = TextStyle(
-            fontFamily = getFont(600),
+            fontFamily = getFont(700),
             fontSize = 14.sp
         ),
         bodySmall = TextStyle(
-            fontFamily = getFont(500),
-            fontSize = 12.sp
+            fontFamily = getFont(600),
+            fontSize = 14.sp
         ),
         labelLarge = TextStyle(
-            fontFamily = getFont(800),
+            fontFamily = getFont(700),
             fontSize = 14.sp
         ),
         labelMedium = TextStyle(

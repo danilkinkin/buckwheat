@@ -46,7 +46,7 @@ fun DescriptionButton(
                 }
                 if (description !== null) {
                     Spacer(Modifier.height(4.dp))
-                    ProvideTextStyle(MaterialTheme.typography.bodyMedium) {
+                    ProvideTextStyle(MaterialTheme.typography.bodySmall) {
                         description()
                     }
                 }

@@ -66,7 +66,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
@@ -452,7 +451,7 @@ fun CommentEditor(
                 )
             }
         },
-        textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600),
+        textStyle = MaterialTheme.typography.bodyLarge,
         singleLine = true,
         shape = RectangleShape,
         colors = TextFieldDefaults.colors(

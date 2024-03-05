@@ -47,7 +47,6 @@ import androidx.compose.ui.text.Paragraph
 import androidx.compose.ui.text.ParagraphIntrinsics
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -120,20 +119,16 @@ fun TextFieldWithPaddings(
         maxFontSize = 80.sp,
         minFontSize = 40.sp,
         text = (currSymbol ?: "") + textFieldValue.text,
-        style = MaterialTheme.typography.displayLarge.copy(
-            fontWeight = FontWeight.W700,
-        )
+        style = MaterialTheme.typography.displayLarge
     )
 
     val textStyle = MaterialTheme.typography.displayLarge.copy(
         fontSize = fontSize,
-        fontWeight = FontWeight.W700,
         color = colorOnEditor,
     )
 
-    val currencyStyle = MaterialTheme.typography.displaySmall.copy(
+    val currencyStyle = MaterialTheme.typography.displayLarge.copy(
         fontSize = textStyle.fontSize * 0.5f,
-        fontWeight = FontWeight.W700,
         color = colorOnEditor,
     )
 

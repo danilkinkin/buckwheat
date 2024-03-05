@@ -65,7 +65,7 @@ fun DefaultRecalcBudgetChooser(
             ) {
                 Text(
                     text = stringResource(R.string.choose_recalc_budget_method_description),
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodySmall
                         .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
                     softWrap = true,
                     modifier = Modifier

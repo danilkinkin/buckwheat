@@ -36,7 +36,7 @@ fun TextRow(
     description: String? = null,
     denseDescriptionOffset: Boolean = true,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
-    descriptionTextStyle: TextStyle = MaterialTheme.typography.bodyMedium
+    descriptionTextStyle: TextStyle = MaterialTheme.typography.bodySmall
         .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
 ) {
     Column(modifier) {

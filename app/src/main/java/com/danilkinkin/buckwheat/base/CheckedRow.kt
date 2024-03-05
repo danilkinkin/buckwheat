@@ -34,7 +34,6 @@ fun CheckedRow(
         text = text,
         description = description,
         textStyle = MaterialTheme.typography.bodyMedium.copy(
-            fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         ),
         endContent = endContent,

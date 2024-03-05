@@ -159,8 +159,8 @@ fun RestAndSpentBudgetCard(
                             },
                             currency = currency,
                         ),
-                        style = MaterialTheme.typography.displayLarge,
-                        fontSize = if (bigVariant) MaterialTheme.typography.displaySmall.fontSize else MaterialTheme.typography.titleLarge.fontSize,
+                        style = MaterialTheme.typography.displayMedium,
+                        fontSize = if (bigVariant) MaterialTheme.typography.headlineLarge.fontSize else MaterialTheme.typography.titleLarge.fontSize,
                         overflow = TextOverflow.Ellipsis,
                         softWrap = false,
                         lineHeight = TextUnit(0.2f, TextUnitType.Em)
@@ -195,7 +195,6 @@ fun RestAndSpentBudgetCard(
                                     percentFormatted
                                 ),
                                 style = if (bigVariant) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium,
-                                fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
                             )
                         }
                     }

@@ -173,9 +173,10 @@ fun BudgetConstructor(
 
                 onChange(budgetCache, dateToValue.value)
             },
-            textStyle = MaterialTheme.typography.displayLarge.copy(
+            textStyle = MaterialTheme.typography.headlineLarge.copy(
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
+                fontSize = MaterialTheme.typography.displayLarge.fontSize,
             ),
             visualTransformation = visualTransformationAsCurrency(
                 context,

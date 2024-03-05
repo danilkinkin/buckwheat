@@ -105,7 +105,6 @@ fun SpendsBudgetCard(
             Text(
                 text = stringResource(R.string.rest_budget_percent, percentFormatted),
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = MaterialTheme.typography.bodyLarge.fontWeight,
             )
         },
         backdropContent = {

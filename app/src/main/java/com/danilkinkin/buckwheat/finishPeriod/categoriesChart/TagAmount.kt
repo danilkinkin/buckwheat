@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.data.ExtendCurrency
@@ -58,7 +57,7 @@ fun TagAmount(
                     currency = currency,
                 ),
                 softWrap = false,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.W900),
+                style = MaterialTheme.typography.bodyMedium,
             )
         }
     }
