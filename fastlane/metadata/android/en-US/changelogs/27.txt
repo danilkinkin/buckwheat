@@ -1,0 +1,2 @@
+- Hello F-Droid
+- Now only variable fonts are used
