@@ -64,6 +64,12 @@ fun updateAnimatedItemsState(
     val state = remember { mutableStateOf(emptyList<AnimatedItem<RowEntity>>()) }
     val firstInject = remember { mutableStateOf(true) }
 
+    DisposableEffect(Unit) {
+        state.value = emptyList()
+        onDispose {
+        }
+    }
+
     LaunchedEffect(newList) {
         if (state.value == newList) {
             return@LaunchedEffect
