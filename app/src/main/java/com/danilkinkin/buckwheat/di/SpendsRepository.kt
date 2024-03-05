@@ -49,13 +49,12 @@ class SpendsRepository @Inject constructor(
     fun getAllSpends(): LiveData<List<Transaction>> = transactionDao.getAll(TransactionType.SPENT)
 
     fun getAllTags(): LiveData<List<String>> = transactionDao.getAll().map { transactions ->
-        Log.d("SpendsRepository", "Get all tags [transactions: $transactions]")
         transactions
             .asSequence()
             .filter { transaction -> transaction.comment.isNotEmpty() }
             .groupBy { it.comment }
             .map { it.key to it.value.size }
-            .sortedBy { it.second }
+            .sortedBy { -it.second }
             .map { it.first }
             .distinct()
             .toList()

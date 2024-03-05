@@ -61,8 +61,6 @@ fun TaggingToolbar(
     val tags by spendsViewModel.tags.observeAsState(emptyList())
     val currentComment by editorViewModel.currentComment.observeAsState("")
 
-    Log.d("TAG", "TaggingToolbar: tags = $tags size = ${tags.size}")
-
     var showAddComment by remember { mutableStateOf(false) }
     var isEdit by remember { mutableStateOf(false) }
 
@@ -86,7 +84,7 @@ fun TaggingToolbar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End,
         ) {
-            tags.take(5).filter { it != currentComment }.forEach { tag ->
+            tags.take(5).reversed().filter { it != currentComment }.forEach { tag ->
                 AnimatedVisibility(
                     visible = showAddComment,
                     enter = fadeIn(
