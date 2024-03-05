@@ -7,31 +7,24 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.content.res.ResourcesCompat
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceComposable
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
-import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import androidx.glance.GlanceModifier
 import androidx.glance.layout.ContentScale
-import androidx.glance.layout.collectPaddingInDp
 import androidx.glance.layout.width
+import androidx.glance.text.FontWeight
 import androidx.glance.text.TextAlign
 import androidx.glance.unit.ColorProvider
-import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.Size
-import java.io.File
 
 
 fun Paint.applyFontToPaint(context: Context, style: TextStyle): Paint {
@@ -41,12 +34,14 @@ fun Paint.applyFontToPaint(context: Context, style: TextStyle): Paint {
 
         val builder = Typeface.Builder(context.assets, "font/manrope_variable.ttf")
 
+        val weight = when (style.fontWeight) {
+            FontWeight.Normal -> 500
+            FontWeight.Medium -> 700
+            FontWeight.Bold -> 900
+            else -> 800
+        }
 
-        Log.d("CanvasText", "builder: ${builder}")
-
-        builder.setFontVariationSettings("'wght' 800")
-
-        //builder.setWeight(800)
+        builder.setFontVariationSettings("'wght' $weight")
 
         typeface = builder.build()
 
