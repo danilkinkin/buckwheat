@@ -23,7 +23,7 @@ If your language is missing or incomplete, please help to translate via [crowdin
 
 ### Donate
 
-If you want to support my work, you can share my app with friends or check another options on special [landing page](https://buckwheat.app/contribute)
+If you want to support my work, you can share my app with friends or check another options on [special page](https://buckwheat.app/contribute)
 
 ### Other information
 
