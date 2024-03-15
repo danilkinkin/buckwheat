@@ -11,6 +11,7 @@ Are you going on a business trip or vacation? Buckwheat helps you save money dur
 [<img alt='Get it on Google Play' height="60" src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' />](https://play.google.com/store/apps/details?id=com.danilkinkin.buckwheat)
 [<img alt='Get it on GitHub' height="60" src='/screenshots/en/get-it-on-github.png' />](https://github.com/danilkinkin/buckwheat/releases)
 [<img alt='Get it on IzzyOnDroid' height="60" src='/screenshots/en/get-it-on-izzy-on-droid.png' />](https://apt.izzysoft.de/fdroid/index/apk/com.danilkinkin.buckwheat)
+[<img alt='Get it on F-Droid' height="60" src='https://fdroid.gitlab.io/artwork/badge/get-it-on.png' />](https://f-droid.org/en/packages/com.danilkinkin.buckwheat/)
 
 ### Motivation
 
