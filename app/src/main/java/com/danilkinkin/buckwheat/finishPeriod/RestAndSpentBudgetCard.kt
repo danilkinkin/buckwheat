@@ -47,13 +47,13 @@ fun RestAndSpentBudgetCard(
     val showSpentCard by appViewModel.showSpentCardByDefault.observeAsState(false)
 
     val wholeBudget = spendsViewModel.budget.value!!
-    val restBudget = spendsViewModel.howMuchBudgetRest().value!!
+    val restBudget by spendsViewModel.howMuchBudgetRest().observeAsState(BigDecimal.ZERO)
 
-    val percent = remember { restBudget.divide(wholeBudget, 4, RoundingMode.HALF_EVEN) }
+    val percent = remember (restBudget) { restBudget.divide(wholeBudget, 4, RoundingMode.HALF_EVEN) }
 
     val overString = stringResource(R.string.over)
 
-    val percentFormatted = remember(showSpentCard) {
+    val percentFormatted = remember(showSpentCard, percent) {
         val formatter = NumberFormat.getNumberInstance(Locale.getDefault())
         formatter.maximumFractionDigits = 2
         formatter.minimumFractionDigits = 0
@@ -133,7 +133,9 @@ fun RestAndSpentBudgetCard(
                                 harmonizedColor.main,
                                 shape = WavyShape(
                                     period = if (bigVariant) 70.dp else 40.dp,
-                                    amplitude = percent.toFloat().clamp(0.96f, 1f) * (if (bigVariant) 3.5.dp else 2.dp),
+                                    amplitude = percent
+                                        .toFloat()
+                                        .clamp(0.96f, 1f) * (if (bigVariant) 3.5.dp else 2.dp),
                                     shift = shift.value,
                                 ),
                             )
