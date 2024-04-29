@@ -21,7 +21,7 @@ fun StatCard(
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
     colors: CardColors = CardDefaults.cardColors(),
     valueFontSize: TextUnit = MaterialTheme.typography.titleLarge.fontSize,
-    valueFontStyle: TextStyle = MaterialTheme.typography.displayLarge,
+    valueFontStyle: TextStyle = MaterialTheme.typography.displayMedium,
     labelFontStyle: TextStyle = MaterialTheme.typography.labelMedium,
     content: @Composable ColumnScope.() -> Unit = {},
     backdropContent: @Composable () -> Unit = {},

@@ -57,8 +57,9 @@ fun SpendsCountCard(
             ) {
                 Text(
                     text = count.toString(),
-                    style = MaterialTheme.typography.displayLarge,
+                    style = MaterialTheme.typography.displayMedium,
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
+
                     overflow = TextOverflow.Ellipsis,
                     softWrap = true,
                     textAlign = TextAlign.Center,
