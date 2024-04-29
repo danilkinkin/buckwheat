@@ -163,8 +163,8 @@ fun SpendsCalendar(
         Row(Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
             Icon(
                 modifier = Modifier
-                    .size(16.dp)
-                    .padding(top = 2.dp),
+                    .padding(top = 0.5.dp)
+                    .size(14.dp),
                 painter = painterResource(R.drawable.ic_info),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 contentDescription = null,
