@@ -53,7 +53,15 @@ class RestBudgetPillViewModel @Inject constructor(
                 return@launch
             }
 
-            if (dailyBudget.isZero()) return@launch
+            if (dailyBudget <= BigDecimal.ZERO) {
+                ths.state.value = DaileBudgetState.BUDGET_END
+                ths.percentWithNewSpent.value = 0f
+                ths.percentWithoutNewSpent.value = 0f
+                ths.newDailyBudget.value = ""
+                ths.todayBudget.value = ""
+
+                return@launch
+            }
 
             val restFromDayBudget = dailyBudget - spentFromDailyBudget - currentSpent
             val newDailyBudget = spendsRepository.whatBudgetForDay(
