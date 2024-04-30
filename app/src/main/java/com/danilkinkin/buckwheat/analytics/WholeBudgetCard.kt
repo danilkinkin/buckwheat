@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.finishPeriod
+package com.danilkinkin.buckwheat.analytics
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Canvas

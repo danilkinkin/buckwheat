@@ -7,8 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.finishPeriod.RestAndSpentBudgetCard
-import com.danilkinkin.buckwheat.finishPeriod.WholeBudgetCard
+import com.danilkinkin.buckwheat.analytics.RestAndSpentBudgetCard
+import com.danilkinkin.buckwheat.analytics.WholeBudgetCard
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 
 @Composable

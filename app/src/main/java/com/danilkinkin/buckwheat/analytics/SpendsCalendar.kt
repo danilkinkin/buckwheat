@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.finishPeriod
+package com.danilkinkin.buckwheat.analytics
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
@@ -144,7 +144,7 @@ fun SpendsCalendar(
             CalendarState(
                 context = context,
                 disableBeforeDate = startDate,
-                disableAfterDate = finishDate,
+                disableAfterDate = finishDate.coerceAtMost(Date()),
             )
         )
     }
@@ -197,10 +197,9 @@ fun SpendsCalendar(
                         val currentDay =
                             beginningWeek.with(TemporalAdjusters.previousOrSame(getWeek(locale)[0]))
 
-
                         if (
                             currentDay.plusDays(6).isAfter(calendarUiState.disabledBefore) &&
-                            currentDay.isBefore(calendarUiState.disabledAfter)
+                            currentDay.isBefore(calendarUiState.disabledAfter!!.plusDays(1))
                         ) {
                             Week(
                                 week = week,

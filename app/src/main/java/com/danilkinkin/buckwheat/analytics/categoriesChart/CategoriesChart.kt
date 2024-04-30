@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.finishPeriod.categoriesChart
+package com.danilkinkin.buckwheat.analytics.categoriesChart
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Arrangement

@@ -20,10 +20,10 @@ import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BudgetIsOverDescr
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NEW_DAY_BUDGET_DESCRIPTION_SHEET
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NewDayBudgetDescription
 import com.danilkinkin.buckwheat.effects.Confetti
-import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
-import com.danilkinkin.buckwheat.finishPeriod.FinishPeriod
-import com.danilkinkin.buckwheat.finishPeriod.VIEWER_HISTORY_SHEET
-import com.danilkinkin.buckwheat.finishPeriod.ViewerHistory
+import com.danilkinkin.buckwheat.analytics.ANALYTICS_SHEET
+import com.danilkinkin.buckwheat.analytics.Analytics
+import com.danilkinkin.buckwheat.analytics.VIEWER_HISTORY_SHEET
+import com.danilkinkin.buckwheat.analytics.ViewerHistory
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.onboarding.Onboarding
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
@@ -125,10 +125,10 @@ fun BottomSheets(
     }
 
     BottomSheetWrapper(
-        name = FINISH_PERIOD_SHEET,
-        cancelable = false,
+        name = ANALYTICS_SHEET,
+        cancelable = !periodFinished,
     ) { state ->
-        FinishPeriod(
+        Analytics(
             activityResultRegistryOwner = activityResultRegistryOwner,
             onCreateNewPeriod = {
                 appViewModel.openSheet(PathState(WALLET_SHEET))

@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.finishPeriod.categoriesChart
+package com.danilkinkin.buckwheat.analytics.categoriesChart
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

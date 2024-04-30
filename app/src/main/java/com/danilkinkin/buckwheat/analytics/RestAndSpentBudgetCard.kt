@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.finishPeriod
+package com.danilkinkin.buckwheat.analytics
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatTweenSpec

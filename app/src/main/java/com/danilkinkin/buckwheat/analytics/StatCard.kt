@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.finishPeriod
+package com.danilkinkin.buckwheat.analytics
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

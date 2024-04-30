@@ -60,7 +60,7 @@ import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.editor.Editor
-import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
+import com.danilkinkin.buckwheat.analytics.ANALYTICS_SHEET
 import com.danilkinkin.buckwheat.history.History
 import com.danilkinkin.buckwheat.keyboard.Keyboard
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
@@ -126,7 +126,7 @@ fun MainScreen(
     }
 
     observeLiveData(spendsViewModel.periodFinished) {
-        if (it) appViewModel.openSheet(PathState(FINISH_PERIOD_SHEET))
+        if (it) appViewModel.openSheet(PathState(ANALYTICS_SHEET))
     }
 
     BoxWithConstraints(

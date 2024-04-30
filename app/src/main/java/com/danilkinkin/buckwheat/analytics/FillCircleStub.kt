@@ -1,4 +1,4 @@
-package com.danilkinkin.buckwheat.finishPeriod
+package com.danilkinkin.buckwheat.analytics
 
 import android.graphics.PointF
 import androidx.compose.animation.core.*

@@ -26,7 +26,7 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.EditorViewModel
-import com.danilkinkin.buckwheat.finishPeriod.FINISH_PERIOD_SHEET
+import com.danilkinkin.buckwheat.analytics.ANALYTICS_SHEET
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -88,7 +88,7 @@ fun DebugMenu(
                 text = "Open period summary screen",
                 iconInset = false,
                 onClick = {
-                    appViewModel.openSheet(PathState(FINISH_PERIOD_SHEET))
+                    appViewModel.openSheet(PathState(ANALYTICS_SHEET))
                     onClose()
                 },
             )

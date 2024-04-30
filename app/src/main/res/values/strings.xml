@@ -147,4 +147,6 @@
   <string name="send_crash_report">Send report</string>
   <string name="add_your_comment_to_report">Add your comment here if you wish. You can delete the block with information about the device if you think that this information does not matter</string>
   <string name="history_title">History</string>
+  <string name="view_analytics">View analytics</string>
+  <string name="analytics_title">Analytics</string>
 </resources>
