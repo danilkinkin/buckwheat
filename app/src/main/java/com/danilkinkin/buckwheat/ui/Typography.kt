@@ -27,7 +27,7 @@ fun typography(context: Context): Typography {
 
     return Typography(
         displayLarge = TextStyle(
-            fontFamily = getFont(650),
+            fontFamily = getFont(750),
             fontSize = 57.sp
         ),
         displayMedium = TextStyle(
