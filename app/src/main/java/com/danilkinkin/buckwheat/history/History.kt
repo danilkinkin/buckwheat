@@ -34,6 +34,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.util.isSameDay
+import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
 import kotlinx.coroutines.launch
@@ -56,7 +57,7 @@ fun History(
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    val spends by spendsViewModel.spends.observeAsState(initial = null)
+    var historyList by remember { mutableStateOf<List<RowEntity>>(emptyList()) }
     val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal.ZERO)
     val currency = spendsViewModel.currency.observeAsState(initial = ExtendCurrency.none())
     val startPeriodDate = spendsViewModel.startPeriodDate.observeAsState(initial = Date())
@@ -65,31 +66,12 @@ fun History(
     val tutorial by appViewModel.getTutorialStage(TUTORS.SWIPE_EDIT_SPENT).observeAsState(TUTORIAL_STAGE.NONE)
     var isUserTrySwipe by remember { mutableStateOf(false) }
 
-    DisposableEffect(Unit) {
-        appViewModel.lockSwipeable.value = false
-        scrollToBottom.value = true
-
-        onDispose {
-            appViewModel.lockSwipeable.value = false
-
-            if (spends !== null && spends!!.isNotEmpty() && isUserTrySwipe) {
-                appViewModel.passTutorial(TUTORS.SWIPE_EDIT_SPENT)
-            }
-        }
-    }
-
-    val fapScale by animateFloatAsState(
-        targetValue = if (appViewModel.lockSwipeable.value) 1f else 0f,
-        animationSpec = TweenSpec(250),
-    )
-
-    val animatedList = if (spends !== null) {
-        val list = emptyList<RowEntity>().toMutableList()
-
+    observeLiveData(spendsViewModel.spends) { transactions ->
+        val composedList = emptyList<RowEntity>().toMutableList()
         var lastSpentDate: LocalDate? = null
         var lastDayTotal: BigDecimal = BigDecimal.ZERO
 
-        spends!!
+        transactions
             .forEach { spent ->
                 if (lastSpentDate === null || !isSameDay(
                         spent.date.time,
@@ -97,11 +79,11 @@ fun History(
                     )
                 ) {
                     if (lastSpentDate !== null) {
-                        list.add(
+                        composedList.add(
                             RowEntity(
                                 type = RowEntityType.DayTotal,
                                 key = "total-${lastSpentDate}",
-                                contentHash = "$lastDayTotal",
+                                contentHash = "total-${lastSpentDate}",
                                 transaction = null,
                                 day = lastSpentDate!!,
                                 dayTotal = lastDayTotal,
@@ -112,10 +94,11 @@ fun History(
                     lastSpentDate = spent.date.toLocalDate()
                     lastDayTotal = BigDecimal.ZERO
 
-                    list.add(
+                    composedList.add(
                         RowEntity(
                             type = RowEntityType.DayDivider,
                             key = "header-${lastSpentDate}",
+                            contentHash = "header-${lastSpentDate}",
                             transaction = null,
                             day = lastSpentDate!!,
                             dayTotal = null,
@@ -125,10 +108,11 @@ fun History(
 
                 lastDayTotal += spent.value
 
-                list.add(
+                composedList.add(
                     RowEntity(
                         type = RowEntityType.Spent,
                         key = "spent-${spent.uid}",
+                        contentHash = "spent-${spent.uid}",
                         transaction = spent,
                         day = lastSpentDate!!,
                         dayTotal = null,
@@ -136,12 +120,12 @@ fun History(
                 )
             }
 
-        if (spends!!.isNotEmpty() && lastSpentDate !== null) {
-            list.add(
+        if (transactions.isNotEmpty() && lastSpentDate !== null) {
+            composedList.add(
                 RowEntity(
                     type = RowEntityType.DayTotal,
                     key = "total-${lastSpentDate!!}",
-                    contentHash = "$lastDayTotal",
+                    contentHash = "total-${lastSpentDate}",
                     transaction = null,
                     day = lastSpentDate!!,
                     dayTotal = lastDayTotal,
@@ -149,11 +133,29 @@ fun History(
             )
         }
 
-
-        updateAnimatedItemsState(newList = list.toList().reversed().map { it })
-    } else {
-        null
+        historyList = composedList.toList().reversed().map { it }
     }
+
+    DisposableEffect(Unit) {
+        appViewModel.lockSwipeable.value = false
+        scrollToBottom.value = true
+
+        onDispose {
+            appViewModel.lockSwipeable.value = false
+
+            if (historyList.isNotEmpty() && isUserTrySwipe) {
+                appViewModel.passTutorial(TUTORS.SWIPE_EDIT_SPENT)
+            }
+
+        }
+    }
+
+    val fapScale by animateFloatAsState(
+        targetValue = if (appViewModel.lockSwipeable.value) 1f else 0f,
+        animationSpec = TweenSpec(250),
+    )
+
+    val animatedList = updateAnimatedItemsState(newList = historyList)
 
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -181,7 +183,7 @@ fun History(
                     Spacer(modifier = Modifier.height(18.dp))
                 }
 
-                if (animatedList !== null) animatedItemsIndexed(
+                animatedItemsIndexed(
                     state = animatedList.value,
                     key = { rowItem -> rowItem.key },
                 ) { index, row ->
@@ -311,7 +313,7 @@ fun History(
                 }
             }
 
-            if (spends !== null && spends!!.isEmpty()) {
+            if (historyList.isEmpty()) {
                 NoSpends(Modifier.weight(1f))
             }
         }
