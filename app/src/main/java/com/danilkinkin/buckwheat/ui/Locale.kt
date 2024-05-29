@@ -1,5 +1,7 @@
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Build
 import android.os.LocaleList
 import androidx.compose.runtime.Composable
@@ -15,10 +17,20 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
+class ContextWithUpdatedResources(
+    private val resources: Context,
+    base: Context
+) : ContextWrapper(base) {
+    override fun getResources(): Resources {
+        return resources.resources
+    }
+}
+
 @Composable
 fun OverrideLocalize(content: @Composable () -> Unit) {
     val systemLocale = LocalContext.current.systemLocale!!
     val overrideLocale = LocalContext.current.appLocale ?: systemLocale
+    val localContext = LocalContext.current
 
     val (context, configuration) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         Pair(LocalContext.current, LocalConfiguration.current)
@@ -38,7 +50,7 @@ fun OverrideLocalize(content: @Composable () -> Unit) {
         Locale.setDefault(overrideLocale)
 
         Pair(
-            LocalContext.current.createConfigurationContext(config),
+            ContextWithUpdatedResources(LocalContext.current.createConfigurationContext(config), localContext),
             config,
         )
     }
