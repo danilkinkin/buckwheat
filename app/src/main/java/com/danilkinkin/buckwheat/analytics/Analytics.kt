@@ -62,6 +62,9 @@ fun Analytics(
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val wholeBudget = spendsViewModel.budget.value!!
     val scrollState = rememberScrollState()
+
+    val finishPeriodActualDate by spendsViewModel.finishPeriodActualDate.observeAsState(null)
+
     // Need to hide calendar after migration to transactions,
     // because after migration can't restore some transactions like INCOME & SET_DAILY_BUDGET
     val afterMigrationToTransactions =
@@ -98,6 +101,7 @@ fun Analytics(
                             currency = spendsViewModel.currency.value!!,
                             startDate = spendsViewModel.startPeriodDate.value!!,
                             finishDate = spendsViewModel.finishPeriodDate.value!!,
+                            actualFinishDate = finishPeriodActualDate,
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         if (spends.isNotEmpty()) {

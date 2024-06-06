@@ -39,6 +39,7 @@ val spentFromDailyBudgetStoreKey = stringPreferencesKey("spentFromDailyBudget")
 val lastChangeDailyBudgetDateStoreKey = longPreferencesKey("lastChangeDailyBudgetDate")
 val startPeriodDateStoreKey = longPreferencesKey("startPeriodDate")
 val finishPeriodDateStoreKey = longPreferencesKey("finishPeriodDate")
+val finishPeriodActualDateStoreKey = longPreferencesKey("finishPeriodActualDate")
 
 class SpendsRepository @Inject constructor(
     @ApplicationContext val context: Context,
@@ -82,6 +83,10 @@ class SpendsRepository @Inject constructor(
 
     fun getFinishPeriodDate() = context.budgetDataStore.data.map {
         it[finishPeriodDateStoreKey]?.let { value -> Date(value) }
+    }
+
+    fun getFinishPeriodActualDate() = context.budgetDataStore.data.map {
+        it[finishPeriodActualDateStoreKey]?.let { value -> Date(value) }
     }
 
     fun getLastChangeDailyBudgetDate() = context.budgetDataStore.data.map {
@@ -155,6 +160,22 @@ class SpendsRepository @Inject constructor(
         setDailyBudget(whatBudgetForDay())
 
         hideOverspendingWarn(false)
+    }
+
+    suspend fun finishBudget(finishDate: Date) {
+        context.budgetDataStore.edit {
+            it[finishPeriodActualDateStoreKey] = finishDate.time
+
+            Log.d(
+                "SpendsRepository",
+                "Finish budget ["
+                        + "budget: ${it[budgetStoreKey]} "
+                        + "start date: ${Date(it[startPeriodDateStoreKey]!!)} "
+                        + "actual finish date: ${Date(it[finishPeriodActualDateStoreKey]!!)}"
+                        + "finish date: ${Date(it[finishPeriodDateStoreKey]!!)}"
+                        + "]"
+            )
+        }
     }
 
     suspend fun setDailyBudget(newDailyBudget: BigDecimal) {

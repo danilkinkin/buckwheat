@@ -174,20 +174,9 @@ fun CustomCurrencyEditor(
 }
 
 @Preview(name = "Default")
-@Composable
-private fun PreviewDefault() {
-    BuckwheatTheme {
-        CustomCurrencyEditorContent(
-            defaultCurrency = "",
-            onChange = { },
-            onClose = { }
-        )
-    }
-}
-
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun PreviewNightMode() {
+private fun PreviewDefault() {
     BuckwheatTheme {
         CustomCurrencyEditorContent(
             defaultCurrency = "",

@@ -65,6 +65,7 @@ fun Wallet(
         (budgetCache - spent - spentFromDailyBudget)
 
     val openConfirmChangeBudgetDialog = remember { mutableStateOf(false) }
+    val openConfirmFinishBudgetDialog = remember { mutableStateOf(false) }
 
     if (spends === null) return
 
@@ -265,6 +266,18 @@ fun Wallet(
                             text = stringResource(R.string.export_to_csv),
                             onClick = { exportCSVLaunch() }
                         )
+
+                        CompositionLocalProvider(
+                            LocalContentColor provides MaterialTheme.colorScheme.error
+                        ) {
+                            ButtonRow(
+                                icon = painterResource(R.drawable.ic_close),
+                                text = stringResource(R.string.finish_early),
+                                onClick = {
+                                    openConfirmFinishBudgetDialog.value = true
+                                }
+                            )
+                        }
                     }
                 }
                 AnimatedVisibility(
@@ -342,6 +355,18 @@ fun Wallet(
                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
             },
             onClose = { openConfirmChangeBudgetDialog.value = false },
+        )
+    }
+
+    if (openConfirmFinishBudgetDialog.value) {
+        ConfirmFinishEarlyDialog(
+            onConfirm = {
+                spendsViewModel.finishBudget()
+
+                onClose()
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+            },
+            onClose = { openConfirmFinishBudgetDialog.value = false },
         )
     }
 }

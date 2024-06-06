@@ -149,4 +149,8 @@
   <string name="history_title">History</string>
   <string name="view_analytics">View analytics</string>
   <string name="analytics_title">Analytics</string>
+  <string name="finish_early">Finish early</string>
+  <string name="confirm_finish_budget_title">Finish budget</string>
+  <string name="confirm_finish_budget_description">Your current budget finished</string>
+  <string name="confirm_finish_budget">Finish budget</string>
 </resources>
