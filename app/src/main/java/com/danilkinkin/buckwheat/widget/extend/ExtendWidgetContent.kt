@@ -390,7 +390,7 @@ fun ExtendWidgetContent() {
     Box(
         modifier = GlanceModifier
             .appWidgetBackground()
-            .cornerRadius(24.dp)
+            .cornerRadius(32.dp)
             .fillMaxSize()
             .clickable(actionStartActivity(intent))
     ) {}
