@@ -86,6 +86,7 @@ fun SpendsCalendar(
     transactions: List<Transaction>,
     startDate: Date,
     finishDate: Date,
+    actualFinishDate: Date? = null,
     currency: ExtendCurrency,
 ) {
     val context = LocalContext.current
@@ -144,7 +145,7 @@ fun SpendsCalendar(
             CalendarState(
                 context = context,
                 disableBeforeDate = startDate,
-                disableAfterDate = finishDate.coerceAtMost(Date()),
+                disableAfterDate = (actualFinishDate ?: finishDate).coerceAtMost(Date()),
             )
         )
     }

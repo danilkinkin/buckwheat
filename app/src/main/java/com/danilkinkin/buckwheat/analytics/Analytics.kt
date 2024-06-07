@@ -158,6 +158,7 @@ fun Analytics(
                                     transactions = transactions,
                                     startDate = spendsViewModel.startPeriodDate.value!!,
                                     finishDate = spendsViewModel.finishPeriodDate.value!!,
+                                    actualFinishDate = finishPeriodActualDate,
                                     currency = spendsViewModel.currency.value!!,
                                 )
                             }
