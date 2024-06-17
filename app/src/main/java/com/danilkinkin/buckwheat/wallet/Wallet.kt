@@ -64,7 +64,6 @@ fun Wallet(
     val restBudget =
         (budgetCache - spent - spentFromDailyBudget)
 
-    val openConfirmChangeBudgetDialog = remember { mutableStateOf(false) }
     val openConfirmFinishBudgetDialog = remember { mutableStateOf(false) }
 
     if (spends === null) return
@@ -305,17 +304,17 @@ fun Wallet(
                         )
                         Button(
                             onClick = {
+                                spendsViewModel.changeDisplayCurrency(currency!!)
+
                                 if (spends!!.isNotEmpty() && !forceChange) {
-                                    openConfirmChangeBudgetDialog.value = true
-                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    spendsViewModel.changeBudget(budgetCache, dateToValue.value!!)
                                 } else {
-                                    spendsViewModel.changeDisplayCurrency(currency!!)
                                     spendsViewModel.setBudget(budgetCache, dateToValue.value!!)
                                     appViewModel.activateTutorial(TUTORS.OPEN_WALLET)
-
-                                    onClose()
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 }
+
+                                onClose()
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -343,19 +342,6 @@ fun Wallet(
                 }
             }
         }
-    }
-
-    if (openConfirmChangeBudgetDialog.value) {
-        ConfirmChangeBudgetDialog(
-            onConfirm = {
-                spendsViewModel.changeDisplayCurrency(currency!!)
-                spendsViewModel.changeBudget(budgetCache, dateToValue.value!!)
-
-                onClose()
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-            },
-            onClose = { openConfirmChangeBudgetDialog.value = false },
-        )
     }
 
     if (openConfirmFinishBudgetDialog.value) {
