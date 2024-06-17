@@ -310,7 +310,7 @@ fun Wallet(
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                 } else {
                                     spendsViewModel.changeDisplayCurrency(currency!!)
-                                    spendsViewModel.changeBudget(budgetCache, dateToValue.value!!)
+                                    spendsViewModel.setBudget(budgetCache, dateToValue.value!!)
                                     appViewModel.activateTutorial(TUTORS.OPEN_WALLET)
 
                                     onClose()

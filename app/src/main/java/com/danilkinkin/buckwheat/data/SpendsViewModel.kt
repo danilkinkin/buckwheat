@@ -54,6 +54,15 @@ class SpendsViewModel @Inject constructor(
 
     // Budget handling
 
+    fun setBudget(newBudget: BigDecimal, newFinishDate: Date) {
+        viewModelScope.launch {
+            spendsRepository.setBudget(newBudget, newFinishDate)
+
+            requireSetBudget.value = false
+            periodFinished.value = false
+        }
+    }
+
     fun changeBudget(newBudget: BigDecimal, newFinishDate: Date) {
         viewModelScope.launch {
             spendsRepository.changeBudget(newBudget, newFinishDate)

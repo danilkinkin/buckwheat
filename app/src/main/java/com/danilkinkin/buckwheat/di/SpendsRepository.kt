@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
@@ -128,7 +129,7 @@ class SpendsRepository @Inject constructor(
         }
     }
 
-    suspend fun changeBudget(newBudget: BigDecimal, newFinishDate: Date) {
+    suspend fun setBudget(newBudget: BigDecimal, newFinishDate: Date) {
         context.budgetDataStore.edit {
             it[budgetStoreKey] = newBudget.toString()
             it[spentStoreKey] = BigDecimal.ZERO.toString()
@@ -137,6 +138,7 @@ class SpendsRepository @Inject constructor(
             it[lastChangeDailyBudgetDateStoreKey] = roundToDay(getCurrentDateUseCase()).time
             it[startPeriodDateStoreKey] = roundToDay(getCurrentDateUseCase()).time
             it[finishPeriodDateStoreKey] = Date(roundToDay(newFinishDate).time + DAY - 1000).time
+            it.remove(finishPeriodActualDateStoreKey)
 
             Log.d(
                 "SpendsRepository",
@@ -162,6 +164,30 @@ class SpendsRepository @Inject constructor(
         hideOverspendingWarn(false)
     }
 
+    suspend fun changeBudget(newBudget: BigDecimal, newFinishDate: Date) {
+        context.budgetDataStore.edit {
+            it[budgetStoreKey] = newBudget.toString()
+            it[lastChangeDailyBudgetDateStoreKey] = roundToDay(getCurrentDateUseCase()).time
+            it[finishPeriodDateStoreKey] = Date(roundToDay(newFinishDate).time + DAY - 1000).time
+            it.remove(finishPeriodActualDateStoreKey)
+
+            Log.d(
+                "SpendsRepository",
+                "Change budget ["
+                        + "budget: ${it[budgetStoreKey]} "
+                        + "start date: ${Date(it[startPeriodDateStoreKey]!!)} "
+                        + "finish date: ${Date(it[finishPeriodDateStoreKey]!!)}"
+                        + "]"
+            )
+        }
+
+        val incomeTransaction = transactionDao.getAll(TransactionType.INCOME).asFlow().first().first()
+
+        transactionDao.update(incomeTransaction.copy(value = newBudget))
+
+        updateDailyBudget(whatBudgetForDay())
+    }
+
     suspend fun finishBudget(finishDate: Date) {
         context.budgetDataStore.edit {
             it[finishPeriodActualDateStoreKey] = finishDate.time
@@ -176,6 +202,25 @@ class SpendsRepository @Inject constructor(
                         + "]"
             )
         }
+    }
+
+    suspend fun updateDailyBudget(newDailyBudget: BigDecimal) {
+        context.budgetDataStore.edit {
+            it[dailyBudgetStoreKey] = newDailyBudget.toString()
+            it[lastChangeDailyBudgetDateStoreKey] = roundToDay(getCurrentDateUseCase()).time
+
+            Log.d(
+                "SpendsRepository",
+                "Update daily budget ["
+                        + "daily budget: ${it[dailyBudgetStoreKey]} "
+                        + "spent: ${it[spentStoreKey]}"
+                        + "]"
+            )
+        }
+
+
+        val setDailyBudgetTransaction = transactionDao.getAll(TransactionType.SET_DAILY_BUDGET).asFlow().first().last()
+        transactionDao.update(setDailyBudgetTransaction.copy(value = newDailyBudget))
     }
 
     suspend fun setDailyBudget(newDailyBudget: BigDecimal) {
