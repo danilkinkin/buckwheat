@@ -24,14 +24,14 @@
   <string name="select_finish_date_title">Wybierz termin zakończenia</string>
   <plurals name="finish_date_label">
     <item quantity="one">Do %1$s (%2$s dzień)</item>
-    <item quantity="few"></item>
-    <item quantity="many"></item>
+    <item quantity="few">Do %1$s (%2$s dni)</item>
+    <item quantity="many">Do %1$s (%2$s dni)</item>
     <item quantity="other">Do %1$s (%2$s dni)</item>
   </plurals>
   <plurals name="days_count">
     <item quantity="one">%1$s dzień</item>
-    <item quantity="few"></item>
-    <item quantity="many"></item>
+    <item quantity="few">%1$s dni</item>
+    <item quantity="many">%1$s dni</item>
     <item quantity="other">%1$s dni</item>
   </plurals>
   <string name="export_to_csv">Eksportuj do CSV</string>
