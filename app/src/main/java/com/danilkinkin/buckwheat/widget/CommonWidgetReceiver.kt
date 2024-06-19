@@ -99,13 +99,22 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
             val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(glanceAppWidget.javaClass)
 
             val finishDate = databaseRepository.getFinishPeriodDate().first()
+            val actualFinishDate = databaseRepository.getFinishPeriodActualDate().first()
             val spentFromDailyBudget = databaseRepository.getSpentFromDailyBudget().first()
             val dailyBudget = databaseRepository.getDailyBudget().first()
             val spent = databaseRepository.getSpent().first()
             val budget = databaseRepository.getBudget().first()
             val currency = databaseRepository.getCurrency().first()
 
-            if (finishDate === null || finishDate.time <= Date().time) {
+            val finishDateReached = finishDate !== null && finishDate.time <= Date().time
+            val earlyFinishDateReached =
+                actualFinishDate !== null && actualFinishDate.time <= Date().time
+
+            if (
+                finishDate === null
+                || finishDateReached
+                || earlyFinishDateReached
+            ) {
                 glanceIds.forEach { glanceId ->
                     updateAppWidgetState(
                         context = context,
@@ -115,7 +124,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
                         preferences.toMutablePreferences()
                             .apply {
                                 this[stateBudgetPreferenceKey] =
-                                    if (finishDate !== null && finishDate.time <= Date().time) {
+                                    if (finishDateReached || earlyFinishDateReached) {
                                         StateBudget.END_PERIOD.name
                                     } else {
                                         StateBudget.NOT_SET.name
