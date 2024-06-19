@@ -88,13 +88,6 @@
   <string name="average_spent">Durchschnittliche Ausgaben</string>
   <string name="advice_title">Du machst das gut</string>
   <string name="advice_description">Schreibe alle deine Ausgaben auf und mache dir keine Sorgen, dass du dein Budget überschreitest, denn Ausgaben sind nicht konstant.</string>
-  <string name="overspending_value">am %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Du hast dein tägliches Budget nie überschritten</string>
-  <string name="overspending_first_time">Du hast dein tägliches Budget zum ersten Mal überschritten</string>
-  <string name="overspending_after_not_go_out_budget">Du hast nicht wieder dein Budget überschritten</string>
-  <string name="overspending_after_few_times_out_budget">Danach hattest du %1$s von %2$s des Budgets übrig</string>
-  <string name="overspending_after_many_times_out_budget">Nach nur %1$s von den %2$s verbleibenden, warst du im Budget</string>
-  <string name="overspending_after_all_times_out_budget">Nach all den übrigen %1$s hast du das Budget nicht überschritten</string>
   <string name="hello">Hallo!</string>
   <string name="onboarding_title">Willkommen bei Buckwheat, lass uns gemeinsam Geld sparen</string>
   <string name="set_period_title">Budget erstellen</string>
@@ -147,4 +140,10 @@
   <string name="send_crash_report">Bericht senden</string>
   <string name="add_your_comment_to_report">Fügen Sie hier Ihren Kommentar hinzu, wenn Sie möchten. Sie können den Block mit Informationen zum Gerät löschen, wenn Sie der Meinung sind, dass diese Informationen keine Rolle spielen</string>
   <string name="history_title">Geschichte</string>
+  <string name="view_analytics">Anzeigen von Analysen</string>
+  <string name="analytics_title">Analyse</string>
+  <string name="finish_early">Beenden Sie frühzeitig</string>
+  <string name="confirm_finish_budget_title">Budget abschließen</string>
+  <string name="confirm_finish_budget_description">Ihr aktuelles Budget wird aufgebraucht und Sie können keine weiteren Ausgaben mehr tätigen</string>
+  <string name="confirm_finish_budget">Budget abschließen</string>
 </resources>

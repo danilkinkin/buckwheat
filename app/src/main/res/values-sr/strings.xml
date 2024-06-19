@@ -90,13 +90,6 @@
   <string name="average_spent">Просечна потрошња</string>
   <string name="advice_title">Добро ти иде</string>
   <string name="advice_description">Запишите све своје трошкове и не брините о прекорачењу буџета, потрошња није стална ствар.</string>
-  <string name="overspending_value">на %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Никада нисте премашили дневни буџет</string>
-  <string name="overspending_first_time">Први пут сте премашили дневни буџет</string>
-  <string name="overspending_after_not_go_out_budget">Више из буџета нисте отишли</string>
-  <string name="overspending_after_few_times_out_budget">Након тога, преостало вам је %1$s од %2$s буџета</string>
-  <string name="overspending_after_many_times_out_budget">Након само %1$s од %2$s преосталог, били сте на буџету</string>
-  <string name="overspending_after_all_times_out_budget">Након свих преосталих %1$s нисте остали ван буџета</string>
   <string name="hello">Здраво!</string>
   <string name="onboarding_title">Добро дошли у Хељда, уштедимо заједно</string>
   <string name="set_period_title">Одредите буџет</string>
@@ -149,4 +142,10 @@
   <string name="send_crash_report">Пошаљи извештај</string>
   <string name="add_your_comment_to_report">Додајте свој коментар овде ако желите. Можете избрисати блок са информацијама о уређају ако мислите да ти подаци нису битни</string>
   <string name="history_title">Историја</string>
+  <string name="view_analytics">Погледајте аналитику</string>
+  <string name="analytics_title">Аналитика</string>
+  <string name="finish_early">Заврши рано</string>
+  <string name="confirm_finish_budget_title">Заврши буџет</string>
+  <string name="confirm_finish_budget_description">Ваш тренутни буџет ће бити завршен и више нећете моћи да правите даље трошкове</string>
+  <string name="confirm_finish_budget">Заврши буџет</string>
 </resources>

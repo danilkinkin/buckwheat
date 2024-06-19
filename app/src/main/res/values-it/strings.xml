@@ -88,13 +88,6 @@
   <string name="average_spent">Spesa media</string>
   <string name="advice_title">Stai andando bene</string>
   <string name="advice_description">Scrivi tutte le spese e non preoccuparti se superi il budget, spendere non è una cosa costante.</string>
-  <string name="overspending_value">in %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Non hai mai superato il budget giornaliero</string>
-  <string name="overspending_first_time">Hai superato il budget giornaliero per la prima volta</string>
-  <string name="overspending_after_not_go_out_budget">Non sei andato/a oltre il budget </string>
-  <string name="overspending_after_few_times_out_budget">Dopo quello, hai avuto %1$s dei %2$s rimanenti del budget</string>
-  <string name="overspending_after_many_times_out_budget">Dopo solo %1$s dei %2$s rimanenti, eri nel budget</string>
-  <string name="overspending_after_all_times_out_budget">Dopo che sono rimasti tutti i %1$, non hai esaurito il budget</string>
   <string name="hello">Ciao!</string>
   <string name="onboarding_title">Ti diamo il benvenuto a Buckwheat, risparmiamo soldi insieme!</string>
   <string name="set_period_title">Imposta un budget</string>
@@ -147,4 +140,10 @@
   <string name="send_crash_report">Spedisci il rapporto</string>
   <string name="add_your_comment_to_report">Aggiungi il tuo commento qui se lo desideri. Puoi eliminare il blocco con le informazioni sul dispositivo se ritieni che queste informazioni non abbiano importanza</string>
   <string name="history_title">Storia</string>
+  <string name="view_analytics">Visualizza analisi</string>
+  <string name="analytics_title">Analitica</string>
+  <string name="finish_early">Finisci presto</string>
+  <string name="confirm_finish_budget_title">Finisci il bilancio</string>
+  <string name="confirm_finish_budget_description">Il tuo budget attuale sarà completato e non sarai più in grado di effettuare ulteriori spese</string>
+  <string name="confirm_finish_budget">Finisci il bilancio</string>
 </resources>

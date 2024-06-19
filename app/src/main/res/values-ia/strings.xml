@@ -88,13 +88,6 @@
   <string name="average_spent">Expendimento medie</string>
   <string name="advice_title">Tu es facente ben</string>
   <string name="advice_description">Scribe tote tu expensas e non te preoccupa super ultrapassar le budget, expensar non es constante.</string>
-  <string name="overspending_value">in %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Tu nunquam habeva passate tu budget quotidian</string>
-  <string name="overspending_first_time">Tu habeva passate tu budget quotidian per prime vice</string>
-  <string name="overspending_after_not_go_out_budget">Plus super le budget que tu non habeva complite</string>
-  <string name="overspending_after_few_times_out_budget">Depost de illo, tu habeva %1$s del %2$s remanente sur le budget</string>
-  <string name="overspending_after_many_times_out_budget">Depost solmente %1$s del %2$s remanente, tu es intra le budget</string>
-  <string name="overspending_after_all_times_out_budget">Depost tote le %1$s remanente tu non habeva ultrapassate le budget</string>
   <string name="hello">Salute!</string>
   <string name="onboarding_title">Benvenite in Buckwheat, nos sparnia pecunia insumul</string>
   <string name="set_period_title">Stabilir un budget</string>
@@ -147,4 +140,10 @@
   <string name="send_crash_report">Inviar reporto</string>
   <string name="add_your_comment_to_report">Si tu vole, adde tu commento hic. Tu pote deler le bloco con information sur le apparato si tu pensa que iste information non importa</string>
   <string name="history_title">Historia</string>
+  <string name="view_analytics">Vider le statisticas</string>
+  <string name="analytics_title">Statisticas</string>
+  <string name="finish_early">Finir antea</string>
+  <string name="confirm_finish_budget_title">Finir le budget</string>
+  <string name="confirm_finish_budget_description">Tu budget actual essera completate e tu non potera facer plus de expensas</string>
+  <string name="confirm_finish_budget">Finir le budget</string>
 </resources>

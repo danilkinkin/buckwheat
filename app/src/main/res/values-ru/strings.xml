@@ -20,7 +20,7 @@
   <string name="change_date">Изменить дату</string>
   <string name="change_time">Изменить время</string>
   <string name="wallet_title">Бюджет</string>
-  <string name="wallet_edit_title">Новый бюджет</string>
+  <string name="wallet_edit_title">Настройка бюджета</string>
   <string name="select_finish_date_title">Выберите дату окончания</string>
   <plurals name="finish_date_label">
     <item quantity="one">До %1$s (%2$s день)</item>
@@ -92,13 +92,6 @@
   <string name="average_spent">Средняя трата</string>
   <string name="advice_title">У вас хорошо получается</string>
   <string name="advice_description">Записываете все траты и не беспокойтесь о том что вы превысили бюджет, траты это вещь не постоянная</string>
-  <string name="overspending_value">на %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Вы ни разу не превысили дневной бюджет</string>
-  <string name="overspending_first_time">Вы первый раз превысили дневной бюджет</string>
-  <string name="overspending_after_not_go_out_budget">Больше из бюджета вы не выходили</string>
-  <string name="overspending_after_few_times_out_budget">После вы еще %1$s из %2$s оставшихся выходили из бюджета</string>
-  <string name="overspending_after_many_times_out_budget">После только %1$s из %2$s оставшихся вы не выходили из бюджета</string>
-  <string name="overspending_after_all_times_out_budget">После все из %1$s оставшихся вы не выходили из бюджета</string>
   <string name="hello">Привет!</string>
   <string name="onboarding_title">Добро пожаловать в гречку, давай учится экономить вместе</string>
   <string name="set_period_title">Настроить бюджет</string>
@@ -151,4 +144,10 @@
   <string name="send_crash_report">Отправить отчёт</string>
   <string name="add_your_comment_to_report">Если хотите, добавьте сюда свой комментарий. Вы можете удалить блок с информацией об устройстве, если считаете, что эта информация не важна</string>
   <string name="history_title">История</string>
+  <string name="view_analytics">Посмотреть аналитику</string>
+  <string name="analytics_title">Аналитика</string>
+  <string name="finish_early">Закончить раньше</string>
+  <string name="confirm_finish_budget_title">Завершить бюджет</string>
+  <string name="confirm_finish_budget_description">Ваш текущий бюджет будет завершен, в него больше нельзя будет вносить траты</string>
+  <string name="confirm_finish_budget">Завершить бюджет</string>
 </resources>

@@ -86,13 +86,6 @@
   <string name="average_spent">平均支出</string>
   <string name="advice_title">您做得很好</string>
   <string name="advice_description">记录您的每一笔支出，但也别担心超支，消费并非是一成不变的</string>
-  <string name="overspending_value">%1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">您从未超出过每日预算</string>
-  <string name="overspending_first_time">您的每日预算首次超支</string>
-  <string name="overspending_after_not_go_out_budget">您没有再超出过预算</string>
-  <string name="overspending_after_few_times_out_budget">之后，剩下 %2$s 中的 %1$s 您超出了预算</string>
-  <string name="overspending_after_many_times_out_budget">之后，剩下的 %2$s 中仅有 %1$s 您在预算内</string>
-  <string name="overspending_after_all_times_out_budget">之后，剩下的 %1$s 您都超出了预算</string>
   <string name="hello">您好！</string>
   <string name="onboarding_title">欢迎使用 Buckwheat，让我们一起来省钱吧</string>
   <string name="set_period_title">制定预算</string>
@@ -145,4 +138,10 @@
   <string name="send_crash_report">发送报告</string>
   <string name="add_your_comment_to_report">如果您愿意，请在此处添加您的评论。如果您认为此信息无关紧要，您可以删除包含设备信息的块</string>
   <string name="history_title">历史</string>
+  <string name="view_analytics">查看分析</string>
+  <string name="analytics_title">分析</string>
+  <string name="finish_early">提早完成</string>
+  <string name="confirm_finish_budget_title">完成预算</string>
+  <string name="confirm_finish_budget_description">你当前的预算将会完成，你将不再能够进行任何进一步的支出</string>
+  <string name="confirm_finish_budget">完成预算</string>
 </resources>

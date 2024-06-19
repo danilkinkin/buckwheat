@@ -86,13 +86,6 @@
   <string name="average_spent">平均支出額</string>
   <string name="advice_title">あなたは良くやっている</string>
   <string name="advice_description">すべての支出を書き留めてください。予算を超過することを心配する必要はありません。支出は一定のものではありません。</string>
-  <string name="overspending_value">%1$sに</string>
-  <string name="overspending_never_exceeded_daily_budget">1 日の予算を超えたことはありません</string>
-  <string name="overspending_first_time">初めて 1 日の予算を超えました</string>
-  <string name="overspending_after_not_go_out_budget">あなたが行かなかった予算からもっと</string>
-  <string name="overspending_after_few_times_out_budget">その後、予算は %2$s 件中 %1$s が残りました。</string>
-  <string name="overspending_after_many_times_out_budget">残り %2$s のうち %1$s だけになったので、予算内に収まりました</string>
-  <string name="overspending_after_all_times_out_budget">残りが %1$s になっても予算を超えていないことになります</string>
   <string name="hello">こんにちは！</string>
   <string name="onboarding_title">そばへようこそ、一緒にお金を節約しましょう</string>
   <string name="set_period_title">予算を設定する</string>
@@ -145,4 +138,10 @@
   <string name="send_crash_report">レポートの送信</string>
   <string name="add_your_comment_to_report">必要に応じて、ここにコメントを追加してください。この情報が重要ではないと思われる場合は、デバイスに関する情報を含むブロックを削除できます。</string>
   <string name="history_title">歴史</string>
+  <string name="view_analytics">分析を表示</string>
+  <string name="analytics_title">分析</string>
+  <string name="finish_early">早く終わらせる</string>
+  <string name="confirm_finish_budget_title">予算終了</string>
+  <string name="confirm_finish_budget_description">現在の予算は完了し、これ以上の支出はできなくなります</string>
+  <string name="confirm_finish_budget">予算終了</string>
 </resources>

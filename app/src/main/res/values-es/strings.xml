@@ -3,11 +3,11 @@
   <string name="app_name">Buckwheat</string>
   <string name="app_widget_extend_name">Widget ancho</string>
   <string name="app_widget_minimal_name">Widget mínimo</string>
-  <string name="rest_budget_for_today">Presupuesto para hoy</string>
+  <string name="rest_budget_for_today">Para hoy</string>
   <string name="new_daily_budget_short">Próximo día</string>
   <string name="new_daily_budget">Nuevo presupuesto diario</string>
   <string name="new_daily_budget_description">Hoy has sobrepasado el presupuesto, pero no te preocupes. El presupuesto de los próximos días se recalculará de acuerdo al dinero que quede.</string>
-  <string name="budget_end">Se ha acabado el presupuesto</string>
+  <string name="budget_end">Presupuesto agotado</string>
   <string name="budget_not_set">Sin presupuesto establecido</string>
   <string name="budget_end_description">Has sobrepasado el presupuesto, pero no te preocupes, las necesidades de gasto no siempre son las mismas. Sigue gastando para entender cuánto gastarás a final de mes y cuánto debes presupuestar.</string>
   <string name="hide_overspending_warn">No mostrar el aviso al agotar el presupuesto</string>
@@ -88,13 +88,6 @@
   <string name="average_spent">Gasto medio</string>
   <string name="advice_title">Lo estás haciendo bien</string>
   <string name="advice_description">Anota todos tus gastos y no temas pasarte del presupuesto, los gastos no son siempre regulares.</string>
-  <string name="overspending_value">en %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">No has excedido nunca tu presupuesto diario</string>
-  <string name="overspending_first_time">Has excedido tu presupuesto diario por primera vez</string>
-  <string name="overspending_after_not_go_out_budget">Más sobre el presupuesto que no cumpliste</string>
-  <string name="overspending_after_few_times_out_budget">Después, quedaron %1$s de los %2$s sobre el presupuesto</string>
-  <string name="overspending_after_many_times_out_budget">Tras quedar %1$s de los %2$s, te ajustaste al presupuesto</string>
-  <string name="overspending_after_all_times_out_budget">Después de excederte %1$s, no sobrepasaste el presupuesto</string>
   <string name="hello">¡Hola!</string>
   <string name="onboarding_title">Bienvenido a Buckwheat, ahorremos juntos</string>
   <string name="set_period_title">Establece un presupuesto</string>
@@ -147,4 +140,10 @@
   <string name="send_crash_report">Enviar informe</string>
   <string name="add_your_comment_to_report">Añade tu comentario aquí si lo deseas. Puedes eliminar el bloque con información sobre el dispositivo si crees que esta información no es relevante</string>
   <string name="history_title">Histórico</string>
+  <string name="view_analytics">Ver estadísticas</string>
+  <string name="analytics_title">Estadísticas</string>
+  <string name="finish_early">Terminar anticipadamente</string>
+  <string name="confirm_finish_budget_title">Terminar el presupuesto</string>
+  <string name="confirm_finish_budget_description">Tu presupuesto actual terminará, y no podrás hacer más gastos</string>
+  <string name="confirm_finish_budget">Terminar antes</string>
 </resources>

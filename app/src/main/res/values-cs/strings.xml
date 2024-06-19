@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Buckwheat</string>
-  <string name="app_widget_extend_name">Buckwheat prodloužit</string>
+  <string name="app_widget_extend_name">Buckwheat dlouhý</string>
   <string name="app_widget_minimal_name">Buckwheat minimum</string>
   <string name="rest_budget_for_today">Pro dnešek</string>
   <string name="new_daily_budget_short">Nový den</string>
@@ -18,7 +18,7 @@
   <string name="no_spends">Zatím žádná útrata</string>
   <string name="total_per_day">Denní součet:</string>
   <string name="change_date">Změnit datum</string>
-  <string name="change_time">Změňte čas</string>
+  <string name="change_time">Změna času</string>
   <string name="wallet_title">Rozpočet</string>
   <string name="wallet_edit_title">Nový rozpočet</string>
   <string name="select_finish_date_title">Vyberte datum ukončení</string>
@@ -92,13 +92,6 @@
   <string name="average_spent">Průměrná útrata</string>
   <string name="advice_title">Vedete si skvěle</string>
   <string name="advice_description">Zapište si všechny výdaje a nebojte se, že překročíte rozpočet, výdaje nejsou konstantní záležitostí.</string>
-  <string name="overspending_value">na %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Nikdy jste nepřekročili svůj denní rozpočet</string>
-  <string name="overspending_first_time">Poprvé jste překročili svůj denní rozpočet</string>
-  <string name="overspending_after_not_go_out_budget">Více jste z rozpočtu nevybočili</string>
-  <string name="overspending_after_few_times_out_budget">Poté vám z rozpočtu zbylo %1$s z %2$s</string>
-  <string name="overspending_after_many_times_out_budget">Po vyčerpání pouze %1$s ze zbývajících %2$s jste byli v rozpočtu</string>
-  <string name="overspending_after_all_times_out_budget">Po všech zbývajících %1$ jste nebyli mimo rozpočet</string>
   <string name="hello">Ahoj!</string>
   <string name="onboarding_title">Vítejte v aplikaci Buckwheat! Pojďme společně ušetřit vaše peníze</string>
   <string name="set_period_title">Nastavit rozpočet</string>
@@ -132,7 +125,7 @@
   <string name="cancel_editing">Zrušit úpravu</string>
   <string name="over">přes</string>
   <string name="home_widgets_label">Widgety na domovské obrazovce</string>
-  <string name="try_home_widgets_desc">Hrachovka nyní obsahuje widgety. Vyzkoušejte to a sledujte svůj rozpočet přímo z domovské obrazovky.</string>
+  <string name="try_home_widgets_desc">Buckwheat má nyní vlastní widgety. Vyzkoušejte je a sledujte svůj rozpočet přímo z domovské obrazovky</string>
   <string name="tutorial_open_wallet">Kliknutím zobrazíte podrobnosti o rozpočtu</string>
   <string name="tutorial_open_history">Přetažením zobrazíte historii výdajů</string>
   <string name="recalc_budget_on_last_day">Dnes je poslední den, nemá smysl rozdávat</string>
@@ -151,4 +144,10 @@
   <string name="send_crash_report">Poslat hlášení</string>
   <string name="add_your_comment_to_report">Pokud chcete, sem přidejte svůj komentář. Blok s informacemi o zařízení můžete smazat, pokud si myslíte, že na těchto informacích nezáleží</string>
   <string name="history_title">Historie</string>
+  <string name="view_analytics">Zobrazit analytiku</string>
+  <string name="analytics_title">Analytika</string>
+  <string name="finish_early">Ukončit dříve</string>
+  <string name="confirm_finish_budget_title">Ukončení rozpočtu</string>
+  <string name="confirm_finish_budget_description">Váš současný rozpočet bude dokončen a již nebudete moci dělat žádné další výdaje</string>
+  <string name="confirm_finish_budget">Ukončit rozpočet</string>
 </resources>

@@ -88,13 +88,6 @@
   <string name="average_spent">Genomsnittliga spenderade</string>
   <string name="advice_title">Du mår bra</string>
   <string name="advice_description">Skriv ner alla utgifter och oroa dig inte för att gå över budgeten, utgifterna är inte en konstant sak</string>
-  <string name="overspending_value">av %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Du har aldrig överskridit din dagliga budget</string>
-  <string name="overspending_first_time">Det här är första gången du har överskridit din dagliga budget</string>
-  <string name="overspending_after_not_go_out_budget">Du gick inte ur budget igen</string>
-  <string name="overspending_after_few_times_out_budget">Överutgifter för %1$s av de återstående %2$s spenderades för mycket efter det</string>
-  <string name="overspending_after_many_times_out_budget">Efter bara %1$s av de återstående %2$s spenderade du inte för mycket</string>
-  <string name="overspending_after_all_times_out_budget">Efter alla återstående %1$s spenderade du inte för mycket</string>
   <string name="hello">Hej!</string>
   <string name="onboarding_title">Välkommen till bovete, låt oss lära oss spara tillsammans</string>
   <string name="set_period_title">Ställ in budget</string>
@@ -147,4 +140,10 @@
   <string name="send_crash_report">Skicka rapport</string>
   <string name="add_your_comment_to_report">Lägg till din kommentar här om du vill. Du kan ta bort blocket med information om enheten om du tror att denna information inte spelar någon roll</string>
   <string name="history_title">Historia</string>
+  <string name="view_analytics">Visa analyser</string>
+  <string name="analytics_title">Analytics</string>
+  <string name="finish_early">Avsluta tidigt</string>
+  <string name="confirm_finish_budget_title">Avsluta budget</string>
+  <string name="confirm_finish_budget_description">Din nuvarande budget kommer att slutföras och du kommer inte längre att kunna göra några ytterligare utgifter</string>
+  <string name="confirm_finish_budget">Avsluta budget</string>
 </resources>

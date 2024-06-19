@@ -92,13 +92,6 @@
   <string name="average_spent">Сярэдняе марнаванне</string>
   <string name="advice_title">У вас добра атрымліваецца</string>
   <string name="advice_description">Запісваеце ўсе марнаванні і не турбуйцеся аб тым што вы перавысілі бюджэт, марнаванні гэта рэч не сталая.</string>
-  <string name="overspending_value">на %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Вы ні разу не перавысілі дзённы бюджэт</string>
-  <string name="overspending_first_time">Вы першы раз перавысілі дзённы бюджэт</string>
-  <string name="overspending_after_not_go_out_budget">Больш з бюджэту вы не выходзілі</string>
-  <string name="overspending_after_few_times_out_budget">Пасля вы яшчэ %1$s з %2$s пакінутых выходзілі з бюджэту</string>
-  <string name="overspending_after_many_times_out_budget">Пасля толькі %1$s з %2$s пакінутых вы не выходзілі з бюджэту</string>
-  <string name="overspending_after_all_times_out_budget">Пасля ўсе з %1$s пакінутых вы не выходзілі з бюджэту</string>
   <string name="hello">Прывітанне!</string>
   <string name="onboarding_title">Сардэчна запрашаем у грэчку, давай вучыцца эканоміць разам</string>
   <string name="set_period_title">Наладзіць бюджэт</string>
@@ -151,4 +144,10 @@
   <string name="send_crash_report">Адправіць справаздачу</string>
   <string name="add_your_comment_to_report">Калі хочаце, дадайце тут свой каментар. Вы можаце выдаліць блок з інфармацыяй аб прыладзе, калі лічыце, што гэтая інфармацыя не мае значэння</string>
   <string name="history_title">Гісторыя</string>
+  <string name="view_analytics">Прагляд аналітыкі</string>
+  <string name="analytics_title">Аналітыка</string>
+  <string name="finish_early">Скончыць рана</string>
+  <string name="confirm_finish_budget_title">Скончыць бюджэт</string>
+  <string name="confirm_finish_budget_description">Ваш бягучы бюджэт будзе выкананы, і вы больш не зможаце рабіць далейшыя выдаткі</string>
+  <string name="confirm_finish_budget">Скончыць бюджэт</string>
 </resources>

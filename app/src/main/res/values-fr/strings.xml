@@ -98,18 +98,6 @@
   <string name="advice_title">Tout va bien</string>
   <string name="advice_description">Écrivez toutes vos dépenses et ne vous inquiétez pas si vous
         dépassez votre budget, les dépenses ne sont pas une grandeur constante.</string>
-  <string name="overspending_value">de %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Vous n\'avez jamais dépassé votre budget
-        journalier</string>
-  <string name="overspending_first_time">Vous avez dépasser votre budget journalier pour la
-        première fois</string>
-  <string name="overspending_after_not_go_out_budget">Vous n\'aviez pas dépassé votre budget</string>
-  <string name="overspending_after_few_times_out_budget">Après ça, vous aviez seulement %1$s des
-        %2$s restant sur le budget</string>
-  <string name="overspending_after_many_times_out_budget">Après seulement %1$s des %2$s restant,
-        vous étiez dans votre budget</string>
-  <string name="overspending_after_all_times_out_budget">Après tous les %1$s restant vous n\'avez
-        pas dépassé votre budget</string>
   <string name="hello">Bonjour!</string>
   <string name="onboarding_title">Bienvenue sur Buckwheat, allons faire quelques économies
         ensemble</string>
@@ -135,7 +123,7 @@
   <string name="today">Aujourd\'hui</string>
   <string name="export_to_csv_success">Dépenses exportées</string>
   <string name="export_to_csv_failed">Problème lors de l\'export</string>
-  <string name="add_spent">Ajouter des déchets</string>
+  <string name="add_spent">Dépenses</string>
   <string name="add_spent_short">Dépenses</string>
   <string name="select_currency_description">La devise n\'affecte en aucun cas les calculs, c\'est
         juste une appelation pour faciliter la compréhension des nombres.</string>
@@ -177,4 +165,10 @@
   <string name="send_crash_report">Envoyer un rapport</string>
   <string name="add_your_comment_to_report">Ajoutez votre commentaire ici si vous le souhaitez. Vous pouvez supprimer le bloc contenant des informations sur l\'appareil si vous pensez que ces informations n\'ont pas d\'importance</string>
   <string name="history_title">Histoire</string>
+  <string name="view_analytics">Afficher les analyses</string>
+  <string name="analytics_title">Analytique</string>
+  <string name="finish_early">Terminer tôt</string>
+  <string name="confirm_finish_budget_title">Terminer le budget</string>
+  <string name="confirm_finish_budget_description">Votre budget actuel sera complété et vous ne pourrez plus effectuer de dépenses supplémentaires</string>
+  <string name="confirm_finish_budget">Terminer le budget</string>
 </resources>

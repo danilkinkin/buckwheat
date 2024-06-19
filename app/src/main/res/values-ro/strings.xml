@@ -90,13 +90,6 @@
   <string name="average_spent">Media cheltuielilor</string>
   <string name="advice_title">Sunteți pe calea cea bună</string>
   <string name="advice_description">Scrieți toate cheltuielile și nu vă îngrijorați dacă treceți peste buget, cheltuielile nu sunt un lucru constant.</string>
-  <string name="overspending_value">pe %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">Nu ai trecut peste bugetul zilnic niciodată</string>
-  <string name="overspending_first_time">Ai trecut peste bugetul zilnic pentru prima oară</string>
-  <string name="overspending_after_not_go_out_budget">Nu ai trecut peste mai mult din buget</string>
-  <string name="overspending_after_few_times_out_budget">După asta, ai avut %1$s din %2$s rămași peste buget</string>
-  <string name="overspending_after_many_times_out_budget">După doar %1$s din %2$s rămași, erai pe buget</string>
-  <string name="overspending_after_all_times_out_budget">După toți %1$s rămași nu ai rămas în afara bugetului</string>
   <string name="hello">Salut!</string>
   <string name="onboarding_title">Bun venit la Buckwheat, hai să salvăm bani împreună</string>
   <string name="set_period_title">Setează un buget</string>
@@ -149,4 +142,10 @@
   <string name="send_crash_report">Trimite raport</string>
   <string name="add_your_comment_to_report">Adaugă aici comentariul tău dacă vrei. Puteți șterge blocul cu informații despre dispozitiv dacă credeți că aceste informații nu contează</string>
   <string name="history_title">Istorie</string>
+  <string name="view_analytics">Vizualizați statisticile</string>
+  <string name="analytics_title">Analytics</string>
+  <string name="finish_early">Termină devreme</string>
+  <string name="confirm_finish_budget_title">Terminați bugetul</string>
+  <string name="confirm_finish_budget_description">Bugetul dvs. actual va fi finalizat și nu veți mai putea face alte cheltuieli</string>
+  <string name="confirm_finish_budget">Terminați bugetul</string>
 </resources>

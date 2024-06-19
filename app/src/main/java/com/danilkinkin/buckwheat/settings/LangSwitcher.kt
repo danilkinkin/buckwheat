@@ -107,7 +107,9 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
         Locale("ta"),
         Locale("tr"),
         Locale("uk"),
-        Locale("zh", "CN")
+        Locale("zh", "CN"),
+        Locale("pl"),
+        Locale("sk", "SK"),
     )
 
     Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {

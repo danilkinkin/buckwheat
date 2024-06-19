@@ -88,13 +88,6 @@
   <string name="average_spent">Average spend</string>
   <string name="advice_title">You are doing well</string>
   <string name="advice_description">Write down all your expenses and don\'t worry about going over budget, spending is not a constant thing.</string>
-  <string name="overspending_value">on %1$s</string>
-  <string name="overspending_never_exceeded_daily_budget">You have never exceeded your daily budget</string>
-  <string name="overspending_first_time">You exceeded your daily budget for the first time</string>
-  <string name="overspending_after_not_go_out_budget">More from the budget you did not go</string>
-  <string name="overspending_after_few_times_out_budget">After that, you had %1$s of the %2$s left over budget</string>
-  <string name="overspending_after_many_times_out_budget">After only %1$s of the %2$s remaining, you were on budget</string>
-  <string name="overspending_after_all_times_out_budget">After all of the %1$s left you haven\'t been out of budget</string>
   <string name="hello">Hello!</string>
   <string name="onboarding_title">Welcome to Buckwheat, let\'s save money together</string>
   <string name="set_period_title">Set up a budget</string>
@@ -139,7 +132,7 @@
   <string name="trillion_numerical_shorthand">T</string>
   <string name="without_tag">Without tag</string>
   <string name="rest_tags">Rest</string>
-  <string name="not_enough_data_for_tags_chart">We can\'t split your spends by categories</string>
+  <string name="not_enough_data_for_tags_chart">Can\'t split your spends by categories</string>
   <string name="not_enough_data_for_tags_chart_use_tags_hint">Use tags to see chart by categories</string>
   <string name="spends_calendar_hint">Chart show how much you spent every day relative to your daily budget</string>
   <string name="export_to_csv_file_name">Spends (from %1$s to %2$s)</string>
@@ -151,6 +144,6 @@
   <string name="analytics_title">Analytics</string>
   <string name="finish_early">Finish early</string>
   <string name="confirm_finish_budget_title">Finish budget</string>
-  <string name="confirm_finish_budget_description">Your current budget finished</string>
+  <string name="confirm_finish_budget_description">Your current budget will be completed, and you will no longer be able to make any further expenses</string>
   <string name="confirm_finish_budget">Finish budget</string>
 </resources>

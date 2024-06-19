@@ -88,13 +88,6 @@
   <string name="average_spent">Ortalama harcama</string>
   <string name="advice_title">İyi gidiyorsun</string>
   <string name="advice_description">Tüm harcamalarınızı yazın ve bütçenizi aşma konusunda endişelenmeyin, harcama sabit bir şey değildir.</string>
-  <string name="overspending_value">%1$starihinde</string>
-  <string name="overspending_never_exceeded_daily_budget">Günlük bütçenizi hiç aşmadınız</string>
-  <string name="overspending_first_time">İlk defa günlük bütçenizi aştınız</string>
-  <string name="overspending_after_not_go_out_budget">Gitmediğiniz bütçeden daha fazlası</string>
-  <string name="overspending_after_few_times_out_budget">Bundan sonra kalan %2$s bütçeden %1$s kaldı</string>
-  <string name="overspending_after_many_times_out_budget">Kalan %2$s \'den yalnızca %1$s sonra bütçenizi aştınız</string>
-  <string name="overspending_after_all_times_out_budget">Tüm %1$s kaldıktan sonra bütçeniz tükenmedi</string>
   <string name="hello">Merhaba!</string>
   <string name="onboarding_title">Buckwheat\'e hoş geldiniz, birlikte tasarruf edelim</string>
   <string name="set_period_title">Bütçe ayarlayın</string>
@@ -147,4 +140,10 @@
   <string name="send_crash_report">Rapor gönder</string>
   <string name="add_your_comment_to_report">İsterseniz yorumunuzu buraya ekleyin. Bu bilgilerin önemli olmadığını düşünüyorsanız cihazla ilgili bilgilerin bulunduğu bloğu silebilirsiniz</string>
   <string name="history_title">Geçmiş</string>
+  <string name="view_analytics">Analizleri görüntüle</string>
+  <string name="analytics_title">Analizler</string>
+  <string name="finish_early">Erken bitir</string>
+  <string name="confirm_finish_budget_title">Bütçeyi bitir</string>
+  <string name="confirm_finish_budget_description">Mevcut bütçeniz tamamlanacak ve artık daha fazla harcama yapamayacaksınız.</string>
+  <string name="confirm_finish_budget">Bütçeyi bitir</string>
 </resources>
