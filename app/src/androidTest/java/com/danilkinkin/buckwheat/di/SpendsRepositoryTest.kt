@@ -43,7 +43,7 @@ class SpendsRepositoryTest {
     // Set budget 1000 for 10 days
     // Start daily budget 100
     private suspend fun setBudget(budget: Long = 1000, days: Long = 9) {
-        spendsRepository.changeBudget(
+        spendsRepository.setBudget(
             budget.toBigDecimal(),
             currentDateUseCase.value.toLocalDate().plusDays(days).toDate()
         )

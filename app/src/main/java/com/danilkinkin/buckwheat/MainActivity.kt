@@ -48,6 +48,7 @@ val LocalWindowInsets = compositionLocalOf { PaddingValues(0.dp) }
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    // Broke tests. Set to true for tests
     private val isDone: MutableState<Boolean> = mutableStateOf(false)
     private val isReady: MutableState<Boolean> = mutableStateOf(false)
 
