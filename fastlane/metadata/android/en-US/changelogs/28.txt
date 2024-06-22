@@ -1,0 +1,6 @@
+- Force remove `WAKE_LOCK` and `ACCESS_NETWORK_STATE` dependencies.
+- Added ability to view analytics anytime.
+- Editing budget no longer resets current spending.
+- Fixed crash when editing transaction date or time.
+- Added Polish translation.
+- Added Slovak translation.
