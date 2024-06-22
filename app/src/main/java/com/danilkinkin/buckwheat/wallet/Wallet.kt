@@ -247,14 +247,15 @@ fun Wallet(
                     ),
                 ) {
                     Column {
-                        ButtonRow(
-                            icon = painterResource(R.drawable.ic_analytics),
-                            text = stringResource(R.string.view_analytics),
-                            onClick = {
-                                appViewModel.openSheet(PathState(ANALYTICS_SHEET))
-                            }
-                        )
-
+                        if (spends!!.isNotEmpty()) {
+                            ButtonRow(
+                                icon = painterResource(R.drawable.ic_analytics),
+                                text = stringResource(R.string.view_analytics),
+                                onClick = {
+                                    appViewModel.openSheet(PathState(ANALYTICS_SHEET))
+                                }
+                            )
+                        }
 
                         val exportCSVLaunch = rememberExportCSV(
                             activityResultRegistryOwner = activityResultRegistryOwner
