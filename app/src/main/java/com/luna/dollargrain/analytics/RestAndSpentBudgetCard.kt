@@ -51,7 +51,7 @@ fun RestAndSpentBudgetCard(
 
     val percent = remember (restBudget) { restBudget.divide(wholeBudget, 4, RoundingMode.HALF_EVEN) }
 
-    val overString = stringResource(R.string.over)
+    val overString = "over"
 
     val percentFormatted = remember(showSpentCard, percent) {
         val formatter = NumberFormat.getNumberInstance(Locale.getDefault())
@@ -169,9 +169,9 @@ fun RestAndSpentBudgetCard(
                     )
                     Text(
                         text = if (showSpentCard) {
-                            stringResource(R.string.spent_budget)
+                            "spent"
                         } else {
-                            stringResource(R.string.rest_budget)
+                            "left"
                         },
                         style = MaterialTheme.typography.labelMedium,
                         color = textColor.copy(alpha = 0.6f),
@@ -192,10 +192,7 @@ fun RestAndSpentBudgetCard(
                         ) {
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = stringResource(
-                                    R.string.rest_budget_percent,
-                                    percentFormatted
-                                ),
+                                text = "$percentFormatted of budget",
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontSize = if (bigVariant) MaterialTheme.typography.labelMedium.fontSize else MaterialTheme.typography.labelSmall.fontSize,
                             )

@@ -1,44 +1,76 @@
 package com.luna.dollargrain.wallet
 
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
+import com.luna.dollargrain.R
+import com.luna.dollargrain.analytics.ANALYTICS_SHEET
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.base.Divider
-import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.PathState
 import com.luna.dollargrain.data.RestedBudgetDistributionMethod
 import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.di.TUTORS
-import com.luna.dollargrain.analytics.ANALYTICS_SHEET
 import com.luna.dollargrain.ui.DollargrainTheme
-import com.luna.dollargrain.util.*
+import com.luna.dollargrain.util.countDaysToToday
+import com.luna.dollargrain.util.isSameDay
+import com.luna.dollargrain.util.titleCase
 import java.math.BigDecimal
-import java.util.*
+import java.util.Currency
+import java.util.Date
 
 
 const val WALLET_SHEET = "wallet"
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Wallet(
     forceChange: Boolean = false,
@@ -48,7 +80,6 @@ fun Wallet(
     onClose: () -> Unit = {},
 ) {
     val haptic = LocalHapticFeedback.current
-    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
     var budgetCache by remember { mutableStateOf(spendsViewModel.budget.value!!) }
     val budget by spendsViewModel.budget.observeAsState(BigDecimal.ZERO)
@@ -88,9 +119,15 @@ fun Wallet(
 
     val offset = with(LocalDensity.current) { 50.dp.toPx().toInt() }
 
-    Surface(
-        Modifier.padding(top = localBottomSheetScrollState.topPadding),
-        color = MaterialTheme.colorScheme.background,
+
+    ModalBottomSheet(
+        onDismissRequest = {
+            openConfirmFinishBudgetDialog.value = false
+        },
+        sheetState = rememberModalBottomSheetState(),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha=0.3f)
     ) {
         Column {
             val days = if (dateToValue.value !== null) {
@@ -99,6 +136,7 @@ fun Wallet(
                 0
             }
 
+            // top bar
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -106,6 +144,7 @@ fun Wallet(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
+                // arrow back from edit screen
                 if (!forceChange && isEdit) {
                     IconButton(
                         onClick = { isEdit = false },
@@ -143,11 +182,13 @@ fun Wallet(
                     Spacer(Modifier.size(48.dp))
                 }
             }
+
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .padding(bottom = navigationBarHeight)
             ) {
+                // text input
                 AnimatedContent(
                     targetState = isEdit,
                     transitionSpec = {
@@ -181,6 +222,7 @@ fun Wallet(
                     label = ""
                 ) { targetIsEdit ->
                     if (targetIsEdit) {
+                        // text input
                         BudgetConstructor(
                             forceChange = forceChange,
                             onChange = { newBudget, finishDate ->
@@ -189,6 +231,7 @@ fun Wallet(
                             }
                         )
                     } else {
+                        // nice stats widget thing
                         BudgetSummary(
                             onEdit = {
                                 isEdit = true
@@ -197,9 +240,11 @@ fun Wallet(
                         )
                     }
                 }
+
+                // distribution method
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_directions),
-                    text = stringResource(R.string.rest_label),
+                    text = "excess savings?",
                     onClick = {
                         appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
                     },
@@ -210,6 +255,8 @@ fun Wallet(
                         RestedBudgetDistributionMethod.ADD_SAVINGS -> "add to savings"
                     },
                 )
+
+                // currency selection
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_currency),
                     text = "currency",
@@ -230,6 +277,8 @@ fun Wallet(
                         else -> ""
                     },
                 )
+
+                // analytics
                 AnimatedVisibility(
                     visible = !isChange && !isEdit,
                     enter = fadeIn(
@@ -279,6 +328,8 @@ fun Wallet(
                         }
                     }
                 }
+
+                // edit budget screen (after pencil icon is pressed)
                 AnimatedVisibility(
                     visible = isChange || isEdit,
                     enter = fadeIn(
@@ -342,18 +393,17 @@ fun Wallet(
                 }
             }
         }
-    }
+        if (openConfirmFinishBudgetDialog.value) {
+            ConfirmFinishEarlyDialog(
+                onConfirm = {
+                    spendsViewModel.finishBudget()
 
-    if (openConfirmFinishBudgetDialog.value) {
-        ConfirmFinishEarlyDialog(
-            onConfirm = {
-                spendsViewModel.finishBudget()
-
-                onClose()
-                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-            },
-            onClose = { openConfirmFinishBudgetDialog.value = false },
-        )
+                    onClose()
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                },
+                onClose = { openConfirmFinishBudgetDialog.value = false },
+            )
+        }
     }
 }
 

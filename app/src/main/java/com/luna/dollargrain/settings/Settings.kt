@@ -60,9 +60,9 @@ fun Settings(onClose: () ->Unit, onTriedWidget: () -> Unit = {}) {
     ModalBottomSheet(
         onDismissRequest = onClose,
         sheetState = rememberModalBottomSheetState(),
-        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         contentColor = MaterialTheme.colorScheme.onSurface,
-        scrimColor = MaterialTheme.colorScheme.scrim
+        scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha=0.3f)
     ) {
         SettingsContent(onTriedWidget)
     }
@@ -72,7 +72,7 @@ fun Settings(onClose: () ->Unit, onTriedWidget: () -> Unit = {}) {
 @Composable
 private fun PreviewDefault() {
     DollargrainTheme {
-        Settings(onClose = {})
+        SettingsContent()
     }
 }
 
@@ -80,6 +80,6 @@ private fun PreviewDefault() {
 @Composable
 private fun PreviewNightMode() {
     DollargrainTheme {
-        Settings(onClose = {})
+        SettingsContent()
     }
 }

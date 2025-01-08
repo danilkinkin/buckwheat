@@ -24,6 +24,7 @@ fun BudgetSummary(
             modifier = Modifier,
             bigVariant = true
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
@@ -39,6 +40,7 @@ fun BudgetSummary(
                 startDate = spendsViewModel.startPeriodDate.value!!,
                 finishDate = spendsViewModel.finishPeriodDate.value!!,
             )
+            Spacer(modifier = Modifier.width(16.dp))
             DaysLeftCard(
                 startDate = spendsViewModel.startPeriodDate.value!!,
                 finishDate = spendsViewModel.finishPeriodDate.value!!,

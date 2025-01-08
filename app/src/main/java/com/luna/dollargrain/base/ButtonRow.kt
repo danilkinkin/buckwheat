@@ -54,6 +54,7 @@ fun PreviewButtonRowWithIcon() {
             icon = painterResource(R.drawable.ic_home),
             text = "Text row",
             onClick = {},
+            endCaption = "end caption"
         )
     }
 }

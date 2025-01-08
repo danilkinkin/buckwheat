@@ -223,13 +223,24 @@ fun BudgetConstructor(
             icon = painterResource(R.drawable.ic_calendar),
             text = if (days > 0) {
                 String.format(
-                    "to $days",
-                    prettyDate(dateToValue.value!!, showTime = false, forceShowDate = true),
-                    days,
+                    "$days starting today (${
+                        prettyDate(
+                            dateToValue.value!!,
+                            showTime = false,
+                            forceShowDate = true
+                        )
+                    })"
                 )
             } else {
                 "no finish date selected"
             },
+            description = "ends ${
+                prettyDate(
+                    finishPeriodDate!!,
+                    showTime = false,
+                    forceShowDate = true
+                )
+            }",
             onClick = {
                 appViewModel.openSheet(PathState(
                     name = FINISH_DATE_SELECTOR_SHEET,

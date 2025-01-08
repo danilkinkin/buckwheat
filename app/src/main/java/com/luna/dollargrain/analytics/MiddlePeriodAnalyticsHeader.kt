@@ -50,7 +50,7 @@ fun MiddlePeriodAnalyticsHeader(
             }
             Spacer(Modifier.weight(1F))
             Text(
-                text = stringResource(R.string.analytics_title),
+                text = "analytics",
                 style = MaterialTheme.typography.titleLarge,
             )
             Spacer(Modifier.weight(1F))
