@@ -56,7 +56,7 @@ fun ViewerHistory(
                 }
                 Spacer(Modifier.weight(1F))
                 Text(
-                    text = stringResource(R.string.history_title),
+                    text = "history",
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.weight(1F))

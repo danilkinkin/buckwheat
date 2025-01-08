@@ -249,6 +249,7 @@ class SpendsRepositoryTest {
         Log.d("SpendsRepositoryTest", "spentFromDailyBudget: ${spendsRepository.getSpentFromDailyBudget().first()}")
         Log.d("SpendsRepositoryTest", "dailyBudget: ${spendsRepository.nextDayBudget()}")
         Log.d("SpendsRepositoryTest", "spent: ${spendsRepository.getSpent().first()}")
+        Log.d("SpendsRepositoryTest", "savings: ${spendsRepository.getSavings().first()}")
 
         assert(spends.isEmpty())
         assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))

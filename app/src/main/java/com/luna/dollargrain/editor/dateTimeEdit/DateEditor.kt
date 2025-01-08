@@ -54,7 +54,7 @@ fun DatePickerDialog(
             Card(
                 shape = MaterialTheme.shapes.extraLarge,
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
                 ),
                 modifier = Modifier
                     .widthIn(max = 500.dp)
@@ -64,7 +64,7 @@ fun DatePickerDialog(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = stringResource(R.string.change_date),
+                        text = "change date",
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier
                             .padding(horizontal = 24.dp, vertical = 16.dp)
@@ -81,7 +81,13 @@ fun DatePickerDialog(
                             .padding(bottom = 16.dp, start = 24.dp, end = 24.dp)
                             .fillMaxWidth(),
                     )
-                    Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(start = 30.dp, end = 30.dp),
+                        thickness = 2.dp
+                    )
+
                     Box(
                         Modifier
                             .fillMaxWidth()
@@ -93,15 +99,20 @@ fun DatePickerDialog(
                             calendarState = datePickerState,
                             onDayClicked = {
                                 datePickerState.setSelectedDay(it)
-                            }
+                            },
                         )
                     }
-                    Divider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(start = 30.dp, end = 30.dp),
+                        thickness = 2.dp
+                    )
                     Row(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 8.dp)) {
                         Spacer(modifier = Modifier.weight(1f))
 
                         TextButton(onClick = { onClose() }) {
-                            Text(text = stringResource(R.string.cancel))
+                            Text("cancel")
                         }
 
                         TextButton(
@@ -111,7 +122,7 @@ fun DatePickerDialog(
                                 )
                             }
                         ) {
-                            Text(text = stringResource(R.string.apply))
+                            Text(text = "apply")
                         }
                     }
                 }

@@ -50,7 +50,7 @@ fun WholeBudgetCard(
     StatCard(
         modifier = modifier.fillMaxWidth(),
         contentPadding = contentPadding,
-        label = stringResource(R.string.whole_budget),
+        label = "starting budget",
         value = numberFormat(
             context,
             budget,
@@ -184,7 +184,7 @@ fun CountDaysChip(modifier: Modifier = Modifier, fromDate: Date, toDate: Date) {
         modifier = modifier
             .requiredHeight(24.dp),
         shape = CircleShape,
-        color = LocalContentColor.current,
+        color = MaterialTheme.colorScheme.inverseSurface,
         contentColor = MaterialTheme.colorScheme.surface,
     ) {
         val days = countDays(toDate, fromDate)
@@ -385,7 +385,7 @@ private fun PreviewSmallScreen() {
 
 @Preview(name = "Small varinat", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun PreviewSmallVarinat() {
+private fun PreviewSmallVariant() {
     DollargrainTheme {
         WholeBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),

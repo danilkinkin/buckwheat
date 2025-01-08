@@ -1,5 +1,6 @@
 package com.luna.dollargrain.home
 
+import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.animateFloatAsState
@@ -31,6 +32,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
@@ -45,11 +47,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.LocalWindowSize
 import com.luna.dollargrain.base.SwipeableSnackbarHost
@@ -65,7 +66,6 @@ import com.luna.dollargrain.history.History
 import com.luna.dollargrain.keyboard.Keyboard
 import com.luna.dollargrain.onboarding.ON_BOARDING_SHEET
 import com.luna.dollargrain.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
-import com.luna.dollargrain.ui.colorBackground
 import com.luna.dollargrain.ui.colorEditor
 import com.luna.dollargrain.ui.colorOnEditor
 import com.luna.dollargrain.ui.isNightMode
@@ -88,8 +88,8 @@ fun MainScreen(
     val windowSizeClass = LocalWindowSize.current
     val windowInsets = LocalWindowInsets.current
 
-    val snackBarMessage = stringResource(R.string.remove_spent)
-    val snackBarAction = stringResource(R.string.remove_spent_undo)
+    val snackBarMessage = "money returned to budget!!"
+    val snackBarAction = "undo"
 
     nightMode.value = isNightMode()
 
@@ -132,7 +132,7 @@ fun MainScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorBackground),
+            .background(MaterialTheme.colorScheme.background),
     ) {
         val contentHeight = constraints.maxHeight.toFloat()
         val contentWidth = constraints.maxWidth.toFloat()
@@ -146,7 +146,6 @@ fun MainScreen(
             .calculateBottomPadding()
             .coerceAtLeast(16.dp)
 
-        val systemKeyboardHeight = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
         val internalKeyboardHeight = if (windowSizeClass == WindowWidthSizeClass.Compact) {
             contentWidth
         } else {
@@ -155,21 +154,11 @@ fun MainScreen(
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
 
-        val isShowSystemKeyboard =
-            systemKeyboardHeight != 0.dp && appViewModel.showSystemKeyboard.value
-        val isRequestedShowSystemKeyboard =
-            systemKeyboardHeight != 0.dp || appViewModel.showSystemKeyboard.value
-
-        val currentKeyboardHeight = if (isShowSystemKeyboard) {
-            with(localDensity) { systemKeyboardHeight.toPx() }
-        } else {
-            internalKeyboardHeight
-        }
+        val currentKeyboardHeight = internalKeyboardHeight
 
         val editorHeight by remember(
             contentHeight,
             currentKeyboardHeight,
-            isShowSystemKeyboard,
             keyboardAdditionalOffset,
             navigationBarOffset
         ) {
@@ -178,11 +167,7 @@ fun MainScreen(
                     .minus(
                         currentKeyboardHeight
                             .plus(with(localDensity) {
-                                if (isShowSystemKeyboard) {
-                                    16.dp.toPx()
-                                } else {
-                                    keyboardAdditionalOffset.toPx()
-                                }
+                                keyboardAdditionalOffset.toPx()
                             })
                             .coerceAtLeast(0f)
                     )
@@ -223,7 +208,7 @@ fun MainScreen(
                     .weight(1f)
             ) {
                 androidx.compose.animation.AnimatedVisibility(
-                    visible = !isShowSystemKeyboard,
+                    visible = true,
                     enter = fadeIn(
                         tween(
                             durationMillis = 150,
@@ -263,21 +248,7 @@ fun MainScreen(
 
                 if (windowSizeClass == WindowWidthSizeClass.Compact) {
                     val currentEditorHeight = with(localDensity) {
-                        if (isRequestedShowSystemKeyboard) {
-                            val halfExpanedOffset = (
-                                    -contentHeight +
-                                            navigationBarOffset.toPx() +
-                                            16.dp.toPx() +
-                                            editorHeightAnimated
-                                    ).coerceAtMost(0f)
-
-                            (topSheetState.offset.value.coerceIn(
-                                halfExpanedOffset,
-                                0f
-                            ) + contentHeight - navigationBarOffset.toPx() - 16.dp.toPx()).toDp()
-                        } else {
-                            editorHeightAnimated.toDp()
-                        }
+                        editorHeightAnimated.toDp()
                     }
 
                     TopSheetLayout(
@@ -355,4 +326,10 @@ fun StatusBarStub() {
             )
             .background(colorEditor.copy(alpha = 0.9F))
     )
+}
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun Preview() {
+    MainScreen(LocalActivityResultRegistryOwner.current)
 }

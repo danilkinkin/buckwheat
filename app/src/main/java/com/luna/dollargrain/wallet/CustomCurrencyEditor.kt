@@ -49,13 +49,13 @@ fun CustomCurrencyEditorContent(
     ) {
         Column {
             Text(
-                text = stringResource(R.string.currency_custom_title),
+                text = "enter your custom currency",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(24.dp).fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = stringResource(R.string.currency_custom_description),
+                text = "spending 150 units will look like this:",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
@@ -133,7 +133,7 @@ fun CustomCurrencyEditorContent(
                     colors = ButtonDefaults.textButtonColors(),
                     contentPadding = ButtonDefaults.TextButtonContentPadding,
                 ) {
-                    Text(text = stringResource(R.string.cancel))
+                    Text(text = "cancel")
                 }
                 Button(
                     onClick = {
@@ -144,7 +144,7 @@ fun CustomCurrencyEditorContent(
                     contentPadding = ButtonDefaults.TextButtonContentPadding,
                     enabled = selectCurrency.trim() !== "",
                 ) {
-                    Text(text = stringResource(R.string.accept))
+                    Text(text = "confirm")
                 }
             }
         }

@@ -49,8 +49,8 @@ val LocalWindowInsets = compositionLocalOf { PaddingValues(0.dp) }
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     // Broke tests. Set to true for tests
-    private val isDone: MutableState<Boolean> = mutableStateOf(false)
-    private val isReady: MutableState<Boolean> = mutableStateOf(false)
+    private val isDone = mutableStateOf(false)
+    private val isReady = mutableStateOf(false)
 
     //TODO: Remove after 01.01.2024. Need for migration to DataStore
     @Inject

@@ -88,7 +88,10 @@ fun Wallet(
 
     val offset = with(LocalDensity.current) { 50.dp.toPx().toInt() }
 
-    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
+    Surface(
+        Modifier.padding(top = localBottomSheetScrollState.topPadding),
+        color = MaterialTheme.colorScheme.background,
+    ) {
         Column {
             val days = if (dateToValue.value !== null) {
                 countDaysToToday(dateToValue.value!!)
@@ -119,9 +122,9 @@ fun Wallet(
                 Spacer(Modifier.weight(1F))
                 Text(
                     text = if (isChange || isEdit) {
-                        stringResource(R.string.wallet_edit_title)
+                        "set up a budget"
                     } else {
-                        stringResource(R.string.wallet_title)
+                        "budget"
                     },
                     style = MaterialTheme.typography.titleLarge,
                 )
@@ -174,7 +177,8 @@ fun Wallet(
                                 sizeAnimationSpec = { _, _ -> tween(durationMillis = 350) }
                             )
                         )
-                    }
+                    },
+                    label = ""
                 ) { targetIsEdit ->
                     if (targetIsEdit) {
                         BudgetConstructor(
@@ -200,20 +204,15 @@ fun Wallet(
                         appViewModel.openSheet(PathState(DEFAULT_RECALC_BUDGET_CHOOSER))
                     },
                     endCaption = when (restedBudgetDistributionMethod) {
-                        RestedBudgetDistributionMethod.ASK, null -> stringResource(
-                            R.string.always_ask
-                        )
-                        RestedBudgetDistributionMethod.REST -> stringResource(
-                            R.string.method_split_to_rest_days_title
-                        )
-                        RestedBudgetDistributionMethod.ADD_TODAY -> stringResource(
-                            R.string.method_add_to_current_day_title
-                        )
+                        RestedBudgetDistributionMethod.ASK, null -> "always ask"
+                        RestedBudgetDistributionMethod.REST -> "distribute"
+                        RestedBudgetDistributionMethod.ADD_TODAY -> "add to the next day's budget"
+                        RestedBudgetDistributionMethod.ADD_SAVINGS -> "add to savings"
                     },
                 )
                 ButtonRow(
                     icon = painterResource(R.drawable.ic_currency),
-                    text = stringResource(R.string.in_currency_label),
+                    text = "currency",
                     onClick = {
                         appViewModel.openSheet(PathState(CURRENCY_EDITOR))
                     },
@@ -250,7 +249,7 @@ fun Wallet(
                         if (spends!!.isNotEmpty()) {
                             ButtonRow(
                                 icon = painterResource(R.drawable.ic_analytics),
-                                text = stringResource(R.string.view_analytics),
+                                text = "view analytics",
                                 onClick = {
                                     appViewModel.openSheet(PathState(ANALYTICS_SHEET))
                                 }
@@ -263,7 +262,7 @@ fun Wallet(
 
                         ButtonRow(
                             icon = painterResource(R.drawable.ic_file_download),
-                            text = stringResource(R.string.export_to_csv),
+                            text = "export to csv",
                             onClick = { exportCSVLaunch() }
                         )
 
@@ -272,7 +271,7 @@ fun Wallet(
                         ) {
                             ButtonRow(
                                 icon = painterResource(R.drawable.ic_close),
-                                text = stringResource(R.string.finish_early),
+                                text = "finish early",
                                 onClick = {
                                     openConfirmFinishBudgetDialog.value = true
                                 }
@@ -327,9 +326,9 @@ fun Wallet(
                         ) {
                             Text(
                                 text = if (spends!!.isNotEmpty() && !forceChange) {
-                                    stringResource(R.string.change_budget)
+                                    "change budget"
                                 } else {
-                                    stringResource(R.string.apply)
+                                    "apply"
                                 },
                                 style = MaterialTheme.typography.bodyLarge,
                             )

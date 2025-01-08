@@ -40,7 +40,7 @@ fun NewDayBudgetDescription(onClose: () -> Unit = {}) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.new_daily_budget),
+                    text = "new daily budget",
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
@@ -52,7 +52,7 @@ fun NewDayBudgetDescription(onClose: () -> Unit = {}) {
                         bottom = 16.dp,
                     )
                     .fillMaxWidth(),
-                text = stringResource(R.string.new_daily_budget_description),
+                text = "you overspent today :( this will be your new budget for the following days",
                 style = MaterialTheme.typography.bodyMedium
                     .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
             )

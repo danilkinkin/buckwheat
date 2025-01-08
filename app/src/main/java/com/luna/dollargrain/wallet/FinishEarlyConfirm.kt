@@ -53,7 +53,7 @@ fun ConfirmFinishEarly(
                 )
             }
             Text(
-                text = stringResource(R.string.confirm_finish_budget_title),
+                text = "end budget",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
@@ -62,7 +62,7 @@ fun ConfirmFinishEarly(
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = stringResource(R.string.confirm_finish_budget_description),
+                text = "your current budget will be ended!!!",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(horizontal = 24.dp),
             )
@@ -77,7 +77,7 @@ fun ConfirmFinishEarly(
                     colors = ButtonDefaults.textButtonColors(),
                     contentPadding = ButtonDefaults.TextButtonContentPadding,
                 ) {
-                    Text(text = stringResource(R.string.cancel))
+                    Text(text = "cancel")
                 }
                 Button(
                     onClick = {
@@ -87,7 +87,10 @@ fun ConfirmFinishEarly(
                     colors = ButtonDefaults.textButtonColors(),
                     contentPadding = ButtonDefaults.TextButtonContentPadding,
                 ) {
-                    Text(text = stringResource(R.string.confirm_finish_budget))
+                    Text(
+                        text = "end budget",
+                        color = MaterialTheme.colorScheme.error,
+                        )
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.luna.dollargrain.analytics
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,7 +41,8 @@ fun AverageSpendCard(
             "-"
         },
         label = stringResource(R.string.average_spent),
-        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 32.dp)
+        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 32.dp),
+        colors = CardDefaults.cardColors()
     )
 }
 

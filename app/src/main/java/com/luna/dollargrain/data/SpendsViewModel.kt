@@ -18,7 +18,7 @@ import java.math.BigDecimal
 import java.util.Date
 import javax.inject.Inject
 
-enum class RestedBudgetDistributionMethod { REST, ADD_TODAY, ASK }
+enum class RestedBudgetDistributionMethod { REST, ADD_TODAY, ASK, ADD_SAVINGS }
 
 @HiltViewModel
 class SpendsViewModel @Inject constructor(
@@ -30,6 +30,7 @@ class SpendsViewModel @Inject constructor(
     var spends = spendsRepository.getAllSpends()
     var budget = spendsRepository.getBudget().asLiveData()
     var spent = spendsRepository.getSpent().asLiveData()
+    var savings = spendsRepository.getSavings().asLiveData()
     var dailyBudget = spendsRepository.getDailyBudget().asLiveData()
     var spentFromDailyBudget = spendsRepository.getSpentFromDailyBudget().asLiveData()
     var startPeriodDate = spendsRepository.getStartPeriodDate().asLiveData()
@@ -192,6 +193,13 @@ class SpendsViewModel @Inject constructor(
                                 )
 
                                 setDailyBudget(notSpent)
+                            }
+
+                            // TODO: add some way to store savings
+                            RestedBudgetDistributionMethod.ADD_SAVINGS -> {
+                                val notSpent = spendsRepository.howMuchNotSpent(
+                                    excludeSkippedPart = true,
+                                )
                             }
                         }
                     } else {

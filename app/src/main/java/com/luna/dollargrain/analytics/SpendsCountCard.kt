@@ -65,7 +65,7 @@ fun SpendsCountCard(
                     textAlign = TextAlign.Center,
                 )
                 Text(
-                    text = stringResource(R.string.count_spends),
+                    text = "total spending",
                     style = MaterialTheme.typography.labelMedium,
                     color = textColor.copy(alpha = 0.6f),
                     softWrap = false,

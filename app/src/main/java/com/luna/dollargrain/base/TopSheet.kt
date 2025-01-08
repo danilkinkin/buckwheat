@@ -302,7 +302,7 @@ fun TopSheetLayout(
                         balloonState = balloonState,
                         content = {
                             Text(
-                                text = stringResource(R.string.tutorial_open_history),
+                                text = "view spending history",
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                         },

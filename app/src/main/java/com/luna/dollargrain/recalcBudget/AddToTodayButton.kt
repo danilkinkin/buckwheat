@@ -5,13 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.luna.dollargrain.R
 import com.luna.dollargrain.base.DescriptionButton
-import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.util.getAnnotatedString
@@ -22,7 +19,6 @@ import java.math.BigDecimal
 fun AddToTodayButton(
     recalcBudgetViewModel: RecalcBudgetViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
-    appViewModel: AppViewModel = hiltViewModel(),
     onSet: () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -33,7 +29,7 @@ fun AddToTodayButton(
 
 
     DescriptionButton(
-        title = { Text(stringResource(R.string.add_current_day_title)) },
+        title = { Text("leave for today") },
         description = {
 
             val budgetTodayStr = numberFormat(
@@ -46,11 +42,7 @@ fun AddToTodayButton(
                 nextDayBudget,
                 currency = currency,
             )
-            val resultStr = stringResource(
-                R.string.add_current_day_description,
-                budgetTodayStr,
-                nextDaysBudgetStr,
-            )
+            val resultStr = "there will be $budgetTodayStr for today and $nextDaysBudgetStr for the following days"
 
             Text(
                 getAnnotatedString(

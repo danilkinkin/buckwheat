@@ -19,17 +19,17 @@ fun StatCard(
     value: String,
     label: String,
     contentPadding: PaddingValues = PaddingValues(vertical = 16.dp, horizontal = 24.dp),
-    colors: CardColors = CardDefaults.cardColors(),
     valueFontSize: TextUnit = MaterialTheme.typography.titleLarge.fontSize,
     valueFontStyle: TextStyle = MaterialTheme.typography.displayMedium,
     labelFontStyle: TextStyle = MaterialTheme.typography.labelMedium,
     content: @Composable ColumnScope.() -> Unit = {},
     backdropContent: @Composable () -> Unit = {},
+    colors: CardColors
 ) {
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.extraLarge,
-        colors = colors,
+        colors = colors
     ) {
         val textColor = LocalContentColor.current
 
@@ -57,7 +57,8 @@ fun StatCard(
                     fontSize = valueFontSize,
                     overflow = TextOverflow.Ellipsis,
                     softWrap = false,
-                    lineHeight = TextUnit(0.2f, TextUnitType.Em)
+                    lineHeight = TextUnit(0.2f, TextUnitType.Em),
+                    color = textColor
                 )
                 Text(
                     text = label,
@@ -87,7 +88,8 @@ private fun Preview() {
     DollargrainTheme {
         StatCard(
             value = "value",
-            label = "label"
+            label = "label",
+            colors = CardDefaults.cardColors(),
         )
     }
 }

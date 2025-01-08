@@ -66,7 +66,7 @@ fun TimePickerDialog(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = stringResource(R.string.change_time),
+                        text = "change the time",
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier
                             .padding(start = 8.dp, end = 8.dp, bottom = 16.dp)

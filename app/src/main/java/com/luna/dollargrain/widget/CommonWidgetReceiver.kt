@@ -104,6 +104,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
             val dailyBudget = databaseRepository.getDailyBudget().first()
             val spent = databaseRepository.getSpent().first()
             val budget = databaseRepository.getBudget().first()
+            val savings = databaseRepository.getBudget().first()
             val currency = databaseRepository.getCurrency().first()
 
             val finishDateReached = finishDate !== null && finishDate.time <= Date().time

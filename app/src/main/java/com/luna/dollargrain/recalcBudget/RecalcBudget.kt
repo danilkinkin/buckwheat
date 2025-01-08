@@ -14,12 +14,10 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
@@ -114,7 +112,7 @@ fun RecalcBudget(
                 ) {
                     Spacer(Modifier.height(24.dp))
                     Text(
-                        text = stringResource(R.string.new_day_title),
+                        text = "yay!! you saved ",
                         style = MaterialTheme.typography.titleLarge,
                         textAlign = TextAlign.Center,
                     )
@@ -131,13 +129,13 @@ fun RecalcBudget(
                     Spacer(Modifier.height(24.dp))
                     if (isLastDay) {
                         Text(
-                            text = stringResource(R.string.recalc_budget_on_last_day),
+                            text = "today is the last day, distributing does nothing",
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
                         )
                     } else {
                         Text(
-                            text = stringResource(R.string.recalc_budget),
+                            text = "find out how to budget",
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
                         )
@@ -146,8 +144,8 @@ fun RecalcBudget(
                 }
                 if (!isLastDay) {
                     ButtonRow(
-                        text = stringResource(R.string.remember_choice),
-                        description = stringResource(R.string.remember_choice_reacalc_budget_description),
+                        text = "remember this choice",
+                        description = "dw you can change it later <3",
                         wrapMainText = true,
                         iconInset = false,
                         onClick = {

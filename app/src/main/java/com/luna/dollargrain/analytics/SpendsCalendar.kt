@@ -152,7 +152,7 @@ fun SpendsCalendar(
 
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(22.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = combineColors(
                 MaterialTheme.colorScheme.surface,
@@ -161,6 +161,7 @@ fun SpendsCalendar(
             ),
         )
     ) {
+        // small tooltip at the top
         Row(Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
             Icon(
                 modifier = Modifier
@@ -172,12 +173,14 @@ fun SpendsCalendar(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = stringResource(R.string.spends_calendar_hint),
+                text = "this chart represents how much you spend per day",
                 style = MaterialTheme.typography.labelSmall.copy(
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(0.8f),
                 ),
             )
         }
+
+        // the entire calendar thingy
         Layout(
             modifier = Modifier
                 .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),

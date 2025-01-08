@@ -24,7 +24,7 @@ fun Tag(
 ) {
     Surface(
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.surface,
+        color = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .height(44.dp)

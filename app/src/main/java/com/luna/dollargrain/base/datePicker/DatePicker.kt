@@ -29,8 +29,6 @@ import com.luna.dollargrain.util.getWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 
-// TODO: add chips for months/days etc
-
 @Composable
 fun DatePicker(
     calendarState: CalendarState,

@@ -61,7 +61,7 @@ fun DefaultRecalcBudgetChooser(
                     .padding(bottom = navigationBarHeight)
             ) {
                 Text(
-                    text = stringResource(R.string.choose_recalc_budget_method_description),
+                    text = "choose how to distribute any extra money from the current day!!",
                     style = MaterialTheme.typography.bodySmall
                         .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
                     softWrap = true,
@@ -78,7 +78,7 @@ fun DefaultRecalcBudgetChooser(
                         spendsViewModel.changeRestedBudgetDistributionMethod(RestedBudgetDistributionMethod.ASK)
                         onClose()
                     },
-                    text = stringResource(R.string.always_ask),
+                    text = "always ask",
                 )
                 CheckedRow(
                     checked = restedBudgetDistributionMethod === RestedBudgetDistributionMethod.REST,
@@ -86,8 +86,8 @@ fun DefaultRecalcBudgetChooser(
                         spendsViewModel.changeRestedBudgetDistributionMethod(RestedBudgetDistributionMethod.REST)
                         onClose()
                     },
-                    text = stringResource(R.string.method_split_to_rest_days_title),
-                    description = stringResource(R.string.method_split_to_rest_days_description),
+                    text = "distribute",
+                    description = "the leftover money will be distributed among the remaining days",
                 )
                 CheckedRow(
                     checked = restedBudgetDistributionMethod === RestedBudgetDistributionMethod.ADD_TODAY,
@@ -95,8 +95,17 @@ fun DefaultRecalcBudgetChooser(
                         spendsViewModel.changeRestedBudgetDistributionMethod(RestedBudgetDistributionMethod.ADD_TODAY)
                         onClose()
                     },
-                    text = stringResource(R.string.method_add_to_current_day_title),
-                    description = stringResource(R.string.method_add_to_current_day_description),
+                    text = "add to the next day",
+                    description = "the leftover money will be added to the next day's budget",
+                )
+                CheckedRow(
+                    checked = restedBudgetDistributionMethod === RestedBudgetDistributionMethod.ADD_SAVINGS,
+                    onValueChange = {
+                        spendsViewModel.changeRestedBudgetDistributionMethod(RestedBudgetDistributionMethod.ADD_SAVINGS)
+                        onClose()
+                    },
+                    text = "add to savings",
+                    description = "the leftover money will be added to your savings ;3",
                 )
             }
         }

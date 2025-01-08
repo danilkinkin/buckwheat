@@ -223,12 +223,12 @@ fun BudgetConstructor(
             icon = painterResource(R.drawable.ic_calendar),
             text = if (days > 0) {
                 String.format(
-                    pluralStringResource(R.plurals.finish_date_label, days),
+                    "to $days",
                     prettyDate(dateToValue.value!!, showTime = false, forceShowDate = true),
                     days,
                 )
             } else {
-                stringResource(R.string.finish_date_not_select)
+                "no finish date selected"
             },
             onClick = {
                 appViewModel.openSheet(PathState(
@@ -291,7 +291,7 @@ fun UseLastSuggestionChip(
                     )
                 },
                 label = {
-                    Text(text = stringResource(R.string.use_last))
+                    Text(text = "use the previous value")
                 },
                 onClick = {
                     onClick()

@@ -96,7 +96,7 @@ fun RowScope.CancelEditSpent(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = stringResource(R.string.cancel_editing),
+                    text = "cancel editing",
                     style = MaterialTheme.typography.labelLarge,
                     overflow = TextOverflow.Ellipsis,
                     softWrap = false,

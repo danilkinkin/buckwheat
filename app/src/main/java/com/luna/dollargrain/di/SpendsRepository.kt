@@ -35,6 +35,7 @@ val hideOverspendingWarnStoreKey = booleanPreferencesKey("hideOverspendingWarn")
 
 val budgetStoreKey = stringPreferencesKey("budget")
 val spentStoreKey = stringPreferencesKey("spent")
+val savingsStoreKey = stringPreferencesKey("savings")
 val dailyBudgetStoreKey = stringPreferencesKey("dailyBudget")
 val spentFromDailyBudgetStoreKey = stringPreferencesKey("spentFromDailyBudget")
 val lastChangeDailyBudgetDateStoreKey = longPreferencesKey("lastChangeDailyBudgetDate")
@@ -68,6 +69,10 @@ class SpendsRepository @Inject constructor(
 
     fun getSpent() = context.budgetDataStore.data.map {
         (it[spentStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO).setScale(2)
+    }
+
+    fun getSavings() = context.budgetDataStore.data.map {
+        (it[savingsStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO).setScale(2)
     }
 
     fun getDailyBudget() = context.budgetDataStore.data.map {
@@ -259,6 +264,7 @@ class SpendsRepository @Inject constructor(
     ): BigDecimal {
         val budget = getBudget().first()
         val spent = getSpent().first()
+        val savings = getSavings().first()
         val dailyBudget = getDailyBudget().first()
         val spentFromDailyBudget = getSpentFromDailyBudget().first()
         val finishPeriodDate =
@@ -294,6 +300,7 @@ class SpendsRepository @Inject constructor(
                     + "notCommittedSpent: $notCommittedSpent "
                     + "budget: $budget "
                     + "spent: $spent "
+                    + "savings: $savings"
                     + "daily budget: $dailyBudget "
                     + "spent from daily budget: $spentFromDailyBudget "
                     + "rest budget: $restBudget "
