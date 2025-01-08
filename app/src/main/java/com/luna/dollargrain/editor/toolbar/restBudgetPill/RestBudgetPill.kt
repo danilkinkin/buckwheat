@@ -1,7 +1,6 @@
 package com.luna.dollargrain.editor.toolbar.restBudgetPill
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape

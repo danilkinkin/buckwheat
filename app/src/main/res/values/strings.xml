@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">Buckwheat</string>
-  <string name="app_widget_extend_name">Buckwheat extend</string>
-  <string name="app_widget_minimal_name">Buckwheat minimal</string>
+  <string name="app_name">Dollargrain</string>
+  <string name="app_widget_extend_name">Dollargrain extend</string>
+  <string name="app_widget_minimal_name">Dollargrain minimal</string>
   <string name="rest_budget_for_today">For today</string>
   <string name="new_daily_budget_short">New daily</string>
   <string name="new_daily_budget">New daily budget</string>
-  <string name="new_daily_budget_description">Today you went beyond the daily budget, do not worry, it\'s not scary. For the following days, the budget will be recalculated taking into account the remaining total budget</string>
+  <string name="new_daily_budget_description"></string>
   <string name="budget_end">The budget is over</string>
   <string name="budget_not_set">No budget set</string>
   <string name="budget_end_description">You went beyond the planned budget, do not worry, it\'s not scary, spending is never the same. Start spending further to understand how much you will spend in the end and what budget you need</string>

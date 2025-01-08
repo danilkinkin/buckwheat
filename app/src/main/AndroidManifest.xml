@@ -13,7 +13,7 @@
         android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Buckwheat.Starting"
+        android:theme="@style/Theme.Dollargrain.Starting"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="33">
         <profileable

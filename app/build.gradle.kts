@@ -66,7 +66,7 @@ android {
         resources.excludes += "/META-INF/AL2.0"
         resources.excludes += "/META-INF/LGPL2.1"
     }
-    namespace = "com.danilkinkin.dollargrain"
+    namespace = "com.luna.dollargrain"
 }
 
 dependencies {
