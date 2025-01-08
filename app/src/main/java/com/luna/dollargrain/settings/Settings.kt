@@ -7,9 +7,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.BottomSheetState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,21 +27,22 @@ import com.luna.dollargrain.BuildConfig
 import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
+import com.luna.dollargrain.base.ModalBottomSheetValue
 import com.luna.dollargrain.base.TextRow
 import com.luna.dollargrain.ui.DollargrainTheme
 
 const val SETTINGS_SHEET = "settings"
 
 @Composable
-fun Settings(onTriedWidget: () -> Unit = {}) {
-    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
+fun SettingsContent(onTriedWidget: () -> Unit = {}) {
+    Surface(Modifier.padding()) {
+        val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
-    val navigationBarHeight = androidx.compose.ui.unit.max(
-        LocalWindowInsets.current.calculateBottomPadding(),
-        16.dp,
-    )
+        val navigationBarHeight = androidx.compose.ui.unit.max(
+            LocalWindowInsets.current.calculateBottomPadding(),
+            16.dp,
+        )
 
-    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
         Column {
             Box(
                 modifier = Modifier
@@ -43,26 +51,37 @@ fun Settings(onTriedWidget: () -> Unit = {}) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.settings_title),
+                    text = "settings :3",
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(bottom = navigationBarHeight)
             ) {
                 ThemeSwitcher()
-                LangSwitcher()
                 TryWidget(onTried = {
                     onTriedWidget()
                 })
                 TextRow(
-                    text = stringResource(R.string.version, BuildConfig.VERSION_NAME),
+                    text = "Version: ${BuildConfig.VERSION_NAME}"
                 )
                 About(Modifier.padding(start = 16.dp, end = 16.dp))
             }
         }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@Composable
+fun Settings(onTriedWidget: () -> Unit = {}) {
+    ModalBottomSheet(
+        onDismissRequest = { },
+        sheetState = rememberModalBottomSheetState(),
+
+    ) {
+        SettingsContent()
     }
 }
 

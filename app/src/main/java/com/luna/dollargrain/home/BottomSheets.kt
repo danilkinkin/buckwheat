@@ -215,16 +215,6 @@ fun BottomSheets(
     }
 
     BottomSheetWrapper(
-        name = SETTINGS_CHANGE_LOCALE_SHEET,
-    ) { state ->
-        LangSwitcherDialog(
-            onClose = {
-                coroutineScope.launch { state.hide() }
-            }
-        )
-    }
-
-    BottomSheetWrapper(
         name = SETTINGS_TRY_WIDGET_SHEET,
     ) { state ->
         TryWidgetDialog()

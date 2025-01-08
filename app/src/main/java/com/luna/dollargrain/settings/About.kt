@@ -1,6 +1,5 @@
 package com.luna.dollargrain.settings
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import com.luna.dollargrain.base.ClickableText
 import androidx.compose.foundation.text.InlineTextContent
@@ -11,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,29 +37,27 @@ fun About(
 
         Column(Modifier.padding(16.dp)) {
             Text(
-                text = stringResource(R.string.about),
+                text = "about app",
                 style = MaterialTheme.typography.titleLarge,
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = stringResource(R.string.description),
+                text = "dollargrain is my personal fork of buckwheat by danilkinkin with a slightly tweaked ui and functions. It was made for high seas by hack club :3",
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            val annotatedString = buildAnnotatedString {
-                withStyle(style = SpanStyle(color = contentColor)) {
-                    append("${stringResource(R.string.developer)} ")
-                }
+            Text("development n design: natalie luna")
 
+            val devwebsite = buildAnnotatedString {
                 pushStringAnnotation(
                     tag = "developer",
-                    annotation = "https://luna.com",
+                    annotation = "https://luna.hackclub.app",
                 )
                 withStyle(
                     style = SpanStyle(color = MaterialTheme.colorScheme.primary)
                 ) {
-                    append("@luna ")
+                    append("website")
                 }
 
                 appendInlineContent("openInBrowser")
@@ -69,41 +65,96 @@ fun About(
                 pop()
             }
 
-            ClickableText(
-                text = annotatedString,
-                inlineContent = mapOf(
-                    "openInBrowser" to InlineTextContent(
-                        Placeholder(
-                            MaterialTheme.typography.bodyLarge.fontSize,
-                            MaterialTheme.typography.bodyLarge.fontSize,
-                            PlaceholderVerticalAlign.TextCenter,
-                        )
-                    ) {
-                        Icon(
-                            tint = MaterialTheme.colorScheme.primary,
-                            painter = painterResource(R.drawable.ic_open_in_browser_small),
-                            contentDescription = null,
-                        )
-                    }
-                ),
-                style = MaterialTheme.typography.bodyLarge,
-                onClick = { offset ->
-                    annotatedString.getStringAnnotations(
-                        tag = "developer",
-                        start = offset,
-                        end = offset,
-                    ).firstOrNull()?.let {
-                        openInBrowser(
-                            context,
-                            "https://luna.com",
-                        )
-                    }
+            val devgithub = buildAnnotatedString {
+                pushStringAnnotation(
+                    tag = "developer",
+                    annotation = "https://luna.hackclub.app",
+                )
+                withStyle(
+                    style = SpanStyle(color = MaterialTheme.colorScheme.primary)
+                ) {
+                    append("website")
+                }
 
-                },
-            )
+                appendInlineContent("openInBrowser")
+
+                pop()
+            }
+
+            Row {
+                ClickableText(
+                    text = devwebsite,
+                    inlineContent = mapOf(
+                        "openInBrowser" to InlineTextContent(
+                            Placeholder(
+                                MaterialTheme.typography.bodyLarge.fontSize,
+                                MaterialTheme.typography.bodyLarge.fontSize,
+                                PlaceholderVerticalAlign.TextCenter,
+                            )
+                        ) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.primary,
+                                painter = painterResource(R.drawable.ic_open_in_browser_small),
+                                contentDescription = null,
+                            )
+                        }
+                    ),
+                    style = MaterialTheme.typography.bodyLarge,
+                    onClick = { offset ->
+                        devwebsite.getStringAnnotations(
+                            tag = "developer",
+                            start = offset,
+                            end = offset,
+                        ).firstOrNull()?.let {
+                            openInBrowser(
+                                context,
+                                "https://luna.hackclub.app",
+                            )
+                        }
+
+                    },
+                )
+
+                Spacer(modifier = Modifier.width(24.dp))
+
+                ClickableText(
+                    text = devgithub,
+                    inlineContent = mapOf(
+                        "openInBrowser" to InlineTextContent(
+                            Placeholder(
+                                MaterialTheme.typography.bodyLarge.fontSize,
+                                MaterialTheme.typography.bodyLarge.fontSize,
+                                PlaceholderVerticalAlign.TextCenter,
+                            )
+                        ) {
+                            Icon(
+                                tint = MaterialTheme.colorScheme.primary,
+                                painter = painterResource(R.drawable.ic_open_in_browser_small),
+                                contentDescription = null,
+                            )
+                        }
+                    ),
+                    style = MaterialTheme.typography.bodyLarge,
+                    onClick = { offset ->
+                        devwebsite.getStringAnnotations(
+                            tag = "developer",
+                            start = offset,
+                            end = offset,
+                        ).firstOrNull()?.let {
+                            openInBrowser(
+                                context,
+                                "https://luna.hackclub.app",
+                            )
+                        }
+
+                    },
+                )
+            }
+            
             Spacer(modifier = Modifier.height(24.dp))
+
             DescriptionButton(
-                title = { Text(stringResource(R.string.contribute)) },
+                title = { Text("contribute (to danilkinkin)") },
                 icon = painterResource(R.drawable.ic_contribute),
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
                 contentPadding = PaddingValues(
@@ -117,17 +168,13 @@ fun About(
 
                     openInBrowser(
                         context,
-                        if (currentLocale === "ru") {
-                            "https://buckwheat.app/ru/contribute"
-                        } else {
-                            "https://buckwheat.app/contribute"
-                        },
+                        "https://buckwheat.app/contribute"
                     )
                 },
             )
             Spacer(modifier = Modifier.height(8.dp))
             DescriptionButton(
-                title = { Text(stringResource(R.string.report_bug)) },
+                title = { Text("report a bug!!") },
                 icon = painterResource(R.drawable.ic_bug_report),
                 colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
                 contentPadding = PaddingValues(
@@ -147,14 +194,6 @@ fun About(
 @Preview(name = "Default")
 @Composable
 private fun PreviewDefault() {
-    DollargrainTheme {
-        About()
-    }
-}
-
-@Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun PreviewNightMode() {
     DollargrainTheme {
         About()
     }
