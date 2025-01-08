@@ -220,10 +220,11 @@ fun BottomSheets(
         TryWidgetDialog()
     }
 
-    BoxWithConstraints(Modifier.fillMaxSize()) {
-        Confetti(
-            modifier = Modifier.fillMaxSize(),
-            controller = appViewModel.confettiController,
-        )
-    }
+//    what is this
+//    BoxWithConstraints(Modifier.fillMaxSize()) {
+//        Confetti(
+//            modifier = Modifier.fillMaxSize(),
+//            controller = appViewModel.confettiController,
+//        )
+//    }
 }
