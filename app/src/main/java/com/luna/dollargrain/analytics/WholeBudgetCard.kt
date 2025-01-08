@@ -2,10 +2,28 @@ package com.luna.dollargrain.analytics
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -15,23 +33,26 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.layout.*
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.luna.dollargrain.R
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.ui.DollargrainTheme
-import com.luna.dollargrain.util.*
+import com.luna.dollargrain.util.countDays
+import com.luna.dollargrain.util.numberFormat
+import com.luna.dollargrain.util.prettyDate
+import com.luna.dollargrain.util.toDate
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.util.*
+import java.util.Date
 
 @Composable
 fun WholeBudgetCard(
@@ -194,13 +215,7 @@ fun CountDaysChip(modifier: Modifier = Modifier, fromDate: Date, toDate: Date) {
         ) {
             Text(
                 modifier = Modifier.padding(12.dp, 0.dp),
-                text = String.format(
-                    pluralStringResource(
-                        R.plurals.days_count,
-                        count = days
-                    ),
-                    days,
-                ),
+                text = if (days > 1) "$days days" else "$days day",
                 style = MaterialTheme.typography.bodyMedium,
             )
         }

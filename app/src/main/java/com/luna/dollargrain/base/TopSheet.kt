@@ -47,13 +47,11 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.dollargrain.LocalWindowInsets
-import com.luna.dollargrain.R
 import com.luna.dollargrain.base.balloon.BalloonScope
 import com.luna.dollargrain.base.balloon.rememberBalloonState
 import com.luna.dollargrain.data.AppViewModel

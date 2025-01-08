@@ -5,18 +5,16 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.luna.dollargrain.R
-import com.luna.dollargrain.data.entities.Transaction
-import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.data.ExtendCurrency
+import com.luna.dollargrain.data.entities.Transaction
 import com.luna.dollargrain.data.entities.TransactionType
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.numberFormat
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.*
+import java.util.Date
 
 @Composable
 fun AverageSpendCard(
@@ -40,7 +38,7 @@ fun AverageSpendCard(
         } else {
             "-"
         },
-        label = stringResource(R.string.average_spent),
+        label = "average spent",
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 32.dp),
         colors = CardDefaults.cardColors()
     )

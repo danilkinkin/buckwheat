@@ -61,7 +61,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -79,8 +78,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.balloon.detectTapUnconsumed
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.SpendsViewModel
@@ -231,7 +230,7 @@ fun CustomTag(
                     } else if (!onlyIcon || value.text.isNotEmpty()) {
                         Text(
                             modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
-                            text = value.text.ifEmpty { stringResource(R.string.add_comment) },
+                            text = value.text.ifEmpty { "tag" },
                             softWrap = false,
                             overflow = TextOverflow.Ellipsis,
                         )

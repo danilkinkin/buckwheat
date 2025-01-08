@@ -35,8 +35,8 @@ import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import com.luna.dollargrain.BuildConfig
-import com.luna.dollargrain.R
 import com.luna.dollargrain.MainActivity
+import com.luna.dollargrain.R
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.util.numberFormat
 import com.luna.dollargrain.widget.CanvasText
@@ -93,9 +93,7 @@ fun ExtendWidgetContent() {
                         if (stateBudget === WidgetReceiver.StateBudget.NORMAL) {
                             CanvasText(
                                 modifier = GlanceModifier.padding(start = 0.dp, end = 0.dp),
-                                text = context.resources.getString(
-                                    R.string.rest_budget_for_today
-                                ),
+                                text = "for today",
                                 style = TextStyle(
                                     color = contentColor,
                                     fontWeight = FontWeight.Medium,
@@ -129,13 +127,12 @@ fun ExtendWidgetContent() {
 
                             CanvasText(
                                 modifier = GlanceModifier.padding(8.dp, 0.dp, 0.dp, 0.dp),
-                                text = context.resources.getString(
+                                text =
                                     if (stateBudget === WidgetReceiver.StateBudget.NEW_DAILY) {
-                                        R.string.new_daily_budget_short
+                                        "new daily"
                                     } else {
-                                        R.string.budget_end
-                                    }
-                                ),
+                                        "budget over"
+                                    },
                                 style = TextStyle(
                                     color = contentColor,
                                     fontWeight = FontWeight.Bold,
@@ -231,11 +228,10 @@ fun ExtendWidgetContent() {
                                 }
                             } else if (stateBudget !== WidgetReceiver.StateBudget.IS_OVER) {
                                 CanvasText(
-                                    text = context.resources.getString(
+                                    text =
                                         if (stateBudget === WidgetReceiver.StateBudget.NOT_SET) {
-                                            R.string.budget_not_set
-                                        } else R.string.finish_period_title
-                                    ),
+                                            "budget not set"
+                                        } else "period ended!",
                                     style = TextStyle(
                                         color = contentColor,
                                         fontWeight = FontWeight.Bold,
@@ -333,9 +329,7 @@ fun ExtendWidgetContent() {
                     ) {
                         CanvasText(
                             modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
-                            text = context.resources.getString(
-                                R.string.set_period_title
-                            ),
+                            text = "set up a budget",
                             style = TextStyle(
                                 color = accentColor,
                                 fontWeight = FontWeight.Bold,

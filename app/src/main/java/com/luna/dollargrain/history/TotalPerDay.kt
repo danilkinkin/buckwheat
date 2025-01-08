@@ -1,20 +1,23 @@
 package com.luna.dollargrain.history
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorOnEditor
-import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.util.numberFormat
 import java.math.BigDecimal
-import com.luna.dollargrain.R
 
 
 @Composable
@@ -36,7 +39,7 @@ fun TotalPerDay(
         horizontalArrangement = Arrangement.End,
     ) {
         Text(
-            text = stringResource(R.string.total_per_day),
+            text = "day total: ",
             style = MaterialTheme.typography.titleMedium,
             color = colorOnEditor.copy(alpha = 0.7f),
         )

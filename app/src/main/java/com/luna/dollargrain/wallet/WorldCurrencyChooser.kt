@@ -42,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -100,7 +99,7 @@ fun WorldCurrencyChooserContent(
     ) {
         Column {
             Text(
-                text = stringResource(R.string.select_currency_title),
+                text = "select currency",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(24.dp)
             )
@@ -117,7 +116,7 @@ fun WorldCurrencyChooserContent(
                 },
                 placeholder = {
                     Text(
-                        text = stringResource(R.string.search_currency_placeholder),
+                        text = "currency code or name",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
@@ -192,7 +191,7 @@ fun WorldCurrencyChooserContent(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = stringResource(R.string.currency_not_found),
+                        text = "currency not found :?",
                         style = MaterialTheme.typography.bodyMedium,
                         color = LocalContentColor.current.copy(alpha = 0.8f),
                     )
@@ -210,7 +209,7 @@ fun WorldCurrencyChooserContent(
                     colors = ButtonDefaults.textButtonColors(),
                     contentPadding = ButtonDefaults.TextButtonContentPadding,
                 ) {
-                    Text(text = stringResource(R.string.cancel))
+                    Text(text = "cancel")
                 }
                 Button(
                     onClick = {
@@ -221,7 +220,7 @@ fun WorldCurrencyChooserContent(
                     contentPadding = ButtonDefaults.TextButtonContentPadding,
                     enabled = selectCurrency.value !== null,
                 ) {
-                    Text(text = stringResource(R.string.accept))
+                    Text(text = "confirm!")
                 }
             }
         }

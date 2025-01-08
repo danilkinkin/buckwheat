@@ -6,9 +6,13 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.SpendsViewModel
@@ -21,7 +25,6 @@ import org.apache.commons.csv.CSVPrinter
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import com.luna.dollargrain.R
 
 @Composable
 fun rememberExportCSV(
@@ -45,8 +48,8 @@ fun rememberExportCSV(
         })
     }
 
-    val snackBarExportToCSVSuccess = stringResource(R.string.export_to_csv_success)
-    val snackBarExportToCSVFailed = stringResource(R.string.export_to_csv_failed)
+    val snackBarExportToCSVSuccess = "successfully exported!"
+    val snackBarExportToCSVFailed = "failed to export :("
 
     val yearFormatter = DateTimeFormatter.ofPattern("yyyy")
 
@@ -60,7 +63,7 @@ fun rememberExportCSV(
     val to = DateTimeFormatter.ofPattern("dd-MM-yyyy").format(finishPeriodDate)
 
 
-    val fileName = stringResource(R.string.export_to_csv_file_name, from, to)
+    val fileName = "expenses (from $from to $to dollars)"
 
     CompositionLocalProvider(
         LocalActivityResultRegistryOwner provides activityResultRegistryOwner

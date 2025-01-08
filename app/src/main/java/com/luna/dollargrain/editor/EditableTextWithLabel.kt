@@ -10,9 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.InterceptPlatformTextInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +26,24 @@ import com.luna.dollargrain.keyboard.rememberAppKeyboard
 import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.combineColors
 import com.luna.dollargrain.util.visualTransformationAsCurrency
+import kotlinx.coroutines.awaitCancellation
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable fun DisableSoftKeyboard(
+    disable: Boolean = true,
+    content: @Composable () -> Unit,
+) {
+    InterceptPlatformTextInput(
+        interceptor = { request, nextHandler ->
+            if (!disable) {
+                nextHandler.startInputMethod(request)
+            } else {
+                awaitCancellation()
+            }
+        },
+        content = content,
+    )
+}
 
 @Composable
 fun EditableTextWithLabel(
@@ -33,6 +53,7 @@ fun EditableTextWithLabel(
     onChangeValue: (value: String) -> Unit = {},
     contentPaddingValues: PaddingValues = PaddingValues(start = 36.dp, end = 36.dp),
     focusRequester: FocusRequester = remember { FocusRequester() },
+    showSystemKeyboard: Boolean = false
 ) {
     val context = LocalContext.current
 
@@ -50,27 +71,47 @@ fun EditableTextWithLabel(
         }
     })
 
+    val textInputService = if (showSystemKeyboard) keyboardHandler else null
+
     Column(modifier) {
         CompositionLocalProvider(
-            LocalTextInputService provides keyboardHandler
+            LocalTextInputService provides textInputService
         ) {
             Box(
                 Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd,
             ) {
-                TextFieldWithPaddings(
-                    value = value,
-                    onChangeValue = { onChangeValue(it) },
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    visualTransformation = visualTransformationAsCurrency(
-                        context,
-                        currency = currency ?: ExtendCurrency.none(),
-                        hintColor = color.copy(alpha = 0.2f),
-                    ),
-                    currency = currency,
-                    focusRequester = focusRequester,
-                    contentPadding = contentPaddingValues,
-                )
+                if (showSystemKeyboard) {
+                    TextFieldWithPaddings(
+                        value = value,
+                        onChangeValue = { onChangeValue(it) },
+                        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                        visualTransformation = visualTransformationAsCurrency(
+                            context,
+                            currency = currency ?: ExtendCurrency.none(),
+                            hintColor = color.copy(alpha = 0.2f),
+                        ),
+                        currency = currency,
+                        focusRequester = focusRequester,
+                        contentPadding = contentPaddingValues,
+                    )
+                } else {
+                    DisableSoftKeyboard {
+                        TextFieldWithPaddings(
+                            value = value,
+                            onChangeValue = { onChangeValue(it) },
+                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                            visualTransformation = visualTransformationAsCurrency(
+                                context,
+                                currency = currency ?: ExtendCurrency.none(),
+                                hintColor = color.copy(alpha = 0.2f),
+                            ),
+                            currency = currency,
+                            focusRequester = focusRequester,
+                            contentPadding = contentPaddingValues,
+                        )
+                    }
+                }
             }
         }
     }

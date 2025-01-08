@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.luna.dollargrain.R
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.util.collectEnvInfo
+import com.luna.dollargrain.util.openInBrowser
 import com.luna.dollargrain.util.sendEmail
 
 @Composable
@@ -22,7 +23,6 @@ fun CatchAndSendCrashReport(
     appViewModel: AppViewModel = viewModel(),
 ) {
     val context = LocalContext.current
-    val intent = remember { Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/ellipticobj/issues/new/")) }
 
 
     val errorForReport = LocalContext.current.errorForReport
@@ -41,7 +41,10 @@ fun CatchAndSendCrashReport(
             duration = SnackbarDuration.Long,
         ) { snackbarResult ->
             if (snackbarResult == SnackbarResult.ActionPerformed) {
-                context.startActivity(intent)
+                openInBrowser(
+                    context = context,
+                    link = "https://github.com/ellipticobj/issues/new/",
+                )
             }
         }
 

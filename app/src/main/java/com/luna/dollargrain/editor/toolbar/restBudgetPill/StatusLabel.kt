@@ -27,7 +27,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -61,9 +60,9 @@ fun StatusLabel(
             Spacer(modifier = Modifier.width(textStartOffset))
             Text(
                 text = when (budgetState) {
-                    DaileBudgetState.NORMAL, DaileBudgetState.NOT_SET, null -> stringResource(R.string.rest_budget_for_today)
-                    DaileBudgetState.OVERDRAFT -> stringResource(R.string.new_daily_budget_short)
-                    DaileBudgetState.BUDGET_END -> stringResource(R.string.budget_end)
+                    DaileBudgetState.NORMAL, DaileBudgetState.NOT_SET, null -> "for today"
+                    DaileBudgetState.OVERDRAFT -> "new daily"
+                    DaileBudgetState.BUDGET_END -> "the budget has ended"
                 },
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontSize = MaterialTheme.typography.titleMedium.fontSize

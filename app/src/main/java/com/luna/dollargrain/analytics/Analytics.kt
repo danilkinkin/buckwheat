@@ -34,15 +34,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.dollargrain.LocalWindowInsets
+import com.luna.dollargrain.R
+import com.luna.dollargrain.analytics.categoriesChart.CategoriesChartCard
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.data.entities.TransactionType
-import com.luna.dollargrain.analytics.categoriesChart.CategoriesChartCard
 import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.wallet.DaysLeftCard
 import com.luna.dollargrain.wallet.rememberExportCSV
-import com.luna.dollargrain.R
 
 const val ANALYTICS_SHEET = "finishPeriod"
 

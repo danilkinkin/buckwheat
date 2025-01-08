@@ -1,10 +1,14 @@
 package com.luna.dollargrain.history
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,10 +20,12 @@ import com.luna.dollargrain.data.entities.Transaction
 import com.luna.dollargrain.data.entities.TransactionType
 import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorOnEditor
-import com.luna.dollargrain.util.*
+import com.luna.dollargrain.util.numberFormat
+import com.luna.dollargrain.util.prettyDate
+import com.luna.dollargrain.util.toDate
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import java.util.*
+import java.util.Date
 
 @Composable
 fun SpentItem(

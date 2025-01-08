@@ -1,7 +1,12 @@
 package com.luna.dollargrain.effects
 
 import android.graphics.PointF
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -22,7 +27,9 @@ import androidx.compose.ui.unit.sp
 import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.harmonize.hct.Hct
 import com.luna.dollargrain.ui.harmonize.palettes.TonalPalette
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 data class Particle(
     val color: Color,

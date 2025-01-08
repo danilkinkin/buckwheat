@@ -20,6 +20,7 @@ import static java.lang.Math.max;
 
 import com.luna.dollargrain.ui.harmonize.utils.ColorUtils;
 import com.luna.dollargrain.ui.harmonize.utils.MathUtils;
+
 import java.util.ArrayList;
 
 /** A class that solves the HCT equation. */

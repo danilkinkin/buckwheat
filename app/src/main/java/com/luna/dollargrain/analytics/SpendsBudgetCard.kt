@@ -20,10 +20,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.luna.dollargrain.R
 import com.luna.dollargrain.base.WavyShape
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.ui.DollargrainTheme
@@ -99,11 +97,11 @@ fun SpendsBudgetCard(
             spend,
             currency = currency,
         ),
-        label = stringResource(R.string.spent_budget),
+        label = "spent",
         content = {
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                text = stringResource(R.string.rest_budget_percent, percentFormatted),
+                text = "$percentFormatted% of budget",
                 style = MaterialTheme.typography.bodyMedium,
             )
         },

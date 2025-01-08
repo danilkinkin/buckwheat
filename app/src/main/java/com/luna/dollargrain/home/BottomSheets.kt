@@ -1,13 +1,16 @@
 package com.luna.dollargrain.home
 
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.luna.dollargrain.analytics.ANALYTICS_SHEET
+import com.luna.dollargrain.analytics.Analytics
+import com.luna.dollargrain.analytics.VIEWER_HISTORY_SHEET
+import com.luna.dollargrain.analytics.ViewerHistory
 import com.luna.dollargrain.base.BottomSheetWrapper
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.PathState
@@ -19,19 +22,28 @@ import com.luna.dollargrain.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIP
 import com.luna.dollargrain.editor.toolbar.restBudgetPill.BudgetIsOverDescription
 import com.luna.dollargrain.editor.toolbar.restBudgetPill.NEW_DAY_BUDGET_DESCRIPTION_SHEET
 import com.luna.dollargrain.editor.toolbar.restBudgetPill.NewDayBudgetDescription
-import com.luna.dollargrain.effects.Confetti
-import com.luna.dollargrain.analytics.ANALYTICS_SHEET
-import com.luna.dollargrain.analytics.Analytics
-import com.luna.dollargrain.analytics.VIEWER_HISTORY_SHEET
-import com.luna.dollargrain.analytics.ViewerHistory
 import com.luna.dollargrain.onboarding.ON_BOARDING_SHEET
 import com.luna.dollargrain.onboarding.Onboarding
 import com.luna.dollargrain.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.luna.dollargrain.recalcBudget.RecalcBudget
-import com.luna.dollargrain.settings.*
-import com.luna.dollargrain.wallet.*
+import com.luna.dollargrain.settings.BUG_REPORTER_SHEET
+import com.luna.dollargrain.settings.BugReporter
+import com.luna.dollargrain.settings.SETTINGS_CHANGE_THEME_SHEET
+import com.luna.dollargrain.settings.SETTINGS_SHEET
+import com.luna.dollargrain.settings.SETTINGS_TRY_WIDGET_SHEET
+import com.luna.dollargrain.settings.Settings
+import com.luna.dollargrain.settings.ThemeSwitcherDialog
+import com.luna.dollargrain.settings.TryWidgetDialog
+import com.luna.dollargrain.wallet.CURRENCY_EDITOR
+import com.luna.dollargrain.wallet.CurrencyEditor
+import com.luna.dollargrain.wallet.DEFAULT_RECALC_BUDGET_CHOOSER
+import com.luna.dollargrain.wallet.DefaultRecalcBudgetChooser
+import com.luna.dollargrain.wallet.FINISH_DATE_SELECTOR_SHEET
+import com.luna.dollargrain.wallet.FinishDateSelector
+import com.luna.dollargrain.wallet.WALLET_SHEET
+import com.luna.dollargrain.wallet.Wallet
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Date
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

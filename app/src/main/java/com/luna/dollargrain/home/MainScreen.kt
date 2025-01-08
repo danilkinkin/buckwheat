@@ -16,13 +16,10 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -53,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.LocalWindowSize
+import com.luna.dollargrain.analytics.ANALYTICS_SHEET
 import com.luna.dollargrain.base.SwipeableSnackbarHost
 import com.luna.dollargrain.base.TopSheetLayout
 import com.luna.dollargrain.base.TopSheetValue
@@ -61,7 +59,6 @@ import com.luna.dollargrain.data.PathState
 import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.data.SystemBarState
 import com.luna.dollargrain.editor.Editor
-import com.luna.dollargrain.analytics.ANALYTICS_SHEET
 import com.luna.dollargrain.history.History
 import com.luna.dollargrain.keyboard.Keyboard
 import com.luna.dollargrain.onboarding.ON_BOARDING_SHEET

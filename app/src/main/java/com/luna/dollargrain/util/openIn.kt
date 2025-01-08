@@ -8,7 +8,6 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
-import com.luna.dollargrain.R
 
 fun openInBrowser(context: Context, link: String) {
     val intent = Intent(Intent.ACTION_VIEW)
@@ -28,7 +27,7 @@ fun openInBrowser(context: Context, link: String) {
         Toast
             .makeText(
                 context,
-                context.getString(R.string.copy_in_clipboard),
+                "copied to clipboard!",
                 Toast.LENGTH_LONG
             )
             .show()
@@ -55,7 +54,7 @@ fun sendEmail(
         Toast
             .makeText(
                 context,
-                context.getString(R.string.not_found_email_clients),
+                "no email clients found :(",
                 Toast.LENGTH_LONG
             )
             .show()

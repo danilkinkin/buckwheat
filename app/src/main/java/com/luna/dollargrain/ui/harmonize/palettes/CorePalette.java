@@ -18,6 +18,7 @@ package com.luna.dollargrain.ui.harmonize.palettes;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+
 import com.luna.dollargrain.ui.harmonize.hct.Hct;
 
 /**

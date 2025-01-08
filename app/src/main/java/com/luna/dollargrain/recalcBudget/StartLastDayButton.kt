@@ -5,14 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.luna.dollargrain.R
 import com.luna.dollargrain.base.DescriptionButton
 import com.luna.dollargrain.data.AppViewModel
-import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.data.ExtendCurrency
-import com.luna.dollargrain.util.numberFormat
+import com.luna.dollargrain.data.SpendsViewModel
 import java.math.BigDecimal
 
 @Composable
@@ -29,17 +26,10 @@ fun StartLastDayButton(
 
 
     DescriptionButton(
-        title = { Text(stringResource(R.string.add_current_day_title)) },
+        title = { Text("leave for today") },
         description = {
             Text(
-                stringResource(
-                    R.string.start_last_day_description,
-                    numberFormat(
-                        context,
-                        budgetPerDayAdd,
-                        currency = currency,
-                    ),
-                )
+                "its the last day! you can spend $budgetPerDayAdd"
             )
         },
         /* secondDescription = if (isDebug.value) {

@@ -17,12 +17,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.data.SpendsViewModel
@@ -52,7 +51,7 @@ fun BudgetIsOverDescription(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.budget_end),
+                    text = "the budget has been exceeded ;(",
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
@@ -65,7 +64,7 @@ fun BudgetIsOverDescription(
                         bottom = 16.dp,
                     )
                     .fillMaxWidth(),
-                text = stringResource(R.string.budget_end_description),
+                text = "you went over the planned budget!! maybe you should spend less next time!",
                 style = MaterialTheme.typography.bodyMedium
                     .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
             )
@@ -78,8 +77,8 @@ fun BudgetIsOverDescription(
                 } else {
                     painterResource(R.drawable.ic_do_disturb)
                 },
-                text = stringResource(R.string.hide_overspending_warn),
-                description = stringResource(R.string.hide_overspending_warn_description),
+                text = "hide warning",
+                description = "this message will be hidden until the end of the period :>",
                 wrapMainText = true,
                 denseDescriptionOffset = false,
                 onClick = {

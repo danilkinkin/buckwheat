@@ -16,7 +16,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -28,14 +27,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.ButtonRow
-import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.PathState
 import com.luna.dollargrain.widget.extend.ExtendWidgetReceiver
@@ -140,7 +137,7 @@ fun TryWidgetDialog(
                                 .rotate(-10F)
                                 .shadow(
                                     6.dp,
-                                    shape = RoundedCornerShape(24.dp),
+                                    shape = RoundedCornerShape(16.dp),
                                     spotColor = Color.Black.copy(alpha = 0.2f),
                                     ambientColor = Color.Black.copy(alpha = 0.2f)
                                 ),

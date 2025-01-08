@@ -17,6 +17,7 @@
 package com.luna.dollargrain.ui.harmonize.palettes;
 
 import com.luna.dollargrain.ui.harmonize.hct.Hct;
+
 import java.util.HashMap;
 import java.util.Map;
 

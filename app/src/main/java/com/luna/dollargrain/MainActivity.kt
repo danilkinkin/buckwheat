@@ -14,7 +14,12 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.*
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -25,15 +30,15 @@ import com.luna.dollargrain.base.balloon.BalloonProvider
 import com.luna.dollargrain.data.dao.StorageDao
 import com.luna.dollargrain.di.migrateToDataStore
 import com.luna.dollargrain.home.MainScreen
-import dagger.hilt.android.AndroidEntryPoint
 import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.ThemeMode
 import com.luna.dollargrain.ui.syncTheme
 import com.luna.dollargrain.util.LockScreenOrientation
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import syncOverrideLocale
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 val Context.budgetDataStore by preferencesDataStore("budget")

@@ -19,6 +19,7 @@ package com.luna.dollargrain.ui.harmonize.score;
 import com.luna.dollargrain.ui.harmonize.hct.Cam16;
 import com.luna.dollargrain.ui.harmonize.utils.ColorUtils;
 import com.luna.dollargrain.ui.harmonize.utils.MathUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

@@ -4,8 +4,6 @@ import android.text.format.DateFormat
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import com.luna.dollargrain.R
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -91,7 +89,7 @@ fun prettyDate(
     var final = ""
 
     final += if (simplifyIfToday && convertedFullDate == currentFullDate) {
-        stringResource(R.string.today)
+        "today"
     } else {
         DateTimeFormatter.ofPattern(pattern, locale).format(date.toLocalDateTime())
     }
@@ -140,7 +138,7 @@ fun prettyDate(
     var final = ""
 
     if (human && convertedFullDate == currentFullDate) {
-        final += stringResource(R.string.today)
+        final += "today"
     }
 
     if (!human || convertedFullDate != currentFullDate) {

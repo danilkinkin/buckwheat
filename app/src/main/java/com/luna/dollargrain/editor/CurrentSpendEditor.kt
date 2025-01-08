@@ -1,8 +1,18 @@
 package com.luna.dollargrain.editor
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -12,7 +22,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.SpendsViewModel
-import com.luna.dollargrain.util.*
+import com.luna.dollargrain.util.fixedNumberString
+import com.luna.dollargrain.util.join
+import com.luna.dollargrain.util.observeLiveData
+import com.luna.dollargrain.util.tryConvertStringToNumber
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 
@@ -29,6 +42,7 @@ class FocusController {
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun CurrentSpendEditor(
     modifier: Modifier = Modifier,
@@ -136,6 +150,7 @@ fun CurrentSpendEditor(
                     },
                     currency = currency,
                     focusRequester = focusRequester,
+                    showSystemKeyboard = false
                 )
 
                 DisposableEffect(requestFocus) {

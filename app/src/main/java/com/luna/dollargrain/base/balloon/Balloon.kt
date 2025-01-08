@@ -55,9 +55,9 @@ fun Balloon(
                 .background(
                     MaterialTheme.colorScheme.secondary,
                     when (position) {
-                        AnchorPosition.Start -> RoundedCornerShape(0.dp, 24.dp, 24.dp, 24.dp)
-                        AnchorPosition.Center -> RoundedCornerShape(24.dp)
-                        AnchorPosition.End -> RoundedCornerShape(24.dp, 0.dp, 24.dp, 24.dp)
+                        AnchorPosition.Start -> RoundedCornerShape(0.dp, 16.dp, 16.dp, 16.dp)
+                        AnchorPosition.Center -> RoundedCornerShape(16.dp)
+                        AnchorPosition.End -> RoundedCornerShape(16.dp, 0.dp, 16.dp, 16.dp)
                     }
                 )
                 .padding(24.dp, 12.dp)

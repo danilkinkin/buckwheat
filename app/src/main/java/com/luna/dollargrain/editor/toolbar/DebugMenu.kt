@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.dollargrain.LocalWindowInsets
+import com.luna.dollargrain.analytics.ANALYTICS_SHEET
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.base.Divider
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
@@ -26,7 +27,6 @@ import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.PathState
 import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.editor.EditorViewModel
-import com.luna.dollargrain.analytics.ANALYTICS_SHEET
 import com.luna.dollargrain.onboarding.ON_BOARDING_SHEET
 import com.luna.dollargrain.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.luna.dollargrain.ui.DollargrainTheme

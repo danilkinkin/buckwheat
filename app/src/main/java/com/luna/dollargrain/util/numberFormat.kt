@@ -1,11 +1,11 @@
 package com.luna.dollargrain.util
 
 import android.content.Context
-import com.luna.dollargrain.R
 import com.luna.dollargrain.data.ExtendCurrency
 import java.math.BigDecimal
 import java.text.NumberFormat
-import java.util.*
+import java.util.Currency
+import java.util.Locale
 
 // Get localised float divider (',' or '.')
 fun getFloatDivider(): String {
@@ -46,20 +46,20 @@ fun numberFormat(
     var overflow = false
     if (trimDecimalPlaces) {
         valueFinal = if (value >= thousand.pow(4) * BigDecimal(100)) {
-            decimalPlace = context.getString(R.string.trillion_numerical_shorthand)
+            decimalPlace = "T"
             overflow = true
             100.toBigDecimal()
         } else if (value >= thousand.pow(4)) {
-            decimalPlace = context.getString(R.string.trillion_numerical_shorthand)
+            decimalPlace = "T"
             value / (thousand.pow(4))
         } else if (value >= thousand.pow(3)) {
-            decimalPlace = context.getString(R.string.billion_numerical_shorthand)
+            decimalPlace = "B"
             value / (thousand.pow(3))
         } else if (value >= thousand.pow(2)) {
-            decimalPlace = context.getString(R.string.million_numerical_shorthand)
+            decimalPlace = "M"
             value / (thousand.pow(2))
         } else if (value >= thousand * BigDecimal(100)) {
-            decimalPlace = context.getString(R.string.thousand_numerical_shorthand)
+            decimalPlace = "K"
             value / thousand
         } else {
             value

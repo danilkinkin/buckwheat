@@ -12,7 +12,7 @@ import com.luna.dollargrain.util.prettyDate
 import com.luna.dollargrain.util.toDate
 import com.luna.dollargrain.util.toLocalDate
 import java.time.LocalDate
-import java.util.*
+import java.util.Date
 
 @Composable
 fun HistoryDateDivider(date: LocalDate) {

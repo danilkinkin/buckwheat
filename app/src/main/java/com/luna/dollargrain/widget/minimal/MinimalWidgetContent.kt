@@ -31,8 +31,8 @@ import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import com.luna.dollargrain.BuildConfig
-import com.luna.dollargrain.R
 import com.luna.dollargrain.MainActivity
+import com.luna.dollargrain.R
 import com.luna.dollargrain.widget.CanvasText
 import com.luna.dollargrain.widget.WidgetReceiver
 
@@ -79,13 +79,10 @@ fun MinimalWidgetContent() {
                             },
                             0.dp,
                         ),
-                        text = context.resources.getString(
-                            when (size) {
-                                MinimalWidget.smallMode -> R.string.add_spent_short
-                                else -> R.string.add_spent
-                            }
-
-                        ),
+                        text = when (size) {
+                                MinimalWidget.smallMode -> "Spent"
+                                else -> "Add spent"
+                            },
                         style = TextStyle(
                             color = GlanceTheme.colors.onSurface,
                             fontWeight = FontWeight.Medium,
@@ -124,13 +121,9 @@ fun MinimalWidgetContent() {
                 CanvasText(
                     modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
                     text = if (stateBudget === WidgetReceiver.StateBudget.NOT_SET) {
-                        context.resources.getString(
-                            R.string.budget_not_set
-                        )
+                        "budget not set :("
                     } else {
-                        context.resources.getString(
-                            R.string.finish_period_title
-                        )
+                        "period over!!"
                     },
                     style = TextStyle(
                         color = GlanceTheme.colors.onSurface,
@@ -167,9 +160,7 @@ fun MinimalWidgetContent() {
                             },
                             0.dp,
                         ),
-                        text = context.resources.getString(
-                            R.string.set_period_title
-                        ),
+                        text = "set a budget",
                         style = TextStyle(
                             color = GlanceTheme.colors.primary,
                             fontWeight = FontWeight.Bold,

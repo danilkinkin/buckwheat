@@ -1,7 +1,12 @@
 package com.luna.dollargrain.effects
 
 import android.graphics.PointF
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.acos
+import kotlin.math.cos
+import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.math.sqrt
 import kotlin.random.Random
 
 fun normalizationVector(vector: PointF): PointF {

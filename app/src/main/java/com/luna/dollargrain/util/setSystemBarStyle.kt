@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.SystemBarState
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun setSystemStyle(

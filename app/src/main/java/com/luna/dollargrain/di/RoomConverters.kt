@@ -2,7 +2,7 @@ package com.luna.dollargrain.di
 
 import androidx.room.TypeConverter
 import java.math.BigDecimal
-import java.util.*
+import java.util.Date
 
 class RoomConverters {
     @TypeConverter
