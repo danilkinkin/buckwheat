@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.DismissDirection
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
@@ -152,7 +153,7 @@ fun History(
 
     val fapScale by animateFloatAsState(
         targetValue = if (appViewModel.lockSwipeable.value) 1f else 0f,
-        animationSpec = TweenSpec(250),
+        animationSpec = TweenSpec(250), label = "",
     )
 
     val animatedList = updateAnimatedItemsState(newList = historyList)
@@ -239,14 +240,14 @@ fun History(
                                     state.dismissDirection == DismissDirection.StartToEnd &&
                                             animateCorners -> 8.dp
                                     else -> 0.dp
-                                }
+                                }, label = ""
                             )
                             val endCorners by animateDpAsState(
                                 targetValue = when {
                                     state.dismissDirection == DismissDirection.EndToStart &&
                                             animateCorners -> 8.dp
                                     else -> 0.dp
-                                }
+                                }, label = ""
                             )
 
                             Box(

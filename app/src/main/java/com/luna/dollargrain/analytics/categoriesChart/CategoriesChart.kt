@@ -67,8 +67,8 @@ fun CategoriesChartCard(
     currency: ExtendCurrency,
 ) {
     val isNightMode = isNightMode()
-    val labelWithoutTag = stringResource(R.string.without_tag)
-    val labelRest = stringResource(R.string.rest_tags)
+    val labelWithoutTag = "untagged"
+    val labelRest = "others"
     val maxDisplay = 7
 
     val colors = baseColors.map {

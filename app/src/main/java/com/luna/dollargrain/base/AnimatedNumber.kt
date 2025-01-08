@@ -75,7 +75,7 @@ fun AnimatedNumber(
                     }.using(
                         SizeTransform(clip = false)
                     )
-                }
+                }, label = ""
             ) { targetCount ->
                 Text(text = targetCount, style = style)
             }

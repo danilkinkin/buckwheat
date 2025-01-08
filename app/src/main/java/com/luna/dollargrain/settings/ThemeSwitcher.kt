@@ -4,9 +4,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -16,13 +20,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.appTheme
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.base.CheckedRow
-import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.PathState
 import com.luna.dollargrain.ui.DollargrainTheme
@@ -50,13 +54,13 @@ fun ThemeSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ThemeSwitcherDialog(onClose: () -> Unit) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
-    val navigationBarHeight = androidx.compose.ui.unit.max(
+    val navigationBarHeight = max(
         LocalWindowInsets.current.calculateBottomPadding(),
         16.dp,
     )
@@ -68,7 +72,15 @@ fun ThemeSwitcherDialog(onClose: () -> Unit) {
         }
     }
 
-    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
+    ModalBottomSheet(
+        onDismissRequest = {
+            onClose()
+        },
+        sheetState = rememberModalBottomSheetState(),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.3f)
+    ) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier

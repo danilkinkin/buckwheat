@@ -20,7 +20,7 @@ internal fun MonthHeader(modifier: Modifier = Modifier, yearMonth: YearMonth) {
             modifier = Modifier
                 .padding(start = 24.dp)
                 .weight(1f),
-            text = prettyYearMonth(yearMonth),
+            text = prettyYearMonth(yearMonth).lowercase(),
             style = MaterialTheme.typography.titleMedium
         )
     }

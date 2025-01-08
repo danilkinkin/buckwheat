@@ -217,7 +217,11 @@ fun BottomSheets(
     BottomSheetWrapper(
         name = SETTINGS_TRY_WIDGET_SHEET,
     ) { state ->
-        TryWidgetDialog()
+        TryWidgetDialog(
+            onClose = {
+                coroutineScope.launch { state.hide() }
+            }
+        )
     }
 
 //    what is this

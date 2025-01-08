@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +49,7 @@ fun TryWidget(appViewModel: AppViewModel = hiltViewModel(), onTried: () -> Unit)
     Box(contentAlignment = Alignment.TopStart) {
         ButtonRow(
             icon = painterResource(R.drawable.ic_widgets),
-            text = stringResource(R.string.home_widgets_label),
+            text = "home screen widgetS!!",
             onClick = {
                 appViewModel.openSheet(PathState(SETTINGS_TRY_WIDGET_SHEET))
                 onTried()
@@ -56,16 +59,26 @@ fun TryWidget(appViewModel: AppViewModel = hiltViewModel(), onTried: () -> Unit)
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TryWidgetDialog() {
+fun TryWidgetDialog(
+    onClose: () -> Unit = {}
+) {
     val context = LocalContext.current
-    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
     val navigationBarHeight = androidx.compose.ui.unit.max(
         LocalWindowInsets.current.calculateBottomPadding(),
         16.dp,
     )
 
-    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
+    ModalBottomSheet(
+        onDismissRequest = {
+            onClose()
+        },
+        sheetState = rememberModalBottomSheetState(),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.3f)
+    ) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
                 modifier = Modifier
@@ -74,7 +87,7 @@ fun TryWidgetDialog() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.home_widgets_label),
+                    text = "home screen widgets",
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
@@ -89,7 +102,7 @@ fun TryWidgetDialog() {
                 ) {
                     WidgetRow(
                         preview = painterResource(R.drawable.minimal_app_widget_preview),
-                        description = stringResource(R.string.app_widget_minimal_name),
+                        description = "dollargrain minimal",
                         onClick = {
                             appWidgetManager.requestPinAppWidget(
                                 ComponentName(context, MinimalWidgetReceiver::class.java),
@@ -101,7 +114,7 @@ fun TryWidgetDialog() {
 
                     WidgetRow(
                         preview = painterResource(R.drawable.extend_app_widget_preview),
-                        description = stringResource(R.string.app_widget_extend_name),
+                        description = "dollargrain extend",
                         onClick = {
                             appWidgetManager.requestPinAppWidget(
                                 ComponentName(context, ExtendWidgetReceiver::class.java),
@@ -157,7 +170,7 @@ fun TryWidgetDialog() {
                 modifier = Modifier
                     .padding(24.dp)
                     .fillMaxWidth(),
-                text = stringResource(R.string.try_home_widgets_desc),
+                text = "dollargrain has widgets!! try it out and keep track of your budget from your home screen!",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium
                     .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),

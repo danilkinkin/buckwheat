@@ -93,6 +93,7 @@ fun MainScreen(
 
     nightMode.value = isNightMode()
 
+    // sets status bar and nav bar to transparent
     setSystemStyle(
         style = {
             SystemBarState(
@@ -105,6 +106,7 @@ fun MainScreen(
         key = nightMode.value,
     )
 
+    // errrrrrr
     observeLiveData(spendsViewModel.lastRemovedTransaction) {
         appViewModel.showSnackbar(
             message = snackBarMessage,
@@ -137,6 +139,7 @@ fun MainScreen(
         val contentHeight = constraints.maxHeight.toFloat()
         val contentWidth = constraints.maxWidth.toFloat()
 
+        // keyboard initializing
         val keyboardAdditionalOffset = windowInsets
             .calculateBottomPadding()
             .minus(16.dp)
@@ -207,6 +210,7 @@ fun MainScreen(
                     .fillMaxSize()
                     .weight(1f)
             ) {
+                // internal keyboard
                 androidx.compose.animation.AnimatedVisibility(
                     visible = true,
                     enter = fadeIn(

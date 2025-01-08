@@ -109,7 +109,7 @@ internal fun Day(
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentSize(Alignment.Center),
-            text = day.dayOfMonth.toString(),
+            text = day.dayOfMonth.toString().lowercase(),
             style = MaterialTheme.typography.bodyMedium,
             color = when (true) {
                 current -> MaterialTheme.colorScheme.onPrimaryContainer
