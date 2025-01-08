@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "buckwheat"
+rootProject.name = "dollargrain"
 include(":app")

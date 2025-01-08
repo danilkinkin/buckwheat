@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:8.4.1")
+        classpath("com.android.tools.build:gradle:8.7.3")
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.46")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
         classpath("com.diffplug.spotless:spotless-plugin-gradle:6.20.0")
@@ -33,6 +33,17 @@ subprojects {
         kotlinGradle {
             target("*.gradle.kts") // default target for kotlinGradle
             ktlint() // or ktfmt() or prettier()
+        }
+    }
+
+    tasks.withType<JavaCompile> {
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17" // Match the Java target
         }
     }
 }

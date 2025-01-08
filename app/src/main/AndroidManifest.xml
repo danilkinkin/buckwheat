@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
     
     <application
-        android:name=".Application"
+        android:name="com.luna.dollargrain.Application"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,7 +20,7 @@
             android:shell="true"
             tools:targetApi="q" />
         <receiver
-            android:name=".widget.extend.ExtendWidgetReceiver"
+            android:name="com.luna.dollargrain.widget.extend.ExtendWidgetReceiver"
             android:label="@string/app_widget_extend_name"
             android:exported="true">
             <intent-filter>
@@ -32,7 +32,7 @@
         </receiver>
 
         <receiver
-            android:name=".widget.minimal.MinimalWidgetReceiver"
+            android:name="com.luna.dollargrain.widget.minimal.MinimalWidgetReceiver"
             android:label="@string/app_widget_minimal_name"
             android:exported="true">
             <intent-filter>
@@ -44,7 +44,7 @@
         </receiver>
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.luna.dollargrain.MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

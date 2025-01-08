@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Buckwheat" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Dollargrain" parent="Theme.Material3.DayNight"/>
 
-    <style name="Theme.Buckwheat.Starting" parent="Theme.SplashScreen.IconBackground">
+    <style name="Theme.Dollargrain.Starting" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenBackground">#FA5A00</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="postSplashScreenTheme">@style/Theme.Buckwheat</item>
+        <item name="postSplashScreenTheme">@style/Theme.Dollargrain</item>
     </style>
 </resources>
