@@ -1,6 +1,8 @@
 package com.luna.dollargrain.wallet
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -10,6 +12,8 @@ import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.analytics.RestAndSpentBudgetCard
 import com.luna.dollargrain.analytics.WholeBudgetCard
 import com.luna.dollargrain.data.ExtendCurrency
+
+// widget in the wallet sheet
 
 @Composable
 fun BudgetSummary(
@@ -39,11 +43,16 @@ fun BudgetSummary(
                 currency = currency,
                 startDate = spendsViewModel.startPeriodDate.value!!,
                 finishDate = spendsViewModel.finishPeriodDate.value!!,
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                ),
             )
             Spacer(modifier = Modifier.width(16.dp))
             DaysLeftCard(
                 startDate = spendsViewModel.startPeriodDate.value!!,
                 finishDate = spendsViewModel.finishPeriodDate.value!!,
+                colors = CardDefaults.elevatedCardColors()
             )
         }
         EditButton(onClick = { onEdit() })

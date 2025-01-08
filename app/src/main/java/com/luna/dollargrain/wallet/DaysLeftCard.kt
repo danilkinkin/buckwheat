@@ -36,6 +36,7 @@ fun DaysLeftCard(
     modifier: Modifier = Modifier,
     startDate: Date,
     finishDate: Date?,
+    colors: CardColors = CardDefaults.cardColors(),
 ) {
     val localDensity = LocalDensity.current
 
@@ -57,6 +58,7 @@ fun DaysLeftCard(
                 .size(size)
                 .clip(CircleShape),
             shape = CircleShape,
+            colors = colors
         ) {
             val textColor = LocalContentColor.current
 

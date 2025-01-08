@@ -123,9 +123,10 @@ fun Wallet(
     ModalBottomSheet(
         onDismissRequest = {
             openConfirmFinishBudgetDialog.value = false
+            onClose()
         },
         sheetState = rememberModalBottomSheetState(),
-        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurface,
         scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha=0.3f)
     ) {
