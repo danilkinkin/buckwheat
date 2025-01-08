@@ -236,11 +236,10 @@ fun BottomSheets(
         )
     }
 
-//    what is this
-//    BoxWithConstraints(Modifier.fillMaxSize()) {
-//        Confetti(
-//            modifier = Modifier.fillMaxSize(),
-//            controller = appViewModel.confettiController,
-//        )
-//    }
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        Confetti(
+            modifier = Modifier.fillMaxSize(),
+            controller = appViewModel.confettiController,
+        )
+    }
 }
