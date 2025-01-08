@@ -14,7 +14,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.data.entities.Transaction
@@ -23,7 +23,7 @@ import com.luna.dollargrain.di.TUTORS
 import com.luna.dollargrain.editor.EditMode
 import com.luna.dollargrain.editor.EditStage
 import com.luna.dollargrain.editor.EditorViewModel
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.getFloatDivider
 import com.luna.dollargrain.util.join
 import com.luna.dollargrain.util.tryConvertStringToNumber
@@ -338,7 +338,7 @@ fun Keyboard(
 @Preview
 @Composable
 fun KeyboardPreview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Keyboard()
     }
 }

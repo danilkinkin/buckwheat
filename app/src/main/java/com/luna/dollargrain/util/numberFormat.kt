@@ -1,7 +1,7 @@
 package com.luna.dollargrain.util
 
 import android.content.Context
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.data.ExtendCurrency
 import java.math.BigDecimal
 import java.text.NumberFormat

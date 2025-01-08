@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.harmonize.hct.Hct
 import com.luna.dollargrain.ui.harmonize.palettes.TonalPalette
 import kotlin.math.*
@@ -146,7 +146,7 @@ fun DrawScope.drawParticle(particle: Particle, debug: Boolean = false) {
 @Preview(name = "rotate confetti")
 @Composable
 private fun PreviewParticle() {
-    BuckwheatTheme {
+    DollargrainTheme {
         val particles by remember {
             val color = Color.Red
 

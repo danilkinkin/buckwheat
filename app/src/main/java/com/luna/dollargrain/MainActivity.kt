@@ -26,7 +26,7 @@ import com.luna.dollargrain.data.dao.StorageDao
 import com.luna.dollargrain.di.migrateToDataStore
 import com.luna.dollargrain.home.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.ThemeMode
 import com.luna.dollargrain.ui.syncTheme
 import com.luna.dollargrain.util.locScreenOrientation
@@ -80,20 +80,23 @@ class MainActivity : ComponentActivity() {
                 isReady.value = true
             }
 
+
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
 
             if (widthSizeClass == WindowWidthSizeClass.Compact) {
                 locScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             }
 
+
             val windowInsets = WindowInsets
                 .systemBars
                 .asPaddingValues()
 
+
             CatchAndSendCrashReport()
 
             if (isReady.value) {
-                BuckwheatTheme {
+                DollargrainTheme {
                     OverrideLocalize {
                         BalloonProvider {
                             CompositionLocalProvider(

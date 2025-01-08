@@ -40,7 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.datePicker.CELL_SIZE
 import com.luna.dollargrain.base.datePicker.model.CalendarState
 import com.luna.dollargrain.base.datePicker.model.CalendarUiState
@@ -48,7 +48,7 @@ import com.luna.dollargrain.base.datePicker.model.Week
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.entities.Transaction
 import com.luna.dollargrain.data.entities.TransactionType
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorBad
 import com.luna.dollargrain.ui.colorEditor
 import com.luna.dollargrain.ui.colorGood
@@ -436,7 +436,7 @@ fun verticalGridMeasurePolicy(columns: Int) =
 @Preview(name = "Default (Dark mode)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpendsCalendar(
             budget = BigDecimal(200),
             transactions = listOf(

@@ -3,13 +3,11 @@ package com.luna.dollargrain.analytics
 import android.graphics.PointF
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -30,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.editor.calcMaxFont
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -150,7 +148,7 @@ fun FillCircleStub(
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Box(
             modifier = Modifier
                 .height(200.dp)

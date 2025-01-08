@@ -50,10 +50,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.Divider
 import com.luna.dollargrain.base.RenderAdaptivePane
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.combineColors
 import com.luna.dollargrain.util.titleCase
 import kotlinx.coroutines.CoroutineStart
@@ -286,7 +286,7 @@ fun WorldCurrencyChooser(
 @Preview(name = "default")
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         WorldCurrencyChooserContent(
             defaultCurrency = null,
             onSelect = { },
@@ -298,7 +298,7 @@ private fun PreviewDefault() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         WorldCurrencyChooserContent(
             defaultCurrency = null,
             onSelect = { },

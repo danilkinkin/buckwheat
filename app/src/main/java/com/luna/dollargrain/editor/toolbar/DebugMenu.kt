@@ -29,7 +29,7 @@ import com.luna.dollargrain.editor.EditorViewModel
 import com.luna.dollargrain.analytics.ANALYTICS_SHEET
 import com.luna.dollargrain.onboarding.ON_BOARDING_SHEET
 import com.luna.dollargrain.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.countDays
 import com.luna.dollargrain.util.countDaysToToday
 import com.luna.dollargrain.util.prettyDate
@@ -182,7 +182,7 @@ fun MonospaceText(text: String) {
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         DebugMenu()
     }
 }

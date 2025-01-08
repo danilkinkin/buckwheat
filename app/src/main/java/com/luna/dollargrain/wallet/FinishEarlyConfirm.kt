@@ -25,9 +25,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.RenderAdaptivePane
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 
 
 @Composable
@@ -117,7 +117,7 @@ fun ConfirmFinishEarlyDialog(
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         ConfirmFinishEarly({}, {})
     }
 }

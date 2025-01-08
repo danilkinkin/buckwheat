@@ -79,7 +79,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.balloon.detectTapUnconsumed
 import com.luna.dollargrain.data.AppViewModel
@@ -87,7 +87,7 @@ import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.editor.EditStage
 import com.luna.dollargrain.editor.EditorViewModel
 import com.luna.dollargrain.editor.FocusController
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.observeLiveData
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -479,7 +479,7 @@ fun CommentEditor(
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         CustomTag(editorFocusController = FocusController())
     }
 }

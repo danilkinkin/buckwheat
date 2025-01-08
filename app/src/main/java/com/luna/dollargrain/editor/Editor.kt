@@ -22,7 +22,7 @@ import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.editor.dateTimeEdit.DateTimeEditPill
 import com.luna.dollargrain.editor.tagging.TaggingToolbar
 import com.luna.dollargrain.editor.toolbar.EditorToolbar
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 
 enum class AnimState { EDITING, COMMIT, IDLE, RESET }
 
@@ -65,7 +65,7 @@ fun Editor(
 @Preview
 @Composable
 fun EditorPreview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Editor()
     }
 }

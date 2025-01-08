@@ -8,7 +8,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 
 fun openInBrowser(context: Context, link: String) {
     val intent = Intent(Intent.ACTION_VIEW)

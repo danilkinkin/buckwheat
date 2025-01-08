@@ -34,9 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.combineColors
 
 @Composable
@@ -141,7 +141,7 @@ fun FinishedPeriodHeader(
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         FinishedPeriodHeader()
     }
 }

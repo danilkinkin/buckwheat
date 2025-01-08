@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.prettyYearMonth
 import java.time.LocalDate
 import java.time.YearMonth
@@ -29,7 +29,7 @@ internal fun MonthHeader(modifier: Modifier = Modifier, yearMonth: YearMonth) {
 @Preview
 @Composable
 fun PreviewMonthHeader() {
-    BuckwheatTheme {
+    DollargrainTheme {
         MonthHeader(
             yearMonth = YearMonth.from(LocalDate.now().withDayOfMonth(1)),
         )

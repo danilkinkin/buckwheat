@@ -25,9 +25,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.zIndex
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.data.ExtendCurrency
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.*
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -312,7 +312,7 @@ fun growByMiddleChildRowMeasurePolicy(localDensity: Density) =
 @Preview
 @Composable
 private fun PreviewChart() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Box {
             Icon(
                 painter = painterResource(R.drawable.ic_arrow_forward),
@@ -331,7 +331,7 @@ private fun PreviewChart() {
 @Preview
 @Composable
 private fun PreviewCross() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Cross {
             Text(text = "Hello")
         }
@@ -342,7 +342,7 @@ private fun PreviewCross() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewEarlyFinish() {
-    BuckwheatTheme {
+    DollargrainTheme {
         WholeBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             budget = BigDecimal(60000),
@@ -358,7 +358,7 @@ private fun PreviewEarlyFinish() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         WholeBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             budget = BigDecimal(60000),
@@ -372,7 +372,7 @@ private fun Preview() {
 @Preview(name = "Small screen", widthDp = 190)
 @Composable
 private fun PreviewSmallScreen() {
-    BuckwheatTheme {
+    DollargrainTheme {
         WholeBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             budget = BigDecimal(60000),
@@ -386,7 +386,7 @@ private fun PreviewSmallScreen() {
 @Preview(name = "Small varinat", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewSmallVarinat() {
-    BuckwheatTheme {
+    DollargrainTheme {
         WholeBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             budget = BigDecimal(60000),

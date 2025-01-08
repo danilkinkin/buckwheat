@@ -23,10 +23,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.WavyShape
 import com.luna.dollargrain.data.ExtendCurrency
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorBad
 import com.luna.dollargrain.ui.colorGood
 import com.luna.dollargrain.ui.colorNotGood
@@ -128,7 +128,7 @@ fun SpendsBudgetCard(
 @Preview(name = "The budget is almost completely spent")
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpendsBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal(3740),
@@ -141,7 +141,7 @@ private fun Preview() {
 @Preview(name = "Budget half spent")
 @Composable
 private fun PreviewHalf() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpendsBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal(30740),
@@ -154,7 +154,7 @@ private fun PreviewHalf() {
 @Preview(name = "Almost no budget")
 @Composable
 private fun PreviewFull() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpendsBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal(45740),
@@ -167,7 +167,7 @@ private fun PreviewFull() {
 @Preview(name = "Overspending budget")
 @Composable
 private fun PreviewOverspending() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpendsBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal.ZERO,
@@ -180,7 +180,7 @@ private fun PreviewOverspending() {
 @Preview(name = "Might mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpendsBudgetCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             spend = BigDecimal(14740),

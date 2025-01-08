@@ -17,7 +17,7 @@ import androidx.compose.runtime.remember
 import com.luna.dollargrain.base.datePicker.model.CalendarState
 import com.luna.dollargrain.base.datePicker.model.CalendarUiState
 import com.luna.dollargrain.base.datePicker.model.Month
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -29,11 +29,14 @@ import com.luna.dollargrain.util.getWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 
+// TODO: add chips for months/days etc
+
 @Composable
 fun DatePicker(
     calendarState: CalendarState,
     onDayClicked: (date: LocalDate) -> Unit,
     modifier: Modifier = Modifier,
+
 ) {
     val calendarUiState = calendarState.calendarUiState.value
     val dayWidth = remember { mutableStateOf(CELL_SIZE) }
@@ -117,23 +120,7 @@ fun DayPreview() {
 
     val state = remember { mutableStateOf(CalendarState(context)) }
 
-    BuckwheatTheme {
-        Surface {
-            DatePicker(
-                state.value,
-                onDayClicked = { state.value.setSelectedDay(it) },
-            )
-        }
-    }
-}
-
-@Preview(name = "RU locale", locale = "ru")
-@Composable
-fun DayPreviewRu() {
-    val context = LocalContext.current
-    val state = remember { mutableStateOf(CalendarState(context)) }
-
-    BuckwheatTheme {
+    DollargrainTheme {
         Surface {
             DatePicker(
                 state.value,

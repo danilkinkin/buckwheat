@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.combineColors
 
 @Composable
@@ -76,7 +76,7 @@ fun NumberedRow(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewNumberedRow(){
-    BuckwheatTheme {
+    DollargrainTheme {
         NumberedRow(
             number = 1,
             title = "Title",

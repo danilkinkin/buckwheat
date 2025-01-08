@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.luna.dollargrain.base.datePicker.model.CalendarUiState
@@ -61,7 +62,7 @@ private fun DayContainer(
                 enabled = !disabled,
                 role = Role.Button,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = rememberRipple(
+                indication = ripple(
                     bounded = false,
                     radius = CELL_SIZE / 2,
                 )

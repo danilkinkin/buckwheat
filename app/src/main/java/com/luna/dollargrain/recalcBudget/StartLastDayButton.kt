@@ -7,7 +7,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.DescriptionButton
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.SpendsViewModel

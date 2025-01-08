@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +39,7 @@ import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.data.entities.TransactionType
 import com.luna.dollargrain.analytics.categoriesChart.CategoriesChartCard
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.wallet.DaysLeftCard
 import com.luna.dollargrain.wallet.rememberExportCSV
 import com.luna.dollargrain.R
@@ -229,10 +227,10 @@ fun Analytics(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Analytics()
     }
 }

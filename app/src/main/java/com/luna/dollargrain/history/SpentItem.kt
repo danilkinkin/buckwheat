@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.entities.Transaction
 import com.luna.dollargrain.data.entities.TransactionType
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorOnEditor
 import com.luna.dollargrain.util.*
 import java.math.BigDecimal
@@ -76,7 +76,7 @@ fun SpentItem(
 @Preview(name = "Default")
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpentItem(
             Transaction(
                 type = TransactionType.SPENT,
@@ -91,7 +91,7 @@ private fun PreviewDefault() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpentItem(
             Transaction(
                 type = TransactionType.SPENT,
@@ -107,7 +107,7 @@ private fun PreviewNightMode() {
 @Preview(name = "With big spent and long comment (Night mode)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewWithBigSpentAndLongCommentNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpentItem(
             Transaction(
                 type = TransactionType.SPENT,
@@ -123,7 +123,7 @@ private fun PreviewWithBigSpentAndLongCommentNightMode() {
 @Preview(name = "Small screen", widthDp = 220)
 @Composable
 private fun PreviewSmallScreen() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpentItem(
             Transaction(
                 type = TransactionType.SPENT,

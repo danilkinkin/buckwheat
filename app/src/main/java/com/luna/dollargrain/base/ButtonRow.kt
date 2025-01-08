@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.danilkinkin.dollargrain.R
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.R
+import com.luna.dollargrain.ui.DollargrainTheme
 
 @Composable
 fun ButtonRow(
@@ -49,7 +49,7 @@ fun ButtonRow(
 @Preview
 @Composable
 fun PreviewButtonRowWithIcon() {
-    BuckwheatTheme {
+    DollargrainTheme {
         ButtonRow(
             icon = painterResource(R.drawable.ic_home),
             text = "Text row",
@@ -61,7 +61,7 @@ fun PreviewButtonRowWithIcon() {
 @Preview
 @Composable
 fun PreviewButtonRowWithoutIcon() {
-    BuckwheatTheme {
+    DollargrainTheme {
         ButtonRow(
             text = "Text row",
             onClick = {},

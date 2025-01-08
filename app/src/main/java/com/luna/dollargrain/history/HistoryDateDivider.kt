@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.prettyDate
 import com.luna.dollargrain.util.toDate
 import com.luna.dollargrain.util.toLocalDate
@@ -28,7 +28,7 @@ fun HistoryDateDivider(date: LocalDate) {
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         HistoryDateDivider(Date().toLocalDate())
     }
 }

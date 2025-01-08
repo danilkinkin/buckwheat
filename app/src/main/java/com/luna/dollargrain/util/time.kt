@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime

@@ -31,10 +31,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorEditor
 import com.luna.dollargrain.ui.colorOnEditor
 import com.luna.dollargrain.util.collectEnvInfo
@@ -81,7 +81,7 @@ fun BugReporter(onClose: () -> Unit = {}) {
                     onClick = {
                         openInBrowser(
                             context,
-                            "https://github.com/danilkinkin/buckwheat/issues",
+                            "https://github.com/luna/buckwheat/issues",
                         )
                         onClose()
                     },
@@ -96,7 +96,7 @@ fun BugReporter(onClose: () -> Unit = {}) {
                     onClick = {
                         sendEmail(
                             context,
-                            arrayOf("hello@danilkinkin.com"),
+                            arrayOf("hello@luna.com"),
                             "Buckwheat bug report",
                             """
     
@@ -153,7 +153,7 @@ fun Button(modifier: Modifier = Modifier, icon: Painter, text: String, onClick: 
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         BugReporter()
     }
 }

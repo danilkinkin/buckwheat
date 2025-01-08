@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.luna.dollargrain.data.entities.Transaction
 import com.luna.dollargrain.data.entities.TransactionType
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorMax
 import com.luna.dollargrain.ui.colorMin
 import com.luna.dollargrain.ui.isNightMode
@@ -195,7 +195,7 @@ fun SpendsChart(
 @Preview
 @Composable
 private fun PreviewChart() {
-    BuckwheatTheme {
+    DollargrainTheme {
         val markedTransaction = Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date())
 
         SpendsChart(
@@ -221,7 +221,7 @@ private fun PreviewChart() {
 @Preview
 @Composable
 private fun PreviewChartWithSameSpends() {
-    BuckwheatTheme {
+    DollargrainTheme {
         val markedTransaction = Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date())
 
         SpendsChart(
@@ -241,7 +241,7 @@ private fun PreviewChartWithSameSpends() {
 @Preview
 @Composable
 private fun PreviewChartWithOneSpent() {
-    BuckwheatTheme {
+    DollargrainTheme {
         val markedTransaction = Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date())
 
         SpendsChart(

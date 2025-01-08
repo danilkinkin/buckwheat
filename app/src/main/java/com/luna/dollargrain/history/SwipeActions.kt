@@ -30,14 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorEditor
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.sqrt
 import androidx.compose.ui.unit.min
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 
 data class SwipeActionsConfig(
     val threshold: Float,
@@ -309,7 +309,7 @@ class CirclePath(private val progress: Float, private val start: Boolean) : Shap
 @Preview(widthDp = 300)
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SwipeActions(
             startActionsConfig = SwipeActionsConfig(
                 threshold = 0.4f,

@@ -17,7 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.appTheme
 import com.luna.dollargrain.base.ButtonRow
@@ -25,7 +25,7 @@ import com.luna.dollargrain.base.CheckedRow
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.PathState
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.ThemeMode
 import com.luna.dollargrain.ui.switchTheme
 import kotlinx.coroutines.launch
@@ -103,7 +103,7 @@ fun ThemeSwitcherDialog(onClose: () -> Unit) {
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Surface {
             ThemeSwitcher()
         }

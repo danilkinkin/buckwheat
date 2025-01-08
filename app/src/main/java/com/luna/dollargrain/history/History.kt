@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.SpendsViewModel
@@ -30,7 +30,7 @@ import com.luna.dollargrain.di.TUTORIAL_STAGE
 import com.luna.dollargrain.di.TUTORS
 import com.luna.dollargrain.editor.EditorViewModel
 import com.luna.dollargrain.analytics.WholeBudgetCard
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorEditor
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.util.isSameDay
@@ -351,7 +351,7 @@ fun History(
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         History()
     }
 }

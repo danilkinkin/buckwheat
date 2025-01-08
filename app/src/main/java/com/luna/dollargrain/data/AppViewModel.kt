@@ -3,6 +3,7 @@ package com.luna.dollargrain.data
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -40,6 +41,7 @@ class AppViewModel @Inject constructor(
 
     var _snackbarHostState = SnackbarHostState()
         private set
+
     fun showSnackbar(
         message: String,
         actionLabel: String? = null,

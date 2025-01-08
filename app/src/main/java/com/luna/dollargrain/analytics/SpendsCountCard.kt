@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.PathState
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
+import com.luna.dollargrain.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +85,7 @@ fun SpendsCountCard(
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpendsCountCard(
             count = 348,
         )
@@ -94,7 +95,7 @@ private fun Preview() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         SpendsCountCard(
             count = 348,
         )

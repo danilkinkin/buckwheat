@@ -21,12 +21,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.data.SpendsViewModel
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 
 const val BUDGET_IS_OVER_DESCRIPTION_SHEET = "budgetIsOverDescription"
 
@@ -104,7 +104,7 @@ fun BudgetIsOverDescription(
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         BudgetIsOverDescription()
     }
 }

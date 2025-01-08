@@ -2,20 +2,18 @@ package com.luna.dollargrain.onboarding
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
-import com.luna.dollargrain.base.DescriptionButton
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 
 const val ON_BOARDING_SHEET = "onBoarding"
 
@@ -37,14 +35,20 @@ fun Onboarding(
         ) {
             Spacer(Modifier.height(24.dp))
             Text(
-                text = stringResource(R.string.hello),
+                text = "Hii!",
                 style = MaterialTheme.typography.displayMedium,
             )
             Spacer(Modifier.height(16.dp))
             Text(
-                text = stringResource(R.string.onboarding_title),
+                text = "Welcome to Dollargrain :3",
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
+            )
+            Spacer(Modifier.height(16.dp))
+            Text(
+                text = "Let's start saving together!",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(48.dp))
             Column(
@@ -53,29 +57,35 @@ fun Onboarding(
             ) {
                 NumberedRow(
                     number = 1,
-                    title = stringResource(R.string.help_set_budget_title),
-                    subtitle = stringResource(R.string.help_set_budget_description),
+                    title = "Establish a budget",
+                    subtitle = "Enter how much money you have, or how much you want to spend, and input it into Dollargrain. Select a time frame, and Dollargrain will help you establish a daily budget. "
                 )
                 NumberedRow(
                     number = 2,
-                    title = stringResource(R.string.help_record_spends_title),
-                    subtitle = stringResource(R.string.help_record_spends_description),
+                    title = "Record your expenses",
+                    subtitle = "Dollargrain will assist you in calculating your daily budget, and show you analytics about your expenses"
                 )
                 NumberedRow(
                     number = 3,
-                    title = stringResource(R.string.help_good_luck_title),
-                    subtitle = stringResource(R.string.help_good_luck_description),
+                    title = "Spend wisely",
+                    subtitle = "Over time, you will find out more about your spending habits, and allow yourself to better manage your finances"
                 )
             }
             Spacer(Modifier.height(48.dp))
-            DescriptionButton(
-                title = { Text(stringResource(R.string.set_period_title)) },
-                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 32.dp),
+            Button(
                 onClick = {
                     onSetBudget()
                     onClose()
                 },
-            )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = "Let's go!",
+                )
+            }
         }
     }
 }
@@ -83,7 +93,7 @@ fun Onboarding(
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Onboarding()
     }
 }

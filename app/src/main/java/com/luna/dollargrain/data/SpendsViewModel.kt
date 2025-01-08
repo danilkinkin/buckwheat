@@ -210,7 +210,7 @@ class SpendsViewModel @Inject constructor(
                 }
             }
 
-            // Bug fix https://github.com/danilkinkin/buckwheat/issues/28
+            // Bug fix https://github.com/luna/buckwheat/issues/28
             if (dailyBudget - spentFromDailyBudget > BigDecimal.ZERO) {
                 hideOverspendingWarn(false)
             }

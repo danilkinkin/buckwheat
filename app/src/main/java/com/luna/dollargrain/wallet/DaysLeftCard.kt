@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.R
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.countDays
 import com.luna.dollargrain.util.countDaysToToday
 import com.luna.dollargrain.util.toDate
@@ -138,7 +138,7 @@ class ArcShape(
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Box(
             modifier = Modifier
                 .height(200.dp)

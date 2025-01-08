@@ -9,8 +9,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.danilkinkin.dollargrain.R
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.R
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorOnEditor
 
 @Composable
@@ -30,7 +30,7 @@ fun NoSpends(modifier: Modifier = Modifier) {
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         NoSpends()
     }
 }

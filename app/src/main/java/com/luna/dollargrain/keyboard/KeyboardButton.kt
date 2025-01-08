@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,9 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.editor.calcMaxFont
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorButton
 import com.luna.dollargrain.ui.colorOnButton
 import java.lang.Integer.MAX_VALUE
@@ -118,7 +117,7 @@ fun KeyboardButton(
 @Preview(name = "Text")
 @Composable
 private fun PreviewWithText() {
-    BuckwheatTheme {
+    DollargrainTheme {
         KeyboardButton(
             type = KeyboardButtonType.DEFAULT,
             text = "4"
@@ -129,7 +128,7 @@ private fun PreviewWithText() {
 @Preview(name = "Icon")
 @Composable
 private fun PreviewWithIcon() {
-    BuckwheatTheme {
+    DollargrainTheme {
         KeyboardButton(
             type = KeyboardButtonType.DEFAULT,
             icon = painterResource(R.drawable.ic_backspace)

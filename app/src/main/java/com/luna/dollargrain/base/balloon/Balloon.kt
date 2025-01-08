@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 
 enum class AnchorPosition {
     Start,
@@ -151,7 +151,7 @@ private fun Anchor(
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Balloon {
             Text(
                 text = "Hello, world!",
@@ -164,7 +164,7 @@ private fun Preview() {
 @Preview
 @Composable
 private fun PreviewStart() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Balloon(position = AnchorPosition.Start) {
             Text(
                 text = "Hello, world!",
@@ -177,7 +177,7 @@ private fun PreviewStart() {
 @Preview
 @Composable
 private fun PreviewEnd() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Balloon(position = AnchorPosition.End) {
             Text(
                 text = "Hello, world!",
@@ -190,7 +190,7 @@ private fun PreviewEnd() {
 @Preview
 @Composable
 private fun PreviewLong() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Balloon {
             Text(
                 text = "Minim magna aliquip eiusmod velit sint ipsum laboris anim ex ex cillum cupidatat magna. Do deserunt magna veniam ut tempor dolor quis cillum dolor deserunt irure deserunt. Lorem dolor commodo cupidatat ut magna elit ea reprehenderit tempor esse do. Occaecat esse duis ullamco amet ad dolore voluptate commodo labore culpa dolor dolor pariatur fugiat.",

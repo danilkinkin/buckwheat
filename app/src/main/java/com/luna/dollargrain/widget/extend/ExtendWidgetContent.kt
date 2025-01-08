@@ -34,7 +34,8 @@ import androidx.glance.layout.size
 import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.BuildConfig
+import com.luna.dollargrain.R
 import com.luna.dollargrain.MainActivity
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.util.numberFormat

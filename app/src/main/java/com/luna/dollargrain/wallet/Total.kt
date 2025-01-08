@@ -9,13 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.luna.dollargrain.base.TextRow
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.util.numberFormat
 import java.math.BigDecimal
 import java.math.RoundingMode
+import com.luna.dollargrain.R
 
 @Composable
 fun Total(
@@ -56,7 +57,7 @@ fun Total(
             }
 
             TextRow(
-                icon = Icons.Default.Info,
+                icon = painterResource(id = R.drawable.ic_info),
                 text = "Unable to budget",
                 description = description
             )

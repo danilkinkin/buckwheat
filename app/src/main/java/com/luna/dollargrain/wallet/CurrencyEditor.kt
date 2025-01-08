@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.CheckedRow
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
@@ -56,7 +56,7 @@ fun CurrencyEditor(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.select_currency_title),
+                    text = "select currency",
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
@@ -66,7 +66,7 @@ fun CurrencyEditor(
                     .padding(bottom = navigationBarHeight)
             ) {
                 Text(
-                    text = stringResource(R.string.select_currency_description),
+                    text = "this doesnt affect calculations in any way btw",
                     style = MaterialTheme.typography.bodySmall
                         .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
                     softWrap = true,
@@ -80,7 +80,7 @@ fun CurrencyEditor(
                 CheckedRow(
                     checked = currency.type === ExtendCurrency.Type.FROM_LIST,
                     onValueChange = { openCurrencyChooserDialog.value = true },
-                    text = stringResource(R.string.currency_from_list),
+                    text = "generic dollar",
                     endCaption = if (currency.type === ExtendCurrency.Type.FROM_LIST) {
                         "${
                             Currency.getInstance(
@@ -98,7 +98,7 @@ fun CurrencyEditor(
                 CheckedRow(
                     checked = currency.type === ExtendCurrency.Type.CUSTOM,
                     onValueChange = { openCustomCurrencyEditorDialog.value = true },
-                    text = stringResource(R.string.currency_custom),
+                    text = "custom currency!!",
                     endCaption = if (currency.type === ExtendCurrency.Type.CUSTOM) {
                         currency.value!!
                     } else {
@@ -113,7 +113,7 @@ fun CurrencyEditor(
 
                         onClose()
                     },
-                    text = stringResource(R.string.currency_none),
+                    text = "no currency",
                 )
             }
         }

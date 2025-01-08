@@ -14,13 +14,13 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.base.datePicker.DatePicker
 import com.luna.dollargrain.base.datePicker.model.CalendarSelectionMode
 import com.luna.dollargrain.base.datePicker.model.CalendarState
 import com.luna.dollargrain.base.datePicker.model.selectedDatesFormatted
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.countDays
 import com.luna.dollargrain.util.toDate
 import com.luna.dollargrain.util.toLocalDate
@@ -167,7 +167,7 @@ private fun FinishDateSelectorTopAppBar(
 @Preview(name = "Default (Night mode)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewDefault(){
-    BuckwheatTheme {
+    DollargrainTheme {
         FinishDateSelector(onBackPressed = {}, onApply = {})
     }
 }

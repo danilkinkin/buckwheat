@@ -16,11 +16,11 @@ import androidx.compose.ui.text.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.DescriptionButton
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.PathState
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.openInBrowser
 
 @Composable
@@ -56,12 +56,12 @@ fun About(
 
                 pushStringAnnotation(
                     tag = "developer",
-                    annotation = "https://danilkinkin.com",
+                    annotation = "https://luna.com",
                 )
                 withStyle(
                     style = SpanStyle(color = MaterialTheme.colorScheme.primary)
                 ) {
-                    append("@danilkinkin ")
+                    append("@luna ")
                 }
 
                 appendInlineContent("openInBrowser")
@@ -95,7 +95,7 @@ fun About(
                     ).firstOrNull()?.let {
                         openInBrowser(
                             context,
-                            "https://danilkinkin.com",
+                            "https://luna.com",
                         )
                     }
 
@@ -147,7 +147,7 @@ fun About(
 @Preview(name = "Default")
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         About()
     }
 }
@@ -155,7 +155,7 @@ private fun PreviewDefault() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         About()
     }
 }

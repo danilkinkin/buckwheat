@@ -9,11 +9,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorOnEditor
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.util.numberFormat
 import java.math.BigDecimal
+import com.luna.dollargrain.R
+
 
 @Composable
 fun TotalPerDay(
@@ -50,7 +52,7 @@ fun TotalPerDay(
 @Preview(name = "Default", widthDp = 280)
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TotalPerDay(
             BigDecimal(12340),
             ExtendCurrency.none()

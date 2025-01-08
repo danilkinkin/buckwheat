@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.R
+import com.luna.dollargrain.ui.DollargrainTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +71,7 @@ fun DescriptionButton(
 @Preview
 @Composable
 fun PreviewButtonWithIcon(){
-    BuckwheatTheme {
+    DollargrainTheme {
         DescriptionButton(
             title = { Text("Title") },
             description = { Text("Button looooooooooooooooooooooooooooooooooong description") },

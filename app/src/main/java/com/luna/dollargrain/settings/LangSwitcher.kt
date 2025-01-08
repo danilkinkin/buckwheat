@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.appLocale
 import com.luna.dollargrain.base.ButtonRow
@@ -30,7 +30,7 @@ import com.luna.dollargrain.base.CheckedRow
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.PathState
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.titleCase
 import kotlinx.coroutines.launch
 import switchOverrideLocale
@@ -141,7 +141,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Surface {
             LangSwitcher()
         }

@@ -100,6 +100,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.49")
     implementation("org.apache.commons:commons-csv:1.10.0")
     implementation("io.coil-kt:coil-compose:2.3.0")
+    implementation("androidx.multidex:multidex:2.0.1")
     ksp("androidx.room:room-compiler:2.6.1")
     kapt("androidx.hilt:hilt-compiler:1.2.0")
     kapt("com.google.dagger:dagger-compiler:2.46.1")

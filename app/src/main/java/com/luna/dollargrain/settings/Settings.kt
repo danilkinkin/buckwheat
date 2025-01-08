@@ -16,12 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.BuildConfig
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.BuildConfig
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.base.TextRow
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 
 const val SETTINGS_SHEET = "settings"
 
@@ -69,7 +69,7 @@ fun Settings(onTriedWidget: () -> Unit = {}) {
 @Preview(name = "Default")
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Settings()
     }
 }
@@ -77,7 +77,7 @@ private fun PreviewDefault() {
 @Preview(name = "Night mode", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Settings()
     }
 }

@@ -21,7 +21,7 @@ import com.luna.dollargrain.base.TextFieldWithPaddings
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.keyboard.KeyboardAction
 import com.luna.dollargrain.keyboard.rememberAppKeyboard
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.combineColors
 import com.luna.dollargrain.util.visualTransformationAsCurrency
 
@@ -79,7 +79,7 @@ fun EditableTextWithLabel(
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         EditableTextWithLabel(
             value = "1 245 234 234 P",
         )

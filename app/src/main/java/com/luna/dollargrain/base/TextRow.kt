@@ -7,20 +7,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.R
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.combineColors
 
 @Composable
 fun TextRow(
     modifier: Modifier = Modifier,
-    icon: ImageVector = null,
+    icon: Painter? = null,
     iconTint: Color = contentColorFor(
         combineColors(
             MaterialTheme.colorScheme.secondaryContainer,
@@ -146,7 +145,7 @@ fun TextRow(
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             text = "Text row",
         )
@@ -156,7 +155,7 @@ private fun Preview() {
 @Preview
 @Composable
 private fun PreviewWithDescription() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             text = "Text row",
             description = "Description of text row",
@@ -167,7 +166,7 @@ private fun PreviewWithDescription() {
 @Preview
 @Composable
 private fun PreviewWithDescriptionIconInset() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             text = "Text row",
             description = "Description of text row",
@@ -179,9 +178,9 @@ private fun PreviewWithDescriptionIconInset() {
 @Preview()
 @Composable
 private fun PreviewTWithIcon() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
-            icon = painterResource(R.drawable.ic_home),
+            icon = painterResource(id = R.drawable.ic_home),
             text = "Text row",
         )
     }
@@ -190,7 +189,7 @@ private fun PreviewTWithIcon() {
 @Preview()
 @Composable
 private fun PreviewWithDescriptionWithIcon() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             text = "Text row",
@@ -202,7 +201,7 @@ private fun PreviewWithDescriptionWithIcon() {
 @Preview()
 @Composable
 private fun PreviewTWithIconWithEndContent() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             text = "Text row",
@@ -214,7 +213,7 @@ private fun PreviewTWithIconWithEndContent() {
 @Preview()
 @Composable
 private fun PreviewWithIconWithEndContentWithLongTitle() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             text = "Text row loooooooooooooooooooooooooooooooong",
@@ -226,7 +225,7 @@ private fun PreviewWithIconWithEndContentWithLongTitle() {
 @Preview()
 @Composable
 private fun PreviewWithIcons() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             endIcon = painterResource(R.drawable.ic_edit),
@@ -238,7 +237,7 @@ private fun PreviewWithIcons() {
 @Preview()
 @Composable
 private fun PreviewWithIconsWithChip() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             endContent = {
@@ -255,7 +254,7 @@ private fun PreviewWithIconsWithChip() {
 @Preview()
 @Composable
 private fun PreviewWithIconsWithChipAndEndIcon() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             endIcon = painterResource(R.drawable.ic_edit),
@@ -273,7 +272,7 @@ private fun PreviewWithIconsWithChipAndEndIcon() {
 @Preview()
 @Composable
 private fun PreviewWithIconsWithChipWithWrapText() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             endIcon = painterResource(R.drawable.ic_edit),
@@ -292,7 +291,7 @@ private fun PreviewWithIconsWithChipWithWrapText() {
 @Preview(name = "With icon, end content, end icon and description")
 @Composable
 private fun PreviewWithIconsWithChipWithDescriptionWithEndContentAndEnIcon() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             endIcon = painterResource(R.drawable.ic_edit),
@@ -313,7 +312,7 @@ private fun PreviewWithIconsWithChipWithDescriptionWithEndContentAndEnIcon() {
 @Preview(name = "With icon, end content, end icon and description")
 @Composable
 private fun PreviewWithIconsWithChipWithDescriptionWithEndContent() {
-    BuckwheatTheme {
+    DollargrainTheme {
         TextRow(
             icon = painterResource(R.drawable.ic_home),
             endContent = {

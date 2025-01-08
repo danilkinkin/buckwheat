@@ -7,9 +7,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.data.entities.Transaction
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.entities.TransactionType
 import com.luna.dollargrain.util.numberFormat
@@ -47,7 +47,7 @@ fun AverageSpendCard(
 @Preview
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         AverageSpendCard(
             spends = listOf(
                 Transaction(type = TransactionType.SPENT, value = BigDecimal(30), date = Date()),

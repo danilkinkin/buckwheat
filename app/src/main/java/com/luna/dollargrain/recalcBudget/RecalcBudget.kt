@@ -19,14 +19,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.RestedBudgetDistributionMethod
 import com.luna.dollargrain.data.SpendsViewModel
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -202,7 +202,7 @@ fun RecalcBudget(
 @Preview
 @Composable
 fun PreviewRecalcBudget() {
-    BuckwheatTheme {
+    DollargrainTheme {
         RecalcBudget()
     }
 }

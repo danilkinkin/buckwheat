@@ -22,11 +22,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.entities.Transaction
 import com.luna.dollargrain.data.entities.TransactionType
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorMax
 import com.luna.dollargrain.ui.colorMin
 import com.luna.dollargrain.util.combineColors
@@ -143,7 +143,7 @@ fun MinMaxSpentCard(
 @Preview(name = "Min spent")
 @Composable
 private fun PreviewMin() {
-    BuckwheatTheme {
+    DollargrainTheme {
         MinMaxSpentCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             isMin = true,
@@ -166,7 +166,7 @@ private fun PreviewMin() {
 @Preview(name = "Max spent")
 @Composable
 private fun PreviewMax() {
-    BuckwheatTheme {
+    DollargrainTheme {
         MinMaxSpentCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
@@ -189,7 +189,7 @@ private fun PreviewMax() {
 @Preview(name = "Min spent (Night mode)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewMinNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         MinMaxSpentCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             isMin = true,
@@ -212,7 +212,7 @@ private fun PreviewMinNightMode() {
 @Preview(name = "Max spent (Night mode)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewMaxNightMode() {
-    BuckwheatTheme {
+    DollargrainTheme {
         MinMaxSpentCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
@@ -235,7 +235,7 @@ private fun PreviewMaxNightMode() {
 @Preview(name = "Same spends")
 @Composable
 private fun PreviewWithSameSpends() {
-    BuckwheatTheme {
+    DollargrainTheme {
         MinMaxSpentCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
@@ -251,7 +251,7 @@ private fun PreviewWithSameSpends() {
 @Preview(name = "One spent")
 @Composable
 private fun PreviewWithOneSpent() {
-    BuckwheatTheme {
+    DollargrainTheme {
         MinMaxSpentCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,
@@ -271,7 +271,7 @@ private fun PreviewWithOneSpent() {
 @Preview(name = "No spends")
 @Composable
 private fun PreviewWithZeroSpends() {
-    BuckwheatTheme {
+    DollargrainTheme {
         MinMaxSpentCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             isMin = false,

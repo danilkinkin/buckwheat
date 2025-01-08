@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.LocalBottomSheetScrollState
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 
 const val NEW_DAY_BUDGET_DESCRIPTION_SHEET = "newDayBudgetDescription"
 
@@ -65,7 +65,7 @@ fun NewDayBudgetDescription(onClose: () -> Unit = {}) {
 @Preview
 @Composable
 private fun PreviewDefault() {
-    BuckwheatTheme {
+    DollargrainTheme {
         NewDayBudgetDescription()
     }
 }

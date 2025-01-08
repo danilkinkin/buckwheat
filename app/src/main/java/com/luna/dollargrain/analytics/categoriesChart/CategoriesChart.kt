@@ -28,11 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.entities.Transaction
 import com.luna.dollargrain.data.entities.TransactionType
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.isNightMode
 import com.luna.dollargrain.util.HarmonizedColorPalette
 import com.luna.dollargrain.util.combineColors
@@ -242,7 +242,7 @@ private fun PreviewWithOther() {
         "Education"
     )
 
-    BuckwheatTheme {
+    DollargrainTheme {
         CategoriesChartCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             currency = ExtendCurrency.getInstance("EUR"),
@@ -287,7 +287,7 @@ private fun PreviewManyTags() {
         "Education"
     )
 
-    BuckwheatTheme {
+    DollargrainTheme {
         CategoriesChartCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             currency = ExtendCurrency.getInstance("EUR"),
@@ -307,7 +307,7 @@ private fun PreviewManyTags() {
 @Preview(name = "Without tags (Dark mode)", widthDp = 360, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun PreviewWithoutTags() {
-    BuckwheatTheme {
+    DollargrainTheme {
         CategoriesChartCard(
             modifier = Modifier.height(IntrinsicSize.Min),
             currency = ExtendCurrency.getInstance("EUR"),

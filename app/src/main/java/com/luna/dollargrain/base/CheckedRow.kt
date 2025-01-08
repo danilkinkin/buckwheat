@@ -10,7 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import com.luna.dollargrain.R
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 
 @Composable
 fun CheckedRow(
@@ -46,7 +46,7 @@ fun CheckedRow(
 fun PreviewCheckedRow() {
     val (checkedState, onStateChange) = remember { mutableStateOf(false) }
 
-    BuckwheatTheme {
+    DollargrainTheme {
         CheckedRow(
             checked = checkedState,
             onValueChange = { onStateChange(it) },
@@ -60,7 +60,7 @@ fun PreviewCheckedRow() {
 fun PreviewCheckedRowChekecd() {
     val (checkedState, onStateChange) = remember { mutableStateOf(true) }
 
-    BuckwheatTheme {
+    DollargrainTheme {
         CheckedRow(
             checked = checkedState,
             onValueChange = { onStateChange(it) },

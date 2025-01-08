@@ -19,12 +19,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.base.WavyShape
 import com.luna.dollargrain.data.AppViewModel
 import com.luna.dollargrain.data.ExtendCurrency
 import com.luna.dollargrain.data.SpendsViewModel
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.colorBad
 import com.luna.dollargrain.ui.colorGood
 import com.luna.dollargrain.ui.colorNotGood
@@ -234,7 +234,7 @@ fun RestAndSpentBudgetCard(
 @Preview(name = "The budget is almost completely spent")
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         RestAndSpentBudgetCard()
     }
 }
@@ -242,7 +242,7 @@ private fun Preview() {
 @Preview(name = "Budget half spent")
 @Composable
 private fun PreviewHalf() {
-    BuckwheatTheme {
+    DollargrainTheme {
         RestAndSpentBudgetCard()
     }
 }
@@ -250,7 +250,7 @@ private fun PreviewHalf() {
 @Preview(name = "Almost no budget")
 @Composable
 private fun PreviewFull() {
-    BuckwheatTheme {
+    DollargrainTheme {
         RestAndSpentBudgetCard()
     }
 }

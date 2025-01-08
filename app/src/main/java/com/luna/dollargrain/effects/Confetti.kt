@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.harmonize.hct.Hct
 import com.luna.dollargrain.ui.harmonize.palettes.TonalPalette
 import com.luna.dollargrain.util.animationTimeMillis
@@ -345,7 +345,7 @@ fun Confetti(
 @Preview(name = "confetti")
 @Composable
 private fun Preview() {
-    BuckwheatTheme {
+    DollargrainTheme {
         val controller = remember { ConfettiController() }
 
         val colors = generateColors()

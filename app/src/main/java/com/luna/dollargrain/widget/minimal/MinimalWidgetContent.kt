@@ -30,7 +30,8 @@ import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.BuildConfig
+import com.luna.dollargrain.R
 import com.luna.dollargrain.MainActivity
 import com.luna.dollargrain.widget.CanvasText
 import com.luna.dollargrain.widget.WidgetReceiver

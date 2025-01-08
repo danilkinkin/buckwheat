@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.dollargrain.R
+import com.luna.dollargrain.R
 import com.luna.dollargrain.LocalWindowInsets
 import com.luna.dollargrain.base.ButtonRow
 import com.luna.dollargrain.base.Divider
@@ -31,7 +31,7 @@ import com.luna.dollargrain.data.RestedBudgetDistributionMethod
 import com.luna.dollargrain.data.SpendsViewModel
 import com.luna.dollargrain.di.TUTORS
 import com.luna.dollargrain.analytics.ANALYTICS_SHEET
-import com.luna.dollargrain.ui.BuckwheatTheme
+import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.util.*
 import java.math.BigDecimal
 import java.util.*
@@ -361,7 +361,7 @@ fun Wallet(
 @Preview
 @Composable
 fun PreviewWallet() {
-    BuckwheatTheme {
+    DollargrainTheme {
         Wallet()
     }
 }
