@@ -29,7 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import com.luna.dollargrain.ui.DollargrainTheme
 import com.luna.dollargrain.ui.ThemeMode
 import com.luna.dollargrain.ui.syncTheme
-import com.luna.dollargrain.util.locScreenOrientation
+import com.luna.dollargrain.util.LockScreenOrientation
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import syncOverrideLocale
@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
             val widthSizeClass = calculateWindowSizeClass(this).widthSizeClass
 
             if (widthSizeClass == WindowWidthSizeClass.Compact) {
-                locScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+                LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             }
 
 

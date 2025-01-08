@@ -209,7 +209,7 @@ fun tryConvertStringToNumber(input: String): Triple<String, String, String> {
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun Preview() {
     val context = LocalContext.current
@@ -218,48 +218,8 @@ fun Preview() {
         Text(
             text = visualTransformationAsCurrency(
                 context,
-                getAnnotatedString("0", Pair(0, 1), Color.Green),
+                getAnnotatedString("this is an annotated string", Pair(0, 1), Color.Green),
                 currency = ExtendCurrency.none(),
-                Color.Green,
-            ).text
-        )
-        Text(
-            text = visualTransformationAsCurrency(
-                context,
-                getAnnotatedString("0", Pair(0, 4), Color.Green),
-                currency = ExtendCurrency.getInstance("EUR"),
-                Color.Green,
-            ).text
-        )
-        Text(
-            text = visualTransformationAsCurrency(
-                context,
-                getAnnotatedString("0", Pair(0, 4), Color.Green),
-                currency = ExtendCurrency.getInstance("RUB"),
-                Color.Green,
-            ).text
-        )
-        Text(
-            text = visualTransformationAsCurrency(
-                context,
-                getAnnotatedString("", Pair(0, 4), Color.Green),
-                currency = ExtendCurrency.none(),
-                Color.Green,
-            ).text
-        )
-        Text(
-            text = visualTransformationAsCurrency(
-                context,
-                getAnnotatedString("", Pair(0, 4), Color.Green),
-                currency = ExtendCurrency.getInstance("EUR"),
-                Color.Green,
-            ).text
-        )
-        Text(
-            text = visualTransformationAsCurrency(
-                context,
-                getAnnotatedString("", Pair(0, 4), Color.Green),
-                currency = ExtendCurrency.getInstance("RUB"),
                 Color.Green,
             ).text
         )

@@ -14,16 +14,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -52,8 +55,7 @@ fun BugReporter(onClose: () -> Unit = {}) {
         16.dp,
     )
 
-    val addYourCommentToReportHint = stringResource(R.string.add_your_comment_to_report)
-
+    val addYourCommentToReportHint = "add details here!! include stuffs like a detailed description of the bug, how to reporduce it, etc etc :3 thx!!"
     Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
         Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
             Box(
@@ -63,7 +65,7 @@ fun BugReporter(onClose: () -> Unit = {}) {
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.report_bug_title),
+                    text = "report a bug",
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
@@ -72,35 +74,61 @@ fun BugReporter(onClose: () -> Unit = {}) {
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                     .height(IntrinsicSize.Min),
             ) {
+                // github button
                 Button(
                     modifier = Modifier
-                        .weight(1F)
-                        .fillMaxHeight(),
-                    icon = painterResource(R.drawable.ic_github),
-                    text = stringResource(R.string.report_via_github),
+                        .fillMaxWidth(.5f)
+                        .height(100.dp),
                     onClick = {
                         openInBrowser(
                             context,
-                            "https://github.com/luna/buckwheat/issues",
+                            "https://github.com/ellipticobj/dollargrain/issues",
                         )
                         onClose()
                     },
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Button(
+                    shape = RoundedCornerShape(
+                        topStart = 16.dp,
+                        topEnd = 4.dp,
+                        bottomStart = 16.dp,
+                        bottomEnd = 4.dp,
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            painter = painterResource(R.drawable.ic_github),
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "on github",
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                // email button
+                OutlinedButton(
                     modifier = Modifier
-                        .weight(1F)
-                        .fillMaxHeight(),
-                    icon = painterResource(R.drawable.ic_email),
-                    text = stringResource(R.string.report_via_email),
+                        .fillMaxWidth()
+                        .height(100.dp),
                     onClick = {
                         sendEmail(
                             context,
-                            arrayOf("hello@luna.com"),
+                            arrayOf("luna@hackclub.app"),
                             "Buckwheat bug report",
                             """
-    
-    
+
+
 $addYourCommentToReportHint
 
 
@@ -109,43 +137,37 @@ ${collectEnvInfo(context)}
                         )
                         onClose()
                     },
-                )
-            }
-        }
-    }
-}
+                    shape = RoundedCornerShape(
+                        topStart = 4.dp,
+                        topEnd = 16.dp,
+                        bottomStart = 4.dp,
+                        bottomEnd = 16.dp,
+                    ),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(30.dp),
+                            painter = painterResource(R.drawable.ic_email),
+                            tint = colorOnEditor,
+                            contentDescription = null
+                        )
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Button(modifier: Modifier = Modifier, icon: Painter, text: String, onClick: () -> Unit) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = colorEditor,
-            contentColor = colorOnEditor,
-        ),
-        onClick = onClick,
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Icon(
-                modifier = Modifier.size(36.dp),
-                painter = icon,
-                tint = colorOnEditor,
-                contentDescription = null
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-            )
+                        Spacer(modifier = Modifier.width(4.dp))
+
+                        Text(
+                            text = "via email",
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                }
+            }
         }
     }
 }
