@@ -27,6 +27,8 @@ If you want to support my work, you can share my app with friends or check anoth
 
 ### Other information
 
+**Press Kit**: [Google Drive](https://drive.google.com/drive/folders/1DsVynLPhYvKJNIlFAz87GnK53ja3Suap?usp=sharing)
+
 **Policy**: [You can read there](./POLICY.md)
 
 **License**: [GNU GPL v3](LICENSE)
