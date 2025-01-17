@@ -1,39 +1,85 @@
-# Privacy Policy for Buckwheat
+# Privacy Policy for Buckwheat Application
 
-At Buckwheat, one of my main priorities is the privacy of users. 
-This Privacy Policy document contains types of information that is collected and recorded by Buckwheat app and how we use it.
+Buckwheat ("we," "us," or "our") is committed to protecting the privacy of its users. This Privacy Policy outlines the types of information collected through the Buckwheat application (the "Application"), the purposes for which this information is used, and the rights users have regarding their personal data.
 
-If you have additional questions or require more information about my Privacy Policy, do not hesitate to contact with me.
+Should you have any questions or require clarification regarding this Privacy Policy, please contact us using the information provided in **Section 9**.
 
-This Privacy Policy applies only to my app and is valid for users to my app with regards to the information that they shared and/or collect in Buckwheat. 
-This policy is not applicable to any information collected offline or via channels other than this app.
+This Privacy Policy applies solely to the Application and governs the information collected from users in connection with their use of the Application. It does not apply to any information collected offline or through channels other than the Application.
 
-## Consent
+## 1. Consent and Acceptance
 
-By using my app, you hereby consent to my Privacy Policy and agree to its terms.
+a) By accessing and using the Application, you expressly acknowledge and consent to the practices described in this Privacy Policy and agree to be bound by its terms.  
+b) If you do not agree with any provision of this Privacy Policy, you are not authorized to use the Application.
 
-## Information i collect
+## 2. Information Collection
 
-My app and i don't collect any personal information.
-If you contact me directly, i may receive additional information about you such as your name, email address, phone model,
-the contents of the message and/or attachments you may send us, and any other information you may choose to provide.
+### a) Personal Information:
+The Application does not automatically collect any personally identifiable information. However, when you voluntarily contact us directly, we may collect the following information:  
+i) Your name;  
+ii) Your email address;  
+iii) Your device model;  
+iv) The content of your communication; and  
+v) Any other information you choose to provide.
 
-## How i use your information
+### b) User-Provided Information:
+The Application collects information solely based on user actions. This may include, but is not limited to:  
+i) Information provided during communication with us; and  
+ii) Any data that users voluntarily upload or share through the Application.
 
-I use the information collect in various ways, including to:
+## 3. Use of Information
 
-- Provide, operate, and maintain my app
-- Improve, personalize, and expand my app
-- Understand and analyze how you use my app
-- Develop features, and functionality
+We may use the collected information for the following purposes:  
+a) To provide, operate, and maintain the Application;  
+b) To improve, personalize, and enhance the Application's functionality;  
+c) To understand and analyze user interaction with the Application;  
+d) To develop new features and functionalities; and  
+e) To communicate with users, including responding to inquiries and providing support.
 
-## Log Files
+## 4. Log Files
 
-Buckwheat follows a standard procedure of using log files. These files log some errors when app crashes.
-The information collected by log files include, phone type, operation system name, date and time stamp, referring/exit pages, and possibly the number of clicks.
-These are not linked to any information that is personally identifiable.
-The purpose of the information is for analyzing errors in app, tracking users' movement in the app.
+a) Buckwheat utilizes standard log file practices for technical administration and error resolution.  
+b) These log files record errors that may occur during Application malfunctions.  
+c) Log file information may include:  
+i) Device type;  
+ii) Operating system name and version;  
+iii) Date and time stamps;  
+iv) Referring/exit pages; and  
+v) Aggregate, anonymized click data.  
+d) This log file information is not linked to any personally identifiable information and is utilized exclusively for debugging, error analysis, and for monitoring Application usage patterns.
 
-## Advertising Partners Privacy Policies
+## 5. Data Retention
 
-I don't use show any ads in my app. And my app don't collect any user tracking information
+a) We retain user information only for as long as necessary to fulfill the purposes outlined in this Privacy Policy or as mandated by applicable legal or regulatory requirements. We will periodically review and delete unnecessary data.
+
+## 6. User Rights
+
+Depending on your jurisdiction, you may have the following rights concerning your personal data, to the extent provided by applicable law:  
+a) The right to access the personal data we hold about you;  
+b) The right to request correction of inaccurate personal data;  
+c) The right to request erasure of your personal data;  
+d) The right to restrict or object to the processing of your personal data; and  
+e) The right to data portability.
+
+To exercise these rights, please contact us using the contact information provided in **Section 9**. We will respond to your request in accordance with applicable law.
+
+## 7. Third-Party Services
+
+a) We do not disclose your personal information to third-party service providers except where required to do so by law.  
+b) We do not display advertisements within our Application.  
+c) We do not utilize tracking mechanisms or engage in the collection of user tracking data through the Application.
+
+## 8. Amendments to This Privacy Policy
+
+a) We reserve the right to modify this Privacy Policy at any time.  
+b) Notification of any amendments to this Privacy Policy will be provided by posting the revised Privacy Policy on this page. We recommend that you check this page regularly for updates.  
+c) Your continued use of the Application following the posting of any amendments to this Privacy Policy constitutes acceptance of those changes.  
+d) Amendments to this Privacy Policy will be effective upon their posting on this page.
+
+## 9. Contact Information
+
+For any questions or concerns regarding this Privacy Policy, please contact us through the following methods:
+a) Github Issues - https://github.com/danilkinkin/buckwheat/issues
+b) Email - hello@danilkinkin.com
+
+
+Thank you for your trust in Buckwheat. We are committed to protecting your privacy.
