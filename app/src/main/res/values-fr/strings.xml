@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Buckwheat</string>
-  <string name="app_widget_extend_name">Extension de sarrasin</string>
-  <string name="app_widget_minimal_name">Minimum de sarrasin</string>
+  <string name="app_widget_extend_name">Buckwheat étendu</string>
+  <string name="app_widget_minimal_name">Buckwheat réduit</string>
   <string name="rest_budget_for_today">Pour aujourd\'hui</string>
   <string name="new_daily_budget_short">Nouvelle journée</string>
   <string name="new_daily_budget">Nouveau budget journalier</string>
-  <string name="new_daily_budget_description">Aujourd\'hui vous avez dépassé le budget journalier, ne vous inquiétez pas, ce n\'est pas effrayant. Pour les jours suivants, le budget sera recalculé en tenant compte du budget total restant</string>
+  <string name="new_daily_budget_description">Aujourd\'hui, vous avez dépassé le budget de votre journée, ne vous inquiétez pas. Le budget sera recalculé pour les jours suivants en fonction du budget total restant</string>
   <string name="budget_end">Le budget est épuisé</string>
   <string name="budget_not_set">Pas de budget défini</string>
   <string name="budget_end_description">Vous avez dépassé le budget prévu, pas d\'inquiétude, ce
@@ -156,7 +156,7 @@
   <string name="billion_numerical_shorthand">b</string>
   <string name="trillion_numerical_shorthand">t</string>
   <string name="without_tag">Sans étiquette</string>
-  <string name="rest_tags">Repos</string>
+  <string name="rest_tags">Reste</string>
   <string name="not_enough_data_for_tags_chart">Impossible de diviser vos dépenses par catégories</string>
   <string name="not_enough_data_for_tags_chart_use_tags_hint">Utilisez des balises pour voir le graphique par catégories</string>
   <string name="spends_calendar_hint">Le graphique montre combien vous avez dépensé chaque jour par rapport à votre budget quotidien</string>
