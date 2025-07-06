@@ -8,5 +8,12 @@ pluginManagement {
     }
 }
 
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 rootProject.name = "buckwheat"
 include(":app")
