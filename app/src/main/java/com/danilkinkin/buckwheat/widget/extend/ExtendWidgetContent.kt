@@ -3,7 +3,6 @@ package com.danilkinkin.buckwheat.widget.extend
 import android.content.Intent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
@@ -32,6 +31,8 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
 import androidx.glance.layout.width
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
 import com.danilkinkin.buckwheat.BuildConfig
@@ -367,35 +368,37 @@ fun ExtendWidgetContent() {
                 }
             }
         }
-    }
 
-    if (BuildConfig.DEBUG) {
-        Box(
-            modifier = GlanceModifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CanvasText(
-                modifier = GlanceModifier.padding(top = 8.dp),
-                text = "${size.width}x${size.height}",
-                style = TextStyle(
-                    color = GlanceTheme.colors.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 10.sp,
+        if (BuildConfig.DEBUG) {
+            Box(
+                modifier = GlanceModifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center,
+            ) {
+                CanvasText(
+                    modifier = GlanceModifier.padding(top = 8.dp),
+                    text = "${size.width}x${size.height}",
+                    style = TextStyle(
+                        color = GlanceTheme.colors.onSurfaceVariant,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 10.sp,
+                    )
                 )
-            )
+            }
         }
-    }
 
-    Box(
-        modifier = GlanceModifier
-            .cornerRadius(32.dp)
-            .fillMaxSize()
-            .clickable(actionStartActivity(intent))
-    ) {}
+        Box(
+            modifier = GlanceModifier
+                .cornerRadius(32.dp)
+                .fillMaxSize()
+                .clickable(actionStartActivity(intent))
+        ) {}
+    }
 }
 
-@Preview
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(400, 300)
 @Composable
+@GlanceComposable
 private fun Preview() {
     GlanceTheme {
         ExtendWidgetContent()

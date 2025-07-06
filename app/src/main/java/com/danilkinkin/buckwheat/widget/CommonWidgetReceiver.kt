@@ -3,7 +3,9 @@ package com.danilkinkin.buckwheat.widget
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -23,8 +25,20 @@ import java.math.RoundingMode
 import java.util.Date
 import javax.inject.Inject
 
-val LocalContentColor = compositionLocalOf { ColorProvider(Color.Black) }
-val LocalAccentColor = compositionLocalOf { ColorProvider(Color.White) }
+
+@Composable
+fun Color.toColorProvider(): ColorProvider {
+    return try {
+        val constructor = ColorProvider::class.java.getDeclaredConstructor(Color::class.java)
+        constructor.isAccessible = true
+        constructor.newInstance(this)
+    } catch (e: Exception) {
+        LocalContentColor.current
+    }
+}
+
+val LocalContentColor = compositionLocalOf<ColorProvider> { throw Error("No set") }
+val LocalAccentColor = compositionLocalOf<ColorProvider> { throw Error("No set") }
 
 abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
 

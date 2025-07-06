@@ -8,22 +8,28 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.Typeface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.graphics.createBitmap
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceComposable
+import androidx.glance.GlanceModifier
+import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalContext
-import androidx.glance.text.TextStyle
-import androidx.glance.GlanceModifier
 import androidx.glance.layout.ContentScale
+import androidx.glance.layout.Row
 import androidx.glance.layout.width
+import androidx.glance.preview.ExperimentalGlancePreviewApi
+import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextAlign
-import androidx.glance.unit.ColorProvider
+import androidx.glance.text.TextStyle
 import com.danilkinkin.buckwheat.base.Size
 
 
@@ -77,11 +83,7 @@ fun drawText(context: Context, text: String, style: TextStyle): Bitmap {
     val paint = Paint().applyFontToPaint(context, style)
     val size = calcTextSize(context, text, style)
 
-    val bitmap: Bitmap = Bitmap.createBitmap(
-        size.width,
-        size.height,
-        Bitmap.Config.ARGB_8888,
-    )
+    val bitmap: Bitmap = createBitmap(size.width, size.height)
 
     Canvas(bitmap).drawText(text, 0F, -paint.ascent(), paint)
 
@@ -102,7 +104,7 @@ fun CanvasText(
     val width = 0.dp
         //.plus(modifier.collectPaddingInDp(context.resources)?.start ?: 0.dp)
         .plus(Dp(size.width / context.resources.displayMetrics.density))
-        //.plus(modifier.collectPaddingInDp(context.resources)?.end ?: 0.dp)
+    //.plus(modifier.collectPaddingInDp(context.resources)?.end ?: 0.dp)
 
 
     if (noTint) {
@@ -119,12 +121,93 @@ fun CanvasText(
                 drawText(
                     context,
                     text,
-                    style.copy(ColorProvider(Color.Black))
+                    style.copy(Color.Black.toColorProvider())
                 )
             ),
             colorFilter = ColorFilter.tint(style.color),
             contentScale = ContentScale.Fit,
             contentDescription = null,
         )
+    }
+}
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(300, 55)
+@Composable
+@GlanceComposable
+fun PreviewColoredText() {
+    GlanceTheme {
+        CompositionLocalProvider(
+            LocalContentColor provides GlanceTheme.colors.onSurface,
+        ) {
+            CanvasText(
+                text = "Hey!",
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 36.sp,
+                    color = Color.Green.toColorProvider()
+                )
+            )
+        }
+    }
+}
+
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(300, 55)
+@Composable
+@GlanceComposable
+fun PreviewWithEmojiTint() {
+    GlanceTheme {
+        CompositionLocalProvider(
+            LocalContentColor provides GlanceTheme.colors.onSurface,
+        ) {
+            Row {
+                CanvasText(
+                    text = "Hey \uD83D\uDC4B\uD83C\uDFFB!",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 36.sp,
+                    )
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalGlancePreviewApi::class)
+@Preview(300, 55)
+@Composable
+@GlanceComposable
+fun PreviewWithEmojiNoTint() {
+    GlanceTheme {
+        CompositionLocalProvider(
+            LocalContentColor provides GlanceTheme.colors.onSurface,
+        ) {
+            Row {
+                CanvasText(
+                    text = "Hey ",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 36.sp,
+                    )
+                )
+                CanvasText(
+                    text = "\uD83D\uDC4B\uD83C\uDFFB",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 36.sp,
+                    ),
+                    noTint = true
+                )
+                CanvasText(
+                    text = "!",
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 36.sp,
+                    )
+                )
+            }
+        }
     }
 }

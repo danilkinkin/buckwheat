@@ -90,6 +90,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.1")
     implementation("androidx.glance:glance-appwidget:1.1.1")
+    implementation("androidx.glance:glance-appwidget-preview:1.1.1")
+    implementation("androidx.glance:glance-preview:1.1.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
     implementation("com.google.dagger:dagger:2.56.2")
@@ -105,7 +107,6 @@ dependencies {
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
-    debugImplementation("com.google.android.glance.tools:appwidget-viewer:0.2.2")
 
     // Testing
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
