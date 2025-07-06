@@ -17,10 +17,11 @@ android {
         versionCode = 28
         versionName = "4.7.0"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-            arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
-        }
+    }
+
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+        arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
     }
 
     buildTypes {
