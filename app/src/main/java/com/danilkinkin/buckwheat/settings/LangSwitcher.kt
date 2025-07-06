@@ -5,11 +5,10 @@ import android.net.Uri
 import android.os.Build
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -75,6 +74,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
     val overrideLocale = LocalContext.current.appLocale
     val coroutineScope = rememberCoroutineScope()
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
+    val scrollState = rememberScrollState()
 
     val navigationBarHeight = androidx.compose.ui.unit.max(
         LocalWindowInsets.current.calculateBottomPadding(),
@@ -90,33 +90,33 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
 
     val currentLocale = configuration.locales[0]
     val locales = listOf(
-        Locale("be"),
-        Locale("cs"),
-        Locale("de"),
-        Locale("en"),
-        Locale("es"),
-        Locale("fr"),
-        Locale("ia"),
-        Locale("it"),
-        Locale("ja"),
-        Locale("pt", "BR"),
-        Locale("ro"),
-        Locale("ru"),
-        Locale("sr"),
-        Locale("sv"),
-        Locale("ta"),
-        Locale("tr"),
-        Locale("uk"),
-        Locale("zh", "CN"),
-        Locale("zh", "TW"),
-        Locale("pl"),
-        Locale("sk", "SK"),
-        Locale("hr"),
-        Locale("nl"),
+        Locale.forLanguageTag("be"),
+        Locale.forLanguageTag("cs"),
+        Locale.forLanguageTag("de"),
+        Locale.forLanguageTag("en"),
+        Locale.forLanguageTag("es"),
+        Locale.forLanguageTag("fr"),
+        Locale.forLanguageTag("ia"),
+        Locale.forLanguageTag("it"),
+        Locale.forLanguageTag("ja"),
+        Locale.forLanguageTag("pt-BR"),
+        Locale.forLanguageTag("ro"),
+        Locale.forLanguageTag("ru"),
+        Locale.forLanguageTag("sr"),
+        Locale.forLanguageTag("sv"),
+        Locale.forLanguageTag("ta"),
+        Locale.forLanguageTag("tr"),
+        Locale.forLanguageTag("uk"),
+        Locale.forLanguageTag("zh-CN"),
+        Locale.forLanguageTag("zh-TW"),
+        Locale.forLanguageTag("pl"),
+        Locale.forLanguageTag("sk-SK"),
+        Locale.forLanguageTag("hr"),
+        Locale.forLanguageTag("nl"),
     )
 
     Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
-        Column(modifier = Modifier.padding(bottom = navigationBarHeight)) {
+        Column(modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,17 +128,26 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            CheckedRow(
-                text = stringResource(R.string.locale_system),
-                checked = overrideLocale === null,
-                onValueChange = { handleSwitchLang(null) },
-            )
-            locales.forEach { locale ->
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState).padding(bottom = navigationBarHeight),
+            ) {
                 CheckedRow(
-                    text = locale.getDisplayName(locale).titleCase(),
-                    checked = overrideLocale !== null && locale.language === currentLocale.language,
-                    onValueChange = { handleSwitchLang(locale.language) },
+                    text = stringResource(R.string.locale_system),
+                    checked = overrideLocale === null,
+                    onValueChange = { handleSwitchLang(null) },
                 )
+                locales
+                    .sortedBy { locale ->
+                        locale.getDisplayName(locale).titleCase()
+                    }
+                    .forEach { locale ->
+                        CheckedRow(
+                            text = locale.getDisplayName(locale).titleCase(),
+                            checked = overrideLocale !== null && locale.language === currentLocale.language,
+                            onValueChange = { handleSwitchLang(locale.language) },
+                        )
+                    }
             }
         }
     }
