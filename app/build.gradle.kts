@@ -4,7 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.0"
 }
 
 android {
@@ -67,7 +67,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.0.21")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.activity:activity-compose:1.10.1")
