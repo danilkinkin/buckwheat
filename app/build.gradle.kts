@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
+
     id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp")
     id("org.jetbrains.kotlin.plugin.compose") version "2.2.0"
@@ -17,15 +17,9 @@ android {
         versionCode = 28
         versionName = "4.7.0"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
-                arguments["room.schemaLocation"] = "$projectDir/schemas"
-            }
-        }
-
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
+            arg("dagger.hilt.disableModulesHaveInstallInCheck", "true")
         }
     }
 
@@ -97,9 +91,9 @@ dependencies {
     implementation("org.apache.commons:commons-csv:1.14.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
     ksp("androidx.room:room-compiler:2.7.2")
-    kapt("androidx.hilt:hilt-compiler:1.2.0")
-    kapt("com.google.dagger:dagger-compiler:2.56.2")
-    kapt("com.google.dagger:hilt-android-compiler:2.56.2")
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
+    ksp("com.google.dagger:dagger-compiler:2.56.2")
+    ksp("com.google.dagger:hilt-android-compiler:2.56.2")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     // Debug
@@ -118,5 +112,5 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test:1.8.3")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.56.2")
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.56.2")
 }
