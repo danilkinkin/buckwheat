@@ -8,6 +8,7 @@ import androidx.compose.ui.text.Paragraph
 import androidx.compose.ui.text.ParagraphIntrinsics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.createFontFamilyResolver
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -35,11 +36,11 @@ fun calcMaxFont(
         paragraphIntrinsics = intrinsics,
         constraints = Constraints(maxWidth = ceil(1000f).toInt()),
         maxLines = 1,
-        ellipsis = false
+        overflow = TextOverflow.Clip
     )
 
     return with(LocalDensity.current) {
-        ((measureFontSize.toPx() / paragraph.height) * height).toSp()
+        ((measureFontSize.toPx() / paragraph.firstBaseline) * height).toSp()
     }
 }
 
@@ -59,11 +60,11 @@ fun calcFontHeight(
         paragraphIntrinsics = intrinsics,
         constraints = Constraints(maxWidth = ceil(1000f).toInt()),
         maxLines = 1,
-        ellipsis = false
+        overflow = TextOverflow.Clip
     )
 
     return with(LocalDensity.current) {
-        paragraph.height.toDp()
+        paragraph.firstBaseline.toDp()
     }
 }
 

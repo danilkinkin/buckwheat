@@ -52,6 +52,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.Velocity
@@ -78,7 +79,16 @@ fun TextFieldWithPaddings(
 ) {
     val context = LocalContext.current
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
-    val textFieldValue = textFieldValueState.copy(text = value)
+
+    val textFieldValue = if (textFieldValueState.text != value) {
+        val newCursorPosition = value.length.coerceAtMost(value.length)
+        textFieldValueState.copy(
+            text = value,
+            selection = TextRange(newCursorPosition)
+        )
+    } else {
+        textFieldValueState.copy(text = value)
+    }
 
     val scrollState = rememberScrollState()
     var containerHeight by remember { mutableStateOf(0) }
@@ -283,10 +293,13 @@ fun TextFieldWithPaddings(
             )
         }
 
-        LaunchedEffect(key1 = Unit) {
-            textFieldValueState = textFieldValueState.copy(
-                selection = TextRange(textFieldValueState.text.length)
-            )
+        LaunchedEffect(value) {
+            if (textFieldValueState.text != value) {
+                textFieldValueState = textFieldValueState.copy(
+                    text = value,
+                    selection = TextRange(value.length)
+                )
+            }
         }
 
         DisposableEffect(value) {
@@ -314,10 +327,10 @@ fun calculateIntrinsics(input: String, style: TextStyle): Size {
         paragraphIntrinsics = intrinsics,
         constraints = Constraints(maxWidth = ceil(1000f).toInt()),
         maxLines = 1,
-        ellipsis = false
+        overflow = TextOverflow.Clip
     )
 
-    return Size(intrinsics.maxIntrinsicWidth.toInt(), paragraph.height.toInt())
+    return Size(intrinsics.maxIntrinsicWidth.toInt(), paragraph.firstBaseline.toInt())
 }
 
 data class Size(val width: Int, val height: Int)

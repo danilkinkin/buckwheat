@@ -3,22 +3,23 @@ buildscript {
         google()
         mavenCentral()
     }
-
     dependencies {
-        classpath("com.android.tools.build:gradle:8.4.1")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.46")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
-        classpath("com.diffplug.spotless:spotless-plugin-gradle:6.20.0")
+        classpath("com.android.tools.build:gradle:8.11.0")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.56.2")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21")
+        classpath("com.diffplug.spotless:spotless-plugin-gradle:7.0.4")
         classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
     }
 }
 
-subprojects {
+allprojects {
     repositories {
         google()
         mavenCentral()
     }
+}
 
+subprojects {
     pluginManager.apply("com.diffplug.spotless")
 
     configure<com.diffplug.gradle.spotless.SpotlessExtension> {
@@ -38,6 +39,6 @@ subprojects {
 }
 
 plugins {
-    id("com.github.ben-manes.versions") version "0.47.0"
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17" apply false
+    id("com.github.ben-manes.versions") version "0.52.0"
+    id("com.google.devtools.ksp") version "2.0.21-1.0.28" apply false
 }
