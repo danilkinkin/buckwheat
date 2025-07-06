@@ -27,10 +27,12 @@
   <string name="select_finish_date_title">Choisir une date de fin</string>
   <plurals name="finish_date_label">
     <item quantity="one">Jusqu\'au %1$s (%2$s jour)</item>
+    <item quantity="many">Jusqu\'au %1$s (%2$s jours)</item>
     <item quantity="other">Jusqu\'au %1$s (%2$s jours)</item>
   </plurals>
   <plurals name="days_count">
     <item quantity="one">%1$s jour</item>
+    <item quantity="many">%1$s jours</item>
     <item quantity="other">%1$s jours</item>
   </plurals>
   <string name="export_to_csv">Export CSV</string>

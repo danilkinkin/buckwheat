@@ -24,10 +24,12 @@
   <string name="select_finish_date_title">Escolha uma data de término</string>
   <plurals name="finish_date_label">
     <item quantity="one">Para %1$s (%2$s dia)</item>
+    <item quantity="many">Para %1$s (%2$s dias)</item>
     <item quantity="other">Para %1$s (%2$s dias)</item>
   </plurals>
   <plurals name="days_count">
     <item quantity="one">%1$s dia</item>
+    <item quantity="many">%1$s dias</item>
     <item quantity="other">%1$s dias</item>
   </plurals>
   <string name="export_to_csv">Exportar para CSV</string>

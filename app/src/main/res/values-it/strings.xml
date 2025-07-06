@@ -24,10 +24,12 @@
   <string name="select_finish_date_title">Scegli una data di fine</string>
   <plurals name="finish_date_label">
     <item quantity="one">Fino al %1$s (%2$s giorno)</item>
+    <item quantity="many">Fino al %1$s (%2$s giorni)</item>
     <item quantity="other">Fino al %1$s (%2$s giorni)</item>
   </plurals>
   <plurals name="days_count">
     <item quantity="one">%1$s giorno</item>
+    <item quantity="many">%1$s giorni</item>
     <item quantity="other">%1$s giorni</item>
   </plurals>
   <string name="export_to_csv">Carica in CSV</string>
