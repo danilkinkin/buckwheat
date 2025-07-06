@@ -52,9 +52,6 @@
   <string name="currency_not_found">Žádná shodující se měna</string>
   <string name="currency_custom_title">Zadejte svou měnu</string>
   <string name="currency_custom_description">Například útrata 150 jednotek se zobrazí takto:</string>
-  <string name="confirm_change_budget_title">Změna rozpočtu</string>
-  <string name="confirm_change_budget_description">Vezměte prosím na vědomí, že při změně rozpočtu bude aktuální historie výdajů smazána a odpočítávání začne znovu</string>
-  <string name="confirm_change_budget">Změnit rozpočet</string>
   <string name="use_last">Předchozí hodnoty</string>
   <string name="days_left">Zbývající dny</string>
   <string name="settings_title">Nastavení</string>

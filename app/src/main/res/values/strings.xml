@@ -48,9 +48,6 @@
   <string name="currency_not_found">No matching currencies</string>
   <string name="currency_custom_title">Enter your currency</string>
   <string name="currency_custom_description">For example, spending 150 conventional units will be displayed like this:</string>
-  <string name="confirm_change_budget_title">Budget change</string>
-  <string name="confirm_change_budget_description">Please note that when you change the budget, the current spending history will be deleted and the countdown will start over</string>
-  <string name="confirm_change_budget">Change budget</string>
   <string name="use_last">Previous values</string>
   <string name="days_left">Days left</string>
   <string name="settings_title">Settings</string>
@@ -111,7 +108,7 @@
   <string name="remember_choice">Remember the choice</string>
   <string name="rest_label">Rest</string>
   <string name="choose_recalc_budget_method_label">Choose a residue distribution method</string>
-  <string name="choose_recalc_budget_method_description">You can choose how to distribute the balance of the budget after the day. \n\nFor example, you have a budget for 500 day, yesterday you spent 400, today you can either distribute 100 on the remaining days, or spend 600 (500 + 100) today</string>
+  <string name="choose_recalc_budget_method_description">You can choose how to distribute the balance of the budget after the day. \n\nFor example, you have a budget of 500 a day, yesterday you spent 400, now you can either distribute 100 on the remaining days, or spend 600 (500 + 100) today</string>
   <string name="always_ask">Always ask</string>
   <string name="method_split_to_rest_days_title">Distribute</string>
   <string name="method_split_to_rest_days_description">The restless residue will be distributed on the remaining days</string>

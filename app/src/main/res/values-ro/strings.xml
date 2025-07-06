@@ -50,9 +50,6 @@
   <string name="currency_not_found">Nici o valută găsită</string>
   <string name="currency_custom_title">Introdu valuta</string>
   <string name="currency_custom_description">Ca exemplu, cheltuind 150 unități va fi arătat ca:</string>
-  <string name="confirm_change_budget_title">Schimbă bugetul</string>
-  <string name="confirm_change_budget_description">Vă rugăm să rețineți că dacă schimbați bugetul, istoricul cheltuielilor actuale va fi șters numărătoarea va începe iar</string>
-  <string name="confirm_change_budget">Schimbă bugetul</string>
   <string name="use_last">Valori anterioare</string>
   <string name="days_left">Zile rămase</string>
   <string name="settings_title">Setări</string>

@@ -48,9 +48,6 @@
   <string name="currency_not_found">No hay divisas coincidentes</string>
   <string name="currency_custom_title">Introduce tu divisa</string>
   <string name="currency_custom_description">Por ejemplo, gastar 150 unidades convencionales se mostrará así:</string>
-  <string name="confirm_change_budget_title">Cambiar el presupuesto</string>
-  <string name="confirm_change_budget_description">Por favor, ten en cuenta que al cambiar el presupuesto el historial de gastos actual se borrará y la cuenta atrás empezará de nuevo</string>
-  <string name="confirm_change_budget">Cambiar el presupuesto</string>
   <string name="use_last">Valores anteriores</string>
   <string name="days_left">Días restantes</string>
   <string name="settings_title">Ajustes</string>

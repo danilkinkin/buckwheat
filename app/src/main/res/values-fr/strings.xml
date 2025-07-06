@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Buckwheat</string>
-  <string name="app_widget_extend_name">Extension de sarrasin</string>
-  <string name="app_widget_minimal_name">Minimum de sarrasin</string>
+  <string name="app_widget_extend_name">Buckwheat étendu</string>
+  <string name="app_widget_minimal_name">Buckwheat réduit</string>
   <string name="rest_budget_for_today">Pour aujourd\'hui</string>
   <string name="new_daily_budget_short">Nouvelle journée</string>
   <string name="new_daily_budget">Nouveau budget journalier</string>
-  <string name="new_daily_budget_description">Aujourd\'hui vous avez dépassé le budget journalier, ne vous inquiétez pas, ce n\'est pas effrayant. Pour les jours suivants, le budget sera recalculé en tenant compte du budget total restant</string>
+  <string name="new_daily_budget_description">Aujourd\'hui, vous avez dépassé le budget de votre journée, ne vous inquiétez pas. Le budget sera recalculé pour les jours suivants en fonction du budget total restant</string>
   <string name="budget_end">Le budget est épuisé</string>
   <string name="budget_not_set">Pas de budget défini</string>
   <string name="budget_end_description">Vous avez dépassé le budget prévu, pas d\'inquiétude, ce
@@ -50,13 +50,9 @@
   <string name="search_currency_placeholder">Code ou nom de la devise</string>
   <string name="currency_not_found">Aucune devise correspondante</string>
   <string name="currency_custom_title">Saisir votre devise</string>
-  <string name="currency_custom_description">Par exemple, une dépense de 150 unités sera affiché
-        comme ceci:</string>
-  <string name="confirm_change_budget_title">Changer de budget</string>
-  <string name="confirm_change_budget_description">Important: lorsque vous changez de budget,
-        l\'historique des dépenses actuel sera supprimé et le décompte sera remis à zéro.</string>
-  <string name="confirm_change_budget">Changer de budget</string>
-  <string name="use_last">Valeurs précédentes</string>
+  <string name="currency_custom_description">Par exemple, une dépense de 150 unités sera affichée
+        comme cela :</string>
+  <string name="use_last">Dernières valeurs</string>
   <string name="days_left">Jours restants</string>
   <string name="settings_title">Réglages</string>
   <string name="theme_label">Thème</string>
@@ -130,7 +126,7 @@
   <string name="remember_choice_reacalc_budget_description">Vous pourrez la modifier plus tard
         depuis votre portefeuille</string>
   <string name="remember_choice">Mémorisez ce choix</string>
-  <string name="rest_label">Reste</string>
+  <string name="rest_label">Autres</string>
   <string name="choose_recalc_budget_method_label">Choisissez la méthode de répartition du résidu</string>
   <string name="choose_recalc_budget_method_description">Vous pouvez choisir comment utiliser le
         résidu du budget à la fin de la journée. \n\nPar exemple, si vous votre budget journalier
@@ -156,7 +152,7 @@
   <string name="billion_numerical_shorthand">b</string>
   <string name="trillion_numerical_shorthand">t</string>
   <string name="without_tag">Sans étiquette</string>
-  <string name="rest_tags">Repos</string>
+  <string name="rest_tags">Autres</string>
   <string name="not_enough_data_for_tags_chart">Impossible de diviser vos dépenses par catégories</string>
   <string name="not_enough_data_for_tags_chart_use_tags_hint">Utilisez des balises pour voir le graphique par catégories</string>
   <string name="spends_calendar_hint">Le graphique montre combien vous avez dépensé chaque jour par rapport à votre budget quotidien</string>

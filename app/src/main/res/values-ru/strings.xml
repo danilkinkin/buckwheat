@@ -52,9 +52,6 @@
   <string name="currency_not_found">Нет подходящих валют</string>
   <string name="currency_custom_title">Укажите свою валюту</string>
   <string name="currency_custom_description">Например, трата в 150 условных единиц будет отображаться вот так:</string>
-  <string name="confirm_change_budget_title">Изменение бюджета</string>
-  <string name="confirm_change_budget_description">Обратите внимание, что при изменении бюджета, текущая история трат удалится и отсчет начнется сначала</string>
-  <string name="confirm_change_budget">Изменить бюджет</string>
   <string name="use_last">Предыдущие значения</string>
   <string name="days_left">Дней осталось</string>
   <string name="settings_title">Настройки</string>

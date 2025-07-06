@@ -46,9 +46,6 @@
   <string name="currency_not_found">无对应货币</string>
   <string name="currency_custom_title">输入您的货币</string>
   <string name="currency_custom_description">举例来说，支出 150 个常规单位将显示为：</string>
-  <string name="confirm_change_budget_title">更改预算</string>
-  <string name="confirm_change_budget_description">请注意，更改预算时，您的当前支出记录将被删除并将重新开始倒计时</string>
-  <string name="confirm_change_budget">更改预算</string>
   <string name="use_last">先前数额</string>
   <string name="days_left">剩余天数</string>
   <string name="settings_title">设置</string>

@@ -50,9 +50,6 @@
   <string name="currency_not_found">Нема одговарајућих валута</string>
   <string name="currency_custom_title">Унесите своју валуту</string>
   <string name="currency_custom_description">На пример, потрошња 150 конвенционалних јединица биће приказана овако:</string>
-  <string name="confirm_change_budget_title">Промена буџета</string>
-  <string name="confirm_change_budget_description">Имајте на уму да када промените буџет, тренутна историја потрошње ће бити избрисана и одбројавање ће почети испочетка</string>
-  <string name="confirm_change_budget">Промените буџет</string>
   <string name="use_last">Претходна вредности</string>
   <string name="days_left">Дана остало</string>
   <string name="settings_title">Подешавања</string>

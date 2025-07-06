@@ -48,9 +48,6 @@
   <string name="currency_not_found">Eşleşen para birimi yok</string>
   <string name="currency_custom_title">Para biriminizi girin</string>
   <string name="currency_custom_description">Örneğin, 150 konvansiyonel birimin harcanması şu şekilde görüntülenecektir:</string>
-  <string name="confirm_change_budget_title">Bütçe değişikliği</string>
-  <string name="confirm_change_budget_description">Bütçeyi değiştirdiğinizde mevcut harcama geçmişinin silineceğini ve geri sayımın baştan başlayacağını lütfen unutmayın</string>
-  <string name="confirm_change_budget">Bütçeyi değiştir</string>
   <string name="use_last">Önceki değerler</string>
   <string name="days_left">Gün kaldı</string>
   <string name="settings_title">Ayarlar</string>

@@ -48,9 +48,6 @@
   <string name="currency_not_found">Necun monetas concordante</string>
   <string name="currency_custom_title">Insere tu moneta</string>
   <string name="currency_custom_description">Per exemplo, le expensa de 150 unitates conventional essera monstrate como isto:</string>
-  <string name="confirm_change_budget_title">Cambio de budget</string>
-  <string name="confirm_change_budget_description">Nota que quando tu cambia le budget, le historia de expendimentos actual essera delite e le computo a retro essera restabilite</string>
-  <string name="confirm_change_budget">Cambiar le budget</string>
   <string name="use_last">Valores previe</string>
   <string name="days_left">Dies remanente</string>
   <string name="settings_title">Parametros</string>

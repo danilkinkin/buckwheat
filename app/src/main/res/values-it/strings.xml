@@ -2,17 +2,17 @@
 <resources>
   <string name="app_name">Buckwheat</string>
   <string name="app_widget_extend_name">Buckwheat esteso</string>
-  <string name="app_widget_minimal_name">Minimo di grano saraceno</string>
+  <string name="app_widget_minimal_name">Buckwheat minimale</string>
   <string name="rest_budget_for_today">Per oggi</string>
-  <string name="new_daily_budget_short">Nuovo giorno</string>
+  <string name="new_daily_budget_short">Nuovo giornaliero</string>
   <string name="new_daily_budget">Nuovo budget giornaliero</string>
-  <string name="new_daily_budget_description">Oggi hai superato il budget giornaliero, non preoccuparti. Per i giorni seguenti, il budget verrà ricalcolato tenendo conto del budget totale rimanente.</string>
+  <string name="new_daily_budget_description">Oggi hai superato il budget giornaliero, non preoccuparti. Per i giorni seguenti, il budget verrà ricalcolato tenendo conto del budget totale rimanente</string>
   <string name="budget_end">Il budget è finito</string>
   <string name="budget_not_set">Nessun budget stabilito</string>
-  <string name="budget_end_description">Sei andato oltre il budget, non preoccuparti, le spese non sono sempre le stesse. Inizia a spendere di più per capire quanto spenderai alla fine e di quale budget avrai bisogno.</string>
+  <string name="budget_end_description">Sei andato oltre il budget, non preoccuparti, le spese non sono sempre le stesse. Inizia a spendere di più per capire quanto spenderai alla fine e di quale budget avrai bisogno</string>
   <string name="hide_overspending_warn">Nascondi messaggio fine budget</string>
-  <string name="hide_overspending_warn_description">Il messaggio verrà nascosto fino alla fine del periodo.</string>
-  <string name="add_comment">Aggiungi nota</string>
+  <string name="hide_overspending_warn_description">Il messaggio verrà nascosto fino alla fine del periodo</string>
+  <string name="add_comment">Tag</string>
   <string name="remove_spent">Spesa annullata</string>
   <string name="remove_spent_undo">Annulla</string>
   <string name="no_spends">Nessuna spesa per ora</string>
@@ -48,9 +48,6 @@
   <string name="currency_not_found">Nessuna valuta corrispondente</string>
   <string name="currency_custom_title">Inserisci la tua valuta</string>
   <string name="currency_custom_description">Per esempio, la spesa di 150 unità verrà mostrata così:</string>
-  <string name="confirm_change_budget_title">Cambio budget</string>
-  <string name="confirm_change_budget_description">Per favore, ricorda che se cambierai il budget la cronologia delle spese e il timer si azzereranno.</string>
-  <string name="confirm_change_budget">Cambia budget</string>
   <string name="use_last">Valori precedenti</string>
   <string name="days_left">Giorni rimasti</string>
   <string name="settings_title">Impostazioni</string>

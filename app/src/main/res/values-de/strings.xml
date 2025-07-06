@@ -48,9 +48,6 @@
   <string name="currency_not_found">Keine passenden Währungen</string>
   <string name="currency_custom_title">Währung eingeben</string>
   <string name="currency_custom_description">So werden zum Beispiel 150 konventionelle Einheiten dargestellt:</string>
-  <string name="confirm_change_budget_title">Budgetänderung</string>
-  <string name="confirm_change_budget_description">Beachte bitte, dass der aktuelle Ausgabenverlauf gelöscht wird und der Countdown von neuem beginnt, wenn du das Budget änderst</string>
-  <string name="confirm_change_budget">Budget ändern</string>
   <string name="use_last">Vorherige Werte</string>
   <string name="days_left">Tage übrig</string>
   <string name="settings_title">Einstellungen</string>

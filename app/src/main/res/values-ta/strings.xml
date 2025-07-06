@@ -48,9 +48,6 @@
   <string name="currency_not_found">பொருந்தக்கூடிய நாணயங்கள் இல்லை</string>
   <string name="currency_custom_title">உங்கள் நாணயத்தை உள்ளிடவும்</string>
   <string name="currency_custom_description">எடுத்துக்காட்டாக, 150 வழக்கமான யூனிட்களை செலவு செய்வது இப்படிக் காட்டப்படும்:</string>
-  <string name="confirm_change_budget_title">பட்ஜெட் மாற்றம்</string>
-  <string name="confirm_change_budget_description">நீங்கள் பட்ஜெட்டை மாற்றும்போது, தற்போதைய செலவு வரலாறு நீக்கப்பட்டு கவுண்டவுன் தொடங்கும் என்பதை நினைவில் கொள்ளவும்</string>
-  <string name="confirm_change_budget">பட்ஜெட்டை மாற்றவும்</string>
   <string name="use_last">முந்தைய மதிப்புகள்</string>
   <string name="days_left">நாட்கள் உள்ளன</string>
   <string name="settings_title">அமைப்புகள்</string>
@@ -144,6 +141,6 @@
   <string name="analytics_title">பகுப்பாய்வு</string>
   <string name="finish_early">சீக்கிரம் முடிக்கவும்</string>
   <string name="confirm_finish_budget_title">பட்ஜெட்டை முடிக்கவும்</string>
-  <string name="confirm_finish_budget_description">உங்களின் தற்போதைய வரவு செலவுத் திட்டம் நிறைவடையும், மேலும் உங்களால் இனி எந்த செலவும் செய்ய முடியாது</string>
+  <string name="confirm_finish_budget_description">உங்களின் தற்போதைய வரவு செலவுத் திட்டம் நிறைவடையும், மேலும் உங்களால் இனி எவ்வித செலவும் செய்ய முடியாது</string>
   <string name="confirm_finish_budget">பட்ஜெட்டை முடிக்கவும்</string>
 </resources>
