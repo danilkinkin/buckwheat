@@ -232,7 +232,7 @@ fun TopSheetLayout(
                     }
 
                     DisposableEffect(Unit) {
-                        if (tutorial !== TUTORIAL_STAGE.PASSED) {
+                        if (tutorial === TUTORIAL_STAGE.READY_TO_SHOW) {
                             appViewModel.passTutorial(TUTORS.OPEN_HISTORY)
                         }
 
