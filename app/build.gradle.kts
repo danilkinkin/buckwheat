@@ -102,7 +102,7 @@ dependencies {
     ksp("androidx.hilt:hilt-compiler:1.2.0")
     ksp("com.google.dagger:dagger-compiler:2.56.2")
     ksp("com.google.dagger:hilt-android-compiler:2.56.2")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
     // Debug
     debugImplementation("androidx.compose.ui:ui-tooling:1.8.3")
