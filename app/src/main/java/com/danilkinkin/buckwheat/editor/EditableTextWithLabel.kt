@@ -7,14 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.InterceptPlatformTextInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.base.TextFieldWithPaddings
@@ -25,6 +25,7 @@ import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.visualTransformationAsCurrency
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EditableTextWithLabel(
     modifier: Modifier = Modifier,
@@ -51,9 +52,7 @@ fun EditableTextWithLabel(
     })
 
     Column(modifier) {
-        CompositionLocalProvider(
-            LocalTextInputService provides keyboardHandler
-        ) {
+        InterceptPlatformTextInput(keyboardHandler) {
             Box(
                 Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterEnd,

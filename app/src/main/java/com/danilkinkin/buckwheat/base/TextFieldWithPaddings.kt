@@ -120,7 +120,7 @@ fun TextFieldWithPaddings(
             currency = it,
             maximumFractionDigits = 0,
             minimumFractionDigits = 0,
-        ).filter { symbol -> symbol !='0' }
+        ).filter { symbol -> symbol != '0' }
     }
 
     val fontSize = calcAdaptiveFont(
@@ -282,14 +282,17 @@ fun TextFieldWithPaddings(
                                 text = currSymbol,
                                 style = currencyStyle,
                                 modifier = Modifier.offset(
-                                    with(localDensity) { ( -valueSize.width - currencySymbolSize.width * 0.3f).toDp() },
+                                    with(localDensity) { (-valueSize.width - currencySymbolSize.width * 0.3f).toDp() },
                                     with(localDensity) { (valueSize.height - currencySymbolSize.height + valueSize.height * 0.14f - valueSize.height * 0.5f).toDp() },
                                 )
                             )
                         }
                     }
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    showKeyboardOnFocus = false
+                )
             )
         }
 
