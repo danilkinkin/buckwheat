@@ -4,16 +4,16 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.danilkinkin.buckwheat.R
+import androidx.core.net.toUri
 
 fun openInBrowser(context: Context, link: String) {
     val intent = Intent(Intent.ACTION_VIEW)
 
-    intent.data = Uri.parse(link)
+    intent.data = link.toUri()
 
     try {
         startActivity(context, intent, null)
@@ -43,7 +43,7 @@ fun sendEmail(
 ) {
     val intent = Intent(Intent.ACTION_SENDTO)
 
-    intent.data = Uri.parse("mailto:")
+    intent.data = "mailto:".toUri()
     intent.putExtra(Intent.EXTRA_EMAIL, recipients)
     intent.putExtra(Intent.EXTRA_SUBJECT, subject)
     intent.putExtra(Intent.EXTRA_TEXT, body)
