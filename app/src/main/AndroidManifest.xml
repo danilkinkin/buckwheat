@@ -15,10 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Buckwheat.Starting"
         android:enableOnBackInvokedCallback="true"
-        tools:targetApi="33">
-        <profileable
-            android:shell="true"
-            tools:targetApi="q" />
+        tools:targetApi="36">
         <receiver
             android:name=".widget.extend.ExtendWidgetReceiver"
             android:label="@string/app_widget_extend_name"
