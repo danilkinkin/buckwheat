@@ -75,8 +75,7 @@ fun Analytics(
         LocalWindowInsets.current.calculateBottomPadding().coerceAtLeast(16.dp)
 
     Surface(Modifier.height(IntrinsicSize.Min)) {
-        Column(
-        ) {
+        Column {
             if (!periodFinished) {
                 MiddlePeriodAnalyticsHeader(
                     onClose = onClose,

@@ -45,30 +45,6 @@ fun calcMaxFont(
 }
 
 @Composable
-fun calcFontHeight(
-    text: String = "SAMPLE 1234567890",
-    style: TextStyle = MaterialTheme.typography.displayLarge,
-): Dp {
-    val intrinsics = ParagraphIntrinsics(
-        text = text,
-        style = style,
-        density = LocalDensity.current,
-        fontFamilyResolver = createFontFamilyResolver(LocalContext.current)
-    )
-
-    val paragraph = Paragraph(
-        paragraphIntrinsics = intrinsics,
-        constraints = Constraints(maxWidth = ceil(1000f).toInt()),
-        maxLines = 1,
-        overflow = TextOverflow.Clip
-    )
-
-    return with(LocalDensity.current) {
-        paragraph.firstBaseline.toDp()
-    }
-}
-
-@Composable
 fun calcAdaptiveFont(
     height: Float,
     width: Float,

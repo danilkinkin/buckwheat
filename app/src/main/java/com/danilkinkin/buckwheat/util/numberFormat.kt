@@ -1,7 +1,6 @@
 package com.danilkinkin.buckwheat.util
 
 import android.content.Context
-import android.util.Log
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import java.math.BigDecimal

@@ -57,9 +57,6 @@ class ModalBottomSheetState(
     val isVisible: Boolean
         get() = currentValue != ModalBottomSheetValue.Hidden
 
-    private val hasHalfExpandedState: Boolean
-        get() = anchors.values.contains(ModalBottomSheetValue.HalfExpanded)
-
     init {
         if (isSkipHalfExpanded) {
             require(initialValue != ModalBottomSheetValue.HalfExpanded) {
@@ -82,7 +79,7 @@ class ModalBottomSheetState(
         this.render = true
     }
 
-    suspend fun show() {
+    fun show() {
         show(emptyMap())
     }
 

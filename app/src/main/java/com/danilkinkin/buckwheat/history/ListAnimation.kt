@@ -150,9 +150,7 @@ data class AnimatedItem<T>(
 
         other as AnimatedItem<*>
 
-        if (item != other.item) return false
-
-        return true
+        return item == other.item
     }
 }
 

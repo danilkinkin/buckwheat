@@ -40,7 +40,6 @@ import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.LocalAccentColor
 import com.danilkinkin.buckwheat.widget.LocalContentColor
 import com.danilkinkin.buckwheat.widget.WidgetReceiver
-import com.danilkinkin.buckwheat.widget.extend.ExtendWidgetContent
 
 @Composable
 @GlanceComposable

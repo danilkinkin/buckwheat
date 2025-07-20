@@ -68,8 +68,6 @@ class EditorViewModel @Inject constructor(
             .stripTrailingZeros()
             .toPlainString()
 
-        if (formatSpent == "0") return false
-
-        return true
+        return formatSpent != "0"
     }
 }
