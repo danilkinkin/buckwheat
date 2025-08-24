@@ -1,0 +1,5 @@
+- Updated dependencies to latest versions.
+- Added Chinese (Taiwan) translation.
+- Added Danish translation.
+- Added Croatian translation.
+- Fixed bugs and improved performance.
