@@ -143,4 +143,8 @@
   <string name="confirm_finish_budget_title">Finish budget</string>
   <string name="confirm_finish_budget_description">Your current budget will be completed, and you will no longer be able to make any further expenses</string>
   <string name="confirm_finish_budget">Finish budget</string>
+  <string name="past_periods_title">Past periods</string>
+  <string name="no_past_periods">No past periods yet. When you finish a budget period and start a new one, previous periods will appear here.</string>
+  <string name="period_details_title">Period details</string>
+  <string name="over_budget_amount">Over by %1$s</string>
 </resources>

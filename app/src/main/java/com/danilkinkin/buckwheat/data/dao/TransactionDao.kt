@@ -10,6 +10,9 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions ORDER BY date ASC")
     fun getAll(): LiveData<List<Transaction>>
 
+    @Query("SELECT * FROM transactions ORDER BY date ASC")
+    suspend fun getAllSync(): List<Transaction>
+
     @Query("SELECT * FROM transactions WHERE type = :type ORDER BY date ASC")
     fun getAll(type: TransactionType): LiveData<List<Transaction>>
 
