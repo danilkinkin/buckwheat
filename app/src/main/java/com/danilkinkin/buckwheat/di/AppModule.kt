@@ -33,4 +33,12 @@ object AppModule {
     @Singleton
     @Provides
     fun provideStorageDao(db: DatabaseModule) = db.storageDao()
+
+    @Singleton
+    @Provides
+    fun providePeriodDao(db: DatabaseModule) = db.periodDao()
+
+    @Singleton
+    @Provides
+    fun provideArchivedTransactionDao(db: DatabaseModule) = db.archivedTransactionDao()
 }

@@ -8,8 +8,13 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.danilkinkin.buckwheat.archive.ARCHIVE_SHEET
+import com.danilkinkin.buckwheat.archive.Archive
+import com.danilkinkin.buckwheat.archive.ARCHIVE_DETAIL_SHEET
+import com.danilkinkin.buckwheat.archive.ArchiveDetail
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.ArchiveViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.di.TUTORS
@@ -143,6 +148,31 @@ fun BottomSheets(
         ViewerHistory(
             onClose = {
                 coroutineScope.launch { it.hide() }
+            }
+        )
+    }
+
+    BottomSheetWrapper(name = ARCHIVE_SHEET) { state ->
+        val archiveViewModel: ArchiveViewModel = hiltViewModel()
+        Archive(
+            archiveViewModel = archiveViewModel,
+            onClose = {
+                coroutineScope.launch { state.hide() }
+            },
+            onSelectPeriod = { periodId ->
+                appViewModel.openSheet(PathState(ARCHIVE_DETAIL_SHEET, mapOf("periodId" to periodId)))
+            }
+        )
+    }
+
+    BottomSheetWrapper(name = ARCHIVE_DETAIL_SHEET) { state ->
+        val archiveViewModel: ArchiveViewModel = hiltViewModel()
+        val periodId = state.args["periodId"] as? Int ?: return@BottomSheetWrapper
+        ArchiveDetail(
+            periodId = periodId,
+            archiveViewModel = archiveViewModel,
+            onClose = {
+                coroutineScope.launch { state.hide() }
             }
         )
     }

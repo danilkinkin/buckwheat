@@ -46,6 +46,7 @@ class SpendsRepository @Inject constructor(
     @ApplicationContext val context: Context,
     private val transactionDao: TransactionDao,
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
+    private val historyRepository: HistoryRepository,
 ) {
     fun getAllTransactions(): LiveData<List<Transaction>> = transactionDao.getAll()
     fun getAllSpends(): LiveData<List<Transaction>> = transactionDao.getAll(TransactionType.SPENT)
@@ -130,6 +131,29 @@ class SpendsRepository @Inject constructor(
     }
 
     suspend fun setBudget(newBudget: BigDecimal, newFinishDate: Date) {
+        // Archive current period before clearing (if there's existing data)
+        try {
+            val currentBudget = getBudget().first()
+            val currentSpent = getSpent().first()
+            val currentCurrency = getCurrency().first()
+            val currentStartDate = getStartPeriodDate().first()
+            val currentFinishDate = getFinishPeriodDate().first()
+            val currentActualFinishDate = getFinishPeriodActualDate().first()
+
+            if (currentBudget > BigDecimal.ZERO && currentFinishDate != null) {
+                historyRepository.archiveCurrentPeriod(
+                    budget = currentBudget,
+                    spent = currentSpent,
+                    currency = currentCurrency.value ?: "",
+                    startDate = currentStartDate,
+                    finishDate = currentFinishDate,
+                    actualFinishDate = currentActualFinishDate ?: getCurrentDateUseCase()
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("SpendsRepository", "Failed to archive current period", e)
+        }
+
         context.budgetDataStore.edit {
             it[budgetStoreKey] = newBudget.toString()
             it[spentStoreKey] = BigDecimal.ZERO.toString()
