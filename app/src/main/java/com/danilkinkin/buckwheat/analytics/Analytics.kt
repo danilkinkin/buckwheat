@@ -48,6 +48,7 @@ import java.util.*
 import com.danilkinkin.buckwheat.analytics.categoriesChart.CategoriesChartCard
 import com.danilkinkin.buckwheat.analytics.categoriesChart.SpendCategoriesCard
 import com.danilkinkin.buckwheat.data.categories.SpendCategoriesViewModel
+import com.danilkinkin.buckwheat.patterns.PATTERN_INSIGHTS_SHEET
 import com.danilkinkin.buckwheat.settings.CategoriesManagementViewModel
 import com.danilkinkin.buckwheat.settings.CategoryCapsViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -276,6 +277,16 @@ fun Analytics(
                         spendsViewModel = spendsViewModel,
                         categoryEmojis = categoryEmojis,
                     )
+
+                    ButtonRow(
+                        icon = painterResource(R.drawable.ic_equalizer),
+                        text = stringResource(R.string.patterns_analyze_button),
+                        onClick = {
+                            appViewModel.openSheet(PathState(PATTERN_INSIGHTS_SHEET))
+                        },
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     ButtonRow(
                         icon = painterResource(R.drawable.ic_file_download),

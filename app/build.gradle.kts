@@ -149,6 +149,10 @@ dependencies {
     testImplementation("androidx.work:work-testing:2.7.1")
     testImplementation("androidx.test:runner:1.6.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    // Compose UI tests on the JVM (Robolectric) — this laptop has no emulator, so the
+    // createComposeRule() harness runs against Robolectric's virtual device instead.
+    testImplementation("androidx.compose.ui:ui-test-junit4:1.8.3")
+    testImplementation("androidx.compose.ui:ui-test-manifest:1.8.3")
 
     androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     androidTestImplementation("junit:junit:4.13.2")

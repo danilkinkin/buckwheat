@@ -1,5 +1,69 @@
 # Changelog
 
+## 2026-08-16 — Spending Patterns: Phase 4 page UI + entry points (uncommitted)
+
+Phase 4 of `.track/SPENDING_PATTERNS_PLAN.md`: the full Spending Patterns sheet on top of the Phase 3 ViewModel. All five phases of the plan are now implemented.
+
+- `patterns/PatternsSheet.kt` (new) — `const val PATTERN_INSIGHTS_SHEET = "patterns"`; header = 176dp `TopographyBackground` (contour rings) + `titleLarge` weight-900 title; scrollable body per plan: window picker (FilterChip presets 3M/6M/12M/All + a `− <N months> +` stepper, `enabled`-bounded 1..`availableMonths`, plural label "Last %1$d months"), subtitle range (`%1$s - %2$s · %3$d mo`), KPI hero card (Total spent / Avg per month / Projected now via `AnimatedNumber` + colored trend pill), `MultiPeriodTrendCard` (monthly trend), `SpendCategoriesCard` (donut + chips, tap → `CATEGORY_HISTORY_SHEET`), new `CategorySparklines` (top-4 as a 3-col grid of mini gradient area sparks via new `MiniSpark`), `SpendsWeekdayCard` + weekend-delta callout, new `DayOfMonthBars` (31 slim bars + 1-5…26-31 bucket labels + busiest-day caption), new `ComplianceCard` (periods with budget→spent + color-coded utilization, best/worst), new `AnomaliesCard` (reason dot + amount + "expected ~X"), new `SuggestionsCard` (severity accent bar), `NarrativeCard` (AI/offline badge + "improving with AI" / failure caption + Regenerate → `generate(report.window)`, bullet/paragraph `ReportBody` mirroring `AiInsightSheet`). Empty dataset → message + narrative only; `Idle`/`Loading` → progress; `Error` → retry.
+- `patterns/TopographyBackground.kt` (new) — four concentric sine-wobbled rings in primary/tertiary, alpha 0.05–0.08, 12s breathing drift (data-free decoration).
+- Engine addition: `CategoryMonthlySeries` model + `categoryMonthlySeries(dataset, top = 4)` (per-category per-month series aligned to the spend months, oldest-first, zero-filled quiet months, spelling-variant merging) + 3 tests appended to `PatternEngineTest.kt`.
+- Wiring: `home/BottomSheets.kt` registers `PATTERN_INSIGHTS_SHEET` → `PatternsSheet()` (after `AI_INSIGHT_SHEET`); `settings/Settings.kt` new "Spending patterns" `TextRow` (`ic_equalizer`, after the AI-insight row); `analytics/Analytics.kt` new "Analyze patterns" `ButtonRow` (before Export CSV, only when spends exist).
+- Strings: ~40 `patterns_*`/`pattern_*` entries in `values/strings.xml` (incl. `plurals` "Last N month(s)"), reusing `monthly_report_dates`-style range composition; `%%` escaping in formatted % strings.
+
+**Deviations (recorded)**: (1) suggestion drill-in TAP omitted — `InsightSuggestion.categoryKey` is the canonical normalized key, which does not reliably map back to a persisted `CategoryKey` (built-in stored names vs lowercase canonical mismatch); suggestions render as severity-ranked info rows. (2) `PatternWindow` stepper bound to `Report.availableMonths` (window already clamped by the ViewModel). Verification used the `.cmd`-file detached build (see CACHE.md).
+
+Verified detached: `spotlessApply` + `assembleDebug` green; patterns suites **87/87 pass** (`PatternEngineTest` 64 incl. 3 new sparkline cases, `PatternPromptTest` 12, `PatternsWindowTest` 11). Full-suite pre-existing failures unchanged (Recurring* Robolectric `ComposeTimeoutException`).
+
+---
+
+## 2026-08-16 — Spending Patterns: Phase 3 ViewModel + data wiring (uncommitted)
+
+Phase 3 of `.track/SPENDING_PATTERNS_PLAN.md`: `PatternsViewModel.kt` + window helpers, wiring the pure engine (Phases 1–2) to real repository flows. No DI module change (`SpendsRepository` + `GetCurrentDateUseCase` injected like `AiInsightViewModel`).
+
+- `patterns/PatternsViewModel.kt` (new) — `@HiltViewModel`; `PatternsUiState { Idle | Loading | Report(dataset, window, availableMonths, metrics, narrative, isAi, aiFailure, aiLoading) | Error }`; `generate(window = PatternWindow(months = 6, allData = false))` loads a single repository snapshot on a background dispatcher, clamps the window, applies it, runs `analyzePatterns`, publishes the **offline** report instantly, then upgrades the narrative with AI in the background (same swap-in as `AiInsightViewModel`, guarded against stale results when the window changes mid-call); `setWindow(window)` re-runs the engine only and **keeps the last AI narrative** across a window switch (no surprise spend — explicit regenerate refires AI).
+- `PatternDataLoad` (internal) — one-pass snapshot: `PatternDataset` + comment-carrying `PatternCharge` list (recurring detector only, stays out of the dataset per the Phase 2 privacy posture) + `dailyBudget`.
+- Dataset builder: current-period spends (`getAllSpends`) + archived SPENT (`getAllArchivedTransactions` → `toTransaction`), categories = stored string else offline keyword guess (`offlineCategoryOrNull`) else null → "Other"; periods = archived/imported `BudgetPeriod`s + the constructed current period (start/finish/budget/spent); currency code + today from `GetCurrentDateUseCase`.
+- Pure window helpers added to `PatternEngine.kt` (desktop-testable): `availableMonths` (oldest spend month → today, min 1, bounds the stepper), `windowStartDate` (null for All), `applyWindow`.
+- `app/src/test/java/.../patterns/PatternsWindowTest.kt` (new) — 11 cases: availableMonths edges, windowStartDate null/first-of-month/zero-coerce, applyWindow All-identity / spend boundary / period filtering / current-period-overlap.
+
+**Plan deviations (recorded)**: (1) `Report` carries `availableMonths` (not in the plan's field list) so the UI can bound the stepper; (2) `applyWindow` also windows PERIODS (finish ≥ window start) — the plan said truncate `PatternSpend` only, but keeping old periods would leak months outside the window into the monthly chart and the compliance card.
+
+Verified detached: `PatternEngineTest` (61) + `PatternPromptTest` (12) + `PatternsWindowTest` (11) = **84/84 pass**, spotless applied, `assembleDebug` green.
+
+Phase 4 next (page UI: `PatternsSheet.kt`, `TopographyBackground.kt`, sheet registration, settings/analytics entry points, strings).
+
+---
+
+## 2026-08-16 — Spending Patterns: Phase 2 AI narrative layer (uncommitted)
+
+Phase 2 of `.track/SPENDING_PATTERNS_PLAN.md`: the AI layer for the Spending Patterns page, following the proven offline-first pattern — the engine always has an offline report (`buildPatternReport`, Phase 1) and `generatePatternAiInsight` upgrades it with AI in the background.
+
+- `patterns/PatternPrompt.kt` (new) — `buildPatternAiSystemPrompt()` (analyst persona, user's language, "• " bullets, never invent transactions/numbers, <160 words, no markdown headers/code blocks), `buildPatternAiUserPrompt(summary)` (anonymous aggregate: currency, months covered, total + monthly average, overall trend, monthly totals, normalized category names with totals/percent/avg/trend, weekend-vs-weekday delta, budget compliance counts, anomalies as amounts + dates only, forecast, recurring-charge count, sanitized suggestions), `parsePatternAiReport` (delegates to the monthly-report parser — same fence/label/blank-line cleanup), `mapPatternAiResult` (pure Success/Failure/NotConfigured mapping; empty post-cleanup report → Failure), `generatePatternAiInsight(context, summary)` (wraps `callAi`).
+- `PatternAiSummary` — the AI-safe aggregate built by `buildPatternAiSummary(dataset, metrics)`. **Privacy**: recurring-charge suggestions are STRIPPED (their body embeds a comment-derived name like "Netflix") and only the recurring COUNT reaches the model; `PatternSpend` carries no comment by construction, so nothing comment-derived can leak into the prompt.
+- `app/src/test/java/.../patterns/PatternPromptTest.kt` (new) — 12 cases: system-prompt rules, aggregate facts, normalized display-name merge ("Food" + "food!" → one line, no raw variant), anomalies as amount+date only, recurring count without names, recurring suggestion stripped, empty history, parser cleanup, result mapping.
+
+Verified detached: `PatternEngineTest` (61) + `PatternPromptTest` (12) = **73/73 pass**, spotless applied, `assembleDebug` green.
+
+Phase 3 next (ViewModel + data wiring).
+
+---
+
+## 2026-08-16 — Spending Patterns: Phase 1 pure pattern engine + models + 61 tests (uncommitted)
+
+Started the Spending Patterns feature (`.track/SPENDING_PATTERNS_PLAN.md`). **Phase 1 = the pure, unit-testable analytics core** — no Android/Room/DataStore imports, `BigDecimal` + explicit `RoundingMode`, deterministic output (offline narrative uses `setScale(2, HALF_EVEN).stripTrailingZeros().toPlainString()`). Everything runs under plain JUnit.
+
+- `app/src/main/java/com/danilkinkin/buckwheat/patterns/PatternData.kt` — pure models: `PatternSpend(date, value, category)` (deliberately NO comment — privacy for AI prompt building), `PatternPeriod`, `PatternDataset`, `PatternCharge` (comment-carrying, recurring detector only, never in a dataset), `PatternWindow(months, allData)`, `TrendDirection{UP,DOWN,STABLE}`, `AnomalyReason{ABOVE_3M_AVG, ABOVE_WEEKDAY_MEDIAN, ONE_OFF_BIG_TICKET}`, `PaceLabel{OVER_BUDGET,AT_RISK,ON_TRACK,SAVING}`, `Severity{HIGH,MEDIUM,LOW}`, `CategoryPattern`, `MonthlyPoint`, `DayOfWeekPoint`, `DayOfMonthPoint`, `BusiestDay`, `Anomaly`, `Forecast`, `RecurringCharge`, `ConcentrationIndex`, `PeriodCompliance` (incl. `overspendDays`), `BudgetCompliance`, `InsightSuggestion`, `PatternMetrics` (bundles every result + report).
+- `app/src/main/java/com/danilkinkin/buckwheat/patterns/PatternEngine.kt` — pure engine: `normalizeName` (NFKC + whitespace collapse + lowercase + trailing-punctuation strip + `trimEnd`), `levenshteinDistance`, `categoryNameIndex`/`mergeCategoryVariants` (near-duplicate spellings within Levenshtein ≤ 2 fold into one canonical key; the largest group anchors the display name; analysis views only — never renames data), `canonicalCategory` (blank → `UNCATEGORIZED_KEY = "other"`), `monthlyTotals` (chronological, current flagged, year labels when spanning years, budget from matching period when > 0), `trendDirection` (least-squares slope over last 3 completed months, STABLE below 5% of average), `trendPercent` (HALF_EVEN), `categoryPatterns` (percent, monthlyAverage over activeMonths, first/second-half trend ±10%, sorted total desc), `concentrationIndex` (Herfindahl, scale 4), `weekdayPatterns` (7 zero-filled days), `weekendVsWeekdayDelta`, `dayOfMonthPattern` (1..31 zero-filled), `noSpendDays`, `busiestDay`, `budgetCompliance` (completed periods only, utilization %, overspendDays vs daily allowance capped at today, best/worst), `findAnomalies` (3 reasons, cap 5 sorted by excess), `forecast` (projects current + next month from last 3 completed; pace labels vs daily budget), `recurringCharges` (normalized comment + amount within 10% of median + ≥3 distinct months), `buildSuggestions` (7 rule types, ranked HIGH→MEDIUM→LOW, cap 5), `buildPatternReport` (deterministic offline narrative, same shape as AI output), `analyzePatterns` orchestrator.
+- `app/src/test/java/com/danilkinkin/buckwheat/patterns/PatternEngineTest.kt` — **61 deterministic cases**, fixed-day `LocalDate` fixtures, `assertAmount` compareTo helper (scale-insensitive).
+
+**Deviation from plan**: plan's `CategoryPattern(name, key: CategoryKey, ..., shareOfVariation, ...)` → implemented as `(key: String canonical, displayName, total, percent, monthlyAverage, trend, monthCount, activeMonths)` — **no `shareOfVariation`** (percent + concentration index already cover it) and key is the canonical string (not the `CategoryKey` enum) because the engine handles arbitrary custom category names. Test count 61 (plan target ~40-50).
+
+**Verification**: detached golden pipeline = `PatternEngineTest` 61/61 pass, `assembleDebug` green, spotless applied. Full `testDebugUnitTest` shows 3 pre-existing failures in `RecurringChargeConfirmSheetTest`/`RecurringPaymentsSheetTest` (Robolectric Compose `ComposeTimeoutException`, identical in the orphaned focused run before this session — unrelated to Phase 1).
+
+Phase 2 next (AI layer: prompt builder + `callAi` upgrade + offline-first `AiInsightViewModel` pattern).
+
+---
+
 ## 2026-08-16 — Widgets use the canonical `whatBudgetForDay` from `SpendsRepository` (backlog #17 — "Unify whatBudgetForDay", committed `0089023`, pushed after)
 
 User picked "Unify whatBudgetForDay" as the next feature. The widget receiver (`widget/CommonWidgetReceiver.kt`) held a **private inline copy** of the daily-budget split math (`whatBudgetForDay(finishDate, spent, budget, dailyBudget, spentFromDailyBudget)`) that was already drifting from the repository's canonical, tested `SpendsRepository.whatBudgetForDay(...)`:

@@ -25,6 +25,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.base.TextRow
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.patterns.PATTERN_INSIGHTS_SHEET
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.wallet.rememberImportCSV
 
@@ -91,6 +92,16 @@ fun Settings(
                     modifier = Modifier.clickable {
                         appViewModel.openSheet(
                             com.danilkinkin.buckwheat.data.PathState(AI_INSIGHT_SHEET)
+                        )
+                    },
+                )
+                TextRow(
+                    icon = painterResource(R.drawable.ic_equalizer),
+                    text = stringResource(R.string.patterns_title),
+                    endIcon = painterResource(R.drawable.ic_arrow_right),
+                    modifier = Modifier.clickable {
+                        appViewModel.openSheet(
+                            com.danilkinkin.buckwheat.data.PathState(PATTERN_INSIGHTS_SHEET)
                         )
                     },
                 )

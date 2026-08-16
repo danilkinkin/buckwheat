@@ -356,8 +356,9 @@ Files:
 - `home/BottomSheets.kt` — register the sheet wrapper.
 - `settings/Settings.kt` — add the "Spending patterns" `TextRow`.
 - `analytics/Analytics.kt` — add "Analyze patterns" `ButtonRow`.
-- `values/strings.xml` — ~14 new EN strings (`patterns_title`, `patterns_subtitle_range`,
-  `patterns_window_3m/6m/12m`, `patterns_total/avg_month/projected_now`, `patterns_trend_chip`,
+- `values/strings.xml` — ~16 new EN strings (`patterns_title`, `patterns_subtitle_range`,
+  `patterns_window_3m/6m/12m/all`, `patterns_window_stepper_dec/inc`, `patterns_window_last_months`
+  ("Last %1$d months"), `patterns_total/avg_month/projected_now`, `patterns_trend_chip`,
   `patterns_monthly_trend`, `patterns_categories`, `patterns_category_trends`,
   `patterns_weekday`, `patterns_day_of_month`, `patterns_compliance`, `patterns_anomalies`,
   `patterns_optimize`, `patterns_ai_badge_*`, `patterns_regenerate`, `patterns_analyze_button`).
@@ -387,7 +388,7 @@ Files:
 | edit | `home/BottomSheets.kt` (register sheet) |
 | edit | `settings/Settings.kt` (entry row) |
 | edit | `analytics/Analytics.kt` (entry button) |
-| edit | `res/values/strings.xml` (~14 strings) |
+| edit | `res/values/strings.xml` (~16 strings) |
 
 No DB migration, no schema change, no new dependencies, no new permissions.
 

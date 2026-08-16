@@ -30,6 +30,8 @@ import com.danilkinkin.buckwheat.analytics.ViewerHistory
 import com.danilkinkin.buckwheat.data.categories.CategoryKey
 import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
 import com.danilkinkin.buckwheat.onboarding.Onboarding
+import com.danilkinkin.buckwheat.patterns.PATTERN_INSIGHTS_SHEET
+import com.danilkinkin.buckwheat.patterns.PatternsSheet
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.*
@@ -129,6 +131,12 @@ fun BottomSheets(
         name = AI_INSIGHT_SHEET,
     ) {
         AiInsightSheet()
+    }
+
+    BottomSheetWrapper(
+        name = PATTERN_INSIGHTS_SHEET,
+    ) {
+        PatternsSheet()
     }
 
     BottomSheetWrapper(
