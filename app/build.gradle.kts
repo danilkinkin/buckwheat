@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     // Kotlin itself comes from AGP 9's built-in Kotlin support; the standalone
     // 'org.jetbrains.kotlin.android' plugin is rejected from AGP 9.0 onwards.
@@ -8,19 +10,31 @@ plugins {
 }
 
 /**
- * Release signing material is read from Gradle properties or environment variables, so the
- * keystore is never committed and the release build never falls back to the debug keystore
- * (a debug-signed release cannot be verified, cannot be upgraded over, and is not uploadable).
+ * Release signing material, so the keystore is never committed and a release build never falls
+ * back to the debug keystore (a debug-signed release cannot be verified, cannot be upgraded
+ * over, and is not uploadable).
+ *
+ * Values are looked up in three places, in order: a Gradle property (-P), an environment
+ * variable, then the git-ignored local.properties.
  *
  *   RELEASE_STORE_FILE, RELEASE_STORE_PASSWORD, RELEASE_KEY_ALIAS, RELEASE_KEY_PASSWORD
  *
- * When the variables are absent (contributor machines, CI forks, F-Droid) the release variant
+ * When none of them are present (contributor machines, CI forks, F-Droid) the release variant
  * is left unsigned and the build still succeeds.
  */
+val localProperties =
+    Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.isFile) {
+            file.inputStream().use { load(it) }
+        }
+    }
+
 fun signingValue(name: String) =
     providers
         .gradleProperty(name)
         .orElse(providers.environmentVariable(name))
+        .orElse(providers.provider { localProperties.getProperty(name) })
 
 /**
  * Local smoke testing only: `./gradlew assembleRelease -PsignWithDebugKey` produces an
@@ -46,8 +60,8 @@ android {
         applicationId = "com.danilkinkin.buckwheat"
         minSdk = 29
         targetSdk = 36
-        versionCode = 29
-        versionName = "4.8.0"
+        versionCode = 30
+        versionName = "4.9.0"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
     }
 

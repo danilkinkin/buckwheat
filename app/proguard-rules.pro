@@ -24,5 +24,6 @@
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
 
-# Repackage classes into the top-level.
--repackageclasses
+# NOTE: -repackageclasses without an argument repackages every class into the root package,
+# which breaks anything that resolves classes by name at runtime (receivers, Room, Glance).
+# Do not re-enable it without a package filter.

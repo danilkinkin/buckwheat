@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.keyboard
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -62,9 +61,6 @@ fun Keyboard(
 
             KeyboardAction.REMOVE_LAST -> {
                 newValue = newValue.dropLast(1)
-                Log.d("mode", mode.toString())
-                Log.d("newValue", "'${newValue}'")
-
                 if (newValue == "") {
                     if (mode === EditMode.ADD) {
                         editorViewModel.resetEditingSpent()

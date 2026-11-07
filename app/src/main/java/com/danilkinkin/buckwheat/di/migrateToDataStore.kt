@@ -7,6 +7,8 @@ import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.dao.StorageDao
 import com.danilkinkin.buckwheat.settingsDataStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * One-time migration from the legacy Room `storage` table to DataStore.
@@ -17,14 +19,16 @@ import com.danilkinkin.buckwheat.settingsDataStore
  * Every key is read defensively instead of being forced with `!!`. The legacy table is only
  * partially populated on some old installs, and a missing date used to throw from a
  * LaunchedEffect during start-up - before the user could reach any screen.
+ *
+ * Runs on [Dispatchers.IO] because it performs blocking Room queries.
  */
 suspend fun migrateToDataStore(
     context: Context,
     storage: StorageDao,
-) {
+) = withContext(Dispatchers.IO) {
     if (storage.get("budget") == null) {
         Log.d("MigrateToDataStore", "Old storage empty. Skip migration")
-        return
+        return@withContext
     }
 
     val budget = storage.get("budget")?.value
@@ -44,7 +48,7 @@ suspend fun migrateToDataStore(
         finishDate == null
     ) {
         Log.w("MigrateToDataStore", "Old storage is incomplete. Skip migration")
-        return
+        return@withContext
     }
 
     val hideOverspendingWarn = (storage.get("overspendingWarnHidden")?.value ?: "false").toBoolean()

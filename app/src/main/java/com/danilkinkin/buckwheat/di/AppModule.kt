@@ -21,9 +21,12 @@ object AppModule {
         DatabaseModule::class.java,
         "buckwheat-db",
     )
-        .fallbackToDestructiveMigration()
-        .allowMainThreadQueries()
+        // Never fall back to a destructive migration: silently dropping the database
+        // deletes the user's entire spending history. Every schema change needs a real
+        // migration in DatabaseModule.
         .addMigrations(*DatabaseModule.MANUAL_MIGRATIONS)
+        // Main-thread queries are not allowed; the repository moves DAO work to
+        // Dispatchers.IO.
         .build()
 
     @Singleton

@@ -59,8 +59,9 @@ keytool -genkeypair -v -keystore buckwheat-release.jks -alias buckwheat \
   -keyalg RSA -keysize 4096 -validity 10000
 ```
 
-Then pass it through Gradle properties or environment variables (`RELEASE_STORE_FILE`,
-`RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD`):
+Then put the credentials in the git-ignored `local.properties`, or pass them as Gradle
+properties / environment variables (`RELEASE_STORE_FILE`, `RELEASE_STORE_PASSWORD`,
+`RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD`). `local.properties` is the simplest option:
 
 ```bash
 ./gradlew assembleRelease \
