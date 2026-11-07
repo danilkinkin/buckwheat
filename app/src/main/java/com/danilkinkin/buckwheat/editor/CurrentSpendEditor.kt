@@ -13,7 +13,6 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.*
-import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 
 class FocusController {
@@ -113,7 +112,7 @@ fun CurrentSpendEditor(
         }
     }
 
-    BoxWithConstraints(modifier) {
+    Box(modifier) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.CenterEnd,
@@ -128,8 +127,8 @@ fun CurrentSpendEditor(
                         editorViewModel.rawSpentValue.value = fixed
                         editorViewModel.modifyEditingSpent(converted.join().toBigDecimal())
 
-                        if (fixed === "") {
-                            if (mode === EditMode.ADD) runBlocking {
+                        if (fixed == "") {
+                            if (mode === EditMode.ADD) {
                                 editorViewModel.resetEditingSpent()
                             }
                         }

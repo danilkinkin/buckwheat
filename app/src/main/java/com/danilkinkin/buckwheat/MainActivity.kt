@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivityResultRegistryOwner
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -18,7 +19,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
 import com.danilkinkin.buckwheat.base.balloon.BalloonProvider
@@ -58,8 +58,11 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Edge-to-edge is mandatory from Android 15 (targetSdk 35+); the deprecated
+        // WindowCompat.setDecorFitsSystemWindows(window, false) is the legacy equivalent and
+        // does not set up the system bar styles for the current window.
+        enableEdgeToEdge()
         val context = this.applicationContext
-        WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen().setKeepOnScreenCondition { !isDone.value }
         lifecycleScope.launch {
             context.settingsDataStore.data.first()

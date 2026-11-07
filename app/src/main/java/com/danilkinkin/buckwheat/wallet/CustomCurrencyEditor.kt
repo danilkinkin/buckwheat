@@ -142,7 +142,7 @@ fun CustomCurrencyEditorContent(
                     },
                     colors = ButtonDefaults.textButtonColors(),
                     contentPadding = ButtonDefaults.TextButtonContentPadding,
-                    enabled = selectCurrency.trim() !== "",
+                    enabled = selectCurrency.trim() != "",
                 ) {
                     Text(text = stringResource(R.string.accept))
                 }

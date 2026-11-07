@@ -10,6 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.map
 import com.danilkinkin.buckwheat.budgetDataStore
+import com.danilkinkin.buckwheat.data.BudgetCalculator
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.util.DAY
@@ -265,24 +266,18 @@ class SpendsRepository @Inject constructor(
             getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
 
 
-        val restDays =
-            countDays(finishPeriodDate, getCurrentDateUseCase()) - if (excludeCurrentDay) 1 else 0
-        var restBudget = budget - spent
+        val restDays = countDays(finishPeriodDate, getCurrentDateUseCase())
 
-        restBudget -= notCommittedSpent
-
-        if (applyTodaySpends) {
-            restBudget -= spentFromDailyBudget
-        } else if (excludeCurrentDay) {
-            restBudget -= dailyBudget
-        }
-
-        val whatBudgetForDay = restBudget
-            .divide(
-                restDays.toBigDecimal().coerceAtLeast(BigDecimal(1)),
-                2,
-                RoundingMode.HALF_EVEN
-            )
+        val whatBudgetForDay = BudgetCalculator.budgetForDay(
+            budget = budget,
+            spent = spent,
+            dailyBudget = dailyBudget,
+            spentFromDailyBudget = spentFromDailyBudget,
+            restDays = restDays,
+            excludeCurrentDay = excludeCurrentDay,
+            applyTodaySpends = applyTodaySpends,
+            notCommittedSpent = notCommittedSpent,
+        )
 
         Log.d(
             "SpendsRepository",
@@ -296,7 +291,6 @@ class SpendsRepository @Inject constructor(
                     + "spent: $spent "
                     + "daily budget: $dailyBudget "
                     + "spent from daily budget: $spentFromDailyBudget "
-                    + "rest budget: $restBudget "
                     + "rest days: $restDays"
                     + "]"
         )
@@ -331,37 +325,20 @@ class SpendsRepository @Inject constructor(
             lastChangeDailyBudgetDate
         ) - 1
 
-        var restBudget = budget - spent
-
-        val howMuchNotSpent = if (restDays == 0) {
-            restBudget - spentFromDailyBudget
-        } else if (excludeSkippedPart) {
-            restBudget
-                .minus(dailyBudget * skippedDays.toBigDecimal())
-                .divide(
-                    (restDays).coerceAtLeast(1).toBigDecimal(),
-                    2,
-                    RoundingMode.HALF_EVEN,
-                )
-                .multiply((skippedDays).coerceAtLeast(0).toBigDecimal())
-                .plus(dailyBudget - spentFromDailyBudget)
-        } else {
-            restBudget
-                .minus(dailyBudget)
-                .divide(
-                    (restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal(),
-                    2,
-                    RoundingMode.HALF_EVEN,
-                )
-                .multiply((skippedDays).coerceAtLeast(0).toBigDecimal())
-                .plus(dailyBudget - spentFromDailyBudget)
-        }
+        val howMuchNotSpent = BudgetCalculator.notSpent(
+            budget = budget,
+            spent = spent,
+            dailyBudget = dailyBudget,
+            spentFromDailyBudget = spentFromDailyBudget,
+            restDays = restDays,
+            skippedDays = skippedDays,
+            excludeSkippedPart = excludeSkippedPart,
+        )
 
         Log.d(
             "SpendsRepository",
             "How much not spent check ["
                     + "how much not spent: $howMuchNotSpent "
-                    + "rest budget: $restBudget "
                     + "restDays: $restDays "
                     + "skippedDays: $skippedDays "
                     + "lastChangeDailyBudgetDate: $lastChangeDailyBudgetDate "
@@ -393,33 +370,20 @@ class SpendsRepository @Inject constructor(
             lastChangeDailyBudgetDate
         ) - 1
 
-        var restBudget = budget - spent
-
-        val nextDailyBudget = if (restDays == 0) {
-            restBudget - spentFromDailyBudget
-        } else if (excludeSkippedPart) {
-            restBudget
-                .minus(dailyBudget * skippedDays.toBigDecimal())
-                .divide(
-                    (restDays).coerceAtLeast(1).toBigDecimal(),
-                    2,
-                    RoundingMode.HALF_EVEN,
-                )
-        } else {
-            restBudget
-                .minus(dailyBudget)
-                .divide(
-                    (restDays + skippedDays - 1).coerceAtLeast(1).toBigDecimal(),
-                    2,
-                    RoundingMode.HALF_EVEN,
-                )
-        }
+        val nextDailyBudget = BudgetCalculator.nextDailyBudget(
+            budget = budget,
+            spent = spent,
+            dailyBudget = dailyBudget,
+            spentFromDailyBudget = spentFromDailyBudget,
+            restDays = restDays,
+            skippedDays = skippedDays,
+            excludeSkippedPart = excludeSkippedPart,
+        )
 
         Log.d(
             "SpendsRepository",
             "Next day budget ["
                     + "next daily budget: $nextDailyBudget "
-                    + "rest budget: $restBudget "
                     + "restDays: $restDays "
                     + "skippedDays: $skippedDays "
                     + "lastChangeDailyBudgetDate: $lastChangeDailyBudgetDate "

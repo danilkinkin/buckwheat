@@ -308,7 +308,9 @@ private fun Scrim(
             Modifier
                 .pointerInput(onDismiss) { detectTapGestures { onDismiss() } }
                 .semantics(mergeDescendants = true) {
-                    contentDescription = null.toString()
+                    // The scrim is decorative; the dismiss action is what accessibility
+                    // services should announce. Use localized resources if a label is
+                    // ever needed here - never the string "null".
                     onClick { onDismiss(); true }
                 }
         } else {

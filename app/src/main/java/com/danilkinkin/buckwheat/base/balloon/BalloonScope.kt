@@ -1,6 +1,6 @@
 package com.danilkinkin.buckwheat.base.balloon
 
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -14,7 +14,7 @@ fun BalloonScope(
     onClose: () -> Unit = { },
     children: @Composable () -> Unit,
 ) {
-    BoxWithConstraints(
+    Box(
         modifier = modifier.onGloballyPositioned {
             balloonState.setContent(content)
             balloonState.setAnchor(

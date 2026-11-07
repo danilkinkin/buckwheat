@@ -14,7 +14,6 @@ import com.danilkinkin.buckwheat.appLocale
 import com.danilkinkin.buckwheat.settingsDataStore
 import com.danilkinkin.buckwheat.systemLocale
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 import java.util.Locale
 
 class ContextWithUpdatedResources(
@@ -40,7 +39,7 @@ fun OverrideLocalize(content: @Composable () -> Unit) {
         val locales = listOf(overrideLocale).toMutableList()
 
         for (index in 0 until config.locales.size()) {
-            if (config.locales[index].language !== overrideLocale.language) {
+            if (config.locales[index].language != overrideLocale.language) {
                 locales.add(config.locales[index])
             }
         }
@@ -75,10 +74,10 @@ suspend fun switchOverrideLocale(context: Context, localeCode: String?) {
     context.appLocale = if (localeCode != null) Locale(localeCode) else null
 }
 
-fun syncOverrideLocale(context: Context) {
+suspend fun syncOverrideLocale(context: Context) {
     context.systemLocale = context.resources.configuration.locales[0]
 
-    val currentValue = runBlocking { context.settingsDataStore.data.first() }
+    val currentValue = context.settingsDataStore.data.first()
 
     val localeCode = currentValue[stringPreferencesKey("locale")]
 

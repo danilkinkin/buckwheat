@@ -28,7 +28,6 @@ import com.danilkinkin.buckwheat.util.getFloatDivider
 import com.danilkinkin.buckwheat.util.join
 import com.danilkinkin.buckwheat.util.tryConvertStringToNumber
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.util.Date
 
 val BUTTON_GAP = 6.dp
@@ -67,7 +66,7 @@ fun Keyboard(
                 Log.d("newValue", "'${newValue}'")
 
                 if (newValue == "") {
-                    if (mode === EditMode.ADD) runBlocking {
+                    if (mode === EditMode.ADD) {
                         editorViewModel.resetEditingSpent()
 
                         isMutate = false
@@ -76,7 +75,7 @@ fun Keyboard(
             }
         }
 
-        if (isMutate) runBlocking {
+        if (isMutate) {
             editorViewModel.rawSpentValue.value =
                 tryConvertStringToNumber(newValue).join(third = false)
 
@@ -293,7 +292,7 @@ fun Keyboard(
 
                                 debugProgress = 0
 
-                                runBlocking {
+                                run {
                                     if (editorViewModel.canCommitEditingSpent()) {
                                         if (mode == EditMode.EDIT) {
                                             val newVersionOfSpent =

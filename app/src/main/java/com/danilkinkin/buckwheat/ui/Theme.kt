@@ -14,7 +14,6 @@ import com.danilkinkin.buckwheat.appTheme
 import com.danilkinkin.buckwheat.settingsDataStore
 import com.danilkinkin.buckwheat.ui.harmonize.palettes.CorePalette
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
 
 
 enum class ThemeMode { LIGHT, NIGHT, SYSTEM }
@@ -132,8 +131,8 @@ suspend fun switchTheme(context: Context, mode: ThemeMode) {
     context.appTheme = mode
 }
 
-fun syncTheme(context: Context) {
-    val currentValue = runBlocking { context.settingsDataStore.data.first() }
+suspend fun syncTheme(context: Context) {
+    val currentValue = context.settingsDataStore.data.first()
 
     val mode = ThemeMode.valueOf(
         currentValue[stringPreferencesKey("theme")] ?: ThemeMode.SYSTEM.toString()

@@ -144,7 +144,7 @@ fun LangSwitcherDialog(onClose: () -> Unit) {
                     .forEach { locale ->
                         CheckedRow(
                             text = locale.getDisplayName(locale).titleCase(),
-                            checked = overrideLocale !== null && locale.language === currentLocale.language,
+                            checked = overrideLocale != null && locale.language == currentLocale.language,
                             onValueChange = { handleSwitchLang(locale.language) },
                         )
                     }

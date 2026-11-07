@@ -117,7 +117,7 @@ fun About(
 
                     openInBrowser(
                         context,
-                        if (currentLocale === "ru") {
+                        if (currentLocale == "ru") {
                             "https://buckwheat.app/ru/contribute"
                         } else {
                             "https://buckwheat.app/contribute"

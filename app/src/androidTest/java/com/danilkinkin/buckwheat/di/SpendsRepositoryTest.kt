@@ -12,6 +12,8 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -86,8 +88,8 @@ class SpendsRepositoryTest {
     fun setBudgetTest() = runTest {
         setBudget()
 
-        assert(spendsRepository.getBudget().first() == 1000.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 100.toBigDecimal().setScale(2))
+        assertEquals(1000.toBigDecimal().setScale(2), spendsRepository.getBudget().first())
+        assertEquals(100.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
     }
 
     // Check budget set correctly distribute after change day
@@ -96,12 +98,12 @@ class SpendsRepositoryTest {
         setBudget()
         rewindTime(1)
 
-        assert(spendsRepository.howMuchNotSpent() == 200.toBigDecimal().setScale(2))
+        assertEquals(200.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         distributeBudget()
 
-        assert(spendsRepository.getBudget().first() == 1000.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 111.11.toBigDecimal().setScale(2))
+        assertEquals(1000.toBigDecimal().setScale(2), spendsRepository.getBudget().first())
+        assertEquals(111.11.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
     }
 
     // Check budget set correctly distribute after change few days
@@ -110,12 +112,12 @@ class SpendsRepositoryTest {
         setBudget()
         rewindTime(2)
 
-        assert(spendsRepository.howMuchNotSpent() == 300.toBigDecimal().setScale(2))
+        assertEquals(300.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         distributeBudget()
 
-        assert(spendsRepository.getBudget().first() == 1000.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 125.toBigDecimal().setScale(2))
+        assertEquals(1000.toBigDecimal().setScale(2), spendsRepository.getBudget().first())
+        assertEquals(125.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
     }
 
     // Check budget set correctly distribute after change few days
@@ -136,30 +138,30 @@ class SpendsRepositoryTest {
 
         spendsRepository.addSpent(Transaction(TransactionType.SPENT, 10.toBigDecimal(), currentDateUseCase.value))
 
-        assert(spendsRepository.howMuchNotSpent() == 90.toBigDecimal().setScale(2))
+        assertEquals(90.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 190.toBigDecimal().setScale(2))
+        assertEquals(190.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 290.toBigDecimal().setScale(2))
+        assertEquals(290.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 390.toBigDecimal().setScale(2))
+        assertEquals(390.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 490.toBigDecimal().setScale(2))
+        assertEquals(490.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 590.toBigDecimal().setScale(2))
+        assertEquals(590.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 690.toBigDecimal().setScale(2))
+        assertEquals(690.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 790.toBigDecimal().setScale(2))
+        assertEquals(790.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 890.toBigDecimal().setScale(2))
+        assertEquals(890.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
         rewindTime(1)
-        assert(spendsRepository.howMuchNotSpent() == 990.toBigDecimal().setScale(2))
+        assertEquals(990.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         distributeBudget()
 
-        assert(spendsRepository.getBudget().first() == 1000.toBigDecimal().setScale(2))
-        assert(spendsRepository.getDailyBudget().first() == 990.toBigDecimal().setScale(2))
+        assertEquals(1000.toBigDecimal().setScale(2), spendsRepository.getBudget().first())
+        assertEquals(990.toBigDecimal().setScale(2), spendsRepository.getDailyBudget().first())
     }
 
     // Check spent in same day added correctly
@@ -170,8 +172,8 @@ class SpendsRepositoryTest {
         val spend = Transaction(TransactionType.SPENT, 10.toBigDecimal(), currentDateUseCase.value)
         spendsRepository.addSpent(spend)
 
-        assert(spendsRepository.getAllSpends().value!!.contains(spend))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 10.toBigDecimal().setScale(2))
+        assertTrue(spendsRepository.getAllSpends().value!!.contains(spend))
+        assertEquals(10.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
     }
 
     // Check spent in previous day added correctly
@@ -199,9 +201,9 @@ class SpendsRepositoryTest {
         Log.d("SpendsRepositoryTest", "dailyBudget: ${spendsRepository.nextDayBudget()}")
         Log.d("SpendsRepositoryTest", "spent: ${spendsRepository.getSpent().first()}")
 
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 110.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpent().first() == 10.toBigDecimal().setScale(2))
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(110.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(10.toBigDecimal().setScale(2), spendsRepository.getSpent().first())
     }
 
     // Check today spent removed correctly
@@ -224,8 +226,8 @@ class SpendsRepositoryTest {
         spendsRepository.removeSpent(spend_1)
         val spends = spendsRepository.getAllSpends().value!!
 
-        assert(spends.isEmpty())
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 20.toBigDecimal().setScale(2))
+        assertTrue(spends.isEmpty())
+        assertEquals(20.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
     }
 
     // Add spent and remove in another day
@@ -250,10 +252,10 @@ class SpendsRepositoryTest {
         Log.d("SpendsRepositoryTest", "dailyBudget: ${spendsRepository.nextDayBudget()}")
         Log.d("SpendsRepositoryTest", "spent: ${spendsRepository.getSpent().first()}")
 
-        assert(spends.isEmpty())
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 111.11.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpent().first() == 0.toBigDecimal().setScale(2))
+        assertTrue(spends.isEmpty())
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(111.11.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpent().first())
     }
 
     // Cancel remove spent
@@ -271,9 +273,9 @@ class SpendsRepositoryTest {
         spendsRepository.addSpent(spend)
         val spends = spendsRepository.getAllSpends().value!!
 
-        assert(spends.contains(spend))
-        assert(spends.size == 1)
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 10.toBigDecimal().setScale(2))
+        assertTrue(spends.contains(spend))
+        assertEquals(1, spends.size)
+        assertEquals(10.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
     }
 
     // Cancel remove spent in another day
@@ -298,10 +300,10 @@ class SpendsRepositoryTest {
         spendsRepository.addSpent(spend)
         val spends = spendsRepository.getAllSpends().value!!
 
-        assert(spends.contains(spend))
-        assert(spends.size == 1)
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 110.toBigDecimal().setScale(2))
+        assertTrue(spends.contains(spend))
+        assertEquals(1, spends.size)
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(110.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
     }
 
     // Change day of spent
@@ -322,11 +324,11 @@ class SpendsRepositoryTest {
 
         spendsRepository.removeSpent(spend)
 
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
 
         spendsRepository.addSpent(spend.copy(date = currentDateUseCase.value))
 
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 10.toBigDecimal().setScale(2))
+        assertEquals(10.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
     }
 
     // Check overdraft
@@ -346,18 +348,18 @@ class SpendsRepositoryTest {
         spendsRepository.addSpent(spend)
 
 
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 120.toBigDecimal().setScale(2))
+        assertEquals(120.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
 
         Log.d("SpendsRepositoryTest", "whatBudgetForDay: ${spendsRepository.whatBudgetForDay(excludeCurrentDay = true, applyTodaySpends = true)}")
         // (1000 - 120) / 9 = 97.78
-        assert(spendsRepository.whatBudgetForDay(excludeCurrentDay = true, applyTodaySpends = true) == 97.78.toBigDecimal().setScale(2))
+        assertEquals(97.78.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(excludeCurrentDay = true, applyTodaySpends = true))
 
         rewindTime(1)
         distributeBudget()
 
         Log.d("SpendsRepositoryTest", "whatBudgetForDay: ${spendsRepository.whatBudgetForDay()}")
         // (1000 - 120) / 9 = 97.78
-        assert(spendsRepository.whatBudgetForDay() == 97.78.toBigDecimal().setScale(2))
+        assertEquals(97.78.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay())
     }
 
     // How much saved
@@ -374,17 +376,17 @@ class SpendsRepositoryTest {
 
         rewindTime(1)
 
-        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 90.toBigDecimal().setScale(2))
+        assertEquals(90.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget())
 
         distributeBudget()
         rewindTime(1)
 
-        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 110.toBigDecimal().setScale(2))
+        assertEquals(110.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget())
 
         distributeBudget()
         rewindTime(2)
 
-        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 247.5.toBigDecimal().setScale(2))
+        assertEquals(247.5.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget())
     }
 
     // Add to today every day
@@ -398,17 +400,17 @@ class SpendsRepositoryTest {
 
         rewindTime(1)
 
-        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget())
 
         distributeBudgetAddToday()
         rewindTime(1)
 
-        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 66.toBigDecimal().setScale(2))
+        assertEquals(66.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget())
 
         distributeBudgetAddToday()
         rewindTime(1)
 
-        assert(spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget() == 99.toBigDecimal().setScale(2))
+        assertEquals(99.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent() - spendsRepository.nextDayBudget())
     }
 
     // Overdraft, add spent on next day and skip day
@@ -431,13 +433,13 @@ class SpendsRepositoryTest {
 
         // [Day 1] dailyBudget = 1000 / 10 = 100 > Spend 140 > not spent = -40
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 100.toBigDecimal().setScale(2))
+        assertEquals(100.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
 
         spendsRepository.addSpent(Transaction(TransactionType.SPENT, 140.toBigDecimal(), currentDateUseCase.value))
 
-        assert(spendsRepository.nextDayBudget() == 100.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 140.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == (-40).toBigDecimal().setScale(2))
+        assertEquals(100.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(140.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals((-40).toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -445,13 +447,13 @@ class SpendsRepositoryTest {
 
         distributeBudget()
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 95.56.toBigDecimal().setScale(2))
+        assertEquals(95.56.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
 
         spendsRepository.addSpent(Transaction(TransactionType.SPENT, 10.toBigDecimal(), currentDateUseCase.value))
 
-        assert(spendsRepository.nextDayBudget() == 95.56.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 10.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 85.56.toBigDecimal().setScale(2))
+        assertEquals(95.56.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(10.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(85.56.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -459,10 +461,10 @@ class SpendsRepositoryTest {
 
         distributeBudget()
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 106.25.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 106.25.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 106.25.toBigDecimal().setScale(2))
+        assertEquals(106.25.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
+        assertEquals(106.25.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(106.25.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -470,37 +472,37 @@ class SpendsRepositoryTest {
 
         distributeBudget()
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 121.43.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 121.43.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 121.43.toBigDecimal().setScale(2))
+        assertEquals(121.43.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
+        assertEquals(121.43.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(121.43.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
         // [Day 5] dailyBudget = (1000 - 150) / 7 = 121.43 > Skip > not spent = 242.86
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 141.67.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 121.43.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 242.86.toBigDecimal().setScale(2))
+        assertEquals(141.67.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
+        assertEquals(121.43.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(242.86.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
         // [Day 6] dailyBudget = (1000 - 150) / 7 = 121.43 > Skip > not spent = 364.29
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 170.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 121.43.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 364.29.toBigDecimal().setScale(2))
+        assertEquals(170.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
+        assertEquals(121.43.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(364.29.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
         // [Day 7] dailyBudget = (1000 - 150) / 7 = 121.43 > Skip > not spent = 485.72
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 212.5.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 121.43.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 485.72.toBigDecimal().setScale(2))
+        assertEquals(212.5.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
+        assertEquals(121.43.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(485.72.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -508,13 +510,13 @@ class SpendsRepositoryTest {
 
         distributeBudget()
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 283.33.toBigDecimal().setScale(2))
+        assertEquals(283.33.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
 
         spendsRepository.addSpent(Transaction(TransactionType.SPENT, 300.toBigDecimal(), currentDateUseCase.value))
 
-        assert(spendsRepository.nextDayBudget() == 283.34.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 300.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == (-16.67).toBigDecimal().setScale(2))
+        assertEquals(283.34.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(300.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals((-16.67).toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -522,40 +524,40 @@ class SpendsRepositoryTest {
 
         distributeBudget()
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 275.toBigDecimal().setScale(2))
+        assertEquals(275.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
 
         spendsRepository.addSpent(Transaction(TransactionType.SPENT, 100.toBigDecimal(), currentDateUseCase.value))
 
-        assert(spendsRepository.nextDayBudget() == 275.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 100.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 175.toBigDecimal().setScale(2))
+        assertEquals(275.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(100.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(175.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
         // [Day 10] dailyBudget = (1000 - 550) / 1 = 450 > No Spent > not spent = 450
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 450.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 275.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 100.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 450.toBigDecimal().setScale(2))
+        assertEquals(450.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
+        assertEquals(275.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(100.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(450.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
         // [Day 11] dailyBudget = (1000 - 550) / 1 = 450 > No Spent > not spent = 450
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 450.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 450.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 100.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 450.toBigDecimal().setScale(2))
+        assertEquals(450.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
+        assertEquals(450.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(100.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(450.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
         // [Day 12] dailyBudget = (1000 - 550) / 1 = 450 > No Spent > not spent = 450
 
-        assert(spendsRepository.whatBudgetForDay(applyTodaySpends = true) == 450.toBigDecimal().setScale(2))
-        assert(spendsRepository.nextDayBudget() == 450.toBigDecimal().setScale(2))
-        assert(spendsRepository.getSpentFromDailyBudget().first() == 100.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 450.toBigDecimal().setScale(2))
+        assertEquals(450.toBigDecimal().setScale(2), spendsRepository.whatBudgetForDay(applyTodaySpends = true))
+        assertEquals(450.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(100.toBigDecimal().setScale(2), spendsRepository.getSpentFromDailyBudget().first())
+        assertEquals(450.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
     }
 
     // Add to today every day
@@ -576,8 +578,8 @@ class SpendsRepositoryTest {
 
         // [Day 1] dailyBudget = 330 / 10 = 33 > No spent > not spent = 33
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 33.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -585,8 +587,8 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 66.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(66.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -594,8 +596,8 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 99.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(99.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -603,8 +605,8 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 132.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(132.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -612,8 +614,8 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 165.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(165.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -621,8 +623,8 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 198.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(198.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -630,8 +632,8 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 231.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(231.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -639,8 +641,8 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 264.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(264.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -648,8 +650,8 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 33.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 297.toBigDecimal().setScale(2))
+        assertEquals(33.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(297.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
 
         rewindTime(1)
 
@@ -657,7 +659,7 @@ class SpendsRepositoryTest {
 
         distributeBudgetAddToday()
 
-        assert(spendsRepository.nextDayBudget() == 0.toBigDecimal().setScale(2))
-        assert(spendsRepository.howMuchNotSpent() == 330.toBigDecimal().setScale(2))
+        assertEquals(0.toBigDecimal().setScale(2), spendsRepository.nextDayBudget())
+        assertEquals(330.toBigDecimal().setScale(2), spendsRepository.howMuchNotSpent())
     }
 }

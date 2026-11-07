@@ -5,7 +5,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -19,11 +18,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class SystemBarState (
-    val statusBarColor: Color,
+/**
+ * Which icon colour the system bars should use.
+ *
+ * Bar colours are no longer part of this state: the app is edge-to-edge and paints the bar
+ * backgrounds itself, so window-level bar colours are ignored from Android 15 onwards.
+ */
+data class SystemBarState(
     val statusBarDarkIcons: Boolean,
     val navigationBarDarkIcons: Boolean,
-    val navigationBarColor: Color,
 )
 
 data class PathState (

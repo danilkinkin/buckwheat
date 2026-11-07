@@ -8,13 +8,16 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.di.SpendsRepository
+import com.danilkinkin.buckwheat.util.DAY
 import com.danilkinkin.buckwheat.util.countDaysToToday
 import com.danilkinkin.buckwheat.util.isToday
+import com.danilkinkin.buckwheat.util.toLocalDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.time.ZoneId
 import java.util.Date
 import javax.inject.Inject
 
@@ -218,17 +221,28 @@ class SpendsViewModel @Inject constructor(
     }
 
     private fun runScheduledDetectChangeDayTask() {
-        var currentDay = Date()
-
         viewModelScope.launch {
             while (true) {
-                delay(5000L)
-
-                if (isToday(currentDay)) continue
-
-                currentDay = Date()
+                delay(millisUntilNextDay())
                 runChangeDayAction()
             }
         }
+    }
+
+    /**
+     * Distance to the next midnight. The previous implementation polled the clock every five
+     * seconds for as long as the app was open - roughly 17k wake-ups a day just to notice that
+     * the date changed.
+     */
+    private fun millisUntilNextDay(): Long {
+        val now = Date()
+        val nextDayStart = now.toLocalDate()
+            .plusDays(1)
+            .atStartOfDay(ZoneId.systemDefault())
+            .toInstant()
+            .toEpochMilli()
+
+        // Clamp so a manual clock change can never schedule a zero or multi-day wake-up.
+        return (nextDayStart - now.time).coerceIn(1_000L, DAY.toLong())
     }
 }

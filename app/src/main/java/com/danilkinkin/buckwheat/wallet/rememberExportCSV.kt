@@ -68,7 +68,7 @@ fun rememberExportCSV(
         createHistoryFileLauncher = rememberLauncherForActivityResult(
             contract = ActivityResultContracts.CreateDocument("text/csv")
         ) { uri ->
-            if (uri === null) {
+            if (uri == null) {
                 coroutineScope.launch {
                     appViewModel.showSnackbar(snackBarExportToCSVFailed)
                 }
@@ -81,8 +81,9 @@ fun rememberExportCSV(
 
                 val printer = CSVPrinter(
                     stream?.writer(),
+                    // Builder implements Supplier since commons-csv 1.13; build() is deprecated.
                     CSVFormat.Builder.create().setHeader("amount", "comment", "commit_time")
-                        .build()
+                        .get()
                 )
                 val dateFormatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
 
