@@ -49,6 +49,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import android.util.Log
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -78,6 +79,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
+import kotlinx.coroutines.delay
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
@@ -409,6 +411,8 @@ internal data class DropdownMenuPositionProvider(
     }
 }
 
+private const val TAG = "BuckwheatTagEditor"
+
 @Composable
 fun CommentEditor(
     modifier: Modifier = Modifier,
@@ -416,18 +420,18 @@ fun CommentEditor(
     onChange: (comment: TextFieldValue) -> Unit,
     onApply: () -> Unit,
 ) {
-    var focusIsTracking by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
-
+    var hasFocus by remember { mutableStateOf(false) }
+    var hasBeenFocused by remember { mutableStateOf(false) }
 
     TextField(
         modifier = modifier
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .onFocusChanged { focusState ->
-                if (!focusState.hasFocus && focusIsTracking) {
-                    onApply()
-                }
+                Log.d(TAG, "focus changed -> hasFocus=${focusState.hasFocus}")
+                if (focusState.hasFocus) hasBeenFocused = true
+                hasFocus = focusState.hasFocus
             },
         value = value,
         onValueChange = {
@@ -471,8 +475,24 @@ fun CommentEditor(
 
 
     LaunchedEffect(Unit) {
+        Log.d(TAG, "requesting focus")
         focusRequester.requestFocus()
-        focusIsTracking = true
+    }
+
+    // Losing focus is how this editor closes when the user taps somewhere else, but the field
+    // also loses focus transiently while the IME attaches and while the suggestions popup gets
+    // created. Waiting a moment means only a focus loss that actually sticks closes the editor,
+    // instead of the keyboard opening and immediately closing again.
+    LaunchedEffect(hasFocus, hasBeenFocused) {
+        if (hasBeenFocused && !hasFocus) {
+            delay(300)
+            if (!hasFocus) {
+                Log.d(TAG, "focus stayed lost -> apply")
+                onApply()
+            } else {
+                Log.d(TAG, "focus came back -> keep editing")
+            }
+        }
     }
 }
 
