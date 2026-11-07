@@ -18,12 +18,12 @@ subprojects {
 }
 
 plugins {
-    id("com.android.application") version "8.11.1" apply false
-    id("com.android.library") version "8.11.1" apply false
-    id("org.jetbrains.kotlin.android") version "2.2.0" apply false
-    id("com.google.dagger.hilt.android") version "2.57" apply false
-    id("com.diffplug.spotless") version "7.1.0"
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin") version "2.0.1" apply false
-    id("com.github.ben-manes.versions") version "0.52.0"
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.hilt) apply false
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.secrets) apply false
+    alias(libs.plugins.versions)
 }

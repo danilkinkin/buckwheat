@@ -17,6 +17,59 @@ Are you going on a business trip or vacation? Buckwheat helps you save money dur
 
 A couple of years ago, I used the [tzlvt](https://www.fuckgrechka.ru/tzlvt/) app. I liked his idea and it helped me learn how to manage money. After I decided to improve this idea and it inspired me to create buckwheat
 
+### Building
+
+Requirements: JDK 17 and an Android SDK with platform 37. Gradle itself is provided by the
+wrapper, so no local Gradle installation is needed.
+
+```bash
+git clone https://github.com/danilkinkin/buckwheat.git
+cd buckwheat
+./gradlew assembleDebug
+```
+
+Run the same checks as CI:
+
+```bash
+./gradlew spotlessCheck lintDebug testDebugUnitTest
+```
+
+Debug builds are signed with the local debug keystore, so they install on any device:
+
+```bash
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+Release builds are **unsigned by default** (an unsigned APK cannot be installed - Android
+rejects it with *"app not installed as package seems invalid"*). Two ways to get an
+installable release build:
+
+**1. Local testing** - sign with the debug key explicitly:
+
+```bash
+./gradlew assembleRelease -PsignWithDebugKey
+```
+
+Never publish an APK built this way.
+
+**2. Distribution** - create a keystore once and keep it backed up:
+
+```bash
+keytool -genkeypair -v -keystore buckwheat-release.jks -alias buckwheat \
+  -keyalg RSA -keysize 4096 -validity 10000
+```
+
+Then pass it through Gradle properties or environment variables (`RELEASE_STORE_FILE`,
+`RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS`, `RELEASE_KEY_PASSWORD`):
+
+```bash
+./gradlew assembleRelease \
+  -PRELEASE_STORE_FILE=/path/to/keystore.jks \
+  -PRELEASE_STORE_PASSWORD=... \
+  -PRELEASE_KEY_ALIAS=... \
+  -PRELEASE_KEY_PASSWORD=...
+```
+
 ### Translations
 
 If your language is missing or incomplete, please help to translate via [crowdin service](https://translate.buckwheat.app)

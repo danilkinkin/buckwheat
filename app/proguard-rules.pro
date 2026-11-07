@@ -1,3 +1,7 @@
+# commons-csv annotates some methods with SpotBugs' SuppressFBWarnings, which is a
+# compile-time-only annotation and is not on the runtime classpath.
+-dontwarn edu.umd.cs.findbugs.annotations.**
+
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
