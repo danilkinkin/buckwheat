@@ -1,12 +1,9 @@
 package com.danilkinkin.buckwheat.editor.tagging
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -25,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -40,8 +36,6 @@ fun TaggingToolbar(
     editorViewModel: EditorViewModel = hiltViewModel(),
     editorFocusController: FocusController
 ) {
-    val localDensity = LocalDensity.current
-
     val tags by spendsViewModel.tags.observeAsState(emptyList())
     val currentComment by editorViewModel.currentComment.observeAsState("")
 
@@ -73,28 +67,8 @@ fun TaggingToolbar(
             tags.take(5).reversed().filter { it != currentComment }.forEach { tag ->
                 AnimatedVisibility(
                     visible = showAddComment,
-                    enter = fadeIn(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) + slideInHorizontally(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) { with(localDensity) { 30.dp.toPx().toInt() } },
-                    exit = fadeOut(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) + slideOutHorizontally(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) { with(localDensity) { 30.dp.toPx().toInt() } },
+                    enter = fadeIn(tween(durationMillis = 120)),
+                    exit = fadeOut(tween(durationMillis = 90)),
                 ) {
                     Tag(value = tag, onClick = {
                         editorViewModel.currentComment.value = tag
@@ -104,28 +78,8 @@ fun TaggingToolbar(
             Spacer(modifier = Modifier.width(8.dp))
             AnimatedVisibility(
                 visible = showAddComment,
-                enter = fadeIn(
-                    tween(
-                        durationMillis = 150,
-                        easing = EaseInOutQuad,
-                    )
-                ) + slideInHorizontally(
-                    tween(
-                        durationMillis = 150,
-                        easing = EaseInOutQuad,
-                    )
-                ) { with(localDensity) { 30.dp.toPx().toInt() } },
-                exit = fadeOut(
-                    tween(
-                        durationMillis = 150,
-                        easing = EaseInOutQuad,
-                    )
-                ) + slideOutHorizontally(
-                    tween(
-                        durationMillis = 150,
-                        easing = EaseInOutQuad,
-                    )
-                ) { with(localDensity) { 30.dp.toPx().toInt() } },
+                enter = fadeIn(tween(durationMillis = 120)),
+                exit = fadeOut(tween(durationMillis = 90)),
             ) {
                 CustomTag(
                     onlyIcon = tags.isNotEmpty(),

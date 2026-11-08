@@ -1,17 +1,9 @@
 package com.danilkinkin.buckwheat.editor.tagging
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -91,7 +83,7 @@ import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.observeLiveData
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTag(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
@@ -168,6 +160,7 @@ fun CustomTag(
                         editorFocusController.blur()
                         focusManager.clearFocus()
                         isEdit = true
+                        renderPopup = true
                         onEdit(true)
                         appViewModel.showSystemKeyboard.value = true
                         appViewModel.lockDraggable.value = true
@@ -180,11 +173,9 @@ fun CustomTag(
                     .padding(start = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                AnimatedVisibility(
-                    visible = isEdit,
-                    enter = scaleIn(tween(durationMillis = 150)),
-                    exit = scaleOut(tween(durationMillis = 150)),
-                ) {
+                // Plain swaps: expanding the chip and cross-fading its contents made the
+                // amount -> tag transition feel busy for no functional gain.
+                if (isEdit) {
                     Spacer(Modifier.width(8.dp))
                 }
                 Icon(
@@ -195,58 +186,23 @@ fun CustomTag(
                     contentDescription = null,
                 )
 
-                AnimatedVisibility(
-                    visible = !isEdit,
-                    enter = scaleIn(tween(durationMillis = 150)),
-                    exit = scaleOut(tween(durationMillis = 150)),
-                ) {
-                    if (onlyIcon) {
-                        Spacer(Modifier.width(12.dp))
-                    } else {
-                        Spacer(Modifier.width(8.dp))
-                    }
+                if (!isEdit) {
+                    Spacer(Modifier.width(if (onlyIcon) 12.dp else 8.dp))
                 }
-                AnimatedContent(
-                    label = "openCloseTaggingEditor",
-                    targetState = isEdit,
-                    transitionSpec = {
-                        (fadeIn(
-                            tween(durationMillis = 250)
-                        ) togetherWith fadeOut(
-                            tween(durationMillis = 250)
-                        )).using(
-                            // The default SizeTransform is a spring; measured here it kept the
-                            // transition running for ~1.5s after the visual swap, re-laying out
-                            // the row on every frame. A tween matching the fade settles cleanly.
-                            SizeTransform(
-                                clip = false,
-                                sizeAnimationSpec = { _, _ -> tween(durationMillis = 250) },
-                            )
-                        )
-                    }
-                ) { targetIsEdit ->
-                    // Writing this state during composition triggered repeated recomposition
-                    // (four times per open). Do it in an effect instead.
-                    LaunchedEffect(transition.currentState, transition.targetState) {
-                        if (transition.currentState == transition.targetState && targetIsEdit) {
-                            renderPopup = true
-                        }
-                    }
 
-                    if (targetIsEdit) {
-                        CommentEditor(
-                            value = value,
-                            onChange = { value = it },
-                            onApply = { close() }
-                        )
-                    } else if (!onlyIcon || value.text.isNotEmpty()) {
-                        Text(
-                            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
-                            text = value.text.ifEmpty { stringResource(R.string.add_comment) },
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
+                if (isEdit) {
+                    CommentEditor(
+                        value = value,
+                        onChange = { value = it },
+                        onApply = { close() }
+                    )
+                } else if (!onlyIcon || value.text.isNotEmpty()) {
+                    Text(
+                        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
+                        text = value.text.ifEmpty { stringResource(R.string.add_comment) },
+                        softWrap = false,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
             }
         }
@@ -289,8 +245,8 @@ fun CustomTag(
                 ) {
                     AnimatedVisibility(
                         visible = isShowSuggestions,
-                        enter = expandVertically(tween(150)),
-                        exit = shrinkVertically(tween(150)),
+                        enter = fadeIn(tween(durationMillis = 120)),
+                        exit = fadeOut(tween(durationMillis = 90)),
                     ) {
                         if (filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == value.text)) {
                             Surface(

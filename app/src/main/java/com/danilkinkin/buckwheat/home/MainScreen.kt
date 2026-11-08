@@ -1,13 +1,10 @@
 package com.danilkinkin.buckwheat.home
 
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -175,7 +172,9 @@ fun MainScreen(
         val editorHeightAnimated by animateFloatAsState(
             label = "editorHeightAnimatedValue",
             targetValue = editorHeight,
-            animationSpec = tween(durationMillis = 350),
+            // Short enough to feel immediate when the system keyboard replaces the app keypad,
+            // long enough to avoid a jump while the IME height settles.
+            animationSpec = tween(durationMillis = 200),
         )
 
         Row {
@@ -206,28 +205,8 @@ fun MainScreen(
             ) {
                 androidx.compose.animation.AnimatedVisibility(
                     visible = !isShowSystemKeyboard,
-                    enter = fadeIn(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) + slideInVertically(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) { with(localDensity) { 10.dp.toPx().toInt() } },
-                    exit = fadeOut(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) + slideOutVertically(
-                        tween(
-                            durationMillis = 150,
-                            easing = EaseInOutQuad,
-                        )
-                    ) { with(localDensity) { 10.dp.toPx().toInt() } },
+                    enter = fadeIn(tween(durationMillis = 120)),
+                    exit = fadeOut(tween(durationMillis = 90)),
                 ) {
                     Box(
                         modifier = Modifier
