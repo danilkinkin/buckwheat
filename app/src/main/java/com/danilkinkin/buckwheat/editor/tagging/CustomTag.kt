@@ -49,7 +49,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import android.util.Log
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -146,7 +145,6 @@ fun CustomTag(
     }
 
     val close = {
-        Log.d(TAG, "tag editor close() -> commit '${value.text.trim()}'")
         isEdit = false
         isShowSuggestions = false
         onEdit(false)
@@ -167,7 +165,6 @@ fun CustomTag(
                     Modifier
                 } else {
                     Modifier.clickable {
-                        Log.d(TAG, "tag editor button tapped -> open")
                         editorFocusController.blur()
                         focusManager.clearFocus()
                         isEdit = true
@@ -222,9 +219,12 @@ fun CustomTag(
                         )
                     }
                 ) { targetIsEdit ->
-                    if (this.transition.currentState == this.transition.targetState && targetIsEdit) {
-                        Log.d(TAG, "transition settled -> renderPopup = true")
-                        renderPopup = true
+                    // Writing this state during composition triggered repeated recomposition
+                    // (four times per open). Do it in an effect instead.
+                    LaunchedEffect(transition.currentState, transition.targetState) {
+                        if (transition.currentState == transition.targetState && targetIsEdit) {
+                            renderPopup = true
+                        }
                     }
 
                     if (targetIsEdit) {
@@ -414,8 +414,6 @@ internal data class DropdownMenuPositionProvider(
     }
 }
 
-private const val TAG = "BuckwheatTrace"
-
 @Composable
 fun CommentEditor(
     modifier: Modifier = Modifier,
@@ -432,7 +430,6 @@ fun CommentEditor(
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .onFocusChanged { focusState ->
-                Log.d(TAG, "focus changed -> hasFocus=${focusState.hasFocus}")
                 if (focusState.hasFocus) hasBeenFocused = true
                 hasFocus = focusState.hasFocus
             },
@@ -478,7 +475,6 @@ fun CommentEditor(
 
 
     LaunchedEffect(Unit) {
-        Log.d(TAG, "requesting focus")
         focusRequester.requestFocus()
     }
 
@@ -489,12 +485,7 @@ fun CommentEditor(
     LaunchedEffect(hasFocus, hasBeenFocused) {
         if (hasBeenFocused && !hasFocus) {
             delay(300)
-            if (!hasFocus) {
-                Log.d(TAG, "focus stayed lost -> apply")
-                onApply()
-            } else {
-                Log.d(TAG, "focus came back -> keep editing")
-            }
+            if (!hasFocus) onApply()
         }
     }
 }

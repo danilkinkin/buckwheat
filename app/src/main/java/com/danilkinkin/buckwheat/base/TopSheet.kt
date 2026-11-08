@@ -110,7 +110,12 @@ fun TopSheetLayout(
         val expandHeight =
             with(localDensity) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
         val currOffset = swipeableState.offset.value
-        val maxOffset = (-(expandHeight - halfHeight)).coerceAtMost(0f)
+        // The anchors are keyed by offset, so HalfExpanded and Expanded must never map to the
+        // same value. When the IME resizes the window, halfHeight can reach expandHeight; if
+        // that clamped to 0f the two anchors would collide, HalfExpanded would be dropped and
+        // the sheet would snap to Expanded - which removes the editor from composition
+        // (progress == 1f) while the user is writing a comment.
+        val maxOffset = (-(expandHeight - halfHeight)).coerceAtMost(-1f)
 
         val prevHalfHeight = remember { mutableFloatStateOf(halfHeight) }
         val isLockProgress = remember(swipeableState.isAnimationRunning) {
@@ -124,6 +129,7 @@ fun TopSheetLayout(
         }
 
         prevHalfHeight.value = halfHeight
+
 
         val connection = remember {
             object : NestedScrollConnection {
@@ -182,7 +188,8 @@ fun TopSheetLayout(
             )
         }
 
-        val halfExpanedOffset = (-(expandHeight - halfHeight)).coerceAtMost(0f)
+        // Must stay strictly below 0f, see maxOffset above: equal keys collapse the anchors.
+        val halfExpanedOffset = (-(expandHeight - halfHeight)).coerceAtMost(-1f)
 
         Card(
             shape = RoundedCornerShape(bottomStart = 48.dp, bottomEnd = 48.dp),

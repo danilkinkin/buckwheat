@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.editor
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -45,10 +44,7 @@ fun Editor(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null
-                ) {
-                    Log.d("BuckwheatTrace", "editor background tapped -> focusController.focus()")
-                    focusController.focus()
-                }
+                ) { focusController.focus() }
         ) {
             EditorToolbar()
             if (mode == EditMode.EDIT) {

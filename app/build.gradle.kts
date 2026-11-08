@@ -60,8 +60,8 @@ android {
         applicationId = "com.danilkinkin.buckwheat"
         minSdk = 29
         targetSdk = 36
-        versionCode = 32
-        versionName = "4.9.2"
+        versionCode = 33
+        versionName = "4.9.3"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
     }
 
