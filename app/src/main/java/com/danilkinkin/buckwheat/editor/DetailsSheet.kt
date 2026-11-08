@@ -1,16 +1,16 @@
 package com.danilkinkin.buckwheat.editor
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +48,7 @@ const val DETAILS_SHEET = "details"
  * Keeping them together means the editor carries a single summary chip instead of two competing
  * chip rows, and the system keyboard only ever appears while this sheet is open.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailsSheet(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
@@ -99,13 +100,12 @@ fun DetailsSheet(
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
             )
 
-            Row(
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
                     .padding(horizontal = 24.dp, vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 CategoryChip(
                     text = stringResource(R.string.no_category),
@@ -162,13 +162,12 @@ fun DetailsSheet(
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
                 )
-                Row(
+                FlowRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState())
                         .padding(horizontal = 24.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     recentTags.take(8).forEach { tag ->
                         CategoryChip(

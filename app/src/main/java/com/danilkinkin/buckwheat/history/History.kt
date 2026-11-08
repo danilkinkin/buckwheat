@@ -3,10 +3,8 @@ package com.danilkinkin.buckwheat.history
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DismissDirection
@@ -17,6 +15,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -69,7 +68,6 @@ fun History(
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val categories by spendsViewModel.categories.observeAsState(emptyList())
     val currency = spendsViewModel.currency.observeAsState(initial = ExtendCurrency.none())
-    val scrollToBottom = remember { mutableStateOf(true) }
     val tutorial by appViewModel.getTutorialStage(TUTORS.SWIPE_EDIT_SPENT).observeAsState(TUTORIAL_STAGE.NONE)
     var isUserTrySwipe by remember { mutableStateOf(false) }
     var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
@@ -97,7 +95,6 @@ fun History(
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
-        scrollToBottom.value = true
 
         onDispose {
             appViewModel.lockSwipeable.value = false
@@ -146,17 +143,17 @@ fun History(
                     NoSpends(Modifier.fillMaxSize())
                 } else {
                     LazyColumn(
-                        reverseLayout = true,
                         state = scrollState,
                         modifier = Modifier.fillMaxSize(),
                     ) {
 
-                // Fixer, because if scroll fast end-checker dispose
+                // Composed while the top of the list is visible: the sheet may be dragged
+                // there. Once the list is scrolled, lock the sheet so gestures scroll rows.
                 item("spacer-2") {
                     Spacer(modifier = Modifier.height(2.dp))
                 }
 
-                item("end-checker") {
+                item("top-checker") {
                     DisposableEffect(Unit) {
                         appViewModel.lockSwipeable.value = false
 
@@ -311,7 +308,9 @@ fun History(
                     Icon(
                         painter = painterResource(R.drawable.ic_arrow_down),
                         contentDescription = null,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                        modifier = Modifier
+                            .size(ButtonDefaults.IconSize)
+                            .rotate(180f),
                     )
 
                 }
@@ -320,19 +319,19 @@ fun History(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CategoryFilterRow(
     categories: List<Category>,
     selectedCategoryId: Int?,
     onSelect: (Int?) -> Unit,
 ) {
-    Row(
+    FlowRow(
         modifier = Modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         CategoryChip(
             text = stringResource(R.string.all_categories),
@@ -353,7 +352,8 @@ private fun CategoryFilterRow(
 private fun composeHistoryRows(transactions: List<Transaction>): List<RowEntity> {
     val rows = mutableListOf<RowEntity>()
 
-    transactions.groupBy { it.date.toLocalDate() }.forEach { (day, daySpends) ->
+    // Newest day first, and the newest spend of that day first: the list is read top-down.
+    transactions.groupBy { it.date.toLocalDate() }.entries.reversed().forEach { (day, daySpends) ->
         val dayTotal = daySpends.fold(BigDecimal.ZERO) { total, spend -> total + spend.value }
 
         rows.add(
@@ -367,7 +367,7 @@ private fun composeHistoryRows(transactions: List<Transaction>): List<RowEntity>
             )
         )
 
-        daySpends.forEach { spend ->
+        daySpends.reversed().forEach { spend ->
             rows.add(
                 RowEntity(
                     type = RowEntityType.Spent,
@@ -381,8 +381,7 @@ private fun composeHistoryRows(transactions: List<Transaction>): List<RowEntity>
         }
     }
 
-    // reverseLayout renders index 0 at the bottom, so newest rows must come first.
-    return rows.reversed()
+    return rows
 }
 
 @Composable
