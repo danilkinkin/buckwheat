@@ -48,6 +48,8 @@
   <string name="search_currency_placeholder">Currency code or name</string>
   <string name="popular_currencies">Popular</string>
   <string name="other_currencies">Other currencies</string>
+  <string name="all_currencies">All currencies</string>
+  <string name="currency_picker_subtitle">How amounts are shown</string>
   <string name="currency_not_found">No matching currencies</string>
   <string name="currency_custom_title">Enter your currency</string>
   <string name="currency_custom_description">For example, spending 150 conventional units will be displayed like this:</string>
