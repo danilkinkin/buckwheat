@@ -5,9 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -102,7 +103,13 @@ fun CurrencyEditor(
         .coerceAtLeast(16.dp)
 
     Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
-        Column(Modifier.fillMaxWidth()) {
+        // A picker over ~150 currencies deserves most of the screen; a wrap-content sheet would
+        // be clipped on smaller devices once the list is long.
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.9f),
+        ) {
             Text(
                 text = stringResource(R.string.select_currency_title),
                 style = MaterialTheme.typography.titleLarge,
@@ -139,39 +146,38 @@ fun CurrencyEditor(
                 modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
             )
 
-            if (filteredCurrencies.isEmpty()) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(120.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = stringResource(R.string.currency_not_found),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                    )
-                }
-            } else {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 380.dp),
-                ) {
-                    items(filteredCurrencies, key = { it.currencyCode }) { item ->
-                        CurrencyRow(
-                            currency = item,
-                            selected = item.currencyCode == selectedCode,
-                            onClick = {
-                                apply(
-                                    ExtendCurrency(
-                                        value = item.currencyCode,
-                                        type = ExtendCurrency.Type.FROM_LIST,
-                                    )
-                                )
-                            },
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+            ) {
+                if (filteredCurrencies.isEmpty()) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = stringResource(R.string.currency_not_found),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
                         )
+                    }
+                } else {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        items(filteredCurrencies, key = { it.currencyCode }) { item ->
+                            CurrencyRow(
+                                currency = item,
+                                selected = item.currencyCode == selectedCode,
+                                onClick = {
+                                    apply(
+                                        ExtendCurrency(
+                                            value = item.currencyCode,
+                                            type = ExtendCurrency.Type.FROM_LIST,
+                                        )
+                                    )
+                                },
+                            )
+                        }
                     }
                 }
             }
