@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -34,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -107,6 +109,24 @@ fun TopSheetLayout(
     ) {
         val fullHeight = constraints.maxHeight.toFloat()
         val halfHeight = customHalfHeight ?: (fullHeight / 2)
+
+        // The half anchor is derived from the editor height, which changes when the IME settles.
+        // Material would animate the card to the new anchor, which looked like the editor sliding
+        // up a second time after the keyboard had already arrived. Wait one frame for the
+        // swipeable modifier to receive the new anchor, then snap instead of spring. Skip the
+        // first composition so the launch animation is untouched.
+        var previousHalfHeight by remember { mutableFloatStateOf(halfHeight) }
+        LaunchedEffect(halfHeight) {
+            if (halfHeight == previousHalfHeight) return@LaunchedEffect
+
+            previousHalfHeight = halfHeight
+            withFrameNanos { }
+
+            if (swipeableState.currentValue === TopSheetValue.HalfExpanded) {
+                swipeableState.snapTo(TopSheetValue.HalfExpanded)
+            }
+        }
+
         val expandHeight =
             with(localDensity) { (fullHeight - navigationBarHeight.toPx() - 16.dp.toPx()) }
         val currOffset = swipeableState.offset.value

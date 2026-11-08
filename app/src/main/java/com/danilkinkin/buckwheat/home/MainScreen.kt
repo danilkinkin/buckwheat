@@ -65,7 +65,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** Quiet period after the last IME inset change before the editor follows the final height. */
-private const val KEYBOARD_SETTLE_DELAY_MS = 100L
+private const val KEYBOARD_SETTLE_DELAY_MS = 60L
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
