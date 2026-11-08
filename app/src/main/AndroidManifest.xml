@@ -43,12 +43,95 @@
 
         <activity
             android:name=".MainActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!--
+          One alias per theme preset. Only one is enabled at a time; LauncherIcon.kt switches
+          them when the palette changes, which is how the launcher icon follows the app theme.
+        -->
+        <activity-alias
+            android:name=".LauncherMac"
+            android:enabled="true"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize">
+            android:icon="@mipmap/ic_launcher_mac"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_mac"
+            android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".LauncherTrippy"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_trippy"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_trippy"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".LauncherChill"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_chill"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_chill"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".LauncherEpic"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_epic"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_epic"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".LauncherEmotional"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_emotional"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_emotional"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".LauncherSunset"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher_sunset"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_sunset"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
     </application>
 </manifest>

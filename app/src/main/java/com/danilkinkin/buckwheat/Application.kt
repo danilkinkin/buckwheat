@@ -7,6 +7,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.danilkinkin.buckwheat.subscriptions.SubscriptionCheckWorker
+import com.danilkinkin.buckwheat.ui.applyLauncherIcon
 import com.danilkinkin.buckwheat.widget.extend.ExtendWidgetReceiver
 import com.danilkinkin.buckwheat.widget.minimal.MinimalWidgetReceiver
 import dagger.hilt.android.HiltAndroidApp
@@ -36,6 +37,14 @@ class Application : Application() {
             override fun onActivityPaused(activity: Activity) {
                 ExtendWidgetReceiver.requestUpdateData(activity.applicationContext)
                 MinimalWidgetReceiver.requestUpdateData(activity.applicationContext)
+
+                // The launcher is not visible while the app is in front, so the alias switch
+                // happens here instead of mid-theme-change. Enabling the new alias before
+                // disabling the old one keeps the app launchable throughout.
+                applyLauncherIcon(
+                    activity.applicationContext,
+                    activity.applicationContext.appThemePreset,
+                )
             }
 
             override fun onActivityStopped(activity: Activity) {
