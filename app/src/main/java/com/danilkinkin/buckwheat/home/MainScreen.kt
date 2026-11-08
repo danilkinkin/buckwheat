@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import android.util.Log
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -36,6 +37,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -156,6 +158,17 @@ fun MainScreen(
             systemKeyboardHeight != 0.dp && appViewModel.showSystemKeyboard.value
         val isRequestedShowSystemKeyboard =
             systemKeyboardHeight != 0.dp || appViewModel.showSystemKeyboard.value
+
+        LaunchedEffect(isShowSystemKeyboard, isRequestedShowSystemKeyboard) {
+            Log.d(
+                "BuckwheatTrace",
+                "keyboard systemVisible=$isShowSystemKeyboard requested=$isRequestedShowSystemKeyboard ime=$systemKeyboardHeight",
+            )
+        }
+
+        LaunchedEffect(topSheetState.currentValue) {
+            Log.d("BuckwheatTrace", "topSheet -> ${topSheetState.currentValue}")
+        }
 
         val currentKeyboardHeight = if (isShowSystemKeyboard) {
             with(localDensity) { systemKeyboardHeight.toPx() }

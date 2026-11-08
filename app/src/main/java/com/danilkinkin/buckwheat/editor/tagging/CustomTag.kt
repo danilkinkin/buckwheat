@@ -146,6 +146,7 @@ fun CustomTag(
     }
 
     val close = {
+        Log.d(TAG, "tag editor close() -> commit '${value.text.trim()}'")
         isEdit = false
         isShowSuggestions = false
         onEdit(false)
@@ -166,6 +167,7 @@ fun CustomTag(
                     Modifier
                 } else {
                     Modifier.clickable {
+                        Log.d(TAG, "tag editor button tapped -> open")
                         editorFocusController.blur()
                         focusManager.clearFocus()
                         isEdit = true
@@ -221,6 +223,7 @@ fun CustomTag(
                     }
                 ) { targetIsEdit ->
                     if (this.transition.currentState == this.transition.targetState && targetIsEdit) {
+                        Log.d(TAG, "transition settled -> renderPopup = true")
                         renderPopup = true
                     }
 
@@ -411,7 +414,7 @@ internal data class DropdownMenuPositionProvider(
     }
 }
 
-private const val TAG = "BuckwheatTagEditor"
+private const val TAG = "BuckwheatTrace"
 
 @Composable
 fun CommentEditor(

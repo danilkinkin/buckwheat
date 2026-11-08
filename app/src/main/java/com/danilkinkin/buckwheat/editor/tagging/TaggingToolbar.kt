@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.editor.tagging
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseInOutQuad
 import androidx.compose.animation.core.tween
@@ -33,6 +34,8 @@ import com.danilkinkin.buckwheat.editor.EditStage
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.util.observeLiveData
+
+internal const val TRACE_TAG = "BuckwheatTrace"
 
 @Composable
 fun TaggingToolbar(
@@ -95,6 +98,7 @@ fun TaggingToolbar(
                     ) { with(localDensity) { 30.dp.toPx().toInt() } },
                 ) {
                     Tag(value = tag, onClick = {
+                        Log.d(TRACE_TAG, "tag chip tapped '$tag'")
                         editorViewModel.currentComment.value = tag
                     })
                 }
