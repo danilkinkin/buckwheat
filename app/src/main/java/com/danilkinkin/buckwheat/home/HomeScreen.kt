@@ -62,6 +62,7 @@ fun HomeScreen(
     onAdd: () -> Unit,
     onOpenSubscriptions: () -> Unit,
     onOpenHistory: () -> Unit,
+    onOpenStats: () -> Unit,
     onOpenSettings: () -> Unit,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
@@ -118,6 +119,13 @@ fun HomeScreen(
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f),
                     )
+                    IconButton(onClick = onOpenStats) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_analytics),
+                            contentDescription = stringResource(R.string.stats_title),
+                            tint = colorOnEditor,
+                        )
+                    }
                     IconButton(onClick = onOpenSettings) {
                         Icon(
                             painter = painterResource(R.drawable.ic_settings),

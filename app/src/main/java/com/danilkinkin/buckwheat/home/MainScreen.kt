@@ -42,6 +42,7 @@ import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.history.History
 import com.danilkinkin.buckwheat.settings.CATEGORIES_SHEET
 import com.danilkinkin.buckwheat.settings.Settings
+import com.danilkinkin.buckwheat.stats.StatsScreen
 import com.danilkinkin.buckwheat.subscriptions.SubscriptionsScreen
 import com.danilkinkin.buckwheat.ui.colorBackground
 import com.danilkinkin.buckwheat.ui.isNightMode
@@ -49,7 +50,7 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.CURRENCY_EDITOR
 
-private enum class AppScreen { HOME, HISTORY, SUBSCRIPTIONS, SETTINGS }
+private enum class AppScreen { HOME, HISTORY, SUBSCRIPTIONS, STATS, SETTINGS }
 
 @Composable
 fun MainScreen(
@@ -106,6 +107,7 @@ fun MainScreen(
                     },
                     onOpenSubscriptions = { screen = AppScreen.SUBSCRIPTIONS },
                     onOpenHistory = { screen = AppScreen.HISTORY },
+                    onOpenStats = { screen = AppScreen.STATS },
                     onOpenSettings = { screen = AppScreen.SETTINGS },
                 )
 
@@ -122,6 +124,8 @@ fun MainScreen(
                         appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "subscription")))
                     },
                 )
+
+                AppScreen.STATS -> StatsScreen(onBack = { screen = AppScreen.HOME })
 
                 AppScreen.SETTINGS -> Column(
                     Modifier

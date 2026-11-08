@@ -77,6 +77,18 @@
   <string name="home">Home</string>
   <string name="history">History</string>
   <string name="this_month">This month</string>
+  <string name="stats_title">Statistics</string>
+  <string name="total_spent">Total spent</string>
+  <string name="daily_average">Daily average</string>
+  <string name="by_category">By category</string>
+  <string name="by_day">By day</string>
+  <string name="peak_day">Peak %1$s</string>
+  <string name="share_percent">%1$d%%</string>
+  <string name="no_spending_month">No spending in this month</string>
+  <plurals name="expenses_count">
+    <item quantity="one">%1$d expense</item>
+    <item quantity="other">%1$d expenses</item>
+  </plurals>
   <string name="upcoming">Upcoming</string>
   <string name="see_all">See all</string>
   <string name="new_expense">New expense</string>
