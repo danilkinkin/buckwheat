@@ -43,7 +43,7 @@ import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.analytics.categoriesChart.CategoriesChartCard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.wallet.DaysLeftCard
-import com.danilkinkin.buckwheat.wallet.rememberExportCSV
+import com.danilkinkin.buckwheat.export.rememberExportCSV
 
 const val ANALYTICS_SHEET = "finishPeriod"
 

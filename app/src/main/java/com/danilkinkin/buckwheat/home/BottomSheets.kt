@@ -109,7 +109,8 @@ fun BottomSheets(
         Settings(
             onTriedWidget = {
                 coroutineScope.launch { state.callback(emptyMap()) }
-            }
+            },
+            activityResultRegistryOwner = activityResultRegistryOwner,
         )
     }
 
