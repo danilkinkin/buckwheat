@@ -11,4 +11,7 @@
     <color name="launcher_epic">#8C66A8</color>
     <color name="launcher_emotional">#D06A93</color>
     <color name="launcher_sunset">#E07A48</color>
+
+    <!-- Palette-neutral dark; close to every preset's background. -->
+    <color name="splash_background">#111418</color>
 </resources>

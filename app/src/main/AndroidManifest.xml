@@ -46,6 +46,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+
         <!--
           One alias per theme preset. Only one is enabled at a time; LauncherIcon.kt switches
           them when the palette changes, which is how the launcher icon follows the app theme.
