@@ -12,6 +12,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.home.HomeDashboard
 import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
 
@@ -41,6 +42,7 @@ fun CurrentSpendEditor(
 
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
+    val editStage by editorViewModel.stage.observeAsState(EditStage.IDLE)
 
     var spentValue by remember { mutableStateOf("0") }
     var stage by remember { mutableStateOf(AnimState.IDLE) }
@@ -113,35 +115,45 @@ fun CurrentSpendEditor(
     }
 
     Box(modifier) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.CenterEnd,
-        ) {
-            if (!hide) {
-                EditableTextWithLabel(
-                    value = spentValue,
-                    onChangeValue = {
-                        val fixed = fixedNumberString(it)
-                        val converted = tryConvertStringToNumber(fixed)
+        if (editStage === EditStage.IDLE) {
+            // A tracker should open on what was spent, not on an empty input. The dashboard
+            // hands focus back to the editor on tap; the keypad itself is unchanged and typing
+            // a digit also starts a new spend.
+            HomeDashboard(
+                modifier = Modifier.fillMaxSize(),
+                onStartEditing = { focusController.focus() },
+            )
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                if (!hide) {
+                    EditableTextWithLabel(
+                        value = spentValue,
+                        onChangeValue = {
+                            val fixed = fixedNumberString(it)
+                            val converted = tryConvertStringToNumber(fixed)
 
-                        editorViewModel.rawSpentValue.value = fixed
-                        editorViewModel.modifyEditingSpent(converted.join().toBigDecimal())
+                            editorViewModel.rawSpentValue.value = fixed
+                            editorViewModel.modifyEditingSpent(converted.join().toBigDecimal())
 
-                        if (fixed == "") {
-                            if (mode === EditMode.ADD) {
-                                editorViewModel.resetEditingSpent()
+                            if (fixed == "") {
+                                if (mode === EditMode.ADD) {
+                                    editorViewModel.resetEditingSpent()
+                                }
                             }
-                        }
-                    },
-                    currency = currency,
-                    focusRequester = focusRequester,
-                )
+                        },
+                        currency = currency,
+                        focusRequester = focusRequester,
+                    )
 
-                DisposableEffect(requestFocus) {
-                    focusRequester.requestFocus()
-                    requestFocus = false
+                    DisposableEffect(requestFocus) {
+                        focusRequester.requestFocus()
+                        requestFocus = false
 
-                    onDispose {}
+                        onDispose {}
+                    }
                 }
             }
         }

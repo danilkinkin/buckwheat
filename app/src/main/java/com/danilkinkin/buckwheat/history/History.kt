@@ -29,7 +29,6 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.di.TUTORIAL_STAGE
 import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditorViewModel
-import com.danilkinkin.buckwheat.analytics.WholeBudgetCard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.data.ExtendCurrency
@@ -60,10 +59,7 @@ fun History(
     val coroutineScope = rememberCoroutineScope()
 
     var historyList by remember { mutableStateOf<List<RowEntity>>(emptyList()) }
-    val budget = spendsViewModel.budget.observeAsState(initial = BigDecimal.ZERO)
     val currency = spendsViewModel.currency.observeAsState(initial = ExtendCurrency.none())
-    val startPeriodDate = spendsViewModel.startPeriodDate.observeAsState(initial = Date())
-    val finishPeriodDate = spendsViewModel.finishPeriodDate.observeAsState(initial = Date())
     val scrollToBottom = remember { mutableStateOf(true) }
     val tutorial by appViewModel.getTutorialStage(TUTORS.SWIPE_EDIT_SPENT).observeAsState(TUTORIAL_STAGE.NONE)
     var isUserTrySwipe by remember { mutableStateOf(false) }
@@ -297,18 +293,9 @@ fun History(
                 }
 
                 if (!readOnly) {
-                    item("budget-info") {
-                        WholeBudgetCard(
-                            modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                            budget = budget.value,
-                            currency = currency.value,
-                            startDate = startPeriodDate.value,
-                            finishDate = finishPeriodDate.value,
-                            colors = CardDefaults.cardColors(
-                                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-                            ),
-                        )
+                    // The ledger summary now lives on the home screen; the history only needs
+                    // enough room to clear the status bar.
+                    item("top-inset") {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
