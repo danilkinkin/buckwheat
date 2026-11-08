@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,7 +41,6 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
-import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.history.SpentItem
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.isSameDay
@@ -57,10 +56,6 @@ import java.util.Date
 private const val RECENT_COUNT = 4
 private const val UPCOMING_COUNT = 3
 
-/**
- * The home answers three questions: what did I spend today, what this month, and what is about to
- * be charged. The editor is one tap away and no longer occupies the home.
- */
 @Composable
 fun HomeScreen(
     onAdd: () -> Unit,
@@ -73,11 +68,12 @@ fun HomeScreen(
     val context = LocalContext.current
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val categories by spendsViewModel.categories.observeAsState(emptyList())
-    val currency by spendsViewModel.currency.observeAsState(com.danilkinkin.buckwheat.data.ExtendCurrency.none())
+    val currency by spendsViewModel.currency.observeAsState(
+        com.danilkinkin.buckwheat.data.ExtendCurrency.none()
+    )
     val subscriptions by subscriptionsViewModel.subscriptions.observeAsState(emptyList())
 
-    val today = LocalDate.now()
-    val currentMonth = YearMonth.from(today)
+    val currentMonth = YearMonth.from(LocalDate.now())
     val todayTotal = spends
         .filter { isSameDay(it.date, Date()) }
         .fold(BigDecimal.ZERO) { total, spend -> total + spend.value }
@@ -95,7 +91,7 @@ fun HomeScreen(
     Box(Modifier.fillMaxSize().statusBarsPadding()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = 12.dp, bottom = 104.dp),
+            contentPadding = PaddingValues(top = 8.dp, bottom = 104.dp),
         ) {
             item("header") {
                 Row(
@@ -106,8 +102,8 @@ fun HomeScreen(
                 ) {
                     Text(
                         text = prettyYearMonth(currentMonth),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = colorOnEditor.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = colorOnEditor,
                         modifier = Modifier.weight(1f),
                     )
                     IconButton(onClick = onOpenSettings) {
@@ -120,98 +116,72 @@ fun HomeScreen(
                 }
             }
 
-            item("totals") {
+            item("heroes") {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.Bottom,
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(R.string.today),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = colorOnEditor.copy(alpha = 0.6f),
-                        )
-                        Text(
-                            text = numberFormat(context, todayTotal, currency, trimDecimalPlaces = true),
-                            style = MaterialTheme.typography.displaySmall,
-                            color = colorOnEditor,
-                            maxLines = 1,
-                            softWrap = false,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                    Spacer(Modifier.width(16.dp))
-                    Column(horizontalAlignment = Alignment.End) {
-                        Text(
-                            text = stringResource(R.string.this_month),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = colorOnEditor.copy(alpha = 0.6f),
-                        )
-                        Text(
-                            text = numberFormat(context, monthTotal, currency, trimDecimalPlaces = true),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = colorOnEditor,
-                            maxLines = 1,
-                            softWrap = false,
-                        )
-                    }
-                }
-            }
-
-            item("upcoming-header") {
-                SectionHeader(title = stringResource(R.string.upcoming)) {
-                    TextButton(onClick = onOpenSubscriptions) {
-                        Text(stringResource(R.string.see_all))
-                    }
-                }
-            }
-
-            if (upcoming.isEmpty()) {
-                item("upcoming-empty") {
-                    Text(
-                        text = stringResource(R.string.no_subscriptions),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = colorOnEditor.copy(alpha = 0.6f),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-                    )
-                }
-            } else {
-                items(upcoming, key = { "sub-${it.id}" }) { subscription ->
-                    UpcomingSubscriptionRow(
-                        subscription = subscription,
-                        category = subscription.categoryId?.let { categoriesById[it] },
+                    HeroCard(
+                        label = stringResource(R.string.today),
+                        amount = todayTotal,
                         currency = currency,
-                        onClick = onOpenSubscriptions,
+                        container = MaterialTheme.colorScheme.primaryContainer,
+                        content = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.weight(1f),
+                    )
+                    HeroCard(
+                        label = stringResource(R.string.this_month),
+                        amount = monthTotal,
+                        currency = currency,
+                        container = MaterialTheme.colorScheme.secondaryContainer,
+                        content = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
 
-            item("recent-header") {
-                SectionHeader(title = stringResource(R.string.recent)) {
-                    TextButton(onClick = onOpenHistory) {
-                        Text(stringResource(R.string.see_all))
+            item("upcoming") {
+                SectionTitle(
+                    title = stringResource(R.string.upcoming),
+                    count = upcoming.size,
+                    action = onOpenSubscriptions,
+                )
+                SectionCard {
+                    if (upcoming.isEmpty()) {
+                        SectionEmpty(stringResource(R.string.no_subscriptions))
+                    } else {
+                        upcoming.forEach { subscription ->
+                            UpcomingSubscriptionRow(
+                                subscription = subscription,
+                                category = subscription.categoryId?.let { categoriesById[it] },
+                                currency = currency,
+                                onClick = onOpenSubscriptions,
+                            )
+                        }
                     }
                 }
             }
 
-            if (recent.isEmpty()) {
-                item("recent-empty") {
-                    Text(
-                        text = stringResource(R.string.no_spends),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = colorOnEditor.copy(alpha = 0.6f),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-                    )
-                }
-            } else {
-                items(recent, key = { "spent-${it.uid}" }) { spend ->
-                    SpentItem(
-                        transaction = spend,
-                        currency = currency,
-                        category = spend.categoryId?.let { categoriesById[it] },
-                    )
+            item("recent") {
+                SectionTitle(
+                    title = stringResource(R.string.recent),
+                    count = recent.size,
+                    action = onOpenHistory,
+                )
+                SectionCard {
+                    if (recent.isEmpty()) {
+                        SectionEmpty(stringResource(R.string.no_spends))
+                    } else {
+                        recent.forEach { spend ->
+                            SpentItem(
+                                transaction = spend,
+                                currency = currency,
+                                category = spend.categoryId?.let { categoriesById[it] },
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -231,24 +201,104 @@ fun HomeScreen(
 }
 
 @Composable
-private fun SectionHeader(
+private fun HeroCard(
+    label: String,
+    amount: BigDecimal,
+    currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
+    container: androidx.compose.ui.graphics.Color,
+    content: androidx.compose.ui.graphics.Color,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+
+    Surface(
+        modifier = modifier.height(112.dp),
+        shape = RoundedCornerShape(28.dp),
+        color = container,
+        contentColor = content,
+    ) {
+        Column(Modifier.padding(18.dp)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = content.copy(alpha = 0.7f),
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = numberFormat(context, amount, currency),
+                style = MaterialTheme.typography.headlineMedium,
+                color = content,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SectionTitle(
     title: String,
-    action: @Composable () -> Unit,
+    count: Int,
+    action: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, end = 8.dp, top = 20.dp, bottom = 4.dp),
+            .padding(start = 24.dp, end = 12.dp, top = 20.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.labelLarge,
-            color = colorOnEditor.copy(alpha = 0.7f),
-            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.titleLarge,
+            color = colorOnEditor,
         )
-        action()
+        if (count > 0) {
+            Spacer(Modifier.width(8.dp))
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ) {
+                Text(
+                    text = count.toString(),
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                )
+            }
+        }
+        Spacer(Modifier.weight(1f))
+        TextButton(onClick = action) {
+            Text(stringResource(R.string.see_all))
+        }
     }
+}
+
+@Composable
+private fun SectionCard(
+    content: @Composable () -> Unit,
+) {
+    Surface(
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+    ) {
+        Column {
+            content()
+        }
+    }
+}
+
+@Composable
+private fun SectionEmpty(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = colorOnEditor.copy(alpha = 0.6f),
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 18.dp),
+    )
 }
 
 @Composable
@@ -266,29 +316,18 @@ private fun UpcomingSubscriptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 24.dp, vertical = 8.dp),
+            .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            modifier = Modifier.size(36.dp),
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                if (!category?.emoji.isNullOrEmpty()) {
-                    Text(category.emoji, style = MaterialTheme.typography.titleSmall)
-                } else {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_balance_wallet),
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-            }
+        if (!category?.emoji.isNullOrEmpty()) {
+            Text(
+                text = category.emoji,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.width(32.dp),
+            )
+        } else {
+            Spacer(Modifier.width(32.dp))
         }
-
-        Spacer(Modifier.width(12.dp))
 
         Column(Modifier.weight(1f)) {
             Text(

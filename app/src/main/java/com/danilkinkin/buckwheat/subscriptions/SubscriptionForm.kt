@@ -38,6 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,7 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.CategoryDropdown
+import com.danilkinkin.buckwheat.base.CategoryPicker
 import com.danilkinkin.buckwheat.base.MinimalTextField
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
@@ -56,6 +58,7 @@ import com.danilkinkin.buckwheat.editor.dateTimeEdit.DatePickerDialog
 import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
+import kotlinx.coroutines.delay
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.Date
@@ -69,6 +72,7 @@ fun SubscriptionForm(
     modifier: Modifier = Modifier,
     onCancel: (() -> Unit)? = null,
     onAddCategory: (() -> Unit)? = null,
+    autoFocusName: Boolean = false,
 ) {
     val context = LocalContext.current
 
@@ -84,7 +88,15 @@ fun SubscriptionForm(
     var categoryTouched by remember { mutableStateOf(initial != null) }
     var showDatePicker by remember { mutableStateOf(false) }
 
+    val nameFocusRequester = remember { FocusRequester() }
     val amount = amountText.toBigDecimalOrNull()
+
+    LaunchedEffect(Unit) {
+        if (autoFocusName) {
+            delay(220)
+            nameFocusRequester.requestFocus()
+        }
+    }
 
     LaunchedEffect(categories) {
         if (initial == null && !categoryTouched && categoryId == null && categories.isNotEmpty()) {
@@ -115,6 +127,7 @@ fun SubscriptionForm(
             onValueChange = { name = it },
             placeholder = stringResource(R.string.subscription_name),
             textStyle = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.focusRequester(nameFocusRequester),
         )
 
         Spacer(Modifier.height(10.dp))
@@ -187,7 +200,7 @@ fun SubscriptionForm(
 
         Spacer(Modifier.height(12.dp))
 
-        CategoryDropdown(
+        CategoryPicker(
             categories = categories,
             selectedCategoryId = categoryId,
             onSelect = {

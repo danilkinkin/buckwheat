@@ -33,7 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.CategoryDropdown
+import com.danilkinkin.buckwheat.base.CategoryPicker
 import com.danilkinkin.buckwheat.base.MinimalTextField
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
@@ -177,7 +177,7 @@ fun EditorSheet(
                     .padding(horizontal = 24.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                CategoryDropdown(
+                CategoryPicker(
                     categories = categories,
                     selectedCategoryId = selectedCategoryId,
                     onSelect = { editorViewModel.currentCategoryId.value = it },
@@ -217,6 +217,7 @@ fun EditorSheet(
                 },
                 modifier = Modifier.padding(horizontal = 24.dp),
                 onAddCategory = { showAddCategory = true },
+                autoFocusName = true,
             )
         }
     }
