@@ -29,6 +29,12 @@ class SubscriptionsViewModel @Inject constructor(
         }
     }
 
+    fun update(subscription: Subscription) {
+        viewModelScope.launch {
+            spendsRepository.updateSubscription(subscription)
+        }
+    }
+
     fun delete(subscriptionId: Int) {
         viewModelScope.launch {
             spendsRepository.deleteSubscription(subscriptionId)

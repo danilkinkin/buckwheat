@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,11 +12,13 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -50,11 +53,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.CategoryChip
-import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
@@ -70,21 +71,20 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.Date
 
-const val SUBSCRIPTIONS_SHEET = "subscriptions"
-
 @Composable
-fun SubscriptionsSheet(
+fun SubscriptionsScreen(
     subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
-    onClose: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val subscriptions by subscriptionsViewModel.subscriptions.observeAsState(emptyList())
     val categories by spendsViewModel.categories.observeAsState(emptyList())
-    val currency by spendsViewModel.currency.observeAsState(com.danilkinkin.buckwheat.data.ExtendCurrency.none())
+    val currency by spendsViewModel.currency.observeAsState(
+        com.danilkinkin.buckwheat.data.ExtendCurrency.none()
+    )
 
-    val localBottomSheetScrollState = LocalBottomSheetScrollState.current
-    var showAddDialog by remember { mutableStateOf(false) }
+    var editing by remember { mutableStateOf<Subscription?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
 
     val notificationPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -99,18 +99,10 @@ fun SubscriptionsSheet(
         }
     }
 
-    val navigationBarHeight = androidx.compose.ui.unit.max(
-        LocalWindowInsets.current.calculateBottomPadding(),
-        16.dp,
-    )
     val categoriesById = remember(categories) { categories.associateBy { it.id } }
 
-    Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = navigationBarHeight),
-        ) {
+    Box(Modifier.fillMaxSize().statusBarsPadding()) {
+        Column(Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,23 +116,28 @@ fun SubscriptionsSheet(
             }
 
             if (subscriptions.isEmpty()) {
-                Text(
-                    text = stringResource(R.string.no_subscriptions),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-                )
+                Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = stringResource(R.string.no_subscriptions),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    )
+                }
             } else {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 380.dp),
+                        .weight(1f),
                 ) {
                     items(subscriptions, key = { it.id }) { subscription ->
                         SubscriptionRow(
                             subscription = subscription,
                             category = subscription.categoryId?.let { categoriesById[it] },
                             currency = currency,
+                            onClick = {
+                                editing = subscription
+                                showDialog = true
+                            },
                             onPaid = { subscriptionsViewModel.markPaid(subscription) },
                             onDelete = { subscriptionsViewModel.delete(subscription.id) },
                         )
@@ -151,20 +148,37 @@ fun SubscriptionsSheet(
             ButtonRow(
                 icon = painterResource(R.drawable.ic_balance_wallet),
                 text = stringResource(R.string.add_subscription),
-                onClick = { showAddDialog = true },
+                onClick = {
+                    editing = null
+                    showDialog = true
+                },
             )
             Spacer(Modifier.height(8.dp))
         }
     }
 
-    if (showAddDialog) {
+    if (showDialog) {
         AddSubscriptionDialog(
+            initial = editing,
             categories = categories,
-            onAdd = { name, amount, period, nextDue, categoryId ->
-                subscriptionsViewModel.add(name, amount, period, nextDue, categoryId)
-                showAddDialog = false
+            onSave = { name, amount, period, nextDue, categoryId ->
+                if (editing == null) {
+                    subscriptionsViewModel.add(name, amount, period, nextDue, categoryId)
+                } else {
+                    subscriptionsViewModel.update(
+                        editing!!.copy(
+                            name = name.trim(),
+                            amount = amount,
+                            period = period.name,
+                            anchorDay = nextDue.toLocalDate().dayOfMonth,
+                            nextDue = nextDue,
+                            categoryId = categoryId,
+                        )
+                    )
+                }
+                showDialog = false
             },
-            onClose = { showAddDialog = false },
+            onClose = { showDialog = false },
         )
     }
 }
@@ -174,6 +188,7 @@ private fun SubscriptionRow(
     subscription: Subscription,
     category: Category?,
     currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
+    onClick: () -> Unit,
     onPaid: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -185,6 +200,7 @@ private fun SubscriptionRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(start = 24.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -245,17 +261,20 @@ private fun SubscriptionPeriod.label(): String = when (this) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun AddSubscriptionDialog(
+    initial: Subscription?,
     categories: List<Category>,
-    onAdd: (name: String, amount: BigDecimal, period: SubscriptionPeriod, nextDue: Date, categoryId: Int?) -> Unit,
+    onSave: (name: String, amount: BigDecimal, period: SubscriptionPeriod, nextDue: Date, categoryId: Int?) -> Unit,
     onClose: () -> Unit,
 ) {
-    var name by remember { mutableStateOf("") }
-    var amountText by remember { mutableStateOf("") }
-    var period by remember { mutableStateOf(SubscriptionPeriod.MONTHLY) }
-    var nextDue by remember {
-        mutableStateOf(LocalDate.now().plusMonths(1).toDate())
+    var name by remember { mutableStateOf(initial?.name ?: "") }
+    var amountText by remember { mutableStateOf(initial?.amount?.toPlainString() ?: "") }
+    var period by remember {
+        mutableStateOf(initial?.period?.toSubscriptionPeriod() ?: SubscriptionPeriod.MONTHLY)
     }
-    var categoryId by remember { mutableStateOf<Int?>(null) }
+    var nextDue by remember {
+        mutableStateOf(initial?.nextDue ?: LocalDate.now().plusMonths(1).toDate())
+    }
+    var categoryId by remember { mutableStateOf(initial?.categoryId) }
     var showDatePicker by remember { mutableStateOf(false) }
 
     val amount = amountText.toBigDecimalOrNull()
@@ -272,7 +291,9 @@ private fun AddSubscriptionDialog(
                     .padding(24.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.add_subscription),
+                    text = stringResource(
+                        if (initial == null) R.string.add_subscription else R.string.edit_subscription
+                    ),
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Spacer(Modifier.height(16.dp))
@@ -374,7 +395,7 @@ private fun AddSubscriptionDialog(
                     Button(
                         onClick = {
                             val value = amount ?: return@Button
-                            onAdd(name, value, period, nextDue, categoryId)
+                            onSave(name, value, period, nextDue, categoryId)
                         },
                         enabled = name.isNotBlank() && amount != null && amount > BigDecimal.ZERO,
                     ) {

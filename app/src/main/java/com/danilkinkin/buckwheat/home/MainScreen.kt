@@ -38,12 +38,12 @@ import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.base.SwipeableSnackbarHost
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
-import com.danilkinkin.buckwheat.editor.EditorScreen
+import com.danilkinkin.buckwheat.editor.EDITOR_SHEET
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.history.History
 import com.danilkinkin.buckwheat.settings.CATEGORIES_SHEET
 import com.danilkinkin.buckwheat.settings.Settings
-import com.danilkinkin.buckwheat.subscriptions.SUBSCRIPTIONS_SHEET
+import com.danilkinkin.buckwheat.subscriptions.SubscriptionsScreen
 import com.danilkinkin.buckwheat.ui.colorBackground
 import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.observeLiveData
@@ -56,6 +56,7 @@ private enum class MainTab(
 ) {
     HOME(R.string.home, R.drawable.ic_home),
     HISTORY(R.string.history, R.drawable.ic_analytics),
+    SUBSCRIPTIONS(R.string.subscriptions_title, R.drawable.ic_balance_wallet),
     SETTINGS(R.string.settings_title, R.drawable.ic_settings),
 }
 
@@ -67,7 +68,6 @@ fun MainScreen(
     spendsViewModel: SpendsViewModel = viewModel(),
 ) {
     var tab by rememberSaveable { mutableStateOf(MainTab.HOME) }
-    var editorOpen by rememberSaveable { mutableStateOf(false) }
     val nightMode = remember { mutableStateOf(false) }
 
     nightMode.value = isNightMode()
@@ -132,18 +132,20 @@ fun MainScreen(
                     MainTab.HOME -> HomeScreen(
                         onAdd = {
                             editorViewModel.resetEditingSpent()
-                            editorOpen = true
+                            appViewModel.openSheet(PathState(EDITOR_SHEET))
                         },
-                        onOpenSubscriptions = {
-                            appViewModel.openSheet(PathState(SUBSCRIPTIONS_SHEET))
-                        },
+                        onOpenSubscriptions = { tab = MainTab.SUBSCRIPTIONS },
                         onOpenHistory = { tab = MainTab.HISTORY },
                         onOpenSettings = { tab = MainTab.SETTINGS },
                     )
 
                     MainTab.HISTORY -> History(
-                        onClose = { editorOpen = true },
+                        onClose = {
+                            appViewModel.openSheet(PathState(EDITOR_SHEET))
+                        },
                     )
+
+                    MainTab.SUBSCRIPTIONS -> SubscriptionsScreen()
 
                     MainTab.SETTINGS -> Box(
                         Modifier
@@ -158,18 +160,12 @@ fun MainScreen(
                             onOpenCategories = {
                                 appViewModel.openSheet(PathState(CATEGORIES_SHEET))
                             },
-                            onOpenSubscriptions = {
-                                appViewModel.openSheet(PathState(SUBSCRIPTIONS_SHEET))
-                            },
+                            onOpenSubscriptions = { tab = MainTab.SUBSCRIPTIONS },
                             activityResultRegistryOwner = activityResultRegistryOwner,
                         )
                     }
                 }
             }
-        }
-
-        if (editorOpen) {
-            EditorScreen(onClose = { editorOpen = false })
         }
 
         // Sheets are declared last so they draw above the editor overlay.

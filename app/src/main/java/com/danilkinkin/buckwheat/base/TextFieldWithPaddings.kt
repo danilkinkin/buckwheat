@@ -314,6 +314,15 @@ fun TextFieldWithPaddings(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.CenterEnd
                         ) {
+                            // An empty field is otherwise indistinguishable from no field at all.
+                            if (textFieldValue.text.isEmpty()) {
+                                Text(
+                                    text = "0",
+                                    style = textStyle.copy(
+                                        color = colorOnEditor.copy(alpha = 0.22f),
+                                    ),
+                                )
+                            }
                             input()
                         }
 

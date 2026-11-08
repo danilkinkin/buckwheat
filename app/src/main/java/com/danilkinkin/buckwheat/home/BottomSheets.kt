@@ -15,6 +15,8 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.DETAILS_SHEET
 import com.danilkinkin.buckwheat.editor.DetailsSheet
+import com.danilkinkin.buckwheat.editor.EDITOR_SHEET
+import com.danilkinkin.buckwheat.editor.EditorSheet
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BudgetIsOverDescription
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NEW_DAY_BUDGET_DESCRIPTION_SHEET
@@ -29,8 +31,6 @@ import com.danilkinkin.buckwheat.onboarding.Onboarding
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.*
-import com.danilkinkin.buckwheat.subscriptions.SUBSCRIPTIONS_SHEET
-import com.danilkinkin.buckwheat.subscriptions.SubscriptionsSheet
 import com.danilkinkin.buckwheat.wallet.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -92,27 +92,20 @@ fun BottomSheets(
         )
     }
 
+    // The editor is a sheet so the Details sheet can stack above it.
     BottomSheetWrapper(
-        name = SETTINGS_SHEET,
+        name = EDITOR_SHEET,
     ) { state ->
-        Settings(
-            onTriedWidget = {
-                coroutineScope.launch { state.callback(emptyMap()) }
-            },
-            onOpenCurrency = {
-                appViewModel.openSheet(PathState(CURRENCY_EDITOR))
-            },
-            onOpenCategories = {
-                appViewModel.openSheet(PathState(CATEGORIES_SHEET))
-            },
-            onOpenSubscriptions = {
-                appViewModel.openSheet(PathState(SUBSCRIPTIONS_SHEET))
-            },
-            activityResultRegistryOwner = activityResultRegistryOwner,
+        EditorSheet(
+            onClose = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            }
         )
     }
 
-    // Declared after Settings so these sheets draw above the sheet that opened them.
+    // Declared after the editor so these sheets draw above it.
     BottomSheetWrapper(
         name = CATEGORIES_SHEET,
     ) { state ->
@@ -129,18 +122,6 @@ fun BottomSheets(
         name = DETAILS_SHEET,
     ) { state ->
         DetailsSheet(
-            onClose = {
-                coroutineScope.launch {
-                    state.hide()
-                }
-            }
-        )
-    }
-
-    BottomSheetWrapper(
-        name = SUBSCRIPTIONS_SHEET,
-    ) { state ->
-        SubscriptionsSheet(
             onClose = {
                 coroutineScope.launch {
                     state.hide()

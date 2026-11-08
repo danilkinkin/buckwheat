@@ -34,7 +34,6 @@ fun CurrentSpendEditor(
     modifier: Modifier = Modifier,
     focusController: FocusController = remember { FocusController() },
     spendsViewModel: SpendsViewModel = hiltViewModel(),
-    appViewModel: AppViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
     onDone: () -> Unit = {},
 ) {
@@ -45,22 +44,12 @@ fun CurrentSpendEditor(
     val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
 
     var spentValue by remember { mutableStateOf("0") }
-    var requestFocus by remember { mutableStateOf(false) }
-    var hide by remember { mutableStateOf(false) }
+    var requestFocus by remember { mutableStateOf(true) }
     val focusRequester = remember { FocusRequester() }
 
     fun calculateValues() {
         spentValue = editorViewModel.rawSpentValue.value!!
         requestFocus = true
-    }
-
-    observeLiveData(appViewModel.sheetStates) {
-        if (it.isEmpty()) {
-            requestFocus = true
-            hide = false
-        } else {
-            hide = editorViewModel.rawSpentValue.value!! == ""
-        }
     }
 
     observeLiveData(editorViewModel.stage) {
@@ -90,8 +79,7 @@ fun CurrentSpendEditor(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopEnd,
         ) {
-            if (!hide) {
-                EditableTextWithLabel(
+            EditableTextWithLabel(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(120.dp),
@@ -116,12 +104,11 @@ fun CurrentSpendEditor(
                     focusRequester = focusRequester,
                 )
 
-                DisposableEffect(requestFocus) {
-                    focusRequester.requestFocus()
-                    requestFocus = false
+            DisposableEffect(requestFocus) {
+                focusRequester.requestFocus()
+                requestFocus = false
 
-                    onDispose {}
-                }
+                onDispose {}
             }
         }
     }

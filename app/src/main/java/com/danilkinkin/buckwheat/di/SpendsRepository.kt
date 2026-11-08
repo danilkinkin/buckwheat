@@ -106,6 +106,12 @@ class SpendsRepository @Inject constructor(
         )
     }
 
+    suspend fun updateSubscription(subscription: Subscription) {
+        withContext(Dispatchers.IO) {
+            subscriptionDao.update(subscription)
+        }
+    }
+
     suspend fun deleteSubscription(subscriptionId: Int) {
         withContext(Dispatchers.IO) {
             subscriptionDao.deleteById(subscriptionId)
