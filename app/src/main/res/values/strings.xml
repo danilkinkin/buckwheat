@@ -87,6 +87,7 @@
   <string name="no_subscriptions">No subscriptions yet</string>
   <string name="add_subscription">Add subscription</string>
   <string name="edit_subscription">Edit subscription</string>
+  <string name="delete">Delete</string>
   <string name="subscription_name">Name</string>
   <string name="amount">Amount</string>
   <string name="period">Period</string>

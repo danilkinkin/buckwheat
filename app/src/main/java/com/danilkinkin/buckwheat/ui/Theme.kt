@@ -39,10 +39,11 @@ fun BuckwheatTheme(
         isDark = darkTheme,
     )
 
-    // Material 3 Expressive: springy component motion on top of the preset palettes.
+    // Expressive shapes/typography, but standard (non-springy) motion: the expressive motion
+    // scheme made routine taps and sheet transitions feel busier than a ledger should.
     MaterialExpressiveTheme(
         colorScheme = colorScheme,
-        motionScheme = MotionScheme.expressive(),
+        motionScheme = MotionScheme.standard(),
         shapes = shapes,
         typography = typography(LocalContext.current),
         content = content,

@@ -3,18 +3,21 @@ package com.danilkinkin.buckwheat.subscriptions
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
@@ -94,9 +96,8 @@ fun SubscriptionsScreen(
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(top = 8.dp, bottom = 96.dp),
                 ) {
                     items(subscriptions, key = { it.id }) { subscription ->
                         SubscriptionRow(
@@ -104,19 +105,22 @@ fun SubscriptionsScreen(
                             category = subscription.categoryId?.let { categoriesById[it] },
                             currency = currency,
                             onClick = { editing = subscription },
-                            onPaid = { subscriptionsViewModel.markPaid(subscription) },
-                            onDelete = { subscriptionsViewModel.delete(subscription.id) },
                         )
                     }
                 }
             }
+        }
 
-            ButtonRow(
-                icon = painterResource(R.drawable.ic_balance_wallet),
-                text = stringResource(R.string.add_subscription),
-                onClick = onAddSubscription,
+        FloatingActionButton(
+            onClick = onAddSubscription,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(24.dp),
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_add),
+                contentDescription = stringResource(R.string.add_subscription),
             )
-            Spacer(Modifier.height(8.dp))
         }
     }
 
@@ -127,15 +131,39 @@ fun SubscriptionsScreen(
                 shape = RoundedCornerShape(28.dp),
                 color = MaterialTheme.colorScheme.surface,
             ) {
-                Column(
-                    Modifier
-                        .imePadding()
-                        .padding(24.dp),
-                ) {
+                Column(Modifier.padding(24.dp)) {
                     Text(
                         text = stringResource(R.string.edit_subscription),
                         style = MaterialTheme.typography.titleLarge,
                     )
+                    Spacer(Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        TextButton(
+                            onClick = {
+                                subscriptionsViewModel.delete(subscriptionBeingEdited.id)
+                                editing = null
+                            },
+                        ) {
+                            Text(
+                                text = stringResource(R.string.delete),
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                        Spacer(Modifier.weight(1f))
+                        if (subscriptionBeingEdited.nextDue.time <= System.currentTimeMillis()) {
+                            TextButton(
+                                onClick = {
+                                    subscriptionsViewModel.markPaid(subscriptionBeingEdited)
+                                    editing = null
+                                },
+                            ) {
+                                Text(stringResource(R.string.mark_as_paid))
+                            }
+                        }
+                    }
                     Spacer(Modifier.height(16.dp))
                     SubscriptionForm(
                         initial = subscriptionBeingEdited,
@@ -155,6 +183,8 @@ fun SubscriptionsScreen(
                         },
                         onCancel = { editing = null },
                     )
+
+
                 }
             }
         }
@@ -167,8 +197,6 @@ private fun SubscriptionRow(
     category: Category?,
     currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
     onClick: () -> Unit,
-    onPaid: () -> Unit,
-    onDelete: () -> Unit,
 ) {
     val context = LocalContext.current
     val isDue = subscription.nextDue.time <= System.currentTimeMillis()
@@ -179,53 +207,56 @@ private fun SubscriptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(start = 24.dp, end = 12.dp, top = 8.dp, bottom = 8.dp),
+            .padding(horizontal = 24.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        Surface(
+            modifier = Modifier.size(40.dp),
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                if (!category?.emoji.isNullOrEmpty()) {
+                    Text(category.emoji, style = MaterialTheme.typography.titleMedium)
+                } else {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_balance_wallet),
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.width(12.dp))
+
         Column(Modifier.weight(1f)) {
             Text(
-                text = listOfNotNull(
-                    category?.emoji?.takeIf { it.isNotEmpty() },
-                    subscription.name,
-                ).joinToString(" "),
+                text = subscription.name,
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = "$periodLabel · $dueLabel",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                style = MaterialTheme.typography.labelSmall,
+                color = if (isDue) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                },
                 maxLines = 1,
             )
         }
 
-        Column(horizontalAlignment = Alignment.End) {
-            Text(
-                text = numberFormat(context, subscription.amount, currency),
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-            )
-            if (isDue) {
-                TextButton(
-                    onClick = onPaid,
-                    contentPadding = ButtonDefaults.TextButtonContentPadding,
-                ) {
-                    Text(
-                        text = stringResource(R.string.mark_as_paid),
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
-            }
-        }
+        Spacer(Modifier.width(12.dp))
 
-        IconButton(onClick = onDelete) {
-            Icon(
-                painter = painterResource(R.drawable.ic_delete_forever),
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.error,
-            )
-        }
+        Text(
+            text = numberFormat(context, subscription.amount, currency),
+            style = MaterialTheme.typography.titleMedium,
+            maxLines = 1,
+        )
     }
 }
 

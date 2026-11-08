@@ -167,7 +167,7 @@ fun EditorSheet(
             // Primary tone: the everyday action.
             Surface(
                 shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.22f),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Column(Modifier.padding(20.dp)) {
@@ -237,7 +237,7 @@ fun EditorSheet(
             // Tertiary tone: recurring money, visually a sibling of the expense card.
             Surface(
                 shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.35f),
+                color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.22f),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 SubscriptionForm(

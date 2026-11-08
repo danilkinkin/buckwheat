@@ -26,13 +26,15 @@ class CalendarState(
     )
     val listMonths: List<Month>
 
-    private val calendarStartDate: LocalDate = LocalDate.now().withDayOfMonth(1)
+    // A date picker should reach backwards as well as forwards. Two years each way keeps the
+    // pager finite while covering realistic backdating and subscription planning.
+    private val calendarStartDate: LocalDate = LocalDate.now().minusYears(2).withDayOfMonth(1)
     private val calendarEndDate: LocalDate = LocalDate.now().plusYears(2)
         .withMonth(12).withDayOfMonth(31)
 
     private val periodBetweenCalendarStartEnd: Period = Period.between(
         disableBeforeDate?.toLocalDate()?.withDayOfMonth(1) ?: calendarStartDate,
-        disableAfterDate?.toLocalDate()?.withDayOfMonth(28) ?: calendarEndDate
+        disableAfterDate?.toLocalDate()?.withDayOfMonth(1) ?: calendarEndDate.withDayOfMonth(1),
     )
 
     init {
