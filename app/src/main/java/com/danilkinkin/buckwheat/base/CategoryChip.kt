@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.base
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,17 +26,25 @@ fun CategoryChip(
     val containerColor = if (selected) {
         MaterialTheme.colorScheme.primaryContainer
     } else {
-        MaterialTheme.colorScheme.surfaceVariant
+        MaterialTheme.colorScheme.surfaceContainerHighest
     }
     val contentColor = if (selected) {
         MaterialTheme.colorScheme.onPrimaryContainer
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     }
+    // In dark themes a variant surface sits almost on top of the popup card; an outline keeps
+    // the unselected pills legible instead of dissolving into it.
+    val outlineColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.55f)
 
     Surface(
         modifier = Modifier
             .clip(CircleShape)
+            .border(
+                width = if (selected) 0.dp else 1.dp,
+                color = if (selected) androidx.compose.ui.graphics.Color.Transparent else outlineColor,
+                shape = CircleShape,
+            )
             .clickable(onClick = onClick),
         shape = CircleShape,
         color = containerColor,

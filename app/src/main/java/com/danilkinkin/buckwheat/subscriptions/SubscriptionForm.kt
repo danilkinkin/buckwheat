@@ -157,7 +157,7 @@ fun SubscriptionForm(
                     colors = SegmentedButtonDefaults.colors(
                         activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
                         activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                         inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     ),
                     label = {

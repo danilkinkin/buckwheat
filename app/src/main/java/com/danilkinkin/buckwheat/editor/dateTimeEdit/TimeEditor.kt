@@ -55,7 +55,7 @@ fun TimePickerDialog(
             Card(
                 shape = MaterialTheme.shapes.extraLarge,
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ),
                 modifier = Modifier
                     .padding(36.dp)

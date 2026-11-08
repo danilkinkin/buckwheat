@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -91,80 +92,82 @@ fun MainScreen(
         screen = AppScreen.HOME
     }
 
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(colorBackground),
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = colorBackground,
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
-        when (screen) {
-            AppScreen.HOME -> HomeScreen(
-                onAdd = {
-                    editorViewModel.resetEditingSpent()
-                    appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "expense")))
-                },
-                onOpenSubscriptions = { screen = AppScreen.SUBSCRIPTIONS },
-                onOpenHistory = { screen = AppScreen.HISTORY },
-                onOpenSettings = { screen = AppScreen.SETTINGS },
-            )
-
-            AppScreen.HISTORY -> History(
-                onBack = { screen = AppScreen.HOME },
-                onClose = {
-                    appViewModel.openSheet(PathState(EDITOR_SHEET))
-                },
-            )
-
-            AppScreen.SUBSCRIPTIONS -> SubscriptionsScreen(
-                onBack = { screen = AppScreen.HOME },
-                onAddSubscription = {
-                    appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "subscription")))
-                },
-            )
-
-            AppScreen.SETTINGS -> Column(
-                Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding(),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(onClick = { screen = AppScreen.HOME }) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_arrow_back),
-                            contentDescription = null,
-                        )
-                    }
-                }
-                Settings(
-                    onTriedWidget = {},
-                    onOpenCurrency = {
-                        appViewModel.openSheet(PathState(CURRENCY_EDITOR))
-                    },
-                    onOpenCategories = {
-                        appViewModel.openSheet(PathState(CATEGORIES_SHEET))
+        Box(Modifier.fillMaxSize()) {
+            when (screen) {
+                AppScreen.HOME -> HomeScreen(
+                    onAdd = {
+                        editorViewModel.resetEditingSpent()
+                        appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "expense")))
                     },
                     onOpenSubscriptions = { screen = AppScreen.SUBSCRIPTIONS },
-                    activityResultRegistryOwner = activityResultRegistryOwner,
+                    onOpenHistory = { screen = AppScreen.HISTORY },
+                    onOpenSettings = { screen = AppScreen.SETTINGS },
                 )
+
+                AppScreen.HISTORY -> History(
+                    onBack = { screen = AppScreen.HOME },
+                    onClose = {
+                        appViewModel.openSheet(PathState(EDITOR_SHEET))
+                    },
+                )
+
+                AppScreen.SUBSCRIPTIONS -> SubscriptionsScreen(
+                    onBack = { screen = AppScreen.HOME },
+                    onAddSubscription = {
+                        appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "subscription")))
+                    },
+                )
+
+                AppScreen.SETTINGS -> Column(
+                    Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding(),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        IconButton(onClick = { screen = AppScreen.HOME }) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_arrow_back),
+                                contentDescription = null,
+                            )
+                        }
+                    }
+                    Settings(
+                        onTriedWidget = {},
+                        onOpenCurrency = {
+                            appViewModel.openSheet(PathState(CURRENCY_EDITOR))
+                        },
+                        onOpenCategories = {
+                            appViewModel.openSheet(PathState(CATEGORIES_SHEET))
+                        },
+                        onOpenSubscriptions = { screen = AppScreen.SUBSCRIPTIONS },
+                        activityResultRegistryOwner = activityResultRegistryOwner,
+                    )
+                }
             }
-        }
 
-        // Sheets are declared last so they draw above the screens.
-        BottomSheets(activityResultRegistryOwner)
+            // Sheets are declared last so they draw above the screens.
+            BottomSheets(activityResultRegistryOwner)
 
-        Column(
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(bottom = 16.dp),
-        ) {
-            SwipeableSnackbarHost(hostState = remember { appViewModel._snackbarHostState })
+            Column(
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(bottom = 16.dp),
+            ) {
+                SwipeableSnackbarHost(hostState = remember { appViewModel._snackbarHostState })
+            }
         }
     }
 }

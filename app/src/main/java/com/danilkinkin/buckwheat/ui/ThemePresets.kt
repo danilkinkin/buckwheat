@@ -180,13 +180,31 @@ fun createColorSchemeForPreset(preset: ThemePreset, isDark: Boolean): ColorSchem
             onSurface = preset.onSurfaceColor,
             surfaceVariant = preset.surfaceContainerColor,
             onSurfaceVariant = preset.onSurfaceVariantColor,
+            // All surface roles are filled in. Leaving any of them unset makes Material fall
+            // back to the baseline grey scheme, which leaks a second, unrelated palette into
+            // dark dialogs, sheets and cards.
+            surfaceDim = preset.backgroundColor,
+            surfaceBright = preset.surfaceContainerHighestColor,
+            surfaceContainerLowest = preset.backgroundColor,
+            surfaceContainerLow = lerp(
+                preset.surfaceColor,
+                preset.surfaceContainerHighColor,
+                0.5f,
+            ),
             surfaceContainer = preset.surfaceContainerColor,
             surfaceContainerHigh = preset.surfaceContainerHighColor,
             surfaceContainerHighest = preset.surfaceContainerHighestColor,
+            inverseSurface = preset.onSurfaceColor,
+            inverseOnSurface = preset.surfaceColor,
+            inversePrimary = preset.primaryContainerColor,
+            surfaceTint = preset.primaryColor,
             outline = preset.outlineColor,
             outlineVariant = preset.outlineColor.copy(alpha = 0.4f),
-            error = Color(0xFFFF5252),
-            onError = Color.White,
+            error = Color(0xFFFF8A80),
+            onError = Color(0xFF690005),
+            errorContainer = Color(0xFF93000A),
+            onErrorContainer = Color(0xFFFFDAD6),
+            scrim = Color.Black,
         )
     } else {
         // Near-white surfaces subtly tinted toward the preset accent, so the palettes stay
@@ -213,13 +231,24 @@ fun createColorSchemeForPreset(preset: ThemePreset, isDark: Boolean): ColorSchem
             onSurface = ink,
             surfaceVariant = Color(0xFFE7EAEF),
             onSurfaceVariant = lerp(ink, accent, 0.22f),
+            surfaceDim = Color(0xFFDFE2E8),
+            surfaceBright = Color(0xFFFBFCFE),
+            surfaceContainerLowest = Color.White,
+            surfaceContainerLow = Color(0xFFF8F9FB),
             surfaceContainer = Color(0xFFF7F8FA),
             surfaceContainerHigh = Color(0xFFFFFFFF),
             surfaceContainerHighest = Color(0xFFEAECF0),
+            inverseSurface = ink,
+            inverseOnSurface = Color.White,
+            inversePrimary = lerp(Color.White, accent, 0.35f),
+            surfaceTint = accent,
             outline = lerp(Color(0xFF8A8F9C), accent, 0.12f),
             outlineVariant = lerp(Color(0xFFD2D6E0), accent, 0.10f),
             error = Color(0xFFD32F2F),
             onError = Color.White,
+            errorContainer = Color(0xFFFFDAD6),
+            onErrorContainer = Color(0xFF410002),
+            scrim = Color.Black,
         )
     }
 }

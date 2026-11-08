@@ -89,7 +89,8 @@ fun CategoryPicker(
         Dialog(onDismissRequest = { open = false }) {
             Surface(
                 shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surface,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                contentColor = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.widthIn(min = 300.dp, max = 400.dp),
             ) {
                 Column(Modifier.padding(24.dp)) {

@@ -244,7 +244,7 @@ private fun CurrencyHomeScreen(
                 Spacer(Modifier.height(16.dp))
                 Surface(
                     shape = RoundedCornerShape(24.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp),
@@ -511,11 +511,7 @@ private fun CurrencySearchField(
     modifier: Modifier = Modifier,
 ) {
     val focusManager = LocalFocusManager.current
-    val containerColor = combineColors(
-        MaterialTheme.colorScheme.surface,
-        MaterialTheme.colorScheme.surfaceVariant,
-        0.5f,
-    )
+    val containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
 
     TextField(
         modifier = modifier.padding(horizontal = 24.dp),
@@ -586,7 +582,7 @@ private fun CurrencyRow(
     ) {
         Surface(
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceVariant,
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(40.dp),
         ) {

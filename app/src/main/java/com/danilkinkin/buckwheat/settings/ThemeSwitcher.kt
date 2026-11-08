@@ -116,12 +116,21 @@ fun ThemeSwitcherDialog() {
                         modifier = Modifier
                             .weight(1f)
                             .clip(CircleShape)
+                            .border(
+                                width = 1.dp,
+                                color = if (selected) {
+                                    Color.Transparent
+                                } else {
+                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.55f)
+                                },
+                                shape = CircleShape,
+                            )
                             .clickable { handleSwitchTheme(mode) },
                         shape = CircleShape,
                         color = if (selected) {
                             MaterialTheme.colorScheme.primaryContainer
                         } else {
-                            MaterialTheme.colorScheme.surfaceVariant
+                            MaterialTheme.colorScheme.surfaceContainerHighest
                         },
                         contentColor = if (selected) {
                             MaterialTheme.colorScheme.onPrimaryContainer

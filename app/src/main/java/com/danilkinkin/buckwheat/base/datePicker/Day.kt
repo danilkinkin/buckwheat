@@ -46,6 +46,7 @@ internal fun DayOfWeekHeading(day: String, modifier: Modifier = Modifier) {
 private fun DayContainer(
     modifier: Modifier = Modifier,
     current: Boolean = false,
+    selected: Boolean = false,
     disabled: Boolean = false,
     onSelect: () -> Unit = { },
     content: @Composable () -> Unit
@@ -68,13 +69,19 @@ private fun DayContainer(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (current) {
+        // The selected day gets the solid accent; today only gets a soft container ring, so the
+        // two states stay distinguishable in both light and dark palettes.
+        if (selected || current) {
             Box(
                 modifier = modifier
                     .height(CELL_SIZE - 8.dp)
                     .width(CELL_SIZE - 8.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.primaryContainer,
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.primaryContainer
+                        },
                         shape = CircleShape,
                     )
             ) {
@@ -100,6 +107,7 @@ internal fun Day(
     DayContainer(
         modifier = modifier,
         current = current,
+        selected = selected,
         disabled = disabled,
         onSelect = { onDayClicked(day) },
     ) {
@@ -110,9 +118,9 @@ internal fun Day(
                 .wrapContentSize(Alignment.Center),
             text = day.dayOfMonth.toString(),
             style = MaterialTheme.typography.bodyMedium,
-            color = when (true) {
-                current -> MaterialTheme.colorScheme.onPrimaryContainer
+            color = when {
                 selected -> MaterialTheme.colorScheme.onPrimary
+                current -> MaterialTheme.colorScheme.onPrimaryContainer
                 else -> MaterialTheme.colorScheme.onSurface.copy(alpha = if (disabled) 0.3F else 1F)
             },
         )

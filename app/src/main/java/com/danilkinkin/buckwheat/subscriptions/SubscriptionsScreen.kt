@@ -127,7 +127,8 @@ fun SubscriptionsScreen(
         Dialog(onDismissRequest = { editing = null }) {
             Surface(
                 shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surface,
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                contentColor = MaterialTheme.colorScheme.onSurface,
             ) {
                 Column(Modifier.padding(24.dp)) {
                     Text(

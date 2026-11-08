@@ -72,7 +72,7 @@ fun SpentItem(
     ) {
         val badgeColor = category?.let {
             Color(it.color).copy(alpha = 0.22f)
-        } ?: MaterialTheme.colorScheme.surfaceVariant
+        } ?: MaterialTheme.colorScheme.surfaceContainerHighest
 
         Surface(
             modifier = Modifier.size(40.dp),

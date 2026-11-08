@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -127,7 +128,7 @@ fun BottomSheetWrapper(
 
     ModalBottomSheetLayout(
         cancelable = cancelable,
-        sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+        sheetBackgroundColor = MaterialTheme.colorScheme.surfaceContainerLow,
         sheetState = state,
         predictiveBackProgress = predictiveBackProgress,
         sheetShape = MaterialTheme.shapes.extraLarge.copy(
@@ -150,6 +151,7 @@ fun BottomSheetWrapper(
 
             Box {
                 CompositionLocalProvider(
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurface,
                     LocalBottomSheetScrollState provides BottomSheetScrollState(
                         topPadding = statusBarHeight * statusBarFillProgress,
                     )

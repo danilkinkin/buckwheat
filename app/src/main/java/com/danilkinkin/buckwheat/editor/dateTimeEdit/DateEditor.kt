@@ -54,7 +54,7 @@ fun DatePickerDialog(
             Card(
                 shape = MaterialTheme.shapes.extraLarge,
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ),
                 modifier = Modifier
                     .widthIn(max = 500.dp)
