@@ -13,8 +13,8 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.di.TUTORS
-import com.danilkinkin.buckwheat.editor.NOTE_SHEET
-import com.danilkinkin.buckwheat.editor.NoteSheet
+import com.danilkinkin.buckwheat.editor.DETAILS_SHEET
+import com.danilkinkin.buckwheat.editor.DetailsSheet
 import com.danilkinkin.buckwheat.editor.toolbar.DEBUG_MENU_SHEET
 import com.danilkinkin.buckwheat.editor.toolbar.DebugMenu
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
@@ -124,9 +124,9 @@ fun BottomSheets(
     }
 
     BottomSheetWrapper(
-        name = NOTE_SHEET,
+        name = DETAILS_SHEET,
     ) { state ->
-        NoteSheet(
+        DetailsSheet(
             onClose = {
                 coroutineScope.launch {
                     state.hide()
