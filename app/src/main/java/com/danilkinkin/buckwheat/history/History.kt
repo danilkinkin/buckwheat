@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,14 +38,15 @@ import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
+import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.util.isSameDay
-import com.danilkinkin.buckwheat.util.observeLiveData
-import com.danilkinkin.buckwheat.util.toDate
+import com.danilkinkin.buckwheat.util.numberFormat
+import com.danilkinkin.buckwheat.util.prettyYearMonth
 import com.danilkinkin.buckwheat.util.toLocalDate
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.YearMonth
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.absoluteValue
@@ -71,6 +73,7 @@ fun History(
     val tutorial by appViewModel.getTutorialStage(TUTORS.SWIPE_EDIT_SPENT).observeAsState(TUTORIAL_STAGE.NONE)
     var isUserTrySwipe by remember { mutableStateOf(false) }
     var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
+    var selectedMonth by remember { mutableStateOf(YearMonth.now()) }
 
     LaunchedEffect(categories, selectedCategoryId) {
         val categoryId = selectedCategoryId
@@ -80,9 +83,15 @@ fun History(
     }
 
     val categoriesById = remember(categories) { categories.associateBy { it.id } }
-    val filteredSpends = remember(spends, selectedCategoryId) {
+    val monthSpends = remember(spends, selectedMonth) {
+        spends.filter { YearMonth.from(it.date.toLocalDate()) == selectedMonth }
+    }
+    val filteredSpends = remember(monthSpends, selectedCategoryId) {
         val categoryId = selectedCategoryId
-        if (categoryId == null) spends else spends.filter { it.categoryId == categoryId }
+        if (categoryId == null) monthSpends else monthSpends.filter { it.categoryId == categoryId }
+    }
+    val monthTotal = remember(filteredSpends) {
+        filteredSpends.fold(BigDecimal.ZERO) { total, transaction -> total + transaction.value }
     }
     val historyList = remember(filteredSpends) { composeHistoryRows(filteredSpends) }
 
@@ -109,10 +118,38 @@ fun History(
 
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            LazyColumn(
-                reverseLayout = true,
-                state = scrollState
-            ) {
+            if (!readOnly) {
+                Spacer(Modifier.height(LocalWindowInsets.current.calculateTopPadding()))
+                MonthHeader(
+                    month = selectedMonth,
+                    total = monthTotal,
+                    currency = currency.value,
+                    canGoNext = selectedMonth < YearMonth.now(),
+                    onPrevious = { selectedMonth = selectedMonth.minusMonths(1) },
+                    onNext = {
+                        if (selectedMonth < YearMonth.now()) {
+                            selectedMonth = selectedMonth.plusMonths(1)
+                        }
+                    },
+                )
+                if (categories.isNotEmpty()) {
+                    CategoryFilterRow(
+                        categories = categories,
+                        selectedCategoryId = selectedCategoryId,
+                        onSelect = { selectedCategoryId = it },
+                    )
+                }
+            }
+
+            Box(Modifier.weight(1f)) {
+                if (historyList.isEmpty()) {
+                    NoSpends(Modifier.fillMaxSize())
+                } else {
+                    LazyColumn(
+                        reverseLayout = true,
+                        state = scrollState,
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
 
                 // Fixer, because if scroll fast end-checker dispose
                 item("spacer-2") {
@@ -138,11 +175,13 @@ fun History(
                     key = { rowItem -> rowItem.key },
                 ) { index, row ->
                     when (row.type) {
-                        RowEntityType.DayDivider -> HistoryDateDivider(row.day)
-                        RowEntityType.DayTotal -> TotalPerDay(
-                            spentPerDay = row.dayTotal!!,
+                        RowEntityType.DayDivider -> HistoryDateDivider(
+                            date = row.day,
+                            dayTotal = row.dayTotal ?: BigDecimal.ZERO,
                             currency = currency.value,
                         )
+                        // Day totals now live in the divider; old rows are no longer emitted.
+                        RowEntityType.DayTotal -> Unit
                         RowEntityType.Spent -> if (!readOnly) SwipeActions(
                             startActionsConfig = SwipeActionsConfig(
                                 threshold = 0.4f,
@@ -246,30 +285,8 @@ fun History(
                     }
                 }
 
-                if (!readOnly) {
-                    item("top-inset") {
-                        Column {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(
-                                        LocalWindowInsets.current.calculateTopPadding()
-                                    )
-                            )
-                            if (categories.isNotEmpty()) {
-                                CategoryFilterRow(
-                                    categories = categories,
-                                    selectedCategoryId = selectedCategoryId,
-                                    onSelect = { selectedCategoryId = it },
-                                )
-                            }
-                        }
                     }
                 }
-            }
-
-            if (historyList.isEmpty()) {
-                NoSpends(Modifier.weight(1f))
             }
         }
 
@@ -334,72 +351,85 @@ private fun CategoryFilterRow(
 }
 
 private fun composeHistoryRows(transactions: List<Transaction>): List<RowEntity> {
-    val composedList = emptyList<RowEntity>().toMutableList()
-    var lastSpentDate: LocalDate? = null
-    var lastDayTotal: BigDecimal = BigDecimal.ZERO
+    val rows = mutableListOf<RowEntity>()
 
-    transactions.forEach { spent ->
-        if (lastSpentDate === null || !isSameDay(
-                spent.date.time,
-                lastSpentDate!!.toDate().time
+    transactions.groupBy { it.date.toLocalDate() }.forEach { (day, daySpends) ->
+        val dayTotal = daySpends.fold(BigDecimal.ZERO) { total, spend -> total + spend.value }
+
+        rows.add(
+            RowEntity(
+                type = RowEntityType.DayDivider,
+                key = "header-$day",
+                contentHash = "header-$day-$dayTotal",
+                transaction = null,
+                day = day,
+                dayTotal = dayTotal,
             )
-        ) {
-            if (lastSpentDate !== null) {
-                composedList.add(
-                    RowEntity(
-                        type = RowEntityType.DayTotal,
-                        key = "total-${lastSpentDate}",
-                        contentHash = "total-${lastSpentDate}",
-                        transaction = null,
-                        day = lastSpentDate!!,
-                        dayTotal = lastDayTotal,
-                    )
-                )
-            }
+        )
 
-            lastSpentDate = spent.date.toLocalDate()
-            lastDayTotal = BigDecimal.ZERO
-
-            composedList.add(
+        daySpends.forEach { spend ->
+            rows.add(
                 RowEntity(
-                    type = RowEntityType.DayDivider,
-                    key = "header-${lastSpentDate}",
-                    contentHash = "header-${lastSpentDate}",
-                    transaction = null,
-                    day = lastSpentDate!!,
+                    type = RowEntityType.Spent,
+                    key = "spent-${spend.uid}",
+                    contentHash = "spent-${spend.uid}",
+                    transaction = spend,
+                    day = day,
                     dayTotal = null,
                 )
             )
         }
-
-        lastDayTotal += spent.value
-
-        composedList.add(
-            RowEntity(
-                type = RowEntityType.Spent,
-                key = "spent-${spent.uid}",
-                contentHash = "spent-${spent.uid}",
-                transaction = spent,
-                day = lastSpentDate!!,
-                dayTotal = null,
-            )
-        )
     }
 
-    if (transactions.isNotEmpty() && lastSpentDate !== null) {
-        composedList.add(
-            RowEntity(
-                type = RowEntityType.DayTotal,
-                key = "total-${lastSpentDate!!}",
-                contentHash = "total-${lastSpentDate}",
-                transaction = null,
-                day = lastSpentDate!!,
-                dayTotal = lastDayTotal,
-            )
-        )
-    }
+    // reverseLayout renders index 0 at the bottom, so newest rows must come first.
+    return rows.reversed()
+}
 
-    return composedList.reversed()
+@Composable
+private fun MonthHeader(
+    month: YearMonth,
+    total: BigDecimal,
+    currency: ExtendCurrency,
+    canGoNext: Boolean,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = onPrevious) {
+            Icon(
+                painter = painterResource(R.drawable.ic_arrow_back),
+                contentDescription = null,
+            )
+        }
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = prettyYearMonth(month),
+                style = MaterialTheme.typography.titleLarge,
+                color = colorOnEditor,
+            )
+            Text(
+                text = numberFormat(context, total, currency),
+                style = MaterialTheme.typography.labelMedium,
+                color = colorOnEditor.copy(alpha = 0.6f),
+            )
+        }
+        IconButton(onClick = onNext, enabled = canGoNext) {
+            Icon(
+                painter = painterResource(R.drawable.ic_arrow_right),
+                contentDescription = null,
+            )
+        }
+    }
 }
 
 @Preview
