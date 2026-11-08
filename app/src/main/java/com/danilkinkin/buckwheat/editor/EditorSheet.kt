@@ -71,6 +71,11 @@ fun EditorSheet(
             if (initialTab == "subscription") AddTab.SUBSCRIPTION else AddTab.EXPENSE
         )
     }
+    // Delay the first focus only while the sheet itself is entering. Any later tab switch moves
+    // focus straight to the new field, so the keyboard never has to close and re-open.
+    var nameFocusDelay by remember {
+        mutableStateOf(if (initialTab == "subscription") 220L else 0L)
+    }
     var showAddCategory by remember { mutableStateOf(false) }
     val focusController = remember { FocusController() }
 
@@ -140,6 +145,7 @@ fun EditorSheet(
                     selected = tab == AddTab.SUBSCRIPTION,
                     onClick = {
                         editorViewModel.resetEditingSpent()
+                        nameFocusDelay = 0L
                         tab = AddTab.SUBSCRIPTION
                     },
                     shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
@@ -241,6 +247,7 @@ fun EditorSheet(
                 modifier = Modifier.padding(horizontal = 24.dp),
                 onAddCategory = { showAddCategory = true },
                 autoFocusName = true,
+                autoFocusDelayMillis = nameFocusDelay,
             )
         }
     }

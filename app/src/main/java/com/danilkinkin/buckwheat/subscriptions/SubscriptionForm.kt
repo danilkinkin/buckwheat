@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -73,6 +74,12 @@ fun SubscriptionForm(
     onCancel: (() -> Unit)? = null,
     onAddCategory: (() -> Unit)? = null,
     autoFocusName: Boolean = false,
+    /**
+     * Only used when the form appears together with the sheet opening. A non-zero delay lets the
+     * entrance animation finish first. Tab switches must pass 0 so the keyboard is handed from one
+     * field straight to the other instead of closing and re-opening.
+     */
+    autoFocusDelayMillis: Long = 0L,
 ) {
     val context = LocalContext.current
 
@@ -91,10 +98,20 @@ fun SubscriptionForm(
     val nameFocusRequester = remember { FocusRequester() }
     val amount = amountText.toBigDecimalOrNull()
 
-    LaunchedEffect(Unit) {
-        if (autoFocusName) {
-            delay(220)
-            nameFocusRequester.requestFocus()
+    // Immediate focus uses DisposableEffect (like the amount editor) so the hand-off happens in
+    // the same frame the old field is disposed and the IME stays up. The delayed path is only for
+    // the sheet's first entrance.
+    if (autoFocusName) {
+        if (autoFocusDelayMillis > 0L) {
+            LaunchedEffect(Unit) {
+                delay(autoFocusDelayMillis)
+                nameFocusRequester.requestFocus()
+            }
+        } else {
+            DisposableEffect(Unit) {
+                nameFocusRequester.requestFocus()
+                onDispose {}
+            }
         }
     }
 
