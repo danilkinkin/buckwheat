@@ -1,9 +1,5 @@
 package com.danilkinkin.buckwheat.editor
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,17 +7,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -29,15 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryDropdown
+import com.danilkinkin.buckwheat.base.MinimalTextField
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateTimeEditPill
@@ -51,9 +48,10 @@ const val EDITOR_SHEET = "editor"
 private enum class AddTab { EXPENSE, SUBSCRIPTION }
 
 /**
- * One add popup with two tabs. Expense is the default; both tabs share the same card language but
- * use a different container tone (primary vs tertiary) so they read as siblings, not clones.
+ * Minimal add card. No titles, no tinted panels: a two-part segmented control, the amount, one
+ * category pill, one note field, one Save button. The subscription tab uses the same skeleton.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditorSheet(
     initialTab: String = "expense",
@@ -75,7 +73,6 @@ fun EditorSheet(
     var showAddCategory by remember { mutableStateOf(false) }
     val focusController = remember { FocusController() }
 
-    // New expenses start on the catch-all category; the user can still pick "No category".
     var defaultCategoryApplied by remember { mutableStateOf(false) }
     LaunchedEffect(categories) {
         if (!defaultCategoryApplied && categories.isNotEmpty()) {
@@ -107,13 +104,12 @@ fun EditorSheet(
         modifier = Modifier
             .fillMaxWidth()
             .imePadding()
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 12.dp),
+            .padding(bottom = 16.dp),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
+                .padding(horizontal = 8.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(onClick = { cancel() }) {
@@ -123,123 +119,105 @@ fun EditorSheet(
                     tint = colorOnEditor,
                 )
             }
-            Text(
-                text = if (tab == AddTab.SUBSCRIPTION) {
-                    stringResource(R.string.add_subscription)
-                } else {
-                    stringResource(
-                        if (mode == EditMode.EDIT) R.string.edit_expense else R.string.new_expense
-                    )
-                },
-                style = MaterialTheme.typography.titleMedium,
-                color = colorOnEditor,
-                modifier = Modifier.weight(1f),
-            )
-            if (tab == AddTab.EXPENSE) {
-                if (mode == EditMode.EDIT) {
-                    IconButton(
-                        onClick = {
-                            editorViewModel.editedTransaction?.let { spendsViewModel.removeSpent(it) }
-                            cancel()
-                        },
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_delete_forever),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                }
-                IconButton(onClick = { saveExpense() }) {
+
+            SingleChoiceSegmentedButtonRow(Modifier.weight(1f)) {
+                SegmentedButton(
+                    selected = tab == AddTab.EXPENSE,
+                    onClick = {
+                        tab = AddTab.EXPENSE
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                    label = { Text(stringResource(R.string.expense)) },
+                )
+                SegmentedButton(
+                    selected = tab == AddTab.SUBSCRIPTION,
+                    onClick = {
+                        editorViewModel.resetEditingSpent()
+                        tab = AddTab.SUBSCRIPTION
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                    label = { Text(stringResource(R.string.subscriptions_title)) },
+                )
+            }
+
+            if (tab == AddTab.EXPENSE && mode == EditMode.EDIT) {
+                IconButton(
+                    onClick = {
+                        editorViewModel.editedTransaction?.let { spendsViewModel.removeSpent(it) }
+                        cancel()
+                    },
+                ) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_apply),
+                        painter = painterResource(R.drawable.ic_delete_forever),
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = MaterialTheme.colorScheme.error,
                     )
                 }
+            } else {
+                Spacer(Modifier.width(48.dp))
             }
         }
 
-        AddTabs(
-            selected = tab,
-            onSelect = {
-                if (it == AddTab.EXPENSE) {
-                    tab = AddTab.EXPENSE
-                } else {
-                    editorViewModel.resetEditingSpent()
-                    tab = AddTab.SUBSCRIPTION
-                }
-            },
-        )
-
-        Spacer(Modifier.height(12.dp))
-
         if (tab == AddTab.EXPENSE) {
-            // Primary tone: the everyday action.
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.22f),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Column(Modifier.padding(20.dp)) {
-                    if (mode == EditMode.EDIT) {
-                        DateTimeEditPill()
-                    }
-
-                    CurrentSpendEditor(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp),
-                        focusController = focusController,
-                        onDone = { saveExpense() },
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    Text(
-                        text = stringResource(R.string.category),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    )
-                    Spacer(Modifier.height(6.dp))
-
-                    CategoryDropdown(
-                        categories = categories,
-                        selectedCategoryId = selectedCategoryId,
-                        onSelect = { editorViewModel.currentCategoryId.value = it },
-                        onAddCategory = { showAddCategory = true },
-                    )
-
-                    Spacer(Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = comment,
-                        onValueChange = { editorViewModel.currentComment.value = it },
-                        label = { Text(stringResource(R.string.note)) },
-                        placeholder = { Text(stringResource(R.string.add_note)) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
+            if (mode == EditMode.EDIT) {
+                DateTimeEditPill()
             }
-        } else {
-            // Tertiary tone: recurring money, visually a sibling of the expense card.
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.22f),
-                modifier = Modifier.fillMaxWidth(),
+
+            CurrentSpendEditor(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(170.dp),
+                focusController = focusController,
+                onDone = { saveExpense() },
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                SubscriptionForm(
-                    initial = null,
+                CategoryDropdown(
                     categories = categories,
-                    onSave = { name, amount, period, nextDue, categoryId ->
-                        subscriptionsViewModel.add(name, amount, period, nextDue, categoryId)
-                        onClose()
-                    },
-                    modifier = Modifier.padding(20.dp),
+                    selectedCategoryId = selectedCategoryId,
+                    onSelect = { editorViewModel.currentCategoryId.value = it },
                     onAddCategory = { showAddCategory = true },
                 )
             }
+
+            MinimalTextField(
+                value = comment,
+                onValueChange = { editorViewModel.currentComment.value = it },
+                placeholder = stringResource(R.string.add_note),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 12.dp),
+            )
+
+            Spacer(Modifier.height(20.dp))
+
+            Button(
+                onClick = { saveExpense() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+                    .padding(horizontal = 24.dp),
+                shape = RoundedCornerShape(26.dp),
+            ) {
+                Text(stringResource(R.string.save))
+            }
+        } else {
+            SubscriptionForm(
+                initial = null,
+                categories = categories,
+                onSave = { name, amount, period, nextDue, categoryId ->
+                    subscriptionsViewModel.add(name, amount, period, nextDue, categoryId)
+                    onClose()
+                },
+                modifier = Modifier.padding(horizontal = 24.dp),
+                onAddCategory = { showAddCategory = true },
+            )
         }
     }
 
@@ -252,54 +230,5 @@ fun EditorSheet(
             },
             onClose = { showAddCategory = false },
         )
-    }
-}
-
-@Composable
-private fun AddTabs(
-    selected: AddTab,
-    onSelect: (AddTab) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        AddTab.entries.forEach { tab ->
-            val isSelected = tab == selected
-            val container = when {
-                isSelected && tab == AddTab.EXPENSE -> MaterialTheme.colorScheme.primaryContainer
-                isSelected -> MaterialTheme.colorScheme.tertiaryContainer
-                else -> MaterialTheme.colorScheme.surfaceVariant
-            }
-            val content = when {
-                isSelected && tab == AddTab.EXPENSE -> MaterialTheme.colorScheme.onPrimaryContainer
-                isSelected -> MaterialTheme.colorScheme.onTertiaryContainer
-                else -> MaterialTheme.colorScheme.onSurfaceVariant
-            }
-
-            Surface(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(CircleShape)
-                    .clickable { onSelect(tab) },
-                shape = CircleShape,
-                color = container,
-                contentColor = content,
-            ) {
-                Text(
-                    text = if (tab == AddTab.EXPENSE) {
-                        stringResource(R.string.expense)
-                    } else {
-                        stringResource(R.string.subscriptions_title)
-                    },
-                    modifier = Modifier.padding(vertical = 10.dp),
-                    style = MaterialTheme.typography.labelLarge,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                )
-            }
-        }
     }
 }

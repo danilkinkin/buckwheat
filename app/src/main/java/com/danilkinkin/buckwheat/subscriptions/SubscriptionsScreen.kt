@@ -64,7 +64,6 @@ fun SubscriptionsScreen(
     )
 
     var editing by remember { mutableStateOf<Subscription?>(null) }
-    val categoriesById = remember(categories) { categories.associateBy { it.id } }
 
     Box(Modifier.fillMaxSize().statusBarsPadding()) {
         Column(Modifier.fillMaxSize()) {
@@ -102,7 +101,6 @@ fun SubscriptionsScreen(
                     items(subscriptions, key = { it.id }) { subscription ->
                         SubscriptionRow(
                             subscription = subscription,
-                            category = subscription.categoryId?.let { categoriesById[it] },
                             currency = currency,
                             onClick = { editing = subscription },
                         )
@@ -194,7 +192,6 @@ fun SubscriptionsScreen(
 @Composable
 private fun SubscriptionRow(
     subscription: Subscription,
-    category: Category?,
     currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
     onClick: () -> Unit,
 ) {
@@ -207,30 +204,9 @@ private fun SubscriptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 24.dp, vertical = 10.dp),
+            .padding(horizontal = 24.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Surface(
-            modifier = Modifier.size(40.dp),
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                if (!category?.emoji.isNullOrEmpty()) {
-                    Text(category.emoji, style = MaterialTheme.typography.titleMedium)
-                } else {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_balance_wallet),
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-            }
-        }
-
-        Spacer(Modifier.width(12.dp))
-
         Column(Modifier.weight(1f)) {
             Text(
                 text = subscription.name,
