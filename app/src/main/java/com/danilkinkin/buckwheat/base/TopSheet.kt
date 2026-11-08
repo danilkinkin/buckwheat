@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.base
 
 import android.view.MotionEvent
 import androidx.activity.compose.PredictiveBackHandler
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -110,11 +111,10 @@ fun TopSheetLayout(
         val fullHeight = constraints.maxHeight.toFloat()
         val halfHeight = customHalfHeight ?: (fullHeight / 2)
 
-        // The half anchor is derived from the editor height, which changes when the IME settles.
-        // Material would animate the card to the new anchor, which looked like the editor sliding
-        // up a second time after the keyboard had already arrived. Wait one frame for the
-        // swipeable modifier to receive the new anchor, then snap instead of spring. Skip the
-        // first composition so the launch animation is untouched.
+        // The half anchor is derived from the editor height, which changes when the keyboard
+        // appears. Material would use its spring, which overshoots and reads as a second slide;
+        // a short non-overshooting tween settles deliberately. Skip the first composition so the
+        // launch animation is untouched.
         var previousHalfHeight by remember { mutableFloatStateOf(halfHeight) }
         LaunchedEffect(halfHeight) {
             if (halfHeight == previousHalfHeight) return@LaunchedEffect
@@ -123,7 +123,10 @@ fun TopSheetLayout(
             withFrameNanos { }
 
             if (swipeableState.currentValue === TopSheetValue.HalfExpanded) {
-                swipeableState.snapTo(TopSheetValue.HalfExpanded)
+                swipeableState.animateTo(
+                    targetValue = TopSheetValue.HalfExpanded,
+                    anim = tween(durationMillis = 150),
+                )
             }
         }
 

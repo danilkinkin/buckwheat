@@ -130,15 +130,27 @@ fun MainScreen(
 
         // The IME reports its height frame by frame while it animates. Feeding those intermediate
         // values into editorHeight made the sheet balloon for a few frames and collapse again:
-        // the editor rendered, dropped, then came back up with the keyboard. Wait until the inset
-        // stops changing and apply it in one step instead.
+        // the editor rendered, dropped, then came back up with the keyboard.
+        //
+        // Instead, remember the last settled height. On the next open, apply it as soon as the
+        // keyboard starts so the editor moves *with* the IME rather than snapping after it.
+        var lastImeHeight by remember { mutableStateOf(0.dp) }
         var settledImeHeight by remember { mutableStateOf(0.dp) }
         LaunchedEffect(systemKeyboardHeight, appViewModel.showSystemKeyboard.value) {
-            if (!appViewModel.showSystemKeyboard.value || systemKeyboardHeight == 0.dp) {
-                settledImeHeight = 0.dp
-            } else {
-                delay(KEYBOARD_SETTLE_DELAY_MS)
-                settledImeHeight = systemKeyboardHeight
+            when {
+                !appViewModel.showSystemKeyboard.value || systemKeyboardHeight == 0.dp -> {
+                    settledImeHeight = 0.dp
+                }
+
+                else -> {
+                    if (settledImeHeight == 0.dp && lastImeHeight != 0.dp) {
+                        settledImeHeight = lastImeHeight
+                    }
+
+                    delay(KEYBOARD_SETTLE_DELAY_MS)
+                    settledImeHeight = systemKeyboardHeight
+                    lastImeHeight = systemKeyboardHeight
+                }
             }
         }
 
