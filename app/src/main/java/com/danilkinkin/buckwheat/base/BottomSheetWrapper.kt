@@ -91,8 +91,8 @@ fun BottomSheetWrapper(
     setSystemStyle(
         style = {
             SystemBarState(
-                statusBarDarkIcons = false,
-                navigationBarDarkIcons = !isNightModeNow,
+                statusBarDarkBackground = isNightModeNow,
+                navigationBarDarkBackground = isNightModeNow,
             )
         },
         key = state.targetValue,
@@ -140,8 +140,8 @@ fun BottomSheetWrapper(
             setSystemStyle(
                 style = {
                     SystemBarState(
-                        statusBarDarkIcons = !isNightModeNow,
-                        navigationBarDarkIcons = !isNightModeNow,
+                        statusBarDarkBackground = isNightModeNow,
+                        navigationBarDarkBackground = isNightModeNow,
                     )
                 },
                 key = statusBarFillProgress,

@@ -19,14 +19,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Which icon colour the system bars should use.
+ * Whether the content under each system bar is dark.
  *
- * Bar colours are no longer part of this state: the app is edge-to-edge and paints the bar
- * backgrounds itself, so window-level bar colours are ignored from Android 15 onwards.
+ * The app is edge-to-edge and paints the bar backgrounds itself, so the window controller only
+ * needs to know which icon colour contrasts with what is behind the bar. Naming this after the
+ * background (rather than the icons) is deliberate: the old "dark icons" name was read as
+ * "dark bar" at one call site, which left white icons on a light status bar in light mode.
  */
 data class SystemBarState(
-    val statusBarDarkIcons: Boolean,
-    val navigationBarDarkIcons: Boolean,
+    val statusBarDarkBackground: Boolean,
+    val navigationBarDarkBackground: Boolean,
 )
 
 data class PathState (

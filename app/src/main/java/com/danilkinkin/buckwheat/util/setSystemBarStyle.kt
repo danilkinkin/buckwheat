@@ -48,7 +48,8 @@ fun setSystemStyle(
 }
 
 private fun WindowInsetsControllerCompat.applyState(state: SystemBarState) {
-    isAppearanceLightStatusBars = !state.statusBarDarkIcons
-    isAppearanceLightNavigationBars = !state.navigationBarDarkIcons
+    // "Light bars" is the platform flag for a light background, which draws dark icons.
+    isAppearanceLightStatusBars = !state.statusBarDarkBackground
+    isAppearanceLightNavigationBars = !state.navigationBarDarkBackground
 }
 

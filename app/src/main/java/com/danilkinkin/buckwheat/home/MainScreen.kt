@@ -84,8 +84,8 @@ fun MainScreen(
     setSystemStyle(
         style = {
             SystemBarState(
-                statusBarDarkIcons = !nightMode.value,
-                navigationBarDarkIcons = !nightMode.value,
+                statusBarDarkBackground = nightMode.value,
+                navigationBarDarkBackground = nightMode.value,
             )
         },
         key = nightMode.value,
