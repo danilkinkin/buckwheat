@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -67,7 +68,7 @@ fun SpentItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 10.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val badgeColor = category?.let {
@@ -75,7 +76,7 @@ fun SpentItem(
         } ?: MaterialTheme.colorScheme.surfaceContainerHighest
 
         Surface(
-            modifier = Modifier.size(40.dp),
+            modifier = Modifier.size(44.dp),
             shape = CircleShape,
             color = badgeColor,
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -91,7 +92,7 @@ fun SpentItem(
                     Icon(
                         painter = painterResource(R.drawable.ic_label),
                         contentDescription = null,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(20.dp),
                     )
                 }
             }
@@ -107,9 +108,10 @@ fun SpentItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+            Spacer(Modifier.height(2.dp))
             Text(
                 text = secondary,
-                style = MaterialTheme.typography.labelSmall,
+                style = MaterialTheme.typography.bodySmall,
                 color = colorOnEditor.copy(alpha = 0.6f),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

@@ -42,6 +42,7 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
+import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.history.SpentItem
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.isSameDay
@@ -168,17 +169,24 @@ fun HomeScreen(
                     count = upcoming.size,
                     action = onOpenSubscriptions,
                 )
-                SectionCard {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
                     if (upcoming.isEmpty()) {
-                        SectionEmpty(stringResource(R.string.no_subscriptions))
+                        ListCard {
+                            SectionEmpty(stringResource(R.string.no_subscriptions))
+                        }
                     } else {
                         upcoming.forEach { subscription ->
-                            UpcomingSubscriptionRow(
-                                subscription = subscription,
-                                category = subscription.categoryId?.let { categoriesById[it] },
-                                currency = currency,
-                                onClick = onOpenSubscriptions,
-                            )
+                            ListCard {
+                                UpcomingSubscriptionRow(
+                                    subscription = subscription,
+                                    category = subscription.categoryId?.let { categoriesById[it] },
+                                    currency = currency,
+                                    onClick = onOpenSubscriptions,
+                                )
+                            }
                         }
                     }
                 }
@@ -190,16 +198,23 @@ fun HomeScreen(
                     count = recent.size,
                     action = onOpenHistory,
                 )
-                SectionCard {
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
                     if (recent.isEmpty()) {
-                        SectionEmpty(stringResource(R.string.no_spends))
+                        ListCard {
+                            SectionEmpty(stringResource(R.string.no_spends))
+                        }
                     } else {
                         recent.forEach { spend ->
-                            SpentItem(
-                                transaction = spend,
-                                currency = currency,
-                                category = spend.categoryId?.let { categoriesById[it] },
-                            )
+                            ListCard {
+                                SpentItem(
+                                    transaction = spend,
+                                    currency = currency,
+                                    category = spend.categoryId?.let { categoriesById[it] },
+                                )
+                            }
                         }
                     }
                 }
@@ -265,7 +280,7 @@ private fun SectionTitle(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, end = 12.dp, top = 20.dp, bottom = 8.dp),
+            .padding(start = 16.dp, end = 8.dp, top = 20.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -295,24 +310,6 @@ private fun SectionTitle(
 }
 
 @Composable
-private fun SectionCard(
-    content: @Composable () -> Unit,
-) {
-    Surface(
-        shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-    ) {
-        Column {
-            content()
-        }
-    }
-}
-
-@Composable
 private fun SectionEmpty(text: String) {
     Text(
         text = text,
@@ -337,7 +334,7 @@ private fun UpcomingSubscriptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (!category?.emoji.isNullOrEmpty()) {

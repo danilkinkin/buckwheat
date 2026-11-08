@@ -1,14 +1,12 @@
 package com.danilkinkin.buckwheat.history
 
 import androidx.compose.animation.core.TweenSpec
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DismissDirection
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,7 +17,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,12 +26,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryChip
+import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
-import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.util.numberFormat
@@ -45,10 +42,6 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.absoluteValue
-import kotlin.math.min
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -125,119 +118,64 @@ fun History(
                     LazyColumn(
                         state = scrollState,
                         modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 4.dp,
+                            bottom = 96.dp,
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
+                        items(
+                            items = historyList,
+                            key = { rowItem -> rowItem.key },
+                        ) { row ->
+                            when (row.type) {
+                                RowEntityType.DayDivider -> HistoryDateDivider(
+                                    date = row.day,
+                                    dayTotal = row.dayTotal ?: BigDecimal.ZERO,
+                                    currency = currency.value,
+                                )
 
-                item("top-spacer") {
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+                                // Day totals now live in the divider; old rows are no longer emitted.
+                                RowEntityType.DayTotal -> Unit
 
-                items(
-                    items = historyList,
-                    key = { rowItem -> rowItem.key },
-                ) { row ->
-                    when (row.type) {
-                        RowEntityType.DayDivider -> HistoryDateDivider(
-                            date = row.day,
-                            dayTotal = row.dayTotal ?: BigDecimal.ZERO,
-                            currency = currency.value,
-                        )
-                        // Day totals now live in the divider; old rows are no longer emitted.
-                        RowEntityType.DayTotal -> Unit
-                        RowEntityType.Spent -> SwipeActions(
-                            startActionsConfig = SwipeActionsConfig(
-                                threshold = 0.4f,
-                                background = MaterialTheme.colorScheme.tertiaryContainer,
-                                backgroundActive = MaterialTheme.colorScheme.tertiary,
-                                iconTint = MaterialTheme.colorScheme.onTertiary,
-                                icon = painterResource(R.drawable.ic_edit),
-                                stayDismissed = false,
-                                onDismiss = {
-                                    editorViewModel.startEditingSpent(row.transaction!!)
-                                    onClose()
-                                }
-                            ),
-                            endActionsConfig = SwipeActionsConfig(
-                                threshold = 0.4f,
-                                background = MaterialTheme.colorScheme.errorContainer,
-                                backgroundActive = MaterialTheme.colorScheme.error,
-                                iconTint = MaterialTheme.colorScheme.onError,
-                                icon = painterResource(R.drawable.ic_delete_forever),
-                                stayDismissed = true,
-                                onDismiss = {
-                                    spendsViewModel.removeSpent(row.transaction!!)
-                                }
-                            ),
-                        ) { state ->
-                            val localDensity = LocalDensity.current
-
-                            // Quantised to whole dp: this feeds a RoundedCornerShape, so a
-                            // per-frame value rebuilt the row shape on every drag frame.
-                            val size by remember(localDensity) {
-                                derivedStateOf {
-                                    with(localDensity) {
-                                        val px = min(16.dp.toPx(), abs(state.offset.value))
-                                            .coerceAtLeast(0f)
-                                        (px / density).roundToInt().dp
+                                RowEntityType.Spent -> SwipeActions(
+                                    modifier = Modifier.clip(RoundedCornerShape(24.dp)),
+                                    startActionsConfig = SwipeActionsConfig(
+                                        threshold = 0.4f,
+                                        background = MaterialTheme.colorScheme.tertiaryContainer,
+                                        backgroundActive = MaterialTheme.colorScheme.tertiary,
+                                        iconTint = MaterialTheme.colorScheme.onTertiary,
+                                        icon = painterResource(R.drawable.ic_edit),
+                                        stayDismissed = false,
+                                        onDismiss = {
+                                            editorViewModel.startEditingSpent(row.transaction!!)
+                                            onClose()
+                                        }
+                                    ),
+                                    endActionsConfig = SwipeActionsConfig(
+                                        threshold = 0.4f,
+                                        background = MaterialTheme.colorScheme.errorContainer,
+                                        backgroundActive = MaterialTheme.colorScheme.error,
+                                        iconTint = MaterialTheme.colorScheme.onError,
+                                        icon = painterResource(R.drawable.ic_delete_forever),
+                                        stayDismissed = true,
+                                        onDismiss = {
+                                            spendsViewModel.removeSpent(row.transaction!!)
+                                        }
+                                    ),
+                                ) {
+                                    ListCard {
+                                        SpentItem(
+                                            transaction = row.transaction!!,
+                                            currency = currency.value,
+                                            category = row.transaction!!.categoryId?.let { categoriesById[it] },
+                                        )
                                     }
                                 }
                             }
-
-                            val animateCorners by remember {
-                                derivedStateOf {
-                                    state.offset.value.absoluteValue > 30
-                                }
-                            }
-                            val startCorners by animateDpAsState(
-                                targetValue = when {
-                                    state.dismissDirection == DismissDirection.StartToEnd &&
-                                            animateCorners -> 8.dp
-                                    else -> 0.dp
-                                }
-                            )
-                            val endCorners by animateDpAsState(
-                                targetValue = when {
-                                    state.dismissDirection == DismissDirection.EndToStart &&
-                                            animateCorners -> 8.dp
-                                    else -> 0.dp
-                                }
-                            )
-
-                            Box(
-                                modifier = Modifier.height(IntrinsicSize.Min)
-                            ) {
-                                Surface(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(
-                                            vertical = min(
-                                                size / 4f,
-                                                4.dp
-                                            )
-                                        )
-                                        .clip(RoundedCornerShape(size)),
-                                    color = colorEditor,
-                                    shape = RoundedCornerShape(
-                                        topStart = startCorners,
-                                        bottomStart = startCorners,
-                                        topEnd = endCorners,
-                                        bottomEnd = endCorners,
-                                    ),
-                                ) {
-                                }
-                                Box(
-                                    modifier = Modifier.padding(vertical = 4.dp)
-                                ) {
-                                    SpentItem(
-                                        transaction = row.transaction!!,
-                                        currency = currency.value,
-                                        category = row.transaction!!.categoryId?.let { categoriesById[it] },
-                                    )
-                                }
-                            }
                         }
-                    }
-                }
-
                     }
                 }
             }
@@ -250,26 +188,25 @@ fun History(
                 .fillMaxWidth()
                 .navigationBarsPadding(),
         ) {
-                FloatingActionButton(
+            FloatingActionButton(
+                modifier = Modifier
+                    .padding(end = 24.dp, bottom = 32.dp)
+                    .scale(fapScale),
+                onClick = {
+                    coroutineScope.launch {
+                        scrollState.animateScrollToItem(0)
+                    }
+                },
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_down),
+                    contentDescription = null,
                     modifier = Modifier
-                        .padding(end = 24.dp, bottom = 32.dp)
-                        .scale(fapScale),
-                    onClick = {
-                        coroutineScope.launch {
-                            scrollState.animateScrollToItem(0)
-                        }
-                    },
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_arrow_down),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(ButtonDefaults.IconSize)
-                            .rotate(180f),
-                    )
-
-                }
+                        .size(ButtonDefaults.IconSize)
+                        .rotate(180f),
+                )
             }
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.subscriptions
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
@@ -96,14 +98,22 @@ fun SubscriptionsScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(top = 8.dp, bottom = 96.dp),
+                    contentPadding = PaddingValues(
+                        start = 16.dp,
+                        end = 16.dp,
+                        top = 8.dp,
+                        bottom = 96.dp,
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     items(subscriptions, key = { it.id }) { subscription ->
-                        SubscriptionRow(
-                            subscription = subscription,
-                            currency = currency,
-                            onClick = { editing = subscription },
-                        )
+                        ListCard {
+                            SubscriptionRow(
+                                subscription = subscription,
+                                currency = currency,
+                                onClick = { editing = subscription },
+                            )
+                        }
                     }
                 }
             }
@@ -205,7 +215,7 @@ private fun SubscriptionRow(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = 24.dp, vertical = 12.dp),
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
