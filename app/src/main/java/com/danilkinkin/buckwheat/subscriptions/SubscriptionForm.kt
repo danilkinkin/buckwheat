@@ -91,7 +91,6 @@ fun SubscriptionForm(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .imePadding()
             .verticalScroll(rememberScrollState()),
     ) {
         OutlinedTextField(

@@ -13,8 +13,6 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.di.TUTORS
-import com.danilkinkin.buckwheat.editor.DETAILS_SHEET
-import com.danilkinkin.buckwheat.editor.DetailsSheet
 import com.danilkinkin.buckwheat.editor.EDITOR_SHEET
 import com.danilkinkin.buckwheat.editor.EditorSheet
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
@@ -111,18 +109,6 @@ fun BottomSheets(
         name = CATEGORIES_SHEET,
     ) { state ->
         CategoriesSheet(
-            onClose = {
-                coroutineScope.launch {
-                    state.hide()
-                }
-            }
-        )
-    }
-
-    BottomSheetWrapper(
-        name = DETAILS_SHEET,
-    ) { state ->
-        DetailsSheet(
             onClose = {
                 coroutineScope.launch {
                     state.hide()

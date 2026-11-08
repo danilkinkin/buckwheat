@@ -2,7 +2,9 @@ package com.danilkinkin.buckwheat.ui
 
 import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.material3.MotionScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
@@ -25,6 +27,7 @@ fun isNightMode(): Boolean = when (LocalContext.current.appTheme) {
     else -> isSystemInDarkTheme()
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun BuckwheatTheme(
     darkTheme: Boolean = isNightMode(),
@@ -36,8 +39,10 @@ fun BuckwheatTheme(
         isDark = darkTheme,
     )
 
-    MaterialTheme(
+    // Material 3 Expressive: springy component motion on top of the preset palettes.
+    MaterialExpressiveTheme(
         colorScheme = colorScheme,
+        motionScheme = MotionScheme.expressive(),
         shapes = shapes,
         typography = typography(LocalContext.current),
         content = content,

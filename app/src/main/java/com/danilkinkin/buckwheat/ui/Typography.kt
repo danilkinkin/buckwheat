@@ -27,65 +27,91 @@ fun typography(context: Context): Typography {
 
     return Typography(
         displayLarge = TextStyle(
-            fontFamily = getFont(750),
-            fontSize = 57.sp
+            fontFamily = getFont(800),
+            fontSize = 57.sp,
+            lineHeight = 64.sp,
+            letterSpacing = (-1).sp,
         ),
         displayMedium = TextStyle(
-            fontFamily = getFont(900),
-            fontSize = 45.sp
+            fontFamily = getFont(800),
+            fontSize = 45.sp,
+            lineHeight = 52.sp,
+            letterSpacing = (-0.8).sp,
         ),
         displaySmall = TextStyle(
-            fontFamily = getFont(600),
-            fontSize = 22.sp
+            fontFamily = getFont(700),
+            fontSize = 34.sp,
+            lineHeight = 40.sp,
+            letterSpacing = (-0.4).sp,
         ),
         headlineLarge = TextStyle(
             fontFamily = getFont(800),
-            fontSize = 36.sp
+            fontSize = 34.sp,
+            lineHeight = 40.sp,
+            letterSpacing = (-0.4).sp,
         ),
         headlineMedium = TextStyle(
             fontFamily = getFont(700),
-            fontSize = 28.sp
+            fontSize = 28.sp,
+            lineHeight = 34.sp,
+            letterSpacing = (-0.2).sp,
         ),
         headlineSmall = TextStyle(
             fontFamily = getFont(700),
-            fontSize = 24.sp
+            fontSize = 24.sp,
+            lineHeight = 30.sp,
+            letterSpacing = (-0.2).sp,
         ),
         titleLarge = TextStyle(
-            fontFamily = getFont(700),
-            fontSize = 22.sp
+            fontFamily = getFont(800),
+            fontSize = 20.sp,
+            lineHeight = 26.sp,
+            letterSpacing = (-0.1).sp,
         ),
         titleMedium = TextStyle(
-            fontFamily = getFont(700),
-            fontSize = 16.sp
+            fontFamily = getFont(600),
+            fontSize = 16.sp,
+            lineHeight = 22.sp,
         ),
         titleSmall = TextStyle(
-            fontFamily = getFont(700),
-            fontSize = 14.sp
+            fontFamily = getFont(600),
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
         ),
         bodyLarge = TextStyle(
-            fontFamily = getFont(700),
-            fontSize = 16.sp
+            fontFamily = getFont(500),
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
         ),
         bodyMedium = TextStyle(
-            fontFamily = getFont(700),
-            fontSize = 14.sp
+            fontFamily = getFont(500),
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
         ),
         bodySmall = TextStyle(
-            fontFamily = getFont(600),
-            fontSize = 14.sp
+            fontFamily = getFont(400),
+            fontSize = 13.sp,
+            lineHeight = 18.sp,
+            letterSpacing = 0.1.sp,
         ),
         labelLarge = TextStyle(
             fontFamily = getFont(700),
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            lineHeight = 18.sp,
+            letterSpacing = 0.1.sp,
         ),
         labelMedium = TextStyle(
-            fontFamily = getFont(700),
-            fontSize = 12.sp
+            fontFamily = getFont(600),
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            letterSpacing = 0.2.sp,
         ),
         labelSmall = TextStyle(
-            fontFamily = getFont(600),
-            fontSize = 11.sp
-        )
+            fontFamily = getFont(500),
+            fontSize = 11.sp,
+            lineHeight = 14.sp,
+            letterSpacing = 0.3.sp,
+        ),
     )
 }
 

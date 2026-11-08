@@ -54,7 +54,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.util.Date
 
-private const val RECENT_COUNT = 6
+private const val RECENT_COUNT = 4
 private const val UPCOMING_COUNT = 3
 
 /**
