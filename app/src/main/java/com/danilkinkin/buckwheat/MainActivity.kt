@@ -39,6 +39,7 @@ import javax.inject.Inject
 val Context.budgetDataStore by preferencesDataStore("budget")
 val Context.settingsDataStore by preferencesDataStore("settings")
 var Context.appTheme by mutableStateOf(ThemeMode.SYSTEM)
+var Context.appThemePreset by mutableStateOf(0)
 var Context.appLocale: Locale? by mutableStateOf(null)
 var Context.systemLocale: Locale? by mutableStateOf(null)
 var Context.errorForReport: String? by mutableStateOf(null)
