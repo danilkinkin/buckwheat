@@ -110,6 +110,9 @@ fun BottomSheets(
             onTriedWidget = {
                 coroutineScope.launch { state.callback(emptyMap()) }
             },
+            onOpenCurrency = {
+                appViewModel.openSheet(PathState(CURRENCY_EDITOR))
+            },
             activityResultRegistryOwner = activityResultRegistryOwner,
         )
     }

@@ -28,6 +28,7 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.EditMode
 import com.danilkinkin.buckwheat.editor.EditStage
 import com.danilkinkin.buckwheat.editor.EditorViewModel
+import com.danilkinkin.buckwheat.home.MonthTotal
 import com.danilkinkin.buckwheat.settings.SETTINGS_SHEET
 import com.danilkinkin.buckwheat.util.observeLiveData
 import kotlinx.coroutines.launch
@@ -83,6 +84,12 @@ fun EditorToolbar(
         if (mode == EditMode.EDIT) {
             Spacer(modifier = Modifier.width(4.dp))
             CancelEditSpent()
+        } else {
+            MonthTotal(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 4.dp, end = 8.dp),
+            )
         }
         Spacer(modifier = Modifier.width(4.dp))
         BigIconButton(

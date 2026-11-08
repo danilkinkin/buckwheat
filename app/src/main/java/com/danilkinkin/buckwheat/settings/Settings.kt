@@ -12,18 +12,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.base.TextRow
+import com.danilkinkin.buckwheat.data.ExtendCurrency
+import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.export.rememberExportCSV
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
@@ -32,12 +37,20 @@ const val SETTINGS_SHEET = "settings"
 @Composable
 fun Settings(
     onTriedWidget: () -> Unit = {},
+    onOpenCurrency: () -> Unit = {},
     activityResultRegistryOwner: ActivityResultRegistryOwner? = null,
+    spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
     val exportCSVLaunch = rememberExportCSV(
         activityResultRegistryOwner = activityResultRegistryOwner
     )
+
+    val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+    val currencyCaption = when (currency.type) {
+        ExtendCurrency.Type.NONE -> stringResource(R.string.currency_none)
+        else -> currency.value.orEmpty()
+    }
 
     val navigationBarHeight = androidx.compose.ui.unit.max(
         LocalWindowInsets.current.calculateBottomPadding(),
@@ -64,6 +77,12 @@ fun Settings(
             ) {
                 ThemeSwitcher()
                 LangSwitcher()
+                ButtonRow(
+                    icon = painterResource(R.drawable.ic_currency),
+                    text = stringResource(R.string.in_currency_label),
+                    endCaption = currencyCaption,
+                    onClick = onOpenCurrency,
+                )
                 TryWidget(onTried = {
                     onTriedWidget()
                 })

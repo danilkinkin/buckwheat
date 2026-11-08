@@ -12,7 +12,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.home.HomeHeader
 import com.danilkinkin.buckwheat.util.*
 import java.math.BigDecimal
 
@@ -113,13 +112,9 @@ fun CurrentSpendEditor(
         }
     }
 
-    Column(modifier.fillMaxSize()) {
-        HomeHeader()
-
+    Box(modifier) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
+            modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.CenterEnd,
         ) {
             if (!hide) {
