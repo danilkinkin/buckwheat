@@ -28,12 +28,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryChip
-import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Transaction
-import com.danilkinkin.buckwheat.di.TUTORIAL_STAGE
-import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorEditor
@@ -57,9 +54,7 @@ import kotlin.math.roundToInt
 fun History(
     modifier: Modifier = Modifier,
     spendsViewModel: SpendsViewModel = viewModel(),
-    appViewModel: AppViewModel = viewModel(),
     editorViewModel: EditorViewModel = viewModel(),
-    readOnly: Boolean = false,
     onBack: (() -> Unit)? = null,
     onClose: () -> Unit = {}
 ) {
@@ -69,8 +64,6 @@ fun History(
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val categories by spendsViewModel.categories.observeAsState(emptyList())
     val currency = spendsViewModel.currency.observeAsState(initial = ExtendCurrency.none())
-    val tutorial by appViewModel.getTutorialStage(TUTORS.SWIPE_EDIT_SPENT).observeAsState(TUTORIAL_STAGE.NONE)
-    var isUserTrySwipe by remember { mutableStateOf(false) }
     var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
     var selectedMonth by remember { mutableStateOf(YearMonth.now()) }
 
@@ -94,14 +87,6 @@ fun History(
     }
     val historyList = remember(filteredSpends) { composeHistoryRows(filteredSpends) }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            if (historyList.isNotEmpty() && isUserTrySwipe) {
-                appViewModel.passTutorial(TUTORS.SWIPE_EDIT_SPENT)
-            }
-        }
-    }
-
     val showJump by remember { derivedStateOf { scrollState.firstVisibleItemIndex > 0 } }
     val fapScale by animateFloatAsState(
         targetValue = if (showJump) 1f else 0f,
@@ -112,28 +97,26 @@ fun History(
 
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            if (!readOnly) {
-                Spacer(Modifier.height(LocalWindowInsets.current.calculateTopPadding()))
-                MonthHeader(
-                    month = selectedMonth,
-                    total = monthTotal,
-                    currency = currency.value,
-                    canGoNext = selectedMonth < YearMonth.now(),
-                    onBack = onBack,
-                    onPrevious = { selectedMonth = selectedMonth.minusMonths(1) },
-                    onNext = {
-                        if (selectedMonth < YearMonth.now()) {
-                            selectedMonth = selectedMonth.plusMonths(1)
-                        }
-                    },
+            Spacer(Modifier.height(LocalWindowInsets.current.calculateTopPadding()))
+            MonthHeader(
+                month = selectedMonth,
+                total = monthTotal,
+                currency = currency.value,
+                canGoNext = selectedMonth < YearMonth.now(),
+                onBack = onBack,
+                onPrevious = { selectedMonth = selectedMonth.minusMonths(1) },
+                onNext = {
+                    if (selectedMonth < YearMonth.now()) {
+                        selectedMonth = selectedMonth.plusMonths(1)
+                    }
+                },
+            )
+            if (categories.isNotEmpty()) {
+                CategoryFilterRow(
+                    categories = categories,
+                    selectedCategoryId = selectedCategoryId,
+                    onSelect = { selectedCategoryId = it },
                 )
-                if (categories.isNotEmpty()) {
-                    CategoryFilterRow(
-                        categories = categories,
-                        selectedCategoryId = selectedCategoryId,
-                        onSelect = { selectedCategoryId = it },
-                    )
-                }
             }
 
             Box(Modifier.weight(1f)) {
@@ -152,7 +135,7 @@ fun History(
                 animatedItemsIndexed(
                     state = animatedList.value,
                     key = { rowItem -> rowItem.key },
-                ) { index, row ->
+                ) { _, row ->
                     when (row.type) {
                         RowEntityType.DayDivider -> HistoryDateDivider(
                             date = row.day,
@@ -161,7 +144,7 @@ fun History(
                         )
                         // Day totals now live in the divider; old rows are no longer emitted.
                         RowEntityType.DayTotal -> Unit
-                        RowEntityType.Spent -> if (!readOnly) SwipeActions(
+                        RowEntityType.Spent -> SwipeActions(
                             startActionsConfig = SwipeActionsConfig(
                                 threshold = 0.4f,
                                 background = MaterialTheme.colorScheme.tertiaryContainer,
@@ -185,8 +168,6 @@ fun History(
                                     spendsViewModel.removeSpent(row.transaction!!)
                                 }
                             ),
-                            onTried = { isUserTrySwipe = true },
-                            showTutorial = index == 2 && tutorial === TUTORIAL_STAGE.READY_TO_SHOW,
                         ) { state ->
                             val localDensity = LocalDensity.current
 
@@ -254,12 +235,6 @@ fun History(
                                     )
                                 }
                             }
-                        } else {
-                            SpentItem(
-                                transaction = row.transaction!!,
-                                currency = currency.value,
-                                category = row.transaction!!.categoryId?.let { categoriesById[it] },
-                            )
                         }
                     }
                 }
@@ -269,14 +244,13 @@ fun History(
             }
         }
 
-        if (!readOnly) {
-            Column(
-                horizontalAlignment = Alignment.End,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .navigationBarsPadding(),
-            ) {
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .navigationBarsPadding(),
+        ) {
                 FloatingActionButton(
                     modifier = Modifier
                         .padding(end = 24.dp, bottom = 32.dp)
@@ -297,7 +271,6 @@ fun History(
 
                 }
             }
-        }
     }
 }
 
@@ -387,20 +360,16 @@ private fun MonthHeader(
         if (onBack != null) {
             IconButton(onClick = onBack) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.ic_chevron_left),
                     contentDescription = null,
                 )
             }
         }
-        IconButton(onClick = onPrevious) {
-            Icon(
-                painter = painterResource(R.drawable.ic_arrow_back),
-                contentDescription = null,
-            )
-        }
         Column(
-            modifier = Modifier.weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp),
+            horizontalAlignment = Alignment.Start,
         ) {
             Text(
                 text = prettyYearMonth(month),
@@ -413,9 +382,15 @@ private fun MonthHeader(
                 color = colorOnEditor.copy(alpha = 0.6f),
             )
         }
+        IconButton(onClick = onPrevious) {
+            Icon(
+                painter = painterResource(R.drawable.ic_chevron_left),
+                contentDescription = null,
+            )
+        }
         IconButton(onClick = onNext, enabled = canGoNext) {
             Icon(
-                painter = painterResource(R.drawable.ic_arrow_right),
+                painter = painterResource(R.drawable.ic_chevron_right),
                 contentDescription = null,
             )
         }

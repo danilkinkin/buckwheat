@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="app_name">Eva</string>
-  <string name="app_widget_extend_name">Buckwheat extend</string>
-  <string name="app_widget_minimal_name">Buckwheat minimal</string>
+  <string name="app_widget_extend_name">Eva overview</string>
+  <string name="app_widget_minimal_name">Eva minimal</string>
   <string name="rest_budget_for_today">For today</string>
   <string name="new_daily_budget_short">New daily</string>
   <string name="new_daily_budget">New daily budget</string>
@@ -174,7 +174,7 @@
   <string name="cancel_editing">Cancel editing</string>
   <string name="over">over</string>
   <string name="home_widgets_label">Home screen widgets</string>
-  <string name="try_home_widgets_desc">Buckwheat now has widgets. Try it out and keep track of your budget from the home screen</string>
+  <string name="try_home_widgets_desc">Eva now has widgets. See today\'s spending from your home screen</string>
   <string name="tutorial_open_wallet">Click to view budget details</string>
   <string name="tutorial_open_history">Drag to view spending history</string>
   <string name="recalc_budget_on_last_day">Today is the last day, it makes no sense to distribute</string>

@@ -1,6 +1,5 @@
 package com.danilkinkin.buckwheat.history
 
-import android.view.MotionEvent
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
@@ -22,7 +21,6 @@ import androidx.compose.ui.geometry.center
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -68,12 +66,9 @@ fun SwipeActions(
     modifier: Modifier = Modifier,
     startActionsConfig: SwipeActionsConfig = DefaultSwipeActionsConfig,
     endActionsConfig: SwipeActionsConfig = DefaultSwipeActionsConfig,
-    onTried: () -> Unit = {},
-    showTutorial: Boolean = false,
     content: @Composable (DismissState) -> Unit,
 ) = BoxWithConstraints(modifier) {
     val width = constraints.maxWidth.toFloat()
-    val height = constraints.maxHeight.toFloat()
 
     var willDismissDirection: DismissDirection? by remember {
         mutableStateOf(null)
@@ -81,7 +76,6 @@ fun SwipeActions(
 
     val state = rememberDismissState(
         confirmStateChange = {
-            onTried()
             if (willDismissDirection == DismissDirection.StartToEnd
                 && it == DismissValue.DismissedToEnd
             ) {
@@ -97,34 +91,6 @@ fun SwipeActions(
             }
         }
     )
-
-    var showingTutorial by remember {
-        mutableStateOf(showTutorial)
-    }
-
-    if (showingTutorial) {
-        val infiniteTransition = rememberInfiniteTransition()
-        val x by infiniteTransition.animateFloat(
-            initialValue = 0f,
-            targetValue = width * (startActionsConfig.threshold) / 2f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(500, easing = FastOutSlowInEasing, delayMillis = 1000),
-                repeatMode = RepeatMode.Reverse
-            )
-        )
-        val dir by infiniteTransition.animateFloat(
-            initialValue = 0f,
-            targetValue = 1f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(4000, easing = LinearEasing),
-                repeatMode = RepeatMode.Reverse
-            )
-        )
-
-        LaunchedEffect(key1 = x, block = {
-            state.performDrag(x * (if (dir > 0.5f) 1f else -1f) - state.offset.value)
-        })
-    }
 
     LaunchedEffect(key1 = Unit, block = {
         snapshotFlow { state.offset.value }
@@ -155,13 +121,7 @@ fun SwipeActions(
 
     SwipeToDismiss(
         state = state,
-        modifier = Modifier
-            .pointerInteropFilter {
-                if (it.action == MotionEvent.ACTION_DOWN) {
-                    showingTutorial = false
-                }
-                false
-            },
+        modifier = Modifier,
         directions = dismissDirections,
         dismissThresholds = {
             if (it == DismissDirection.StartToEnd)

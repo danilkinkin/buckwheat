@@ -21,9 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.lifecycleScope
-import com.danilkinkin.buckwheat.base.balloon.BalloonProvider
-import com.danilkinkin.buckwheat.data.dao.StorageDao
-import com.danilkinkin.buckwheat.di.migrateToDataStore
 import com.danilkinkin.buckwheat.home.MainScreen
 import dagger.hilt.android.AndroidEntryPoint
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -34,7 +31,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import syncOverrideLocale
 import java.util.*
-import javax.inject.Inject
 
 val Context.budgetDataStore by preferencesDataStore("budget")
 val Context.settingsDataStore by preferencesDataStore("settings")
@@ -52,10 +48,6 @@ class MainActivity : ComponentActivity() {
     // Broke tests. Set to true for tests
     private val isDone: MutableState<Boolean> = mutableStateOf(false)
     private val isReady: MutableState<Boolean> = mutableStateOf(false)
-
-    //TODO: Remove after 01.01.2024. Need for migration to DataStore
-    @Inject
-    lateinit var storageDao: StorageDao
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +70,6 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 syncTheme(localContext)
                 syncOverrideLocale(localContext)
-                migrateToDataStore(context, storageDao)
 
                 // App ready for work
                 isReady.value = true
@@ -99,17 +90,15 @@ class MainActivity : ComponentActivity() {
             if (isReady.value) {
                 BuckwheatTheme {
                     OverrideLocalize {
-                        BalloonProvider {
-                            CompositionLocalProvider(
-                                LocalWindowSize provides widthSizeClass,
-                                LocalWindowInsets provides windowInsets,
-                            ) {
-                                MainScreen(activityResultRegistryOwner)
+                        CompositionLocalProvider(
+                            LocalWindowSize provides widthSizeClass,
+                            LocalWindowInsets provides windowInsets,
+                        ) {
+                            MainScreen(activityResultRegistryOwner)
 
-                                LaunchedEffect(Unit) {
-                                    // App rendered and splash screen can be hidden
-                                    isDone.value = true
-                                }
+                            LaunchedEffect(Unit) {
+                                // App rendered and splash screen can be hidden
+                                isDone.value = true
                             }
                         }
                     }

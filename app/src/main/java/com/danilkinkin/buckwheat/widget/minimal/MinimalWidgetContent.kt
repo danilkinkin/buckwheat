@@ -25,22 +25,26 @@ import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
-import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.preview.ExperimentalGlancePreviewApi
-import androidx.glance.preview.Preview
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextStyle
-import com.danilkinkin.buckwheat.BuildConfig
 import com.danilkinkin.buckwheat.MainActivity
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.data.ExtendCurrency
+import com.danilkinkin.buckwheat.util.numberFormat
 import com.danilkinkin.buckwheat.widget.CanvasText
 import com.danilkinkin.buckwheat.widget.LocalAccentColor
 import com.danilkinkin.buckwheat.widget.LocalContentColor
 import com.danilkinkin.buckwheat.widget.WidgetReceiver
+import java.math.BigDecimal
 
+/**
+ * The small strip widget: today's spending and a tap target. The budget state that used to drive
+ * this widget is gone, so the strip is always meaningful instead of saying "budget not set".
+ */
 @Composable
 @GlanceComposable
 fun MinimalWidgetContent() {
@@ -49,202 +53,83 @@ fun MinimalWidgetContent() {
     val intent = Intent(context, MainActivity::class.java)
 
     val prefs = currentState<Preferences>()
-    val stateBudget = WidgetReceiver.StateBudget.valueOf(
-        prefs[WidgetReceiver.stateBudgetPreferenceKey]
-            ?: WidgetReceiver.StateBudget.NOT_SET.name
-    )
+    val todaySpent = BigDecimal(prefs[WidgetReceiver.todaySpentPreferenceKey] ?: "0")
+    val currency = ExtendCurrency.getInstance(prefs[WidgetReceiver.currencyPreferenceKey])
+    val isSmall = size == MinimalWidget.smallMode
 
     CompositionLocalProvider(
         LocalContentColor provides GlanceTheme.colors.onSurface,
         LocalAccentColor provides GlanceTheme.colors.primary,
     ) {
+        val contentColor = LocalContentColor.current
+        val accentColor = LocalAccentColor.current
+
         Box(
             modifier = GlanceModifier
                 .cornerRadius(48.dp)
                 .fillMaxSize()
-                .background(ImageProvider(R.drawable.minimal_widget_preview_background)),
+                .background(ImageProvider(R.drawable.minimal_widget_preview_background))
+                .clickable(actionStartActivity(intent)),
             contentAlignment = Alignment.Center,
         ) {
-            Column(
-                modifier = GlanceModifier.padding(8.dp),
-                horizontalAlignment = Alignment.Start,
+            Row(
+                modifier = GlanceModifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (
-                    stateBudget !== WidgetReceiver.StateBudget.NOT_SET &&
-                    stateBudget !== WidgetReceiver.StateBudget.END_PERIOD
+                Column(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalAlignment = Alignment.Start,
                 ) {
-                    Row(
-                        modifier = GlanceModifier.padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
+                    if (!isSmall) {
                         CanvasText(
-                            modifier = GlanceModifier.padding(
-                                0.dp,
-                                0.dp,
-                                when (size) {
-                                    MinimalWidget.largeMode -> 8.dp
-                                    MinimalWidget.smallMode -> 4.dp
-                                    else -> 6.dp
-                                },
-                                0.dp,
-                            ),
-                            text = context.resources.getString(
-                                when (size) {
-                                    MinimalWidget.smallMode -> R.string.add_spent_short
-                                    else -> R.string.add_spent
-                                }
-
-                            ),
+                            text = context.resources.getString(R.string.today),
                             style = TextStyle(
-                                color = GlanceTheme.colors.onSurface,
+                                color = contentColor,
                                 fontWeight = FontWeight.Medium,
-                                fontSize = when (size) {
-                                    MinimalWidget.largeMode -> 22.sp
-                                    MinimalWidget.smallMode -> 14.sp
-                                    else -> 18.sp
-                                },
-                            )
-                        )
-
-                        val drawable = ResourcesCompat.getDrawable(
-                            context.resources,
-                            R.drawable.ic_add,
-                            null,
-                        )!!
-
-                        Image(
-                            modifier = GlanceModifier.size(
-                                when (size) {
-                                    MinimalWidget.largeMode -> 32.dp
-                                    MinimalWidget.smallMode -> 24.dp
-                                    else -> 28.dp
-                                }
+                                fontSize = 11.sp,
                             ),
-                            provider = ImageProvider(drawable.toBitmap()),
-                            colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurface),
-                            contentDescription = null,
+                            noTint = true,
                         )
                     }
-                }
-                if (
-                    stateBudget === WidgetReceiver.StateBudget.NOT_SET ||
-                    stateBudget === WidgetReceiver.StateBudget.END_PERIOD
-                ) {
+
                     CanvasText(
-                        modifier = GlanceModifier.padding(0.dp, 0.dp, 8.dp, 0.dp),
-                        text = if (stateBudget === WidgetReceiver.StateBudget.NOT_SET) {
-                            context.resources.getString(
-                                R.string.budget_not_set
-                            )
-                        } else {
-                            context.resources.getString(
-                                R.string.finish_period_title
-                            )
-                        },
+                        text = numberFormat(context, todaySpent, currency),
                         style = TextStyle(
-                            color = GlanceTheme.colors.onSurface,
+                            color = contentColor,
                             fontWeight = FontWeight.Bold,
                             fontSize = when (size) {
                                 MinimalWidget.largeMode -> 24.sp
                                 MinimalWidget.smallMode -> 18.sp
-                                else -> 18.sp
+                                else -> 20.sp
                             },
-                        )
-                    )
-
-                    Row(
-                        modifier = GlanceModifier.padding(
-                            0.dp,
-                            when (size) {
-                                MinimalWidget.largeMode -> 4.dp
-                                MinimalWidget.smallMode -> 0.dp
-                                else -> 2.dp
-                            },
-                            0.dp,
-                            0.dp,
                         ),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        CanvasText(
-                            modifier = GlanceModifier.padding(
-                                0.dp,
-                                0.dp,
-                                when (size) {
-                                    MinimalWidget.largeMode -> 6.dp
-                                    MinimalWidget.smallMode -> 2.dp
-                                    else -> 4.dp
-                                },
-                                0.dp,
-                            ),
-                            text = context.resources.getString(
-                                R.string.set_period_title
-                            ),
-                            style = TextStyle(
-                                color = GlanceTheme.colors.primary,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = when (size) {
-                                    MinimalWidget.largeMode -> 16.sp
-                                    MinimalWidget.smallMode -> 12.sp
-                                    else -> 14.sp
-                                },
-                            )
-                        )
-
-                        val drawable = ResourcesCompat.getDrawable(
-                            context.resources,
-                            R.drawable.ic_arrow_forward,
-                            null,
-                        )!!
-
-                        Image(
-                            modifier = GlanceModifier.size(
-                                when (size) {
-                                    MinimalWidget.largeMode -> 22.dp
-                                    MinimalWidget.smallMode -> 14.dp
-                                    else -> 20.dp
-                                }
-                            ),
-                            provider = ImageProvider(drawable.toBitmap()),
-                            colorFilter = ColorFilter.tint(GlanceTheme.colors.primary),
-                            contentDescription = null,
-                        )
-                    }
-                }
-            }
-        }
-
-        if (BuildConfig.DEBUG) {
-            Box(
-                modifier = GlanceModifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center,
-            ) {
-                CanvasText(
-                    modifier = GlanceModifier.padding(top = 8.dp),
-                    text = "${size.width}x${size.height}", style = TextStyle(
-                        color = GlanceTheme.colors.onSurfaceVariant,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 10.sp,
+                        noTint = true,
                     )
+                }
+
+                Spacer(GlanceModifier.defaultWeight())
+
+                val drawable = ResourcesCompat.getDrawable(
+                    context.resources,
+                    R.drawable.ic_add,
+                    null,
+                )!!
+
+                Image(
+                    modifier = GlanceModifier.size(
+                        when (size) {
+                            MinimalWidget.largeMode -> 32.dp
+                            MinimalWidget.smallMode -> 24.dp
+                            else -> 28.dp
+                        }
+                    ),
+                    provider = ImageProvider(drawable.toBitmap()),
+                    colorFilter = ColorFilter.tint(accentColor),
+                    contentDescription = null,
                 )
             }
         }
-
-        Box(
-            modifier = GlanceModifier
-                .cornerRadius(48.dp)
-                .fillMaxSize()
-                .clickable(actionStartActivity(intent))
-        ) {}
-    }
-}
-
-@OptIn(ExperimentalGlancePreviewApi::class)
-@Preview(400, 300)
-@Composable
-@GlanceComposable
-private fun Preview() {
-    GlanceTheme {
-        MinimalWidgetContent()
     }
 }

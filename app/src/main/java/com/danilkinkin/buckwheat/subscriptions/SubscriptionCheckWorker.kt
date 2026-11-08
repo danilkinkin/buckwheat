@@ -98,6 +98,17 @@ class SubscriptionCheckWorker(
     }
 
     private fun notify(subscription: Subscription, currency: ExtendCurrency) {
+        // POST_NOTIFICATIONS is a runtime permission on Android 13+. Without it notify()
+        // throws; the subscription still advances, so this check must not block posting.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+
         val amount = numberFormat(
             applicationContext,
             subscription.amount,

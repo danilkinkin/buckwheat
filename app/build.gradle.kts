@@ -63,8 +63,8 @@ android {
         applicationId = "com.varashines.eva"
         minSdk = 29
         targetSdk = 36
-        versionCode = 75
-        versionName = "5.10.0-dev"
+        versionCode = 76
+        versionName = "5.11.0-dev"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
     }
 
@@ -133,6 +133,13 @@ android {
         // our test APK to build (has no effect on our AARs)
         resources.excludes += "/META-INF/AL2.0"
         resources.excludes += "/META-INF/LGPL2.1"
+    }
+
+    lint {
+        // Fork-only strings are written in English and fall back to values/strings.xml. The
+        // inherited locales predate them, and for a personal build a failing lint for every
+        // locale is noise rather than a defect.
+        disable += "MissingTranslation"
     }
 
     namespace = "com.danilkinkin.buckwheat"

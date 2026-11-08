@@ -36,10 +36,6 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideStorageDao(db: DatabaseModule) = db.storageDao()
-
-    @Singleton
-    @Provides
     fun provideCategoryDao(db: DatabaseModule) = db.categoryDao()
 
     @Singleton

@@ -1,96 +1,40 @@
 package com.danilkinkin.buckwheat.home
 
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.base.BottomSheetWrapper
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.PathState
-import com.danilkinkin.buckwheat.data.SpendsViewModel
-import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EDITOR_SHEET
 import com.danilkinkin.buckwheat.editor.EditorSheet
-import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
-import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BudgetIsOverDescription
-import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NEW_DAY_BUDGET_DESCRIPTION_SHEET
-import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NewDayBudgetDescription
-import com.danilkinkin.buckwheat.effects.Confetti
-import com.danilkinkin.buckwheat.analytics.ANALYTICS_SHEET
-import com.danilkinkin.buckwheat.analytics.Analytics
-import com.danilkinkin.buckwheat.analytics.VIEWER_HISTORY_SHEET
-import com.danilkinkin.buckwheat.analytics.ViewerHistory
-import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
-import com.danilkinkin.buckwheat.onboarding.Onboarding
-import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
-import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
-import com.danilkinkin.buckwheat.settings.*
-import com.danilkinkin.buckwheat.wallet.*
+import com.danilkinkin.buckwheat.settings.BUG_REPORTER_SHEET
+import com.danilkinkin.buckwheat.settings.BugReporter
+import com.danilkinkin.buckwheat.settings.CATEGORIES_SHEET
+import com.danilkinkin.buckwheat.settings.CategoriesSheet
+import com.danilkinkin.buckwheat.settings.SETTINGS_CHANGE_LOCALE_SHEET
+import com.danilkinkin.buckwheat.settings.SETTINGS_CHANGE_THEME_SHEET
+import com.danilkinkin.buckwheat.settings.SETTINGS_TRY_WIDGET_SHEET
+import com.danilkinkin.buckwheat.settings.LangSwitcherDialog
+import com.danilkinkin.buckwheat.settings.ThemeSwitcherDialog
+import com.danilkinkin.buckwheat.settings.TryWidgetDialog
+import com.danilkinkin.buckwheat.wallet.CURRENCY_EDITOR
+import com.danilkinkin.buckwheat.wallet.CurrencyEditor
 import kotlinx.coroutines.launch
-import java.util.*
 
+/**
+ * The app's sheets, declared in one place so stacking order is explicit: later sheets draw above
+ * earlier ones. Only sheets reachable from the current UI are kept here.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheets(
     activityResultRegistryOwner: ActivityResultRegistryOwner?,
     appViewModel: AppViewModel = hiltViewModel(),
-    spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    val requireSetBudget by spendsViewModel.requireSetBudget.observeAsState(false)
-    val periodFinished by spendsViewModel.periodFinished.observeAsState(false)
-
-    BottomSheetWrapper(
-        name = WALLET_SHEET,
-        cancelable = !requireSetBudget && !periodFinished,
-    ) { state ->
-        Wallet(
-            forceChange = periodFinished || requireSetBudget,
-            activityResultRegistryOwner = activityResultRegistryOwner,
-            onClose = {
-                coroutineScope.launch {
-                    state.hide()
-                }
-            }
-        )
-    }
-
-    BottomSheetWrapper(
-        name = DEFAULT_RECALC_BUDGET_CHOOSER,
-    ) { state ->
-        DefaultRecalcBudgetChooser(
-            onClose = {
-                coroutineScope.launch {
-                    state.hide()
-                }
-            }
-        )
-    }
-
-    BottomSheetWrapper(
-        name = FINISH_DATE_SELECTOR_SHEET,
-    ) { state ->
-        FinishDateSelector(
-            selectDate = state.args["initialDate"] as Date?,
-            onBackPressed = {
-                coroutineScope.launch {
-                    state.hide()
-                }
-            },
-            onApply = {
-                coroutineScope.launch {
-                    state.hide(mapOf("finishDate" to it))
-                }
-            },
-        )
-    }
-
-    // The editor is a sheet so the Details sheet can stack above it.
     BottomSheetWrapper(
         name = EDITOR_SHEET,
     ) { state ->
@@ -130,80 +74,13 @@ fun BottomSheets(
     }
 
     BottomSheetWrapper(
-        name = RECALCULATE_DAILY_BUDGET_SHEET,
-        cancelable = false,
-    ) { state ->
-        RecalcBudget(
-            onClose = {
-                coroutineScope.launch { state.hide() }
-            }
-        )
-    }
-
-    BottomSheetWrapper(
-        name = ANALYTICS_SHEET,
-        cancelable = !periodFinished,
-    ) { state ->
-        Analytics(
-            activityResultRegistryOwner = activityResultRegistryOwner,
-            onCreateNewPeriod = {
-                appViewModel.openSheet(PathState(WALLET_SHEET))
-            },
-            onClose = {
-                coroutineScope.launch { state.hide() }
-            },
-        )
-    }
-
-    BottomSheetWrapper(name = VIEWER_HISTORY_SHEET) {
-        ViewerHistory(
-            onClose = {
-                coroutineScope.launch { it.hide() }
-            }
-        )
-    }
-
-    BottomSheetWrapper(
-        name = ON_BOARDING_SHEET,
-        cancelable = false,
-    ) { state ->
-        Onboarding(
-            onSetBudget = {
-                appViewModel.openSheet(PathState(WALLET_SHEET))
-                appViewModel.activateTutorial(TUTORS.SWIPE_EDIT_SPENT)
-            },
-            onClose = {
-                coroutineScope.launch { state.hide() }
-            },
-        )
-    }
-
-    BottomSheetWrapper(
-        name = NEW_DAY_BUDGET_DESCRIPTION_SHEET,
-    ) { state ->
-        NewDayBudgetDescription(
-            onClose = {
-                coroutineScope.launch { state.hide() }
-            },
-        )
-    }
-
-    BottomSheetWrapper(
-        name = BUDGET_IS_OVER_DESCRIPTION_SHEET,
-    ) { state ->
-        BudgetIsOverDescription(
-            onClose = {
-                coroutineScope.launch { state.hide() }
-            },
-        )
-    }
-
-    BottomSheetWrapper(
         name = BUG_REPORTER_SHEET,
     ) { state ->
         BugReporter(
             onClose = {
-                coroutineScope.launch { state.hide() }
+                coroutineScope.launch {
+                    state.hide()
+                }
             },
         )
     }
@@ -219,21 +96,16 @@ fun BottomSheets(
     ) { state ->
         LangSwitcherDialog(
             onClose = {
-                coroutineScope.launch { state.hide() }
+                coroutineScope.launch {
+                    state.hide()
+                }
             }
         )
     }
 
     BottomSheetWrapper(
         name = SETTINGS_TRY_WIDGET_SHEET,
-    ) { state ->
+    ) {
         TryWidgetDialog()
-    }
-
-    Box(Modifier.fillMaxSize()) {
-        Confetti(
-            modifier = Modifier.fillMaxSize(),
-            controller = appViewModel.confettiController,
-        )
     }
 }

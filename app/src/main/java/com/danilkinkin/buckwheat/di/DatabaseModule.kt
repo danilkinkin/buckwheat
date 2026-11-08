@@ -5,11 +5,9 @@ import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.danilkinkin.buckwheat.data.dao.CategoryDao
-import com.danilkinkin.buckwheat.data.dao.StorageDao
 import com.danilkinkin.buckwheat.data.dao.SubscriptionDao
 import com.danilkinkin.buckwheat.data.dao.TransactionDao
 import com.danilkinkin.buckwheat.data.entities.Category
-import com.danilkinkin.buckwheat.data.entities.Storage
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.Transaction
 
@@ -108,6 +106,16 @@ val AutoMigration5to6: Migration = object : Migration(5, 6) {
     }
 }
 
+/**
+ * Drops the legacy `storage` key/value table. It was only read by the one-time migration to
+ * DataStore, which is gone; the table is empty on every install that started after the move.
+ */
+val AutoMigration6to7: Migration = object : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP TABLE IF EXISTS `storage`")
+    }
+}
+
 /** Fresh installs skip migrations, so the same seed runs after Room creates the tables. */
 val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -116,8 +124,8 @@ val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
 }
 
 @Database(
-    entities = [Transaction::class, Storage::class, Category::class, Subscription::class],
-    version = 6,
+    entities = [Transaction::class, Category::class, Subscription::class],
+    version = 7,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -130,13 +138,15 @@ abstract class DatabaseModule : RoomDatabase() {
 
     abstract fun transactionDao(): TransactionDao
 
-    abstract fun storageDao(): StorageDao
-
     abstract fun categoryDao(): CategoryDao
 
     abstract fun subscriptionDao(): SubscriptionDao
 
     companion object {
-        val MANUAL_MIGRATIONS = arrayOf<Migration>(AutoMigration4to5, AutoMigration5to6)
+        val MANUAL_MIGRATIONS = arrayOf<Migration>(
+            AutoMigration4to5,
+            AutoMigration5to6,
+            AutoMigration6to7,
+        )
     }
 }

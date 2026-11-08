@@ -110,32 +110,34 @@ fun StatsScreen(
         ) {
             IconButton(onClick = onBack) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
-                    contentDescription = null,
-                )
-            }
-            IconButton(
-                onClick = { month = month.minusMonths(1) },
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.ic_chevron_left),
                     contentDescription = null,
                 )
             }
             Text(
                 text = prettyYearMonth(month),
                 style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp),
             )
+            IconButton(
+                onClick = { month = month.minusMonths(1) },
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_chevron_left),
+                    contentDescription = null,
+                )
+            }
             IconButton(
                 onClick = { month = month.plusMonths(1) },
                 enabled = month < currentMonth,
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_right),
+                    painter = painterResource(R.drawable.ic_chevron_right),
                     contentDescription = null,
                 )
             }

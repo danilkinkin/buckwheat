@@ -32,8 +32,6 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.export.rememberExportCSV
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
-const val SETTINGS_SHEET = "settings"
-
 @Composable
 fun Settings(
     onTriedWidget: () -> Unit = {},
