@@ -57,8 +57,8 @@ fun CategoryPicker(
                 .clip(CircleShape)
                 .clickable { open = true },
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),

@@ -128,6 +128,7 @@ fun SubscriptionForm(
             placeholder = stringResource(R.string.subscription_name),
             textStyle = MaterialTheme.typography.titleMedium,
             modifier = Modifier.focusRequester(nameFocusRequester),
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         )
 
         Spacer(Modifier.height(10.dp))
@@ -141,6 +142,7 @@ fun SubscriptionForm(
             placeholder = stringResource(R.string.amount),
             textStyle = MaterialTheme.typography.displaySmall,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         )
 
         Spacer(Modifier.height(16.dp))
@@ -153,6 +155,12 @@ fun SubscriptionForm(
                     shape = SegmentedButtonDefaults.itemShape(
                         index = index,
                         count = SubscriptionPeriod.entries.size,
+                    ),
+                    colors = SegmentedButtonDefaults.colors(
+                        activeContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                        activeContentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                        inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     ),
                     label = {
                         Text(
@@ -173,8 +181,8 @@ fun SubscriptionForm(
                 .clip(CircleShape)
                 .clickable { showDatePicker = true },
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),

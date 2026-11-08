@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -127,6 +128,12 @@ fun EditorSheet(
                         tab = AddTab.EXPENSE
                     },
                     shape = SegmentedButtonDefaults.itemShape(index = 0, count = 2),
+                    colors = SegmentedButtonDefaults.colors(
+                        activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
                     label = { Text(stringResource(R.string.expense)) },
                 )
                 SegmentedButton(
@@ -136,6 +143,12 @@ fun EditorSheet(
                         tab = AddTab.SUBSCRIPTION
                     },
                     shape = SegmentedButtonDefaults.itemShape(index = 1, count = 2),
+                    colors = SegmentedButtonDefaults.colors(
+                        activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
                     label = { Text(stringResource(R.string.subscriptions_title)) },
                 )
             }
@@ -163,13 +176,21 @@ fun EditorSheet(
                 DateTimeEditPill()
             }
 
-            CurrentSpendEditor(
+            Surface(
+                shape = RoundedCornerShape(28.dp),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.38f),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(170.dp),
-                focusController = focusController,
-                onDone = { saveExpense() },
-            )
+                    .padding(horizontal = 24.dp),
+            ) {
+                CurrentSpendEditor(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    focusController = focusController,
+                    onDone = { saveExpense() },
+                )
+            }
 
             Row(
                 modifier = Modifier
