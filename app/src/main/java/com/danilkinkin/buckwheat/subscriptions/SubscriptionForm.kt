@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryChip
+import com.danilkinkin.buckwheat.base.CategoryDropdown
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.SubscriptionPeriod
@@ -59,6 +60,7 @@ fun SubscriptionForm(
     onSave: (name: String, amount: BigDecimal, period: SubscriptionPeriod, nextDue: Date, categoryId: Int?) -> Unit,
     modifier: Modifier = Modifier,
     onCancel: (() -> Unit)? = null,
+    onAddCategory: (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
 
@@ -71,7 +73,14 @@ fun SubscriptionForm(
         mutableStateOf(initial?.nextDue ?: LocalDate.now().plusMonths(1).toDate())
     }
     var categoryId by remember { mutableStateOf(initial?.categoryId) }
+    var categoryTouched by remember { mutableStateOf(initial != null) }
     var showDatePicker by remember { mutableStateOf(false) }
+
+    LaunchedEffect(categories) {
+        if (initial == null && !categoryTouched && categoryId == null && categories.isNotEmpty()) {
+            categoryId = categories.firstOrNull { it.name.equals("Other", ignoreCase = true) }?.id
+        }
+    }
 
     val amount = amountText.toBigDecimalOrNull()
 
@@ -154,26 +163,15 @@ fun SubscriptionForm(
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
         )
         Spacer(Modifier.height(6.dp))
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            CategoryChip(
-                text = stringResource(R.string.no_category),
-                selected = categoryId == null,
-                onClick = { categoryId = null },
-            )
-            categories.forEach { category ->
-                CategoryChip(
-                    text = category.name,
-                    emoji = category.emoji,
-                    selected = category.id == categoryId,
-                    onClick = {
-                        categoryId = if (categoryId == category.id) null else category.id
-                    },
-                )
-            }
-        }
+        CategoryDropdown(
+            categories = categories,
+            selectedCategoryId = categoryId,
+            onSelect = {
+                categoryTouched = true
+                categoryId = it
+            },
+            onAddCategory = onAddCategory,
+        )
 
         Spacer(Modifier.height(20.dp))
         Row(

@@ -5,8 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -38,7 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.CategoryChip
+import com.danilkinkin.buckwheat.base.CategoryDropdown
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateTimeEditPill
@@ -55,7 +54,6 @@ private enum class AddTab { EXPENSE, SUBSCRIPTION }
  * One add popup with two tabs. Expense is the default; both tabs share the same card language but
  * use a different container tone (primary vs tertiary) so they read as siblings, not clones.
  */
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EditorSheet(
     initialTab: String = "expense",
@@ -76,6 +74,19 @@ fun EditorSheet(
     }
     var showAddCategory by remember { mutableStateOf(false) }
     val focusController = remember { FocusController() }
+
+    // New expenses start on the catch-all category; the user can still pick "No category".
+    var defaultCategoryApplied by remember { mutableStateOf(false) }
+    LaunchedEffect(categories) {
+        if (!defaultCategoryApplied && categories.isNotEmpty()) {
+            defaultCategoryApplied = true
+
+            if (mode == EditMode.ADD && editorViewModel.currentCategoryId.value == null) {
+                editorViewModel.currentCategoryId.value =
+                    categories.firstOrNull { it.name.equals("Other", ignoreCase = true) }?.id
+            }
+        }
+    }
 
     fun cancel() {
         editorViewModel.resetEditingSpent()
@@ -185,41 +196,19 @@ fun EditorSheet(
 
                     Spacer(Modifier.height(12.dp))
 
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        CategoryChip(
-                            text = stringResource(R.string.no_category),
-                            selected = selectedCategoryId == null,
-                            onClick = { editorViewModel.currentCategoryId.value = null },
-                        )
-                        categories.forEach { category ->
-                            CategoryChip(
-                                text = category.name,
-                                emoji = category.emoji,
-                                selected = category.id == selectedCategoryId,
-                                onClick = {
-                                    editorViewModel.currentCategoryId.value =
-                                        if (category.id == selectedCategoryId) null else category.id
-                                },
-                            )
-                        }
-                        Surface(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .clickable { showAddCategory = true },
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        ) {
-                            Text(
-                                text = "+",
-                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-                        }
-                    }
+                    Text(
+                        text = stringResource(R.string.category),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    )
+                    Spacer(Modifier.height(6.dp))
+
+                    CategoryDropdown(
+                        categories = categories,
+                        selectedCategoryId = selectedCategoryId,
+                        onSelect = { editorViewModel.currentCategoryId.value = it },
+                        onAddCategory = { showAddCategory = true },
+                    )
 
                     Spacer(Modifier.height(12.dp))
 
@@ -248,6 +237,7 @@ fun EditorSheet(
                         onClose()
                     },
                     modifier = Modifier.padding(20.dp),
+                    onAddCategory = { showAddCategory = true },
                 )
             }
         }
