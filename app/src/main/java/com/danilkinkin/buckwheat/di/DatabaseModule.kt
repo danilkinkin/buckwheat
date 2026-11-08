@@ -4,9 +4,12 @@ import androidx.room.*
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.danilkinkin.buckwheat.data.dao.CategoryDao
 import com.danilkinkin.buckwheat.data.dao.StorageDao
 import com.danilkinkin.buckwheat.data.dao.TransactionDao
+import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Storage
+import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.Transaction
 
 
@@ -47,9 +50,73 @@ val AutoMigration4to5: Migration = object : Migration(4, 5) {
     }
 }
 
+/** name, emoji, ARGB colour. */
+private val defaultCategories: List<Triple<String, String, Long>> = listOf(
+    Triple("Food", "🍜", 0xFFFF8A65),
+    Triple("Transport", "🚌", 0xFF4FC3F7),
+    Triple("Home", "🏠", 0xFF81C784),
+    Triple("Fun", "🎮", 0xFFBA68C8),
+    Triple("Health", "💊", 0xFFE57373),
+    Triple("Other", "📦", 0xFF90A4AE),
+)
+
+private fun seedDefaultCategories(database: SupportSQLiteDatabase) {
+    defaultCategories.forEach { (name, emoji, color) ->
+        database.execSQL(
+            "INSERT INTO `categories` (`name`, `emoji`, `color`) VALUES (?, ?, ?)",
+            arrayOf<Any>(name, emoji, color),
+        )
+    }
+}
+
+/**
+ * v5 -> v6: categories, the ledger's categoryId and the subscriptions table.
+ *
+ * All three land together while the database is still small, so subscriptions never need a
+ * second migration. Existing expenses keep `categoryId = NULL` (Uncategorised).
+ */
+val AutoMigration5to6: Migration = object : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "CREATE TABLE IF NOT EXISTS `categories` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`name` TEXT NOT NULL, " +
+                    "`emoji` TEXT NOT NULL, " +
+                    "`color` INTEGER NOT NULL)"
+        )
+
+        database.execSQL(
+            "CREATE TABLE IF NOT EXISTS `subscriptions` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`name` TEXT NOT NULL, " +
+                    "`amount` TEXT NOT NULL, " +
+                    "`period` TEXT NOT NULL, " +
+                    "`anchorDay` INTEGER NOT NULL, " +
+                    "`nextDue` INTEGER NOT NULL, " +
+                    "`categoryId` INTEGER, " +
+                    "`active` INTEGER NOT NULL)"
+        )
+
+        database.execSQL("ALTER TABLE `transactions` ADD COLUMN `categoryId` INTEGER")
+        database.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_transactions_categoryId` " +
+                    "ON `transactions` (`categoryId`)"
+        )
+
+        seedDefaultCategories(database)
+    }
+}
+
+/** Fresh installs skip migrations, so the same seed runs after Room creates the tables. */
+val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
+    override fun onCreate(db: SupportSQLiteDatabase) {
+        seedDefaultCategories(db)
+    }
+}
+
 @Database(
-    entities = [Transaction::class, Storage::class],
-    version = 5,
+    entities = [Transaction::class, Storage::class, Category::class, Subscription::class],
+    version = 6,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -64,7 +131,9 @@ abstract class DatabaseModule : RoomDatabase() {
 
     abstract fun storageDao(): StorageDao
 
+    abstract fun categoryDao(): CategoryDao
+
     companion object {
-        val MANUAL_MIGRATIONS = arrayOf<Migration>(AutoMigration4to5)
+        val MANUAL_MIGRATIONS = arrayOf<Migration>(AutoMigration4to5, AutoMigration5to6)
     }
 }

@@ -11,9 +11,11 @@ import androidx.lifecycle.map
 import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.BudgetCalculator
 import com.danilkinkin.buckwheat.data.RestedBudgetDistributionMethod
+import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.util.DAY
 import com.danilkinkin.buckwheat.data.ExtendCurrency
+import com.danilkinkin.buckwheat.data.dao.CategoryDao
 import com.danilkinkin.buckwheat.data.dao.TransactionDao
 import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.errorForReport
@@ -47,10 +49,31 @@ val finishPeriodActualDateStoreKey = longPreferencesKey("finishPeriodActualDate"
 class SpendsRepository @Inject constructor(
     @ApplicationContext val context: Context,
     private val transactionDao: TransactionDao,
+    private val categoryDao: CategoryDao,
     private val getCurrentDateUseCase: GetCurrentDateUseCase,
 ) {
     fun getAllTransactions(): LiveData<List<Transaction>> = transactionDao.getAll()
     fun getAllSpends(): LiveData<List<Transaction>> = transactionDao.getAll(TransactionType.SPENT)
+
+    fun getAllCategories(): LiveData<List<Category>> = categoryDao.getAll()
+
+    suspend fun addCategory(name: String, emoji: String, color: Long): Long {
+        return categoryDao.insert(
+            Category(
+                name = name.trim(),
+                emoji = emoji.trim(),
+                color = color,
+            )
+        )
+    }
+
+    suspend fun deleteCategory(categoryId: Int) {
+        withContext(Dispatchers.IO) {
+            // Expenses outlive the category: they become Uncategorised instead of disappearing.
+            transactionDao.clearCategory(categoryId)
+            categoryDao.deleteById(categoryId)
+        }
+    }
 
     fun getAllTags(): LiveData<List<String>> = transactionDao.getAll().map { transactions ->
         transactions

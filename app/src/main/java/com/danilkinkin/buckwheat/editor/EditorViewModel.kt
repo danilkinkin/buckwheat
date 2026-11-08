@@ -24,6 +24,7 @@ class EditorViewModel @Inject constructor(
     var currentDate: Date = Date()
     var currentSpent: BigDecimal = BigDecimal.ZERO
     var currentComment = MutableLiveData("")
+    var currentCategoryId = MutableLiveData<Int?>(null)
     var rawSpentValue = MutableLiveData("")
 
     fun startEditingSpent(transaction: Transaction) {
@@ -31,6 +32,7 @@ class EditorViewModel @Inject constructor(
         currentSpent = transaction.value
         currentDate = transaction.date
         currentComment.value = transaction.comment
+        currentCategoryId.value = transaction.categoryId
         rawSpentValue.value = tryConvertStringToNumber(transaction.value.toString()).join(third = false)
 
         stage.value = EditStage.EDIT_SPENT
@@ -53,6 +55,7 @@ class EditorViewModel @Inject constructor(
         currentSpent = BigDecimal.ZERO
         currentDate = Date()
         currentComment.value = ""
+        currentCategoryId.value = null
         rawSpentValue.value = ""
 
         stage.value = EditStage.IDLE

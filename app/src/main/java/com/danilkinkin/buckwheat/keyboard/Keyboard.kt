@@ -298,7 +298,8 @@ fun Keyboard(
                                                     value = editorViewModel.currentSpent,
                                                     date = editorViewModel.currentDate,
                                                     comment = (editorViewModel.currentComment.value
-                                                        ?: "").trim()
+                                                        ?: "").trim(),
+                                                    categoryId = editorViewModel.currentCategoryId.value,
                                                 )
 
                                             spendsViewModel.removeSpent(
@@ -313,7 +314,8 @@ fun Keyboard(
                                                     value = editorViewModel.currentSpent,
                                                     date = Date(),
                                                     comment = (editorViewModel.currentComment.value
-                                                        ?: "").trim()
+                                                        ?: "").trim(),
+                                                    categoryId = editorViewModel.currentCategoryId.value,
                                                 )
                                             )
                                             appViewModel.activateTutorial(TUTORS.OPEN_HISTORY)

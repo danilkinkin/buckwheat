@@ -101,11 +101,26 @@ fun BottomSheets(
             onOpenCurrency = {
                 appViewModel.openSheet(PathState(CURRENCY_EDITOR))
             },
+            onOpenCategories = {
+                appViewModel.openSheet(PathState(CATEGORIES_SHEET))
+            },
             activityResultRegistryOwner = activityResultRegistryOwner,
         )
     }
 
-    // Declared after Settings so the picker draws above the sheet that opened it.
+    // Declared after Settings so these sheets draw above the sheet that opened them.
+    BottomSheetWrapper(
+        name = CATEGORIES_SHEET,
+    ) { state ->
+        CategoriesSheet(
+            onClose = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            }
+        )
+    }
+
     BottomSheetWrapper(
         name = CURRENCY_EDITOR,
     ) { state ->

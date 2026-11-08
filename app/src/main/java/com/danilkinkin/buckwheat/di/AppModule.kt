@@ -25,6 +25,7 @@ object AppModule {
         // deletes the user's entire spending history. Every schema change needs a real
         // migration in DatabaseModule.
         .addMigrations(*DatabaseModule.MANUAL_MIGRATIONS)
+        .addCallback(SeedDefaultCategoriesCallback)
         // Main-thread queries are not allowed; the repository moves DAO work to
         // Dispatchers.IO.
         .build()
@@ -36,4 +37,8 @@ object AppModule {
     @Singleton
     @Provides
     fun provideStorageDao(db: DatabaseModule) = db.storageDao()
+
+    @Singleton
+    @Provides
+    fun provideCategoryDao(db: DatabaseModule) = db.categoryDao()
 }

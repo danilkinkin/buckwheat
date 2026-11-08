@@ -3,8 +3,10 @@ package com.danilkinkin.buckwheat.history
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DismissDirection
@@ -18,14 +20,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.CategoryChip
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.data.entities.Category
+import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.di.TUTORIAL_STAGE
 import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.EditorViewModel
@@ -58,81 +64,27 @@ fun History(
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
-    var historyList by remember { mutableStateOf<List<RowEntity>>(emptyList()) }
+    val spends by spendsViewModel.spends.observeAsState(emptyList())
+    val categories by spendsViewModel.categories.observeAsState(emptyList())
     val currency = spendsViewModel.currency.observeAsState(initial = ExtendCurrency.none())
     val scrollToBottom = remember { mutableStateOf(true) }
     val tutorial by appViewModel.getTutorialStage(TUTORS.SWIPE_EDIT_SPENT).observeAsState(TUTORIAL_STAGE.NONE)
     var isUserTrySwipe by remember { mutableStateOf(false) }
+    var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
 
-    observeLiveData(spendsViewModel.spends) { transactions ->
-        val composedList = emptyList<RowEntity>().toMutableList()
-        var lastSpentDate: LocalDate? = null
-        var lastDayTotal: BigDecimal = BigDecimal.ZERO
-
-        transactions
-            .forEach { spent ->
-                if (lastSpentDate === null || !isSameDay(
-                        spent.date.time,
-                        lastSpentDate!!.toDate().time
-                    )
-                ) {
-                    if (lastSpentDate !== null) {
-                        composedList.add(
-                            RowEntity(
-                                type = RowEntityType.DayTotal,
-                                key = "total-${lastSpentDate}",
-                                contentHash = "total-${lastSpentDate}",
-                                transaction = null,
-                                day = lastSpentDate!!,
-                                dayTotal = lastDayTotal,
-                            )
-                        )
-                    }
-
-                    lastSpentDate = spent.date.toLocalDate()
-                    lastDayTotal = BigDecimal.ZERO
-
-                    composedList.add(
-                        RowEntity(
-                            type = RowEntityType.DayDivider,
-                            key = "header-${lastSpentDate}",
-                            contentHash = "header-${lastSpentDate}",
-                            transaction = null,
-                            day = lastSpentDate!!,
-                            dayTotal = null,
-                        )
-                    )
-                }
-
-                lastDayTotal += spent.value
-
-                composedList.add(
-                    RowEntity(
-                        type = RowEntityType.Spent,
-                        key = "spent-${spent.uid}",
-                        contentHash = "spent-${spent.uid}",
-                        transaction = spent,
-                        day = lastSpentDate!!,
-                        dayTotal = null,
-                    )
-                )
-            }
-
-        if (transactions.isNotEmpty() && lastSpentDate !== null) {
-            composedList.add(
-                RowEntity(
-                    type = RowEntityType.DayTotal,
-                    key = "total-${lastSpentDate!!}",
-                    contentHash = "total-${lastSpentDate}",
-                    transaction = null,
-                    day = lastSpentDate!!,
-                    dayTotal = lastDayTotal,
-                )
-            )
+    LaunchedEffect(categories, selectedCategoryId) {
+        val categoryId = selectedCategoryId
+        if (categoryId != null && categories.none { it.id == categoryId }) {
+            selectedCategoryId = null
         }
-
-        historyList = composedList.toList().reversed().map { it }
     }
+
+    val categoriesById = remember(categories) { categories.associateBy { it.id } }
+    val filteredSpends = remember(spends, selectedCategoryId) {
+        val categoryId = selectedCategoryId
+        if (categoryId == null) spends else spends.filter { it.categoryId == categoryId }
+    }
+    val historyList = remember(filteredSpends) { composeHistoryRows(filteredSpends) }
 
     DisposableEffect(Unit) {
         appViewModel.lockSwipeable.value = false
@@ -279,30 +231,39 @@ fun History(
                                 ) {
                                     SpentItem(
                                         transaction = row.transaction!!,
-                                        currency = currency.value
+                                        currency = currency.value,
+                                        category = row.transaction!!.categoryId?.let { categoriesById[it] },
                                     )
                                 }
                             }
                         } else {
                             SpentItem(
                                 transaction = row.transaction!!,
-                                currency = currency.value
+                                currency = currency.value,
+                                category = row.transaction!!.categoryId?.let { categoriesById[it] },
                             )
                         }
                     }
                 }
 
                 if (!readOnly) {
-                    // The ledger summary now lives on the home screen; the history only needs
-                    // enough room to clear the status bar.
                     item("top-inset") {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(
-                                    LocalWindowInsets.current.calculateTopPadding()
+                        Column {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(
+                                        LocalWindowInsets.current.calculateTopPadding()
+                                    )
+                            )
+                            if (categories.isNotEmpty()) {
+                                CategoryFilterRow(
+                                    categories = categories,
+                                    selectedCategoryId = selectedCategoryId,
+                                    onSelect = { selectedCategoryId = it },
                                 )
-                        )
+                            }
+                        }
                     }
                 }
             }
@@ -340,6 +301,105 @@ fun History(
             }
         }
     }
+}
+
+@Composable
+private fun CategoryFilterRow(
+    categories: List<Category>,
+    selectedCategoryId: Int?,
+    onSelect: (Int?) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState())
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CategoryChip(
+            text = stringResource(R.string.all_categories),
+            selected = selectedCategoryId == null,
+            onClick = { onSelect(null) },
+        )
+        categories.forEach { category ->
+            CategoryChip(
+                text = category.name,
+                emoji = category.emoji,
+                selected = category.id == selectedCategoryId,
+                onClick = { onSelect(category.id) },
+            )
+        }
+    }
+}
+
+private fun composeHistoryRows(transactions: List<Transaction>): List<RowEntity> {
+    val composedList = emptyList<RowEntity>().toMutableList()
+    var lastSpentDate: LocalDate? = null
+    var lastDayTotal: BigDecimal = BigDecimal.ZERO
+
+    transactions.forEach { spent ->
+        if (lastSpentDate === null || !isSameDay(
+                spent.date.time,
+                lastSpentDate!!.toDate().time
+            )
+        ) {
+            if (lastSpentDate !== null) {
+                composedList.add(
+                    RowEntity(
+                        type = RowEntityType.DayTotal,
+                        key = "total-${lastSpentDate}",
+                        contentHash = "total-${lastSpentDate}",
+                        transaction = null,
+                        day = lastSpentDate!!,
+                        dayTotal = lastDayTotal,
+                    )
+                )
+            }
+
+            lastSpentDate = spent.date.toLocalDate()
+            lastDayTotal = BigDecimal.ZERO
+
+            composedList.add(
+                RowEntity(
+                    type = RowEntityType.DayDivider,
+                    key = "header-${lastSpentDate}",
+                    contentHash = "header-${lastSpentDate}",
+                    transaction = null,
+                    day = lastSpentDate!!,
+                    dayTotal = null,
+                )
+            )
+        }
+
+        lastDayTotal += spent.value
+
+        composedList.add(
+            RowEntity(
+                type = RowEntityType.Spent,
+                key = "spent-${spent.uid}",
+                contentHash = "spent-${spent.uid}",
+                transaction = spent,
+                day = lastSpentDate!!,
+                dayTotal = null,
+            )
+        )
+    }
+
+    if (transactions.isNotEmpty() && lastSpentDate !== null) {
+        composedList.add(
+            RowEntity(
+                type = RowEntityType.DayTotal,
+                key = "total-${lastSpentDate!!}",
+                contentHash = "total-${lastSpentDate}",
+                transaction = null,
+                day = lastSpentDate!!,
+                dayTotal = lastDayTotal,
+            )
+        )
+    }
+
+    return composedList.reversed()
 }
 
 @Preview

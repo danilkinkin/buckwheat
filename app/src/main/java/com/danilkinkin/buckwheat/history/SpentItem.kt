@@ -12,6 +12,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.data.ExtendCurrency
+import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
@@ -26,6 +27,7 @@ fun SpentItem(
     transaction: Transaction,
     currency: ExtendCurrency,
     modifier: Modifier = Modifier,
+    category: Category? = null,
 ) {
     val context = LocalContext.current
     Column(Modifier.padding(bottom = 14.dp)) {
@@ -67,6 +69,17 @@ fun SpentItem(
                 text = transaction.comment,
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorOnEditor.copy(alpha = 0.7f),
+                softWrap = true,
+            )
+        }
+        if (category != null) {
+            Text(
+                modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 2.dp),
+                text = listOf(category.emoji, category.name)
+                    .filter { it.isNotEmpty() }
+                    .joinToString(" "),
+                style = MaterialTheme.typography.labelSmall,
+                color = colorOnEditor.copy(alpha = 0.6f),
                 softWrap = true,
             )
         }

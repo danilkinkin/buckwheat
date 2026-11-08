@@ -38,6 +38,7 @@ const val SETTINGS_SHEET = "settings"
 fun Settings(
     onTriedWidget: () -> Unit = {},
     onOpenCurrency: () -> Unit = {},
+    onOpenCategories: () -> Unit = {},
     activityResultRegistryOwner: ActivityResultRegistryOwner? = null,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
@@ -82,6 +83,11 @@ fun Settings(
                     text = stringResource(R.string.in_currency_label),
                     endCaption = currencyCaption,
                     onClick = onOpenCurrency,
+                )
+                ButtonRow(
+                    icon = painterResource(R.drawable.ic_label),
+                    text = stringResource(R.string.categories_title),
+                    onClick = onOpenCategories,
                 )
                 TryWidget(onTried = {
                     onTriedWidget()

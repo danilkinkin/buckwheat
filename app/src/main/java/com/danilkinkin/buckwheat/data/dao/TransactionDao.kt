@@ -27,4 +27,8 @@ interface TransactionDao {
 
     @Query("DELETE FROM transactions")
     fun deleteAll()
+
+    /** Deleting a category must not take its expenses with it. */
+    @Query("UPDATE transactions SET categoryId = NULL WHERE categoryId = :categoryId")
+    suspend fun clearCategory(categoryId: Int)
 }

@@ -31,6 +31,7 @@ class SpendsViewModel @Inject constructor(
     var tags = spendsRepository.getAllTags()
     var transactions = spendsRepository.getAllTransactions()
     var spends = spendsRepository.getAllSpends()
+    var categories = spendsRepository.getAllCategories()
     var budget = spendsRepository.getBudget().asLiveData()
     var spent = spendsRepository.getSpent().asLiveData()
     var dailyBudget = spendsRepository.getDailyBudget().asLiveData()
@@ -113,6 +114,20 @@ class SpendsViewModel @Inject constructor(
             lastRemovedTransaction.value?.let {
                 spendsRepository.addSpent(it)
             }
+        }
+    }
+
+    // Categories
+
+    fun addCategory(name: String, emoji: String, color: Long) {
+        viewModelScope.launch {
+            spendsRepository.addCategory(name, emoji, color)
+        }
+    }
+
+    fun deleteCategory(categoryId: Int) {
+        viewModelScope.launch {
+            spendsRepository.deleteCategory(categoryId)
         }
     }
 
