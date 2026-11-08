@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.AppViewModel
+import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.data.entities.TransactionType
@@ -44,6 +45,7 @@ fun Keyboard(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
+    val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
     val currentRawSpent by editorViewModel.rawSpentValue.observeAsState("")
     var debugProgress by remember { mutableStateOf(0) }
     val dispatch = rememberAppKeyboardDispatcher { action, value ->
@@ -204,7 +206,7 @@ fun Keyboard(
                             .weight(1F)
                             .padding(BUTTON_GAP),
                         type = KeyboardButtonType.DEFAULT,
-                        text = getFloatDivider(),
+                        text = getFloatDivider(currency),
                         onClick = {
                             dispatch(KeyboardAction.SET_DOT, null)
                             debugProgress = if (debugProgress == 8) -1 else 0

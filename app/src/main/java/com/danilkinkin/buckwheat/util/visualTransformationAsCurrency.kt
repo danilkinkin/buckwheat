@@ -61,7 +61,7 @@ private fun visualTransformationAsCurrency(
     currency: ExtendCurrency,
     hintColor: Color,
 ): TransformedText {
-    val floatDivider = getFloatDivider()
+    val floatDivider = getFloatDivider(currency)
     val fixed = tryConvertStringToNumber(input.text)
     val currSymbol = numberFormat(
         context,

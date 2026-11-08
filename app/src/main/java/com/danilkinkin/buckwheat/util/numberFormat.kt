@@ -7,9 +7,10 @@ import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.*
 
-// Get localised float divider (',' or '.')
-fun getFloatDivider(): String {
-    val numberFormat: NumberFormat = NumberFormat.getNumberInstance(Locale.getDefault())
+// Get localised float divider (',' or '.') for the currency's formatting locale.
+fun getFloatDivider(currency: ExtendCurrency? = null): String {
+    val locale = currency?.let { formattingLocaleFor(it) } ?: Locale.getDefault()
+    val numberFormat: NumberFormat = NumberFormat.getNumberInstance(locale)
 
     numberFormat.maximumFractionDigits = 1
     numberFormat.minimumFractionDigits = 1
@@ -30,10 +31,11 @@ fun numberFormat(
 ): String {
     var valueFinal = value
     var decimalPlace = ""
+    val locale = formattingLocaleFor(currency)
     val formatter = if (currency.type === ExtendCurrency.Type.FROM_LIST) {
-        NumberFormat.getCurrencyInstance(Locale.getDefault())
+        NumberFormat.getCurrencyInstance(locale)
     } else {
-        NumberFormat.getNumberInstance(Locale.getDefault())
+        NumberFormat.getNumberInstance(locale)
     }
 
     formatter.maximumFractionDigits = maximumFractionDigits
