@@ -78,7 +78,7 @@ class AppViewModel @Inject constructor(
 
     var lockDraggable: MutableState<Boolean> = mutableStateOf(false)
 
-    var showSystemKeyboard: MutableState<Boolean> = mutableStateOf(false)
+
 
     var statusBarStack: MutableList<() -> SystemBarState> = emptyList<() -> SystemBarState>().toMutableList()
 

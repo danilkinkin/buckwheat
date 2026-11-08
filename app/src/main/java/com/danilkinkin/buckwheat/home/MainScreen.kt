@@ -136,21 +136,19 @@ fun MainScreen(
         // keyboard starts so the editor moves *with* the IME rather than snapping after it.
         var lastImeHeight by remember { mutableStateOf(0.dp) }
         var settledImeHeight by remember { mutableStateOf(0.dp) }
-        LaunchedEffect(systemKeyboardHeight, appViewModel.showSystemKeyboard.value) {
-            when {
-                !appViewModel.showSystemKeyboard.value || systemKeyboardHeight == 0.dp -> {
-                    settledImeHeight = 0.dp
+        LaunchedEffect(systemKeyboardHeight) {
+            if (systemKeyboardHeight == 0.dp) {
+                // Follow the IME all the way down: keep the keyboard layout while it is still
+                // visible and only fall back to the keypad once it is really gone.
+                settledImeHeight = 0.dp
+            } else {
+                if (settledImeHeight == 0.dp && lastImeHeight != 0.dp) {
+                    settledImeHeight = lastImeHeight
                 }
 
-                else -> {
-                    if (settledImeHeight == 0.dp && lastImeHeight != 0.dp) {
-                        settledImeHeight = lastImeHeight
-                    }
-
-                    delay(KEYBOARD_SETTLE_DELAY_MS)
-                    settledImeHeight = systemKeyboardHeight
-                    lastImeHeight = systemKeyboardHeight
-                }
+                delay(KEYBOARD_SETTLE_DELAY_MS)
+                settledImeHeight = systemKeyboardHeight
+                lastImeHeight = systemKeyboardHeight
             }
         }
 
@@ -162,8 +160,7 @@ fun MainScreen(
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
 
-        val isShowSystemKeyboard =
-            settledImeHeight != 0.dp && appViewModel.showSystemKeyboard.value
+        val isShowSystemKeyboard = settledImeHeight != 0.dp
 
         val currentKeyboardHeight = if (isShowSystemKeyboard) {
             with(localDensity) { settledImeHeight.toPx() }

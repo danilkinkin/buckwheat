@@ -3,6 +3,9 @@ package com.danilkinkin.buckwheat.editor.tagging
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -79,7 +82,7 @@ import com.danilkinkin.buckwheat.editor.FocusController
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.observeLiveData
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun CustomTag(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
@@ -137,9 +140,25 @@ fun CustomTag(
         isShowSuggestions = false
         renderPopup = false
         onEdit(false)
-        appViewModel.showSystemKeyboard.value = false
         appViewModel.lockDraggable.value = false
         editorViewModel.currentComment.value = value.text.trim()
+    }
+
+    val imeVisible = WindowInsets.isImeVisible
+    var imeWasVisible by remember { mutableStateOf(false) }
+
+    // Back gesture while the comment field is open: the system hides the keyboard and does not
+    // deliver the event to the app. Mirror that on the sheet so the tag editor closes too,
+    // instead of staying open with a dead field while the keypad comes back.
+    LaunchedEffect(imeVisible, isEdit) {
+        when {
+            !isEdit -> imeWasVisible = false
+            imeVisible -> imeWasVisible = true
+            imeWasVisible -> {
+                imeWasVisible = false
+                close()
+            }
+        }
     }
 
     ExposedDropdownMenuBox(expanded = isShowSuggestions, onExpandedChange = {}) {
@@ -159,7 +178,6 @@ fun CustomTag(
                         isEdit = true
                         renderPopup = true
                         onEdit(true)
-                        appViewModel.showSystemKeyboard.value = true
                         appViewModel.lockDraggable.value = true
                     }
                 })
