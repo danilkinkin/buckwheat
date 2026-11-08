@@ -1,32 +1,55 @@
 package com.danilkinkin.buckwheat.wallet
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.LocalContentColor
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
-import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.titleCase
 import java.util.Currency
 
@@ -40,103 +63,124 @@ fun CurrencyEditor(
 ) {
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
 
-    var currency by remember { mutableStateOf(spendsViewModel.currency.value!!) }
-    val openCurrencyChooserDialog = remember { mutableStateOf(false) }
-    val openCustomCurrencyEditorDialog = remember { mutableStateOf(false) }
+    val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+    var query by remember { mutableStateOf("") }
+    var showCustomEditor by remember { mutableStateOf(false) }
+
+    val allCurrencies = remember { getCurrencies() }
+    val selectedCode = if (currency.type === ExtendCurrency.Type.FROM_LIST) currency.value else null
+
+    val filteredCurrencies = remember(query) {
+        val normalizedQuery = query.trim().lowercase()
+
+        if (normalizedQuery.isEmpty()) {
+            allCurrencies
+        } else {
+            allCurrencies.filter { item ->
+                item.currencyCode.lowercase().contains(normalizedQuery) ||
+                        item.displayName.lowercase().contains(normalizedQuery) ||
+                        item.symbol.lowercase().contains(normalizedQuery)
+            }
+        }
+    }
+
+    val listState = rememberLazyListState()
+
+    // Open on the current selection instead of the top of a 150-row alphabetical list.
+    LaunchedEffect(Unit) {
+        val index = allCurrencies.indexOfFirst { it.currencyCode == selectedCode }
+
+        if (index > 0) listState.scrollToItem(index)
+    }
+
+    fun apply(newCurrency: ExtendCurrency) {
+        spendsViewModel.changeDisplayCurrency(newCurrency)
+        onClose()
+    }
 
     val navigationBarHeight = LocalWindowInsets.current.calculateBottomPadding()
         .coerceAtLeast(16.dp)
 
     Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
-        Column {
-            Box(
+        Column(Modifier.fillMaxWidth()) {
+            Text(
+                text = stringResource(R.string.select_currency_title),
+                style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.select_currency_title),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .verticalScroll(rememberScrollState())
-                    .padding(bottom = navigationBarHeight)
-            ) {
-                Text(
-                    text = stringResource(R.string.select_currency_description),
-                    style = MaterialTheme.typography.bodySmall
-                        .copy(color = LocalContentColor.current.copy(alpha = 0.6f)),
-                    softWrap = true,
-                    modifier = Modifier
-                        .padding(
-                            start = 24.dp,
-                            end = 24.dp,
-                            bottom = 16.dp,
-                        )
-                )
-                CheckedRow(
-                    checked = currency.type === ExtendCurrency.Type.FROM_LIST,
-                    onValueChange = { openCurrencyChooserDialog.value = true },
-                    text = stringResource(R.string.currency_from_list),
-                    endCaption = if (currency.type === ExtendCurrency.Type.FROM_LIST) {
-                        "${
-                            Currency.getInstance(
-                                currency.value
-                            ).displayName.titleCase()
-                        } (${
-                            Currency.getInstance(
-                                currency.value
-                            ).symbol
-                        })"
-                    } else {
-                        ""
-                    },
-                )
-                CheckedRow(
-                    checked = currency.type === ExtendCurrency.Type.CUSTOM,
-                    onValueChange = { openCustomCurrencyEditorDialog.value = true },
-                    text = stringResource(R.string.currency_custom),
-                    endCaption = if (currency.type === ExtendCurrency.Type.CUSTOM) {
-                        currency.value!!
-                    } else {
-                        ""
-                    },
-                )
-                CheckedRow(
-                    checked = currency.type === ExtendCurrency.Type.NONE,
-                    onValueChange = {
-                        currency = ExtendCurrency.none()
-                        spendsViewModel.changeDisplayCurrency(currency)
+                    .padding(vertical = 16.dp),
+                textAlign = TextAlign.Center,
+            )
 
-                        onClose()
-                    },
-                    text = stringResource(R.string.currency_none),
-                )
+            CurrencySearchField(
+                value = query,
+                onValueChange = { query = it },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            OptionRow(
+                icon = painterResource(R.drawable.ic_edit),
+                text = stringResource(R.string.currency_custom),
+                caption = if (currency.type === ExtendCurrency.Type.CUSTOM) currency.value else null,
+                selected = currency.type === ExtendCurrency.Type.CUSTOM,
+                onClick = { showCustomEditor = true },
+            )
+            OptionRow(
+                icon = painterResource(R.drawable.ic_close),
+                text = stringResource(R.string.currency_none),
+                selected = currency.type === ExtendCurrency.Type.NONE,
+                onClick = { apply(ExtendCurrency.none()) },
+            )
+
+            Text(
+                text = stringResource(R.string.currency_from_list),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
+            )
+
+            if (filteredCurrencies.isEmpty()) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(120.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = stringResource(R.string.currency_not_found),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                    )
+                }
+            } else {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 380.dp),
+                ) {
+                    items(filteredCurrencies, key = { it.currencyCode }) { item ->
+                        CurrencyRow(
+                            currency = item,
+                            selected = item.currencyCode == selectedCode,
+                            onClick = {
+                                apply(
+                                    ExtendCurrency(
+                                        value = item.currencyCode,
+                                        type = ExtendCurrency.Type.FROM_LIST,
+                                    )
+                                )
+                            },
+                        )
+                    }
+                }
             }
+
+            Spacer(Modifier.height(navigationBarHeight))
         }
     }
 
-    if (openCurrencyChooserDialog.value) {
-        WorldCurrencyChooser(
-            defaultCurrency = if (currency.type === ExtendCurrency.Type.FROM_LIST) {
-                Currency.getInstance(currency.value)
-            } else {
-                null
-            },
-            onSelect = {
-                currency = ExtendCurrency(type = ExtendCurrency.Type.FROM_LIST, value = it.currencyCode)
-                spendsViewModel.changeDisplayCurrency(currency)
-
-                onClose()
-            },
-            onClose = { openCurrencyChooserDialog.value = false },
-        )
-    }
-
-    if (openCustomCurrencyEditorDialog.value) {
+    if (showCustomEditor) {
         CustomCurrencyEditor(
             defaultCurrency = if (currency.type === ExtendCurrency.Type.CUSTOM) {
                 currency.value
@@ -144,12 +188,172 @@ fun CurrencyEditor(
                 null
             },
             onChange = {
-                currency = ExtendCurrency(type = ExtendCurrency.Type.CUSTOM, value = it)
-                spendsViewModel.changeDisplayCurrency(currency)
-
-                onClose()
+                apply(ExtendCurrency(type = ExtendCurrency.Type.CUSTOM, value = it))
             },
-            onClose = { openCustomCurrencyEditorDialog.value = false },
+            onClose = { showCustomEditor = false },
         )
     }
 }
+
+@Composable
+private fun CurrencySearchField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val focusManager = LocalFocusManager.current
+    val containerColor = combineColors(
+        MaterialTheme.colorScheme.surface,
+        MaterialTheme.colorScheme.surfaceVariant,
+        0.5f,
+    )
+
+    TextField(
+        modifier = modifier.padding(horizontal = 24.dp),
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = {
+            Text(
+                text = stringResource(R.string.search_currency_placeholder),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            )
+        },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_search),
+                contentDescription = null,
+            )
+        },
+        trailingIcon = {
+            if (value.isEmpty()) return@TextField
+
+            IconButton(onClick = { onValueChange("") }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_close),
+                    contentDescription = null,
+                )
+            }
+        },
+        textStyle = MaterialTheme.typography.bodyLarge,
+        singleLine = true,
+        shape = CircleShape,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = containerColor,
+            unfocusedContainerColor = containerColor,
+            disabledContainerColor = containerColor,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+    )
+}
+
+@Composable
+private fun CurrencyRow(
+    currency: Currency,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 24.dp, vertical = 8.dp),
+    ) {
+        Surface(
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(40.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text(
+                    text = currency.symbol,
+                    style = MaterialTheme.typography.labelLarge,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Clip,
+                )
+            }
+        }
+        Spacer(Modifier.width(16.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                text = currency.displayName.titleCase(),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = currency.currencyCode,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                maxLines = 1,
+            )
+        }
+        if (selected) {
+            Icon(
+                painter = painterResource(R.drawable.ic_apply),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun OptionRow(
+    icon: Painter,
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    caption: String? = null,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 24.dp, vertical = 10.dp),
+    ) {
+        Icon(
+            painter = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(24.dp),
+        )
+        Spacer(Modifier.width(16.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            if (caption !== null) {
+                Text(
+                    text = caption,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
+        if (selected) {
+            Icon(
+                painter = painterResource(R.drawable.ic_apply),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+}
+
+/** All currencies, sorted by localized name so the list reads naturally in any language. */
+private fun getCurrencies(): List<Currency> =
+    Currency.getAvailableCurrencies()
+        .sortedBy { it.displayName.uppercase() }
