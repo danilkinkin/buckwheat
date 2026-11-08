@@ -31,6 +31,8 @@ import com.danilkinkin.buckwheat.onboarding.Onboarding
 import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.recalcBudget.RecalcBudget
 import com.danilkinkin.buckwheat.settings.*
+import com.danilkinkin.buckwheat.subscriptions.SUBSCRIPTIONS_SHEET
+import com.danilkinkin.buckwheat.subscriptions.SubscriptionsSheet
 import com.danilkinkin.buckwheat.wallet.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -106,6 +108,9 @@ fun BottomSheets(
             onOpenCategories = {
                 appViewModel.openSheet(PathState(CATEGORIES_SHEET))
             },
+            onOpenSubscriptions = {
+                appViewModel.openSheet(PathState(SUBSCRIPTIONS_SHEET))
+            },
             activityResultRegistryOwner = activityResultRegistryOwner,
         )
     }
@@ -127,6 +132,18 @@ fun BottomSheets(
         name = DETAILS_SHEET,
     ) { state ->
         DetailsSheet(
+            onClose = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            }
+        )
+    }
+
+    BottomSheetWrapper(
+        name = SUBSCRIPTIONS_SHEET,
+    ) { state ->
+        SubscriptionsSheet(
             onClose = {
                 coroutineScope.launch {
                     state.hide()

@@ -5,6 +5,11 @@ import androidx.room.PrimaryKey
 import java.math.BigDecimal
 import java.util.Date
 
+enum class SubscriptionPeriod { WEEKLY, MONTHLY, YEARLY }
+
+fun String.toSubscriptionPeriod(): SubscriptionPeriod =
+    runCatching { SubscriptionPeriod.valueOf(this) }.getOrDefault(SubscriptionPeriod.MONTHLY)
+
 /**
  * Created in schema v6 even though the UI arrives later, so subscriptions do not need a second
  * migration once the ledger has real data in it.

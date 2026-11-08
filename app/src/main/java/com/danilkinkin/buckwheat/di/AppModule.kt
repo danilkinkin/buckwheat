@@ -41,4 +41,8 @@ object AppModule {
     @Singleton
     @Provides
     fun provideCategoryDao(db: DatabaseModule) = db.categoryDao()
+
+    @Singleton
+    @Provides
+    fun provideSubscriptionDao(db: DatabaseModule) = db.subscriptionDao()
 }

@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.data.entities.TransactionType
+import java.math.BigDecimal
+import java.util.Date
 
 @Dao
 interface TransactionDao {
@@ -31,4 +33,11 @@ interface TransactionDao {
     /** Deleting a category must not take its expenses with it. */
     @Query("UPDATE transactions SET categoryId = NULL WHERE categoryId = :categoryId")
     suspend fun clearCategory(categoryId: Int)
+
+    /** Used by subscriptions to avoid posting the same due occurrence twice. */
+    @Query(
+        "SELECT COUNT(*) FROM transactions WHERE type = 'SPENT' " +
+                "AND date = :date AND value = :value AND comment = :comment"
+    )
+    suspend fun countMatching(date: Date, value: BigDecimal, comment: String): Int
 }

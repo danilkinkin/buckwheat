@@ -39,6 +39,7 @@ fun Settings(
     onTriedWidget: () -> Unit = {},
     onOpenCurrency: () -> Unit = {},
     onOpenCategories: () -> Unit = {},
+    onOpenSubscriptions: () -> Unit = {},
     activityResultRegistryOwner: ActivityResultRegistryOwner? = null,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
@@ -88,6 +89,11 @@ fun Settings(
                     icon = painterResource(R.drawable.ic_label),
                     text = stringResource(R.string.categories_title),
                     onClick = onOpenCategories,
+                )
+                ButtonRow(
+                    icon = painterResource(R.drawable.ic_balance_wallet),
+                    text = stringResource(R.string.subscriptions_title),
+                    onClick = onOpenSubscriptions,
                 )
                 TryWidget(onTried = {
                     onTriedWidget()

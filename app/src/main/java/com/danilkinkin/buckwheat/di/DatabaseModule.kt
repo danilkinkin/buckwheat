@@ -6,6 +6,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.danilkinkin.buckwheat.data.dao.CategoryDao
 import com.danilkinkin.buckwheat.data.dao.StorageDao
+import com.danilkinkin.buckwheat.data.dao.SubscriptionDao
 import com.danilkinkin.buckwheat.data.dao.TransactionDao
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Storage
@@ -132,6 +133,8 @@ abstract class DatabaseModule : RoomDatabase() {
     abstract fun storageDao(): StorageDao
 
     abstract fun categoryDao(): CategoryDao
+
+    abstract fun subscriptionDao(): SubscriptionDao
 
     companion object {
         val MANUAL_MIGRATIONS = arrayOf<Migration>(AutoMigration4to5, AutoMigration5to6)
