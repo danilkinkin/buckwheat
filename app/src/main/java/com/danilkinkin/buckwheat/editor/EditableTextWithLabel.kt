@@ -51,6 +51,16 @@ fun EditableTextWithLabel(
         }
     })
 
+    // A fresh VisualTransformation on every recomposition races the text field's focus/input
+    // session. Keyed on the inputs so the same instance survives recompositions.
+    val transformation = remember(context, currency, color) {
+        visualTransformationAsCurrency(
+            context,
+            currency = currency ?: ExtendCurrency.none(),
+            hintColor = color.copy(alpha = 0.2f),
+        )
+    }
+
     Column(modifier) {
         InterceptPlatformTextInput(keyboardHandler) {
             Box(
@@ -61,11 +71,7 @@ fun EditableTextWithLabel(
                     value = value,
                     onChangeValue = { onChangeValue(it) },
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    visualTransformation = visualTransformationAsCurrency(
-                        context,
-                        currency = currency ?: ExtendCurrency.none(),
-                        hintColor = color.copy(alpha = 0.2f),
-                    ),
+                    visualTransformation = transformation,
                     currency = currency,
                     focusRequester = focusRequester,
                     contentPadding = contentPaddingValues,

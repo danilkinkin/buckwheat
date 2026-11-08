@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
@@ -79,15 +80,26 @@ fun TextFieldWithPaddings(
 ) {
     val context = LocalContext.current
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
+    var hasFocus by remember { mutableStateOf(false) }
 
     val textFieldValue = if (textFieldValueState.text != value) {
-        val newCursorPosition = value.length.coerceAtMost(value.length)
+        // When the value changes while the field is not focused (e.g. the keypad writes a digit
+        // after the tag editor closed), keep the cursor at the start. Compose asks for the
+        // cursor's bounding box when the input session opens, and an end offset on the
+        // transformed text can be out of bounds (offset(1) in [0, 1)).
         textFieldValueState.copy(
             text = value,
-            selection = TextRange(newCursorPosition)
+            selection = TextRange(if (hasFocus) value.length else 0),
         )
     } else {
-        textFieldValueState.copy(text = value)
+        val selection = textFieldValueState.selection
+        textFieldValueState.copy(
+            text = value,
+            selection = TextRange(
+                selection.start.coerceIn(0, value.length),
+                selection.end.coerceIn(0, value.length),
+            ),
+        )
     }
 
     val scrollState = rememberScrollState()
@@ -258,6 +270,17 @@ fun TextFieldWithPaddings(
                         scrollState.value,
                         inputWidth - valueSize.width - currencySymbolSize.width - gapStart,
                     )
+                    .onFocusChanged { focusState ->
+                        hasFocus = focusState.isFocused
+
+                        if (!focusState.isFocused && value.isNotEmpty()) {
+                            // Leave the cursor at the start for the next input session; the
+                            // end offset is what trips Compose's focused-rect calculation.
+                            textFieldValueState = textFieldValueState.copy(
+                                selection = TextRange(0),
+                            )
+                        }
+                    }
                     .focusRequester(focusRequester),
                 decorationBox = { input ->
                     Box(
@@ -300,7 +323,7 @@ fun TextFieldWithPaddings(
             if (textFieldValueState.text != value) {
                 textFieldValueState = textFieldValueState.copy(
                     text = value,
-                    selection = TextRange(value.length)
+                    selection = TextRange(if (hasFocus) value.length else 0),
                 )
             }
         }
