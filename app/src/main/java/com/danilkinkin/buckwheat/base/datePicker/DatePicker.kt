@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.base.datePicker
 
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,10 +11,14 @@ import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlinx.coroutines.launch
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarState
 import com.danilkinkin.buckwheat.base.datePicker.model.CalendarUiState
 import com.danilkinkin.buckwheat.base.datePicker.model.Month
@@ -37,16 +42,60 @@ fun DatePicker(
 ) {
     val calendarUiState = calendarState.calendarUiState.value
     val dayWidth = remember { mutableStateOf(CELL_SIZE) }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
     val localDensity = LocalDensity.current
 
+    val months = calendarState.listMonths
+    val monthHeaderIndices = remember(months) {
+        var index = 0
+        months.map { month ->
+            val headerIndex = index
+            // header + day-of-week row + one item per week
+            index += 2 + month.weeks.size
+            headerIndex
+        }
+    }
+
     LazyColumn(
+        state = listState,
         modifier = modifier
             .onGloballyPositioned {
                 dayWidth.value = with(localDensity) { it.size.width.toDp() / 7 }
+            }
+            .pointerInput(monthHeaderIndices) {
+                var totalDrag = 0f
+
+                detectHorizontalDragGestures(
+                    onHorizontalDrag = { change, dragAmount ->
+                        change.consume()
+                        totalDrag += dragAmount
+                    },
+                    onDragEnd = {
+                        val currentPosition = monthHeaderIndices
+                            .indexOfLast { it <= listState.firstVisibleItemIndex }
+                            .coerceAtLeast(0)
+
+                        val target = when {
+                            totalDrag < -60f -> currentPosition + 1
+                            totalDrag > 60f -> currentPosition - 1
+                            else -> currentPosition
+                        }.coerceIn(0, monthHeaderIndices.lastIndex)
+
+                        totalDrag = 0f
+
+                        if (target != currentPosition) {
+                            coroutineScope.launch {
+                                listState.animateScrollToItem(monthHeaderIndices[target])
+                            }
+                        }
+                    },
+                    onDragCancel = { totalDrag = 0f },
+                )
             },
     ) {
-        calendarState.listMonths.forEach { month ->
+        months.forEach { month ->
             itemsCalendarMonth(calendarUiState, onDayClicked, month, dayWidth.value)
         }
 

@@ -1,21 +1,19 @@
 package com.danilkinkin.buckwheat.home
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
@@ -33,9 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.SwipeableSnackbarHost
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
-import com.danilkinkin.buckwheat.base.SwipeableSnackbarHost
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.editor.EDITOR_SHEET
@@ -50,15 +48,7 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.CURRENCY_EDITOR
 
-private enum class MainTab(
-    @StringRes val label: Int,
-    @DrawableRes val icon: Int,
-) {
-    HOME(R.string.home, R.drawable.ic_home),
-    HISTORY(R.string.history, R.drawable.ic_analytics),
-    SUBSCRIPTIONS(R.string.subscriptions_title, R.drawable.ic_balance_wallet),
-    SETTINGS(R.string.settings_title, R.drawable.ic_settings),
-}
+private enum class AppScreen { HOME, HISTORY, SUBSCRIPTIONS, SETTINGS }
 
 @Composable
 fun MainScreen(
@@ -67,7 +57,7 @@ fun MainScreen(
     editorViewModel: EditorViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = viewModel(),
 ) {
-    var tab by rememberSaveable { mutableStateOf(MainTab.HOME) }
+    var screen by rememberSaveable { mutableStateOf(AppScreen.HOME) }
     val nightMode = remember { mutableStateOf(false) }
 
     nightMode.value = isNightMode()
@@ -97,78 +87,73 @@ fun MainScreen(
         key = nightMode.value,
     )
 
+    BackHandler(enabled = screen != AppScreen.HOME) {
+        screen = AppScreen.HOME
+    }
+
     Box(
         Modifier
             .fillMaxSize()
             .background(colorBackground),
     ) {
-        Scaffold(
-            containerColor = colorBackground,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-            bottomBar = {
-                NavigationBar(containerColor = colorBackground) {
-                    MainTab.entries.forEach { item ->
-                        NavigationBarItem(
-                            selected = tab == item,
-                            onClick = { tab = item },
-                            icon = {
-                                Icon(
-                                    painter = painterResource(item.icon),
-                                    contentDescription = null,
-                                )
-                            },
-                            label = { Text(stringResource(item.label)) },
-                        )
-                    }
-                }
-            },
-        ) { contentPadding ->
-            Box(
+        when (screen) {
+            AppScreen.HOME -> HomeScreen(
+                onAdd = {
+                    editorViewModel.resetEditingSpent()
+                    appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "expense")))
+                },
+                onOpenSubscriptions = { screen = AppScreen.SUBSCRIPTIONS },
+                onOpenHistory = { screen = AppScreen.HISTORY },
+                onOpenSettings = { screen = AppScreen.SETTINGS },
+            )
+
+            AppScreen.HISTORY -> History(
+                onBack = { screen = AppScreen.HOME },
+                onClose = {
+                    appViewModel.openSheet(PathState(EDITOR_SHEET))
+                },
+            )
+
+            AppScreen.SUBSCRIPTIONS -> SubscriptionsScreen(
+                onBack = { screen = AppScreen.HOME },
+                onAddSubscription = {
+                    appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "subscription")))
+                },
+            )
+
+            AppScreen.SETTINGS -> Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(contentPadding),
+                    .statusBarsPadding(),
             ) {
-                when (tab) {
-                    MainTab.HOME -> HomeScreen(
-                        onAdd = {
-                            editorViewModel.resetEditingSpent()
-                            appViewModel.openSheet(PathState(EDITOR_SHEET))
-                        },
-                        onOpenSubscriptions = { tab = MainTab.SUBSCRIPTIONS },
-                        onOpenHistory = { tab = MainTab.HISTORY },
-                        onOpenSettings = { tab = MainTab.SETTINGS },
-                    )
-
-                    MainTab.HISTORY -> History(
-                        onClose = {
-                            appViewModel.openSheet(PathState(EDITOR_SHEET))
-                        },
-                    )
-
-                    MainTab.SUBSCRIPTIONS -> SubscriptionsScreen()
-
-                    MainTab.SETTINGS -> Box(
-                        Modifier
-                            .fillMaxSize()
-                            .statusBarsPadding(),
-                    ) {
-                        Settings(
-                            onTriedWidget = {},
-                            onOpenCurrency = {
-                                appViewModel.openSheet(PathState(CURRENCY_EDITOR))
-                            },
-                            onOpenCategories = {
-                                appViewModel.openSheet(PathState(CATEGORIES_SHEET))
-                            },
-                            onOpenSubscriptions = { tab = MainTab.SUBSCRIPTIONS },
-                            activityResultRegistryOwner = activityResultRegistryOwner,
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconButton(onClick = { screen = AppScreen.HOME }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_arrow_back),
+                            contentDescription = null,
                         )
                     }
                 }
+                Settings(
+                    onTriedWidget = {},
+                    onOpenCurrency = {
+                        appViewModel.openSheet(PathState(CURRENCY_EDITOR))
+                    },
+                    onOpenCategories = {
+                        appViewModel.openSheet(PathState(CATEGORIES_SHEET))
+                    },
+                    onOpenSubscriptions = { screen = AppScreen.SUBSCRIPTIONS },
+                    activityResultRegistryOwner = activityResultRegistryOwner,
+                )
             }
         }
 
-        // Sheets are declared last so they draw above the editor overlay.
+        // Sheets are declared last so they draw above the screens.
         BottomSheets(activityResultRegistryOwner)
 
         Column(
@@ -177,7 +162,7 @@ fun MainScreen(
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .navigationBarsPadding()
-                .padding(bottom = 72.dp),
+                .padding(bottom = 16.dp),
         ) {
             SwipeableSnackbarHost(hostState = remember { appViewModel._snackbarHostState })
         }

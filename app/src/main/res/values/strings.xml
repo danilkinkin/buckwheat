@@ -82,6 +82,7 @@
   <string name="new_expense">New expense</string>
   <string name="edit_expense">Edit expense</string>
   <string name="add_expense">Add expense</string>
+  <string name="expense">Expense</string>
   <string name="subscriptions_title">Subscriptions</string>
   <string name="no_subscriptions">No subscriptions yet</string>
   <string name="add_subscription">Add subscription</string>

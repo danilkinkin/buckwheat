@@ -60,6 +60,7 @@ fun History(
     appViewModel: AppViewModel = viewModel(),
     editorViewModel: EditorViewModel = viewModel(),
     readOnly: Boolean = false,
+    onBack: (() -> Unit)? = null,
     onClose: () -> Unit = {}
 ) {
     val scrollState = rememberLazyListState()
@@ -118,6 +119,7 @@ fun History(
                     total = monthTotal,
                     currency = currency.value,
                     canGoNext = selectedMonth < YearMonth.now(),
+                    onBack = onBack,
                     onPrevious = { selectedMonth = selectedMonth.minusMonths(1) },
                     onNext = {
                         if (selectedMonth < YearMonth.now()) {
@@ -370,6 +372,7 @@ private fun MonthHeader(
     total: BigDecimal,
     currency: ExtendCurrency,
     canGoNext: Boolean,
+    onBack: (() -> Unit)? = null,
     onPrevious: () -> Unit,
     onNext: () -> Unit,
 ) {
@@ -381,6 +384,14 @@ private fun MonthHeader(
             .padding(horizontal = 8.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (onBack != null) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_back),
+                    contentDescription = null,
+                )
+            }
+        }
         IconButton(onClick = onPrevious) {
             Icon(
                 painter = painterResource(R.drawable.ic_arrow_back),

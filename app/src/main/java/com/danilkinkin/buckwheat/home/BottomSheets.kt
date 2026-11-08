@@ -97,6 +97,7 @@ fun BottomSheets(
         name = EDITOR_SHEET,
     ) { state ->
         EditorSheet(
+            initialTab = (state.args["tab"] as? String) ?: "expense",
             onClose = {
                 coroutineScope.launch {
                     state.hide()
