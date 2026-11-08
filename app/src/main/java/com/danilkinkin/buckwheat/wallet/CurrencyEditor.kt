@@ -8,11 +8,8 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -204,7 +201,6 @@ fun CurrencyEditor(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CurrencyHomeScreen(
     currency: ExtendCurrency,
@@ -229,62 +225,61 @@ private fun CurrencyHomeScreen(
             modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 16.dp),
         )
 
-        CurrencySectionHeader(stringResource(R.string.popular_currencies))
-
-        FlowRow(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+                .weight(1f),
         ) {
-            popularCurrencies.forEach { item ->
-                CurrencyChip(
+            item("popular-header") {
+                CurrencySectionHeader(stringResource(R.string.popular_currencies))
+            }
+            items(popularCurrencies, key = { it.currencyCode }) { item ->
+                CurrencyRow(
                     currency = item,
                     selected = item.currencyCode == selectedCode,
                     onClick = { onSelect(item.toExtendCurrency()) },
                 )
             }
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        Surface(
-            shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-        ) {
-            Column {
-                NavigationRow(
-                    icon = painterResource(R.drawable.ic_currency),
-                    text = stringResource(R.string.other_currencies),
-                    caption = selectedCode?.takeIf { code ->
-                        popularCurrencies.none { it.currencyCode == code }
-                    },
-                    onClick = onOpenAll,
-                )
-                NavigationRow(
-                    icon = painterResource(R.drawable.ic_edit),
-                    text = stringResource(R.string.currency_custom),
-                    caption = if (currency.type === ExtendCurrency.Type.CUSTOM) {
-                        currency.value
-                    } else {
-                        null
-                    },
-                    onClick = onOpenCustom,
-                )
-                ToggleRow(
-                    icon = painterResource(R.drawable.ic_close),
-                    text = stringResource(R.string.currency_none),
-                    selected = currency.type === ExtendCurrency.Type.NONE,
-                    onClick = { onSelect(ExtendCurrency.none()) },
-                )
+            item("options") {
+                Spacer(Modifier.height(16.dp))
+                Surface(
+                    shape = RoundedCornerShape(24.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp),
+                ) {
+                    Column {
+                        NavigationRow(
+                            icon = painterResource(R.drawable.ic_currency),
+                            text = stringResource(R.string.other_currencies),
+                            caption = selectedCode?.takeIf { code ->
+                                popularCurrencies.none { it.currencyCode == code }
+                            },
+                            onClick = onOpenAll,
+                        )
+                        NavigationRow(
+                            icon = painterResource(R.drawable.ic_edit),
+                            text = stringResource(R.string.currency_custom),
+                            caption = if (currency.type === ExtendCurrency.Type.CUSTOM) {
+                                currency.value
+                            } else {
+                                null
+                            },
+                            onClick = onOpenCustom,
+                        )
+                        ToggleRow(
+                            icon = painterResource(R.drawable.ic_close),
+                            text = stringResource(R.string.currency_none),
+                            selected = currency.type === ExtendCurrency.Type.NONE,
+                            onClick = { onSelect(ExtendCurrency.none()) },
+                        )
+                    }
+                }
+                Spacer(Modifier.height(16.dp))
             }
         }
 
-        Spacer(Modifier.weight(1f))
         Spacer(Modifier.height(navigationBarHeight))
     }
 }
@@ -421,54 +416,6 @@ private fun ScreenHeader(
             Icon(
                 painter = painterResource(R.drawable.ic_close),
                 contentDescription = null,
-            )
-        }
-    }
-}
-
-@Composable
-private fun CurrencyChip(
-    currency: Currency,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    val containerColor = if (selected) {
-        MaterialTheme.colorScheme.primaryContainer
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
-    val contentColor = if (selected) {
-        MaterialTheme.colorScheme.onPrimaryContainer
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    Surface(
-        modifier = Modifier
-            .clip(CircleShape)
-            .clickable(onClick = onClick),
-        shape = CircleShape,
-        color = containerColor,
-        contentColor = contentColor,
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // Some currencies have no distinct symbol (CHF is just "CHF"); don't repeat it.
-            if (currency.symbol != currency.currencyCode) {
-                Text(
-                    text = currency.symbol,
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 1,
-                    softWrap = false,
-                )
-                Spacer(Modifier.width(6.dp))
-            }
-            Text(
-                text = currency.currencyCode,
-                style = MaterialTheme.typography.labelLarge,
-                maxLines = 1,
             )
         }
     }
