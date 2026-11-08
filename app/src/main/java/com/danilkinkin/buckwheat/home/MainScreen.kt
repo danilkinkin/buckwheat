@@ -29,11 +29,13 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -59,7 +61,11 @@ import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+/** Quiet period after the last IME inset change before the editor follows the final height. */
+private const val KEYBOARD_SETTLE_DELAY_MS = 100L
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -121,6 +127,21 @@ fun MainScreen(
             .coerceAtLeast(16.dp)
 
         val systemKeyboardHeight = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
+
+        // The IME reports its height frame by frame while it animates. Feeding those intermediate
+        // values into editorHeight made the sheet balloon for a few frames and collapse again:
+        // the editor rendered, dropped, then came back up with the keyboard. Wait until the inset
+        // stops changing and apply it in one step instead.
+        var settledImeHeight by remember { mutableStateOf(0.dp) }
+        LaunchedEffect(systemKeyboardHeight, appViewModel.showSystemKeyboard.value) {
+            if (!appViewModel.showSystemKeyboard.value || systemKeyboardHeight == 0.dp) {
+                settledImeHeight = 0.dp
+            } else {
+                delay(KEYBOARD_SETTLE_DELAY_MS)
+                settledImeHeight = systemKeyboardHeight
+            }
+        }
+
         val internalKeyboardHeight = if (windowSizeClass == WindowWidthSizeClass.Compact) {
             contentWidth
         } else {
@@ -130,11 +151,10 @@ fun MainScreen(
             .coerceAtMost(contentHeight / 2)
 
         val isShowSystemKeyboard =
-            systemKeyboardHeight != 0.dp && appViewModel.showSystemKeyboard.value
-
+            settledImeHeight != 0.dp && appViewModel.showSystemKeyboard.value
 
         val currentKeyboardHeight = if (isShowSystemKeyboard) {
-            with(localDensity) { systemKeyboardHeight.toPx() }
+            with(localDensity) { settledImeHeight.toPx() }
         } else {
             internalKeyboardHeight
         }
