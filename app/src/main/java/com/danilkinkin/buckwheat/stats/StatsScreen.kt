@@ -110,7 +110,7 @@ fun StatsScreen(
         ) {
             IconButton(onClick = onBack) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_chevron_left),
+                    painter = painterResource(R.drawable.ic_arrow_back),
                     contentDescription = null,
                 )
             }

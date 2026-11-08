@@ -73,7 +73,7 @@ fun DatePicker(
                 enabled = pagerState.currentPage > 0,
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back),
+                    painter = painterResource(R.drawable.ic_chevron_left),
                     contentDescription = null,
                 )
             }
@@ -94,7 +94,7 @@ fun DatePicker(
                 enabled = pagerState.currentPage < months.lastIndex,
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_right),
+                    painter = painterResource(R.drawable.ic_chevron_right),
                     contentDescription = null,
                 )
             }
