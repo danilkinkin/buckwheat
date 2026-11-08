@@ -30,6 +30,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -46,11 +47,11 @@ import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.numberFormat
 import com.danilkinkin.buckwheat.util.prettyDate
-import com.danilkinkin.buckwheat.util.prettyYearMonth
 import com.danilkinkin.buckwheat.util.toLocalDate
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import java.util.Date
 
 private const val RECENT_COUNT = 4
@@ -74,6 +75,15 @@ fun HomeScreen(
     val subscriptions by subscriptionsViewModel.subscriptions.observeAsState(emptyList())
 
     val currentMonth = YearMonth.from(LocalDate.now())
+    val todayDate = LocalDate.now()
+    val locale = LocalConfiguration.current.locales[0]
+    val dateText = if (locale.language == "en") {
+        val weekday = todayDate.format(DateTimeFormatter.ofPattern("EEE", locale))
+        val month = todayDate.format(DateTimeFormatter.ofPattern("MMM", locale))
+        "$weekday., ${ordinal(todayDate.dayOfMonth)} $month. ${todayDate.year}"
+    } else {
+        todayDate.format(DateTimeFormatter.ofPattern("EEE., d MMM yyyy", locale))
+    }
     val todayTotal = spends
         .filter { isSameDay(it.date, Date()) }
         .fold(BigDecimal.ZERO) { total, spend -> total + spend.value }
@@ -101,9 +111,11 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = prettyYearMonth(currentMonth),
+                        text = dateText,
                         style = MaterialTheme.typography.titleLarge,
                         color = colorOnEditor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f),
                     )
                     IconButton(onClick = onOpenSettings) {
@@ -358,4 +370,16 @@ private fun UpcomingSubscriptionRow(
             maxLines = 1,
         )
     }
+}
+
+private fun ordinal(day: Int): String {
+    val suffix = when {
+        day % 100 in 11..13 -> "th"
+        day % 10 == 1 -> "st"
+        day % 10 == 2 -> "nd"
+        day % 10 == 3 -> "rd"
+        else -> "th"
+    }
+
+    return "$day$suffix"
 }

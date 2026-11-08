@@ -192,6 +192,8 @@ fun EditorSheet(
                 )
             }
 
+            Spacer(Modifier.height(16.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

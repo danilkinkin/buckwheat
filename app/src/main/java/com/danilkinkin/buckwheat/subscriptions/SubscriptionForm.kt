@@ -128,7 +128,6 @@ fun SubscriptionForm(
             placeholder = stringResource(R.string.subscription_name),
             textStyle = MaterialTheme.typography.titleMedium,
             modifier = Modifier.focusRequester(nameFocusRequester),
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         )
 
         Spacer(Modifier.height(10.dp))
@@ -142,7 +141,6 @@ fun SubscriptionForm(
             placeholder = stringResource(R.string.amount),
             textStyle = MaterialTheme.typography.displaySmall,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         )
 
         Spacer(Modifier.height(16.dp))
@@ -157,8 +155,8 @@ fun SubscriptionForm(
                         count = SubscriptionPeriod.entries.size,
                     ),
                     colors = SegmentedButtonDefaults.colors(
-                        activeContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                        activeContentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                        activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                         inactiveContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                         inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     ),
@@ -181,8 +179,8 @@ fun SubscriptionForm(
                 .clip(CircleShape)
                 .clickable { showDatePicker = true },
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.38f),
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
