@@ -204,9 +204,9 @@ class SpendsViewModel @Inject constructor(
                     }
                 }
 
-                lastChangeDailyBudgetDate === null -> {
-                    requireSetBudget.value = true
-                }
+                // No budget has ever been configured: the app is a plain ledger, so there is
+                // no daily allowance to roll over and no onboarding to force.
+                lastChangeDailyBudgetDate === null -> Unit
 
                 finishTimeReached -> {
                     periodFinished.value = true

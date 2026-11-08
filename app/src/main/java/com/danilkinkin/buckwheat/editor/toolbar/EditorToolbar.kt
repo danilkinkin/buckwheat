@@ -28,7 +28,6 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.EditMode
 import com.danilkinkin.buckwheat.editor.EditStage
 import com.danilkinkin.buckwheat.editor.EditorViewModel
-import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.RestBudgetPill
 import com.danilkinkin.buckwheat.settings.SETTINGS_SHEET
 import com.danilkinkin.buckwheat.util.observeLiveData
 import kotlinx.coroutines.launch
@@ -81,11 +80,9 @@ fun EditorToolbar(
                 onClick = { appViewModel.openSheet(PathState(DEBUG_MENU_SHEET)) },
             )
         }
-        Spacer(modifier = Modifier.width(4.dp))
         if (mode == EditMode.EDIT) {
+            Spacer(modifier = Modifier.width(4.dp))
             CancelEditSpent()
-        } else {
-            RestBudgetPill()
         }
         Spacer(modifier = Modifier.width(4.dp))
         BigIconButton(

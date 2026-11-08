@@ -55,15 +55,11 @@ import com.danilkinkin.buckwheat.base.SwipeableSnackbarHost
 import com.danilkinkin.buckwheat.base.TopSheetLayout
 import com.danilkinkin.buckwheat.base.TopSheetValue
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.PathState
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SystemBarState
 import com.danilkinkin.buckwheat.editor.Editor
-import com.danilkinkin.buckwheat.analytics.ANALYTICS_SHEET
 import com.danilkinkin.buckwheat.history.History
 import com.danilkinkin.buckwheat.keyboard.Keyboard
-import com.danilkinkin.buckwheat.onboarding.ON_BOARDING_SHEET
-import com.danilkinkin.buckwheat.recalcBudget.RECALCULATE_DAILY_BUDGET_SHEET
 import com.danilkinkin.buckwheat.ui.colorBackground
 import com.danilkinkin.buckwheat.ui.colorEditor
 import com.danilkinkin.buckwheat.ui.colorOnEditor
@@ -112,18 +108,6 @@ fun MainScreen(
                 spendsViewModel.undoRemoveSpent()
             }
         }
-    }
-
-    observeLiveData(spendsViewModel.requireDistributionRestedBudget) {
-        if (it) appViewModel.openSheet(PathState(RECALCULATE_DAILY_BUDGET_SHEET))
-    }
-
-    observeLiveData(spendsViewModel.requireSetBudget) {
-        if (it) appViewModel.openSheet(PathState(ON_BOARDING_SHEET))
-    }
-
-    observeLiveData(spendsViewModel.periodFinished) {
-        if (it) appViewModel.openSheet(PathState(ANALYTICS_SHEET))
     }
 
     BoxWithConstraints(

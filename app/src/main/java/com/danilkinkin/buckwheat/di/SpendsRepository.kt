@@ -235,8 +235,9 @@ class SpendsRepository @Inject constructor(
         val spent = getSpent().first()
         val dailyBudget = getDailyBudget().first()
         val spentFromDailyBudget = getSpentFromDailyBudget().first()
-        val finishPeriodDate =
-            getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
+        // A budget is optional: without a period there is no daily allowance to report.
+        val finishPeriodDate = getFinishPeriodDate().first()
+            ?: return BigDecimal.ZERO.setScale(2)
 
 
         val restDays = countDays(finishPeriodDate, getCurrentDateUseCase())
@@ -270,8 +271,9 @@ class SpendsRepository @Inject constructor(
         val spent = getSpent().first()
         val dailyBudget = getDailyBudget().first()
         val spentFromDailyBudget = getSpentFromDailyBudget().first()
-        val finishPeriodDate =
-            getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
+        // No budget means nothing has been set aside, so nothing is "not spent" yet.
+        val finishPeriodDate = getFinishPeriodDate().first()
+            ?: return BigDecimal.ZERO.setScale(2)
         val lastChangeDailyBudgetDate =
             getLastChangeDailyBudgetDate().first() ?: getStartPeriodDate().first()
 
@@ -302,8 +304,9 @@ class SpendsRepository @Inject constructor(
         val spent = getSpent().first()
         val dailyBudget = getDailyBudget().first()
         val spentFromDailyBudget = getSpentFromDailyBudget().first()
-        val finishPeriodDate =
-            getFinishPeriodDate().first() ?: throw Exception("Finish period date is null")
+        // No budget means there is no next day allowance to plan for.
+        val finishPeriodDate = getFinishPeriodDate().first()
+            ?: return BigDecimal.ZERO.setScale(2)
         val lastChangeDailyBudgetDate =
             getLastChangeDailyBudgetDate().first() ?: getStartPeriodDate().first()
 
@@ -333,20 +336,28 @@ class SpendsRepository @Inject constructor(
         }
 
         context.budgetDataStore.edit {
+            // The ledger is the source of truth; the budget roll-up below is optional. Without
+            // a configured period there is simply nothing to recalculate.
+            val finishPeriodDate = it[finishPeriodDateStoreKey]
+                ?.let { value -> Date(value) }
+                ?: return@edit
+
             try {
                 if (isSameDay(newTransaction.date, getCurrentDateUseCase())) {
-                    val spentFromDailyBudget = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
+                    val spentFromDailyBudget =
+                        it[spentFromDailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
                     it[spentFromDailyBudgetStoreKey] =
                         (spentFromDailyBudget + newTransaction.value).toString()
                 } else {
-                    val finishPeriodDate =
-                        it[finishPeriodDateStoreKey]?.let { value -> Date(value) }!!
-                    val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal()!!
-                    val spent = it[spentStoreKey]?.toBigDecimal()!!
+                    val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
+                    val spent = it[spentStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
+
+                    val restDays = countDays(finishPeriodDate, getCurrentDateUseCase())
+                        .coerceAtLeast(1)
 
                     val spreadDeltaSpentPerRestDays = newTransaction.value
                         .divide(
-                            countDays(finishPeriodDate, getCurrentDateUseCase()).toBigDecimal(),
+                            restDays.toBigDecimal(),
                             2,
                             RoundingMode.HALF_EVEN,
                         )
@@ -366,17 +377,23 @@ class SpendsRepository @Inject constructor(
         }
 
         context.budgetDataStore.edit {
+            // See addSpent: no budget period means no roll-up to undo.
+            val finishPeriodDate = it[finishPeriodDateStoreKey]
+                ?.let { value -> Date(value) }
+                ?: return@edit
+
             if (isSameDay(transactionForRemove.date, getCurrentDateUseCase())) {
-                val spentFromDailyBudget = it[spentFromDailyBudgetStoreKey]?.toBigDecimal()!!
+                val spentFromDailyBudget =
+                    it[spentFromDailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
 
                 it[spentFromDailyBudgetStoreKey] =
                     (spentFromDailyBudget - transactionForRemove.value).toString()
             } else {
-                val finishPeriodDate = it[finishPeriodDateStoreKey]?.let { value -> Date(value) }!!
-                val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal()!!
-                val spent = it[spentStoreKey]?.toBigDecimal()!!
+                val dailyBudget = it[dailyBudgetStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
+                val spent = it[spentStoreKey]?.toBigDecimal() ?: BigDecimal.ZERO
 
-                val restDays = countDays(finishPeriodDate, getCurrentDateUseCase())
+                val restDays =
+                    countDays(finishPeriodDate, getCurrentDateUseCase()).coerceAtLeast(1)
                 val spreadDeltaSpentPerRestDays = transactionForRemove.value
                     .divide(
                         restDays.toBigDecimal(),
