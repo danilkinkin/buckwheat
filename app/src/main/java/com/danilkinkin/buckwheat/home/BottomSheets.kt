@@ -74,18 +74,6 @@ fun BottomSheets(
     }
 
     BottomSheetWrapper(
-        name = CURRENCY_EDITOR,
-    ) { state ->
-        CurrencyEditor(
-            onClose = {
-                coroutineScope.launch {
-                    state.hide()
-                }
-            }
-        )
-    }
-
-    BottomSheetWrapper(
         name = FINISH_DATE_SELECTOR_SHEET,
     ) { state ->
         FinishDateSelector(
@@ -114,6 +102,19 @@ fun BottomSheets(
                 appViewModel.openSheet(PathState(CURRENCY_EDITOR))
             },
             activityResultRegistryOwner = activityResultRegistryOwner,
+        )
+    }
+
+    // Declared after Settings so the picker draws above the sheet that opened it.
+    BottomSheetWrapper(
+        name = CURRENCY_EDITOR,
+    ) { state ->
+        CurrencyEditor(
+            onClose = {
+                coroutineScope.launch {
+                    state.hide()
+                }
+            }
         )
     }
 

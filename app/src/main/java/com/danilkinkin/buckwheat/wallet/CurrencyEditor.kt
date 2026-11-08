@@ -53,8 +53,18 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.titleCase
 import java.util.Currency
+import java.util.Locale
 
 const val CURRENCY_EDITOR = "currencyEditor"
+
+/**
+ * Short list shown before the full alphabetical catalogue. The device's own currency is
+ * prepended at runtime, so the list starts with something the user almost certainly wants.
+ */
+private val popularCurrencyCodes = listOf(
+    "INR", "USD", "EUR", "GBP", "JPY", "CNY",
+    "AUD", "CAD", "CHF", "SGD", "AED", "RUB",
+)
 
 @Composable
 fun CurrencyEditor(
@@ -71,7 +81,22 @@ fun CurrencyEditor(
     val allCurrencies = remember { getCurrencies() }
     val selectedCode = if (currency.type === ExtendCurrency.Type.FROM_LIST) currency.value else null
 
-    val filteredCurrencies = remember(query) {
+    val (popularCurrencies, otherCurrencies) = remember {
+        val byCode = allCurrencies.associateBy { it.currencyCode }
+        val localeCurrencyCode = runCatching {
+            Currency.getInstance(Locale.getDefault()).currencyCode
+        }.getOrNull()
+
+        val orderedCodes = listOfNotNull(localeCurrencyCode) + popularCurrencyCodes
+        val popular = orderedCodes
+            .distinct()
+            .mapNotNull { byCode[it] }
+        val popularCodes = popular.map { it.currencyCode }.toSet()
+
+        popular to allCurrencies.filter { it.currencyCode !in popularCodes }
+    }
+
+    val filteredCurrencies = remember(query, allCurrencies) {
         val normalizedQuery = query.trim().lowercase()
 
         if (normalizedQuery.isEmpty()) {
@@ -87,14 +112,18 @@ fun CurrencyEditor(
 
     val listState = rememberLazyListState()
 
-    // Open on the current selection instead of the top of a 150-row alphabetical list.
     LaunchedEffect(Unit) {
-        val index = allCurrencies.indexOfFirst { it.currencyCode == selectedCode }
+        val popularIndex = popularCurrencies.indexOfFirst { it.currencyCode == selectedCode }
 
-        if (index > 0) listState.scrollToItem(index)
+        when {
+            popularIndex >= 0 -> listState.scrollToItem(popularIndex + 1)
+            // Not in the short list: jump to the "Other currencies" header so the current
+            // selection is one scroll away instead of hidden below the whole catalogue.
+            selectedCode != null -> listState.scrollToItem(popularCurrencies.size + 1)
+        }
     }
 
-    fun apply(newCurrency: ExtendCurrency) {
+    fun applyCurrency(newCurrency: ExtendCurrency) {
         spendsViewModel.changeDisplayCurrency(newCurrency)
         onClose()
     }
@@ -136,14 +165,7 @@ fun CurrencyEditor(
                 icon = painterResource(R.drawable.ic_close),
                 text = stringResource(R.string.currency_none),
                 selected = currency.type === ExtendCurrency.Type.NONE,
-                onClick = { apply(ExtendCurrency.none()) },
-            )
-
-            Text(
-                text = stringResource(R.string.currency_from_list),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                modifier = Modifier.padding(start = 24.dp, top = 16.dp, bottom = 4.dp),
+                onClick = { applyCurrency(ExtendCurrency.none()) },
             )
 
             Box(
@@ -164,19 +186,35 @@ fun CurrencyEditor(
                         state = listState,
                         modifier = Modifier.fillMaxSize(),
                     ) {
-                        items(filteredCurrencies, key = { it.currencyCode }) { item ->
-                            CurrencyRow(
-                                currency = item,
-                                selected = item.currencyCode == selectedCode,
-                                onClick = {
-                                    apply(
-                                        ExtendCurrency(
-                                            value = item.currencyCode,
-                                            type = ExtendCurrency.Type.FROM_LIST,
-                                        )
-                                    )
-                                },
-                            )
+                        if (query.isBlank()) {
+                            item("popular-header") {
+                                CurrencySectionHeader(stringResource(R.string.popular_currencies))
+                            }
+                            items(popularCurrencies, key = { it.currencyCode }) { item ->
+                                CurrencyRow(
+                                    currency = item,
+                                    selected = item.currencyCode == selectedCode,
+                                    onClick = { applyWorldCurrency(item) },
+                                )
+                            }
+                            item("other-header") {
+                                CurrencySectionHeader(stringResource(R.string.other_currencies))
+                            }
+                            items(otherCurrencies, key = { it.currencyCode }) { item ->
+                                CurrencyRow(
+                                    currency = item,
+                                    selected = item.currencyCode == selectedCode,
+                                    onClick = { applyWorldCurrency(item) },
+                                )
+                            }
+                        } else {
+                            items(filteredCurrencies, key = { it.currencyCode }) { item ->
+                                CurrencyRow(
+                                    currency = item,
+                                    selected = item.currencyCode == selectedCode,
+                                    onClick = { applyWorldCurrency(item) },
+                                )
+                            }
                         }
                     }
                 }
@@ -194,12 +232,15 @@ fun CurrencyEditor(
                 null
             },
             onChange = {
-                apply(ExtendCurrency(type = ExtendCurrency.Type.CUSTOM, value = it))
+                applyCurrency(ExtendCurrency(type = ExtendCurrency.Type.CUSTOM, value = it))
             },
             onClose = { showCustomEditor = false },
         )
     }
 }
+
+private fun applyWorldCurrency(item: Currency): ExtendCurrency =
+    ExtendCurrency(value = item.currencyCode, type = ExtendCurrency.Type.FROM_LIST)
 
 @Composable
 private fun CurrencySearchField(
@@ -255,6 +296,16 @@ private fun CurrencySearchField(
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
+    )
+}
+
+@Composable
+private fun CurrencySectionHeader(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+        modifier = Modifier.padding(start = 24.dp, top = 12.dp, bottom = 4.dp),
     )
 }
 

@@ -85,11 +85,14 @@ fun EditorToolbar(
             Spacer(modifier = Modifier.width(4.dp))
             CancelEditSpent()
         } else {
-            MonthTotal(
+            Row(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 4.dp, end = 8.dp),
-            )
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                MonthTotal()
+            }
         }
         Spacer(modifier = Modifier.width(4.dp))
         BigIconButton(

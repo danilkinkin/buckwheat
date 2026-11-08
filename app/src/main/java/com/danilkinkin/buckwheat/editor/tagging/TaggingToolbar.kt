@@ -66,7 +66,9 @@ fun TaggingToolbar(
                 )
                 .padding(horizontal = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End,
+            // Tags used to sit flush against each other; 8dp keeps them distinct while still
+            // leaving the wider gap before the tag-editor chip.
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
         ) {
             tags.take(5).reversed().filter { it != currentComment }.forEach { tag ->
                 AnimatedVisibility(
@@ -99,7 +101,7 @@ fun TaggingToolbar(
                     })
                 }
             }
-            Spacer(modifier = Modifier.width(24.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             AnimatedVisibility(
                 visible = showAddComment,
                 enter = fadeIn(
