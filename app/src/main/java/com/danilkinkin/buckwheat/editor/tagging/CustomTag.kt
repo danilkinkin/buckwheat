@@ -211,13 +211,18 @@ fun CustomTag(
 
             val topBarHeight = LocalWindowInsets.current.calculateTopPadding()
 
-            val height = remember { mutableStateOf(1000.dp) }
+            // Start empty and only reveal the suggestions once the popup has been positioned.
+            // The old 1000dp placeholder resized after measurement, which made the list visibly
+            // jump before it settled.
+            val height = remember { mutableStateOf(0.dp) }
             val popupPositionProvider = DropdownMenuPositionProvider(
                 DpOffset(0.dp, 8.dp),
                 localDensity,
                 topBarHeight,
-            ) { parentBounds, menuBounds ->
+            ) { _, menuBounds ->
                 height.value = with(localDensity) { menuBounds.height.toDp() }
+
+                if (!isShowSuggestions) isShowSuggestions = true
             }
 
             Popup(
@@ -273,9 +278,6 @@ fun CustomTag(
                 }
             }
 
-            LaunchedEffect(Unit) {
-                isShowSuggestions = true
-            }
         }
 
 

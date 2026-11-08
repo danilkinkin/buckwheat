@@ -131,8 +131,6 @@ fun MainScreen(
 
         val isShowSystemKeyboard =
             systemKeyboardHeight != 0.dp && appViewModel.showSystemKeyboard.value
-        val isRequestedShowSystemKeyboard =
-            systemKeyboardHeight != 0.dp || appViewModel.showSystemKeyboard.value
 
 
         val currentKeyboardHeight = if (isShowSystemKeyboard) {
@@ -216,7 +214,7 @@ fun MainScreen(
                     val bottomInset = if (isShowSystemKeyboard) 0.dp else navigationBarOffset
 
                     val currentEditorHeight = with(localDensity) {
-                        if (isRequestedShowSystemKeyboard) {
+                        if (isShowSystemKeyboard) {
                             val halfExpanedOffset = (
                                     -contentHeight +
                                             bottomInset.toPx() +

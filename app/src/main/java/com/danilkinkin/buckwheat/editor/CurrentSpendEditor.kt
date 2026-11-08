@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ExtendCurrency
@@ -94,10 +95,16 @@ fun CurrentSpendEditor(
     Box(modifier) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.CenterEnd,
+            // Top-anchored: the editor's bottom edge moves when the tag row grows or the IME
+            // replaces the keypad, so a centred amount drifted. A fixed strip under the toolbar
+            // keeps the number still while the rest of the layout settles.
+            contentAlignment = Alignment.TopEnd,
         ) {
             if (!hide) {
                 EditableTextWithLabel(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp),
                     value = spentValue,
                     onChangeValue = {
                         val fixed = fixedNumberString(it)
