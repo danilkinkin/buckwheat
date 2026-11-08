@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Buckwheat" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- NoActionBar alone is not enough on every OEM ROM: the platform still inflates the
+         decor title bar. Set both attributes explicitly so the app name header never shows. -->
+    <style name="Theme.Buckwheat" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
 
     <style name="Theme.Buckwheat.Starting" parent="Theme.SplashScreen.IconBackground">
         <item name="windowSplashScreenBackground">@android:color/system_accent1_500</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.Buckwheat</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
     </style>
 </resources>

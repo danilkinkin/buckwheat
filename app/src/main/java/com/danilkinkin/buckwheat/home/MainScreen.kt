@@ -260,11 +260,16 @@ fun MainScreen(
                 }
 
                 if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    // While the system keyboard is up it already covers the navigation bar, so
+                    // reserving navigation bar space pushes the editor up and leaves a dead gap
+                    // between the comment field and the keyboard.
+                    val bottomInset = if (isShowSystemKeyboard) 0.dp else navigationBarOffset
+
                     val currentEditorHeight = with(localDensity) {
                         if (isRequestedShowSystemKeyboard) {
                             val halfExpanedOffset = (
                                     -contentHeight +
-                                            navigationBarOffset.toPx() +
+                                            bottomInset.toPx() +
                                             16.dp.toPx() +
                                             editorHeightAnimated
                                     ).coerceAtMost(0f)
@@ -272,7 +277,7 @@ fun MainScreen(
                             (topSheetState.offset.value.coerceIn(
                                 halfExpanedOffset,
                                 0f
-                            ) + contentHeight - navigationBarOffset.toPx() - 16.dp.toPx()).toDp()
+                            ) + contentHeight - bottomInset.toPx() - 16.dp.toPx()).toDp()
                         } else {
                             editorHeightAnimated.toDp()
                         }
