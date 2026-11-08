@@ -211,12 +211,8 @@ fun BottomSheets(
 
     BottomSheetWrapper(
         name = SETTINGS_CHANGE_THEME_SHEET,
-    ) { state ->
-        ThemeSwitcherDialog(
-            onClose = {
-                coroutineScope.launch { state.hide() }
-            }
-        )
+    ) {
+        ThemeSwitcherDialog()
     }
 
     BottomSheetWrapper(

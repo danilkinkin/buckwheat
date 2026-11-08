@@ -43,8 +43,6 @@ fun CurrentSpendEditor(
     val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
 
     var spentValue by remember { mutableStateOf("0") }
-    var stage by remember { mutableStateOf(AnimState.IDLE) }
-    var currState by remember { mutableStateOf<AnimState?>(null) }
     var requestFocus by remember { mutableStateOf(false) }
     var hide by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
@@ -72,34 +70,15 @@ fun CurrentSpendEditor(
     }
 
     observeLiveData(editorViewModel.stage) {
-        when (it) {
-            EditStage.IDLE -> {
-                if (currState === AnimState.EDITING) {
-                    stage = AnimState.RESET
-                }
-                calculateValues()
-            }
-            EditStage.CREATING_SPENT -> {
-                calculateValues()
-
-                stage = AnimState.EDITING
-            }
-            EditStage.EDIT_SPENT -> {
-                calculateValues()
-
-                stage = AnimState.EDITING
-            }
-            EditStage.COMMITTING_SPENT -> {
-                stage = AnimState.COMMIT
-            }
-        }
-
-        currState = stage
+        calculateValues()
     }
 
     LaunchedEffect(focusController) {
         focusController.onFocus.value = {
-            if (currState != AnimState.EDITING) {
+            val stage = editorViewModel.stage.value
+
+            // Tapping the editor while an amount is already being entered must not reset it.
+            if (stage !== EditStage.EDIT_SPENT && stage !== EditStage.CREATING_SPENT) {
                 requestFocus = true
                 calculateValues()
 

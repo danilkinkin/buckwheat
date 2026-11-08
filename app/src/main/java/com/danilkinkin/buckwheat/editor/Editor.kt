@@ -24,8 +24,6 @@ import com.danilkinkin.buckwheat.editor.tagging.TaggingToolbar
 import com.danilkinkin.buckwheat.editor.toolbar.EditorToolbar
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
-enum class AnimState { EDITING, COMMIT, IDLE, RESET }
-
 @Composable
 fun Editor(
     modifier: Modifier = Modifier,

@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,7 +41,6 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.appTheme
 import com.danilkinkin.buckwheat.appThemePreset
 import com.danilkinkin.buckwheat.base.ButtonRow
-import com.danilkinkin.buckwheat.base.CheckedRow
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.PathState
@@ -55,6 +56,7 @@ const val SETTINGS_CHANGE_THEME_SHEET = "settings.changeTheme"
 @Composable
 fun ThemeSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
     val context = LocalContext.current
+    val modeLabel = context.appTheme.label()
 
     ButtonRow(
         icon = painterResource(R.drawable.ic_dark_mode),
@@ -62,18 +64,12 @@ fun ThemeSwitcher(appViewModel: AppViewModel = hiltViewModel()) {
         onClick = {
             appViewModel.openSheet(PathState(SETTINGS_CHANGE_THEME_SHEET))
         },
-        endCaption = "${
-            when (context.appTheme) {
-                ThemeMode.LIGHT -> stringResource(R.string.theme_light)
-                ThemeMode.NIGHT -> stringResource(R.string.theme_dark)
-                ThemeMode.SYSTEM -> stringResource(R.string.theme_system)
-            }
-        } · ${ThemePresets.getPreset(context.appThemePreset).name}",
+        endCaption = "$modeLabel · ${ThemePresets.getPreset(context.appThemePreset).name}",
     )
 }
 
 @Composable
-fun ThemeSwitcherDialog(onClose: () -> Unit) {
+fun ThemeSwitcherDialog() {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -83,17 +79,14 @@ fun ThemeSwitcherDialog(onClose: () -> Unit) {
         16.dp,
     )
 
+    // Both controls apply immediately and leave the sheet open, so the choice is previewed in
+    // place instead of closing and reopening the sheet for every mode change.
     fun handleSwitchTheme(mode: ThemeMode) {
-        coroutineScope.launch {
-            switchTheme(context, mode)
-            onClose()
-        }
+        coroutineScope.launch { switchTheme(context, mode) }
     }
 
     fun handleSwitchPreset(index: Int) {
-        coroutineScope.launch {
-            switchThemePreset(context, index)
-        }
+        coroutineScope.launch { switchThemePreset(context, index) }
     }
 
     Surface(Modifier.padding(top = localBottomSheetScrollState.topPadding)) {
@@ -109,23 +102,45 @@ fun ThemeSwitcherDialog(onClose: () -> Unit) {
                     style = MaterialTheme.typography.titleLarge,
                 )
             }
-            CheckedRow(
-                checked = context.appTheme == ThemeMode.LIGHT,
-                onValueChange = { handleSwitchTheme(ThemeMode.LIGHT) },
-                text = stringResource(R.string.theme_light),
-            )
-            CheckedRow(
-                checked = context.appTheme == ThemeMode.NIGHT,
-                onValueChange = { handleSwitchTheme(ThemeMode.NIGHT) },
-                text = stringResource(R.string.theme_dark),
-            )
-            CheckedRow(
-                checked = context.appTheme == ThemeMode.SYSTEM,
-                onValueChange = { handleSwitchTheme(ThemeMode.SYSTEM) },
-                text = stringResource(R.string.theme_system),
-            )
 
-            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                ThemeMode.entries.forEach { mode ->
+                    val selected = context.appTheme == mode
+
+                    Surface(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(CircleShape)
+                            .clickable { handleSwitchTheme(mode) },
+                        shape = CircleShape,
+                        color = if (selected) {
+                            MaterialTheme.colorScheme.primaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        },
+                        contentColor = if (selected) {
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    ) {
+                        Text(
+                            text = mode.label(),
+                            modifier = Modifier.padding(vertical = 10.dp),
+                            style = MaterialTheme.typography.labelLarge,
+                            textAlign = TextAlign.Center,
+                            maxLines = 1,
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(20.dp))
             Text(
                 text = stringResource(R.string.theme_palette),
                 style = MaterialTheme.typography.labelLarge,
@@ -138,6 +153,13 @@ fun ThemeSwitcherDialog(onClose: () -> Unit) {
             )
         }
     }
+}
+
+@Composable
+private fun ThemeMode.label(): String = when (this) {
+    ThemeMode.LIGHT -> stringResource(R.string.theme_light)
+    ThemeMode.NIGHT -> stringResource(R.string.theme_dark)
+    ThemeMode.SYSTEM -> stringResource(R.string.theme_system)
 }
 
 /**
