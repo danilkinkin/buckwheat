@@ -1,9 +1,5 @@
 package com.danilkinkin.buckwheat.editor.tagging
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -64,23 +60,17 @@ fun TaggingToolbar(
             // leaving the wider gap before the tag-editor chip.
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
         ) {
-            tags.take(5).reversed().filter { it != currentComment }.forEach { tag ->
-                AnimatedVisibility(
-                    visible = showAddComment,
-                    enter = fadeIn(tween(durationMillis = 120)),
-                    exit = fadeOut(tween(durationMillis = 90)),
-                ) {
+            // No entrance animation: fighting the IME and sheet transitions with per-chip
+            // fades was what made this row feel laggy.
+            if (showAddComment) {
+                tags.take(5).reversed().filter { it != currentComment }.forEach { tag ->
                     Tag(value = tag, onClick = {
                         editorViewModel.currentComment.value = tag
                     })
                 }
             }
             Spacer(modifier = Modifier.width(8.dp))
-            AnimatedVisibility(
-                visible = showAddComment,
-                enter = fadeIn(tween(durationMillis = 120)),
-                exit = fadeOut(tween(durationMillis = 90)),
-            ) {
+            if (showAddComment) {
                 CustomTag(
                     onlyIcon = tags.isNotEmpty(),
                     editorFocusController = editorFocusController,

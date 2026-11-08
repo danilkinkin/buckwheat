@@ -1,10 +1,6 @@
 package com.danilkinkin.buckwheat.home
 
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -169,14 +165,6 @@ fun MainScreen(
             }
         }
 
-        val editorHeightAnimated by animateFloatAsState(
-            label = "editorHeightAnimatedValue",
-            targetValue = editorHeight,
-            // Short enough to feel immediate when the system keyboard replaces the app keypad,
-            // long enough to avoid a jump while the IME height settles.
-            animationSpec = tween(durationMillis = 200),
-        )
-
         Row {
             if (windowSizeClass != WindowWidthSizeClass.Compact) {
                 Surface(
@@ -203,11 +191,10 @@ fun MainScreen(
                     .fillMaxSize()
                     .weight(1f)
             ) {
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = !isShowSystemKeyboard,
-                    enter = fadeIn(tween(durationMillis = 120)),
-                    exit = fadeOut(tween(durationMillis = 90)),
-                ) {
+                // No fade: while the system keyboard rises it covers this area anyway, and a
+                // second animation running against the IME transition is what made the switch
+                // feel jittery.
+                if (!isShowSystemKeyboard) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -234,7 +221,7 @@ fun MainScreen(
                                     -contentHeight +
                                             bottomInset.toPx() +
                                             16.dp.toPx() +
-                                            editorHeightAnimated
+                                            editorHeight
                                     ).coerceAtMost(0f)
 
                             (topSheetState.offset.value.coerceIn(
@@ -242,13 +229,13 @@ fun MainScreen(
                                 0f
                             ) + contentHeight - bottomInset.toPx() - 16.dp.toPx()).toDp()
                         } else {
-                            editorHeightAnimated.toDp()
+                            editorHeight.toDp()
                         }
                     }
 
                     TopSheetLayout(
                         swipeableState = topSheetState,
-                        customHalfHeight = editorHeightAnimated,
+                        customHalfHeight = editorHeight,
                         lockSwipeable = appViewModel.lockSwipeable,
                         lockDraggable = appViewModel.lockDraggable,
                         sheetContentHalfExpand = {
@@ -281,7 +268,7 @@ fun MainScreen(
                         ),
                     ) {
                         Editor(
-                            modifier = Modifier.requiredHeight(with(localDensity) { editorHeightAnimated.toDp() }),
+                            modifier = Modifier.requiredHeight(with(localDensity) { editorHeight.toDp() }),
                         )
                     }
                 }

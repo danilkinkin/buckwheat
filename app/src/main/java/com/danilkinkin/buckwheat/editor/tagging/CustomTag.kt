@@ -1,9 +1,5 @@
 package com.danilkinkin.buckwheat.editor.tagging
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -139,6 +135,7 @@ fun CustomTag(
     val close = {
         isEdit = false
         isShowSuggestions = false
+        renderPopup = false
         onEdit(false)
         appViewModel.showSystemKeyboard.value = false
         appViewModel.lockDraggable.value = false
@@ -243,11 +240,7 @@ fun CustomTag(
                         },
                     contentAlignment = Alignment.BottomCenter,
                 ) {
-                    AnimatedVisibility(
-                        visible = isShowSuggestions,
-                        enter = fadeIn(tween(durationMillis = 120)),
-                        exit = fadeOut(tween(durationMillis = 90)),
-                    ) {
+                    if (isShowSuggestions) {
                         if (filteredItems.isNotEmpty() && !(filteredItems.size == 1 && filteredItems[0] == value.text)) {
                             Surface(
                                 modifier = Modifier
@@ -274,12 +267,6 @@ fun CustomTag(
                                         }
                                     }
                                 }
-                            }
-                        }
-
-                        DisposableEffect(Unit) {
-                            onDispose {
-                                renderPopup = false
                             }
                         }
                     }
