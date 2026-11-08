@@ -21,7 +21,6 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.categories.CategoryToolbar
 import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateTimeEditPill
-import com.danilkinkin.buckwheat.editor.tagging.TaggingToolbar
 import com.danilkinkin.buckwheat.editor.toolbar.EditorToolbar
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 
@@ -56,7 +55,6 @@ fun Editor(
                 focusController = focusController,
             )
             CategoryToolbar()
-            TaggingToolbar(editorFocusController = focusController)
             Spacer(Modifier.height(24.dp))
         }
     }

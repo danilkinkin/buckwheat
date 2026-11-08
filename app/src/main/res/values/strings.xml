@@ -68,6 +68,9 @@
   <string name="no_categories">No categories yet</string>
   <string name="add">Add</string>
   <string name="all_categories">All</string>
+  <string name="note">Note</string>
+  <string name="add_note">Add a note</string>
+  <string name="recent">Recent</string>
   <string name="no_spends_in_category">No spending in this category</string>
   <string name="locale_label">Language</string>
   <string name="locale_system">Systemic</string>

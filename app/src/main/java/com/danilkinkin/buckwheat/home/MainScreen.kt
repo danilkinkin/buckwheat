@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
@@ -29,13 +26,11 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -61,11 +56,9 @@ import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.ui.isNightMode
 import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /** Quiet period after the last IME inset change before the editor follows the final height. */
-private const val KEYBOARD_SETTLE_DELAY_MS = 60L
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -126,32 +119,6 @@ fun MainScreen(
             .calculateBottomPadding()
             .coerceAtLeast(16.dp)
 
-        val systemKeyboardHeight = WindowInsets.ime.asPaddingValues().calculateBottomPadding()
-
-        // The IME reports its height frame by frame while it animates. Feeding those intermediate
-        // values into editorHeight made the sheet balloon for a few frames and collapse again:
-        // the editor rendered, dropped, then came back up with the keyboard.
-        //
-        // Instead, remember the last settled height. On the next open, apply it as soon as the
-        // keyboard starts so the editor moves *with* the IME rather than snapping after it.
-        var lastImeHeight by remember { mutableStateOf(0.dp) }
-        var settledImeHeight by remember { mutableStateOf(0.dp) }
-        LaunchedEffect(systemKeyboardHeight) {
-            if (systemKeyboardHeight == 0.dp) {
-                // Follow the IME all the way down: keep the keyboard layout while it is still
-                // visible and only fall back to the keypad once it is really gone.
-                settledImeHeight = 0.dp
-            } else {
-                if (settledImeHeight == 0.dp && lastImeHeight != 0.dp) {
-                    settledImeHeight = lastImeHeight
-                }
-
-                delay(KEYBOARD_SETTLE_DELAY_MS)
-                settledImeHeight = systemKeyboardHeight
-                lastImeHeight = systemKeyboardHeight
-            }
-        }
-
         val internalKeyboardHeight = if (windowSizeClass == WindowWidthSizeClass.Compact) {
             contentWidth
         } else {
@@ -160,32 +127,21 @@ fun MainScreen(
             .coerceAtMost(with(localDensity) { 500.dp.toPx() })
             .coerceAtMost(contentHeight / 2)
 
-        val isShowSystemKeyboard = settledImeHeight != 0.dp
-
-        val currentKeyboardHeight = if (isShowSystemKeyboard) {
-            with(localDensity) { settledImeHeight.toPx() }
-        } else {
-            internalKeyboardHeight
-        }
-
+        // The editor no longer contains a system-keyboard field: the amount uses the in-app
+        // keypad and notes open in their own modal sheet. So the top sheet never has to react
+        // to IME insets; it is sized against the in-app keyboard only, which keeps it still
+        // while any sheet's keyboard rises and falls.
         val editorHeight by remember(
             contentHeight,
-            currentKeyboardHeight,
-            isShowSystemKeyboard,
+            internalKeyboardHeight,
             keyboardAdditionalOffset,
             navigationBarOffset
         ) {
             derivedStateOf {
                 contentHeight
                     .minus(
-                        currentKeyboardHeight
-                            .plus(with(localDensity) {
-                                if (isShowSystemKeyboard) {
-                                    16.dp.toPx()
-                                } else {
-                                    keyboardAdditionalOffset.toPx()
-                                }
-                            })
+                        internalKeyboardHeight
+                            .plus(with(localDensity) { keyboardAdditionalOffset.toPx() })
                             .coerceAtLeast(0f)
                     )
                     .coerceAtMost(contentHeight - with(localDensity) { navigationBarOffset.toPx() + 96.dp.toPx() })
@@ -218,47 +174,21 @@ fun MainScreen(
                     .fillMaxSize()
                     .weight(1f)
             ) {
-                // No fade: while the system keyboard rises it covers this area anyway, and a
-                // second animation running against the IME transition is what made the switch
-                // feel jittery.
-                if (!isShowSystemKeyboard) {
-                    Box(
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = keyboardAdditionalOffset),
+                    contentAlignment = Alignment.BottomCenter,
+                ) {
+                    Keyboard(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = keyboardAdditionalOffset),
-                        contentAlignment = Alignment.BottomCenter,
-                    ) {
-                        Keyboard(
-                            modifier = Modifier
-                                .height(with(localDensity) { internalKeyboardHeight.toDp() })
-                                .fillMaxWidth()
-                        )
-                    }
+                            .height(with(localDensity) { internalKeyboardHeight.toDp() })
+                            .fillMaxWidth()
+                    )
                 }
 
                 if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    // While the system keyboard is up it already covers the navigation bar, so
-                    // reserving navigation bar space pushes the editor up and leaves a dead gap
-                    // between the comment field and the keyboard.
-                    val bottomInset = if (isShowSystemKeyboard) 0.dp else navigationBarOffset
-
-                    val currentEditorHeight = with(localDensity) {
-                        if (isShowSystemKeyboard) {
-                            val halfExpanedOffset = (
-                                    -contentHeight +
-                                            bottomInset.toPx() +
-                                            16.dp.toPx() +
-                                            editorHeight
-                                    ).coerceAtMost(0f)
-
-                            (topSheetState.offset.value.coerceIn(
-                                halfExpanedOffset,
-                                0f
-                            ) + contentHeight - bottomInset.toPx() - 16.dp.toPx()).toDp()
-                        } else {
-                            editorHeight.toDp()
-                        }
-                    }
+                    val currentEditorHeight = with(localDensity) { editorHeight.toDp() }
 
                     TopSheetLayout(
                         swipeableState = topSheetState,
