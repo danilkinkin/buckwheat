@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DismissDirection
@@ -93,8 +94,6 @@ fun History(
         animationSpec = TweenSpec(250),
     )
 
-    val animatedList = updateAnimatedItemsState(newList = historyList)
-
     Box(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             Spacer(Modifier.height(LocalWindowInsets.current.calculateTopPadding()))
@@ -132,10 +131,10 @@ fun History(
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
-                animatedItemsIndexed(
-                    state = animatedList.value,
+                items(
+                    items = historyList,
                     key = { rowItem -> rowItem.key },
-                ) { _, row ->
+                ) { row ->
                     when (row.type) {
                         RowEntityType.DayDivider -> HistoryDateDivider(
                             date = row.day,
@@ -315,7 +314,6 @@ private fun composeHistoryRows(transactions: List<Transaction>): List<RowEntity>
             RowEntity(
                 type = RowEntityType.DayDivider,
                 key = "header-$day",
-                contentHash = "header-$day-$dayTotal",
                 transaction = null,
                 day = day,
                 dayTotal = dayTotal,
@@ -327,7 +325,6 @@ private fun composeHistoryRows(transactions: List<Transaction>): List<RowEntity>
                 RowEntity(
                     type = RowEntityType.Spent,
                     key = "spent-${spend.uid}",
-                    contentHash = "spent-${spend.uid}",
                     transaction = spend,
                     day = day,
                     dayTotal = null,
