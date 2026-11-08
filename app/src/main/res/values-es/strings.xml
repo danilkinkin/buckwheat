@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">Buckwheat</string>
+  <string name="app_name">Eva</string>
   <string name="app_widget_extend_name">Widget ancho</string>
   <string name="app_widget_minimal_name">Widget mínimo</string>
   <string name="rest_budget_for_today">Para hoy</string>

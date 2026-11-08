@@ -57,11 +57,14 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.danilkinkin.buckwheat"
+        // Personal fork: distinct applicationId so this installs alongside upstream Buckwheat
+        // instead of upgrading it. The code namespace below intentionally stays unchanged, so
+        // package declarations and generated references (Hilt, Room, tests) need no churn.
+        applicationId = "com.varashines.eva"
         minSdk = 29
         targetSdk = 36
-        versionCode = 35
-        versionName = "4.9.5"
+        versionCode = 36
+        versionName = "5.0.0-dev"
         testInstrumentationRunner = "com.danilkinkin.buckwheat.CustomTestRunner"
     }
 
