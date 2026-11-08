@@ -86,7 +86,12 @@ android {
 
     buildTypes {
         getByName("debug") {
-            // debug builds keep using the default debug keystore
+            // Personal fork: sign debug builds with the release key when one is configured.
+            // A debug-signed install cannot be upgraded by a release-signed APK — Android
+            // rejects the signature mismatch and the only fix is uninstall + reinstall, which
+            // loses the ledger. Sharing one key now makes that switch a normal in-place update.
+            // Contributor machines without credentials still fall back to the debug keystore.
+            signingConfig = signingConfigs.findByName("release")
         }
 
         getByName("release") {
