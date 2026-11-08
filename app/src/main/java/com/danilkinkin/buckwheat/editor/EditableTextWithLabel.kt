@@ -9,29 +9,25 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.InterceptPlatformTextInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.base.TextFieldWithPaddings
 import com.danilkinkin.buckwheat.data.ExtendCurrency
-import com.danilkinkin.buckwheat.keyboard.KeyboardAction
-import com.danilkinkin.buckwheat.keyboard.rememberAppKeyboard
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.util.combineColors
 import com.danilkinkin.buckwheat.util.visualTransformationAsCurrency
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EditableTextWithLabel(
     modifier: Modifier = Modifier,
     value: String,
     currency: ExtendCurrency? = null,
     onChangeValue: (value: String) -> Unit = {},
+    onDone: () -> Unit = {},
     contentPaddingValues: PaddingValues = PaddingValues(start = 36.dp, end = 36.dp),
     focusRequester: FocusRequester = remember { FocusRequester() },
 ) {
@@ -45,12 +41,6 @@ fun EditableTextWithLabel(
         )
     )
 
-    val keyboardHandler = rememberAppKeyboard(manualDispatcher = { action, _ ->
-        if (action == KeyboardAction.REMOVE_LAST && value == "") {
-            onChangeValue("")
-        }
-    })
-
     // A fresh VisualTransformation on every recomposition races the text field's focus/input
     // session. Keyed on the inputs so the same instance survives recompositions.
     val transformation = remember(context, currency, color) {
@@ -62,21 +52,20 @@ fun EditableTextWithLabel(
     }
 
     Column(modifier) {
-        InterceptPlatformTextInput(keyboardHandler) {
-            Box(
-                Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd,
-            ) {
-                TextFieldWithPaddings(
-                    value = value,
-                    onChangeValue = { onChangeValue(it) },
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    visualTransformation = transformation,
-                    currency = currency,
-                    focusRequester = focusRequester,
-                    contentPadding = contentPaddingValues,
-                )
-            }
+        Box(
+            Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterEnd,
+        ) {
+            TextFieldWithPaddings(
+                value = value,
+                onChangeValue = { onChangeValue(it) },
+                onDone = onDone,
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                visualTransformation = transformation,
+                currency = currency,
+                focusRequester = focusRequester,
+                contentPadding = contentPaddingValues,
+            )
         }
     }
 }

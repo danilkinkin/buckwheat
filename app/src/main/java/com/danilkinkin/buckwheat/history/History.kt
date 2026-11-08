@@ -94,20 +94,16 @@ fun History(
     val historyList = remember(filteredSpends) { composeHistoryRows(filteredSpends) }
 
     DisposableEffect(Unit) {
-        appViewModel.lockSwipeable.value = false
-
         onDispose {
-            appViewModel.lockSwipeable.value = false
-
             if (historyList.isNotEmpty() && isUserTrySwipe) {
                 appViewModel.passTutorial(TUTORS.SWIPE_EDIT_SPENT)
             }
-
         }
     }
 
+    val showJump by remember { derivedStateOf { scrollState.firstVisibleItemIndex > 0 } }
     val fapScale by animateFloatAsState(
-        targetValue = if (appViewModel.lockSwipeable.value) 1f else 0f,
+        targetValue = if (showJump) 1f else 0f,
         animationSpec = TweenSpec(250),
     )
 
@@ -147,24 +143,8 @@ fun History(
                         modifier = Modifier.fillMaxSize(),
                     ) {
 
-                // Composed while the top of the list is visible: the sheet may be dragged
-                // there. Once the list is scrolled, lock the sheet so gestures scroll rows.
-                item("spacer-2") {
-                    Spacer(modifier = Modifier.height(2.dp))
-                }
-
-                item("top-checker") {
-                    DisposableEffect(Unit) {
-                        appViewModel.lockSwipeable.value = false
-
-                        onDispose {
-                            appViewModel.lockSwipeable.value = true
-                        }
-                    }
-                }
-
-                item("spacer") {
-                    Spacer(modifier = Modifier.height(18.dp))
+                item("top-spacer") {
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
 
                 animatedItemsIndexed(

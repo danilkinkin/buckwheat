@@ -36,6 +36,7 @@ fun CurrentSpendEditor(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
+    onDone: () -> Unit = {},
 ) {
     val localDensity = LocalDensity.current
     val focusManager = LocalFocusManager.current
@@ -60,14 +61,6 @@ fun CurrentSpendEditor(
         } else {
             hide = editorViewModel.rawSpentValue.value!! == ""
         }
-    }
-
-    observeLiveData(spendsViewModel.dailyBudget) {
-        calculateValues()
-    }
-
-    observeLiveData(spendsViewModel.spentFromDailyBudget) {
-        calculateValues()
     }
 
     observeLiveData(editorViewModel.stage) {
@@ -95,9 +88,6 @@ fun CurrentSpendEditor(
     Box(modifier) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            // Top-anchored: the editor's bottom edge moves when the tag row grows or the IME
-            // replaces the keypad, so a centred amount drifted. A fixed strip under the toolbar
-            // keeps the number still while the rest of the layout settles.
             contentAlignment = Alignment.TopEnd,
         ) {
             if (!hide) {
@@ -106,8 +96,11 @@ fun CurrentSpendEditor(
                         .fillMaxWidth()
                         .height(120.dp),
                     value = spentValue,
+                    onDone = onDone,
                     onChangeValue = {
-                        val fixed = fixedNumberString(it)
+                        // The system keyboard uses the locale's decimal mark; the raw ledger
+                        // value is always dot-separated.
+                        val fixed = fixedNumberString(it.replace(',', '.'))
                         val converted = tryConvertStringToNumber(fixed)
 
                         editorViewModel.rawSpentValue.value = fixed

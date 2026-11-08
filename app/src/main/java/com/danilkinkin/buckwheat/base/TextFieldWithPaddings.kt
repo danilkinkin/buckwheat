@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -49,6 +51,7 @@ import androidx.compose.ui.text.ParagraphIntrinsics
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.createFontFamilyResolver
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
@@ -72,6 +75,7 @@ import kotlin.math.ceil
 fun TextFieldWithPaddings(
     value: String = "",
     onChangeValue: (output: String) -> Unit,
+    onDone: () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(horizontal = 32.dp),
     cursorBrush: Brush = SolidColor(MaterialTheme.colorScheme.primary),
     currency: ExtendCurrency? = null,
@@ -81,6 +85,19 @@ fun TextFieldWithPaddings(
     val context = LocalContext.current
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = value)) }
     var hasFocus by remember { mutableStateOf(false) }
+
+    // The input session must start with a safe selection (0) to avoid the focused-rect crash,
+    // but typing should append at the end like a normal amount field. Move the cursor once the
+    // session exists.
+    LaunchedEffect(hasFocus) {
+        if (hasFocus) {
+            withFrameNanos { }
+
+            textFieldValueState = textFieldValueState.copy(
+                selection = TextRange(textFieldValueState.text.length),
+            )
+        }
+    }
 
     val textFieldValue = if (textFieldValueState.text != value) {
         // When the value changes while the field is not focused (e.g. the keypad writes a digit
@@ -314,8 +331,9 @@ fun TextFieldWithPaddings(
                 },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
-                    showKeyboardOnFocus = false
-                )
+                    imeAction = ImeAction.Done,
+                ),
+                keyboardActions = KeyboardActions(onDone = { onDone() }),
             )
         }
 

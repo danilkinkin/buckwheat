@@ -15,8 +15,6 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.di.TUTORS
 import com.danilkinkin.buckwheat.editor.DETAILS_SHEET
 import com.danilkinkin.buckwheat.editor.DetailsSheet
-import com.danilkinkin.buckwheat.editor.toolbar.DEBUG_MENU_SHEET
-import com.danilkinkin.buckwheat.editor.toolbar.DebugMenu
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BUDGET_IS_OVER_DESCRIPTION_SHEET
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.BudgetIsOverDescription
 import com.danilkinkin.buckwheat.editor.toolbar.restBudgetPill.NEW_DAY_BUDGET_DESCRIPTION_SHEET
@@ -44,7 +42,6 @@ fun BottomSheets(
     appViewModel: AppViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
-    val isDebug = appViewModel.isDebug.observeAsState(false)
     val coroutineScope = rememberCoroutineScope()
 
     val requireSetBudget by spendsViewModel.requireSetBudget.observeAsState(false)
@@ -231,18 +228,6 @@ fun BottomSheets(
                 coroutineScope.launch { state.hide() }
             },
         )
-    }
-
-    if (isDebug.value) {
-        BottomSheetWrapper(
-            name = DEBUG_MENU_SHEET,
-        ) { state ->
-            DebugMenu(
-                onClose = {
-                    coroutineScope.launch { state.hide() }
-                },
-            )
-        }
     }
 
     BottomSheetWrapper(
