@@ -43,6 +43,8 @@ import java.time.LocalDate
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.absoluteValue
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -220,13 +222,18 @@ fun History(
                             onTried = { isUserTrySwipe = true },
                             showTutorial = index == 2 && tutorial === TUTORIAL_STAGE.READY_TO_SHOW,
                         ) { state ->
-                            val size = with(LocalDensity.current) {
-                                java.lang.Float.max(
-                                    java.lang.Float.min(
-                                        16.dp.toPx(),
-                                        abs(state.offset.value)
-                                    ), 0f
-                                ).toDp()
+                            val localDensity = LocalDensity.current
+
+                            // Quantised to whole dp: this feeds a RoundedCornerShape, so a
+                            // per-frame value rebuilt the row shape on every drag frame.
+                            val size by remember(localDensity) {
+                                derivedStateOf {
+                                    with(localDensity) {
+                                        val px = min(16.dp.toPx(), abs(state.offset.value))
+                                            .coerceAtLeast(0f)
+                                        (px / density).roundToInt().dp
+                                    }
+                                }
                             }
 
                             val animateCorners by remember {

@@ -13,7 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
+import kotlin.math.roundToInt
 
 enum class SwipeDirection {
     Left,
@@ -49,15 +50,16 @@ fun SwipeableSnackbarHost(hostState: SnackbarHostState) {
             }
         }
     }
-    val offset = with(LocalDensity.current) {
-        swipeableState.offset.value.toDp()
-    }
     SnackbarHost(
         hostState,
         snackbar = { snackbarData ->
             Snackbar(
                 snackbarData,
-                modifier = Modifier.offset(x = offset)
+                // Read the swipe offset inside the placement lambda: dragging then only
+                // re-places the snackbar instead of recomposing it on every frame.
+                modifier = Modifier.offset {
+                    IntOffset(swipeableState.offset.value.roundToInt(), 0)
+                },
             )
         },
         modifier = Modifier

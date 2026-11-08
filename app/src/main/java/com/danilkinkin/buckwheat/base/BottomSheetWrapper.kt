@@ -16,6 +16,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -98,16 +99,21 @@ fun BottomSheetWrapper(
         confirmChange = { state.targetValue !== ModalBottomSheetValue.Hidden },
     )
 
-    val statusBarFillProgress = if (statusBarHeight == 0.dp) {
-        0F
-    } else {
-        with(localDensity) {
-            max(
-                statusBarHeight - state.offset.value.roundToInt().toDp(),
-                0.toDp(),
-            )
-        } / statusBarHeight
-    }.coerceIn(0f, 1f)
+    // The top corner radius follows the drag position. Reading the raw offset here rebuilt a
+    // RoundedCornerShape and recomposed the whole sheet on every frame. Quantised to 5% steps,
+    // the shape is rebuilt a handful of times per drag - indistinguishable over 28dp of travel.
+    val statusBarFillProgress by remember(statusBarHeight) {
+        derivedStateOf {
+            if (statusBarHeight == 0.dp) {
+                0f
+            } else {
+                val remaining = with(localDensity) {
+                    max(statusBarHeight - state.offset.value.roundToInt().toDp(), 0.toDp())
+                }
+                ((remaining / statusBarHeight) * 20f).roundToInt() / 20f
+            }.coerceIn(0f, 1f)
+        }
+    }
 
     val focusManager = LocalFocusManager.current
 

@@ -215,7 +215,13 @@ fun CustomTag(
                         ) togetherWith fadeOut(
                             tween(durationMillis = 250)
                         )).using(
-                            SizeTransform(clip = false)
+                            // The default SizeTransform is a spring; measured here it kept the
+                            // transition running for ~1.5s after the visual swap, re-laying out
+                            // the row on every frame. A tween matching the fade settles cleanly.
+                            SizeTransform(
+                                clip = false,
+                                sizeAnimationSpec = { _, _ -> tween(durationMillis = 250) },
+                            )
                         )
                     }
                 ) { targetIsEdit ->
