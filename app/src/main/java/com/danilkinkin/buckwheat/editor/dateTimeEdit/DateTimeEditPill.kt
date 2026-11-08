@@ -11,7 +11,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.data.AppViewModel
-import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.editor.EditorViewModel
 import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toDate
@@ -23,7 +22,6 @@ import java.util.Calendar
 @Composable
 fun DateTimeEditPill(
     appViewModel: AppViewModel = hiltViewModel(),
-    spendsViewModel: SpendsViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
 ) {
     if (editorViewModel.editedTransaction === null) return
@@ -86,7 +84,9 @@ fun DateTimeEditPill(
     if (isPickDate) {
         DatePickerDialog(
             initDate = cachedDate.toLocalDate(),
-            disableBeforeDate = spendsViewModel.startPeriodDate.value!!.toLocalDate(),
+            // A ledger has no budget period to bound the past by. Any date up to today is
+            // valid; backdating an expense is a normal thing to do.
+            disableBeforeDate = null,
             disableAfterDate = LocalDate.now(),
             onSelect = { newDate ->
                 val calendarNew = Calendar.getInstance()
