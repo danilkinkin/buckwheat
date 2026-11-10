@@ -123,6 +123,25 @@ val AutoMigration7to8: Migration = object : Migration(7, 8) {
     }
 }
 
+/**
+ * Custom intervals: the period column becomes the unit (DAYS/WEEKS/MONTHS/YEARS) and
+ * intervalCount carries how many of them. Existing rows are all count = 1.
+ */
+val AutoMigration8to9: Migration = object : Migration(8, 9) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE `subscriptions` ADD COLUMN `intervalCount` INTEGER NOT NULL DEFAULT 1"
+        )
+        database.execSQL(
+            "UPDATE `subscriptions` SET `period` = CASE `period` " +
+                    "WHEN 'WEEKLY' THEN 'WEEKS' " +
+                    "WHEN 'MONTHLY' THEN 'MONTHS' " +
+                    "WHEN 'YEARLY' THEN 'YEARS' " +
+                    "ELSE `period` END"
+        )
+    }
+}
+
 /** Fresh installs skip migrations, so the same seed runs after Room creates the tables. */
 val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -132,7 +151,7 @@ val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
 
 @Database(
     entities = [Transaction::class, Category::class, Subscription::class],
-    version = 8,
+    version = 9,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -155,6 +174,7 @@ abstract class DatabaseModule : RoomDatabase() {
             AutoMigration5to6,
             AutoMigration6to7,
             AutoMigration7to8,
+            AutoMigration8to9,
         )
     }
 }

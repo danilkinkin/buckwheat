@@ -112,6 +112,33 @@
   <string name="amount">Amount</string>
   <string name="period">Period</string>
   <string name="period_weekly">Weekly</string>
+  <string name="billing_period">Billing period</string>
+  <string name="duration_1m">1M</string>
+  <string name="duration_3m">3M</string>
+  <string name="duration_6m">6M</string>
+  <string name="duration_1y">1Y</string>
+  <string name="duration_other">Other</string>
+  <string name="every">Every</string>
+  <string name="interval_unit_days">Days</string>
+  <string name="interval_unit_weeks">Weeks</string>
+  <string name="interval_unit_months">Months</string>
+  <string name="interval_unit_years">Years</string>
+  <plurals name="interval_days">
+    <item quantity="one">%1$d day</item>
+    <item quantity="other">%1$d days</item>
+  </plurals>
+  <plurals name="interval_weeks">
+    <item quantity="one">%1$d week</item>
+    <item quantity="other">%1$d weeks</item>
+  </plurals>
+  <plurals name="interval_months">
+    <item quantity="one">%1$d month</item>
+    <item quantity="other">%1$d months</item>
+  </plurals>
+  <plurals name="interval_years">
+    <item quantity="one">%1$d year</item>
+    <item quantity="other">%1$d years</item>
+  </plurals>
   <string name="period_monthly">Monthly</string>
   <string name="period_yearly">Yearly</string>
   <string name="next_due">Next due</string>

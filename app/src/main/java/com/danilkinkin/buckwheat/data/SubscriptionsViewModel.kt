@@ -21,12 +21,21 @@ class SubscriptionsViewModel @Inject constructor(
         name: String,
         amount: BigDecimal,
         period: SubscriptionPeriod,
+        intervalCount: Int,
         nextDue: Date,
         categoryId: Int?,
         serviceId: String?,
     ) {
         viewModelScope.launch {
-            spendsRepository.addSubscription(name, amount, period, nextDue, categoryId, serviceId)
+            spendsRepository.addSubscription(
+                name,
+                amount,
+                period,
+                intervalCount,
+                nextDue,
+                categoryId,
+                serviceId,
+            )
         }
     }
 

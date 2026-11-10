@@ -49,7 +49,6 @@ import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.SubscriptionService
-import com.danilkinkin.buckwheat.data.entities.SubscriptionPeriod
 import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
 import com.danilkinkin.buckwheat.util.numberFormat
 import com.danilkinkin.buckwheat.util.prettyDate
@@ -183,12 +182,13 @@ fun SubscriptionsScreen(
                     SubscriptionForm(
                         initial = subscriptionBeingEdited,
                         categories = categories,
-                        onSave = { name, amount, period, nextDue, categoryId, serviceId ->
+                        onSave = { name, amount, period, intervalCount, nextDue, categoryId, serviceId ->
                             subscriptionsViewModel.update(
                                 subscriptionBeingEdited.copy(
                                     name = name.trim(),
                                     amount = amount,
                                     period = period.name,
+                                    intervalCount = intervalCount,
                                     anchorDay = nextDue.toLocalDate().dayOfMonth,
                                     nextDue = nextDue,
                                     categoryId = categoryId,
@@ -217,7 +217,10 @@ private fun SubscriptionRow(
 ) {
     val context = LocalContext.current
     val isDue = subscription.nextDue.time <= System.currentTimeMillis()
-    val periodLabel = subscription.period.toSubscriptionPeriod().label()
+    val periodLabel = subscriptionIntervalLabel(
+        count = subscription.intervalCount,
+        period = subscription.period.toSubscriptionPeriod(),
+    )
     val dueLabel = prettyDate(subscription.nextDue, pattern = "d MMM", simplifyIfToday = true)
 
     Row(
@@ -277,9 +280,3 @@ private fun SubscriptionRow(
     }
 }
 
-@Composable
-private fun SubscriptionPeriod.label(): String = when (this) {
-    SubscriptionPeriod.WEEKLY -> stringResource(R.string.period_weekly)
-    SubscriptionPeriod.MONTHLY -> stringResource(R.string.period_monthly)
-    SubscriptionPeriod.YEARLY -> stringResource(R.string.period_yearly)
-}

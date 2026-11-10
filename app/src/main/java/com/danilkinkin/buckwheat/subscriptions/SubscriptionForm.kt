@@ -7,6 +7,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -47,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryPicker
@@ -65,7 +68,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.Date
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SubscriptionForm(
     initial: Subscription?,
@@ -74,6 +77,7 @@ fun SubscriptionForm(
         name: String,
         amount: BigDecimal,
         period: SubscriptionPeriod,
+        intervalCount: Int,
         nextDue: Date,
         categoryId: Int?,
         serviceId: String?,
@@ -96,7 +100,19 @@ fun SubscriptionForm(
     val service = ServiceCatalog.find(serviceId)
     var amountText by remember { mutableStateOf(initial?.amount?.toPlainString() ?: "") }
     var period by remember {
-        mutableStateOf(initial?.period?.toSubscriptionPeriod() ?: SubscriptionPeriod.MONTHLY)
+        mutableStateOf(initial?.period?.toSubscriptionPeriod() ?: SubscriptionPeriod.MONTHS)
+    }
+    var intervalCountText by remember {
+        mutableStateOf((initial?.intervalCount ?: 1).toString())
+    }
+    val intervalCount = intervalCountText.toIntOrNull()?.coerceIn(1, 999) ?: 1
+    var customInterval by remember {
+        mutableStateOf(
+            !isPresetInterval(
+                count = initial?.intervalCount ?: 1,
+                period = initial?.period?.toSubscriptionPeriod() ?: SubscriptionPeriod.MONTHS,
+            )
+        )
     }
     var nextDue by remember {
         mutableStateOf(initial?.nextDue ?: LocalDate.now().plusMonths(1).toDate())
@@ -188,29 +204,107 @@ fun SubscriptionForm(
 
         Spacer(Modifier.height(16.dp))
 
-        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
-            SubscriptionPeriod.entries.forEachIndexed { index, option ->
-                SegmentedButton(
-                    selected = option == period,
-                    onClick = { period = option },
-                    shape = SegmentedButtonDefaults.itemShape(
-                        index = index,
-                        count = SubscriptionPeriod.entries.size,
-                    ),
-                    colors = SegmentedButtonDefaults.colors(
-                        activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                        activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-                        inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    ),
-                    label = {
-                        Text(
-                            text = option.label(),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    },
+        Text(
+            text = stringResource(R.string.billing_period),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+        )
+
+        Spacer(Modifier.height(6.dp))
+
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            DurationChip(
+                label = stringResource(R.string.duration_1m),
+                selected = !customInterval && intervalCount == 1 && period == SubscriptionPeriod.MONTHS,
+            ) {
+                period = SubscriptionPeriod.MONTHS
+                intervalCountText = "1"
+                customInterval = false
+            }
+            DurationChip(
+                label = stringResource(R.string.duration_3m),
+                selected = !customInterval && intervalCount == 3 && period == SubscriptionPeriod.MONTHS,
+            ) {
+                period = SubscriptionPeriod.MONTHS
+                intervalCountText = "3"
+                customInterval = false
+            }
+            DurationChip(
+                label = stringResource(R.string.duration_6m),
+                selected = !customInterval && intervalCount == 6 && period == SubscriptionPeriod.MONTHS,
+            ) {
+                period = SubscriptionPeriod.MONTHS
+                intervalCountText = "6"
+                customInterval = false
+            }
+            DurationChip(
+                label = stringResource(R.string.duration_1y),
+                selected = !customInterval && intervalCount == 1 && period == SubscriptionPeriod.YEARS,
+            ) {
+                period = SubscriptionPeriod.YEARS
+                intervalCountText = "1"
+                customInterval = false
+            }
+            DurationChip(
+                label = stringResource(R.string.duration_other),
+                selected = customInterval,
+            ) {
+                customInterval = true
+            }
+        }
+
+        if (customInterval) {
+            Spacer(Modifier.height(10.dp))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.every),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                Spacer(Modifier.width(10.dp))
+                MinimalTextField(
+                    value = intervalCountText,
+                    onValueChange = { value ->
+                        intervalCountText = value.filter { it.isDigit() }.take(3)
+                    },
+                    placeholder = "1",
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    textStyle = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.width(92.dp),
+                    fillWidth = false,
+                )
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                SubscriptionPeriod.entries.forEachIndexed { index, option ->
+                    SegmentedButton(
+                        selected = option == period,
+                        onClick = { period = option },
+                        shape = SegmentedButtonDefaults.itemShape(
+                            index = index,
+                            count = SubscriptionPeriod.entries.size,
+                        ),
+                        colors = SegmentedButtonDefaults.colors(
+                            activeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                            activeContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                            inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                        label = {
+                            Text(
+                                text = option.unitLabel(),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        },
+                    )
+                }
             }
         }
 
@@ -273,7 +367,7 @@ fun SubscriptionForm(
             Button(
                 onClick = {
                     val value = amount ?: return@Button
-                    onSave(name, value, period, nextDue, categoryId, serviceId)
+                    onSave(name, value, period, intervalCount, nextDue, categoryId, serviceId)
                 },
                 enabled = name.isNotBlank() && amount != null && amount > BigDecimal.ZERO,
                 modifier = Modifier
@@ -300,9 +394,36 @@ fun SubscriptionForm(
     }
 }
 
+private fun isPresetInterval(count: Int, period: SubscriptionPeriod?): Boolean =
+    (period == SubscriptionPeriod.MONTHS && count in listOf(1, 3, 6)) ||
+            (period == SubscriptionPeriod.YEARS && count == 1)
+
 @Composable
-private fun SubscriptionPeriod.label(): String = when (this) {
-    SubscriptionPeriod.WEEKLY -> stringResource(R.string.period_weekly)
-    SubscriptionPeriod.MONTHLY -> stringResource(R.string.period_monthly)
-    SubscriptionPeriod.YEARLY -> stringResource(R.string.period_yearly)
+private fun DurationChip(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .clip(CircleShape)
+            .clickable(onClick = onClick),
+        shape = CircleShape,
+        color = if (selected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        },
+        contentColor = if (selected) {
+            MaterialTheme.colorScheme.onPrimaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        },
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+        )
+    }
 }

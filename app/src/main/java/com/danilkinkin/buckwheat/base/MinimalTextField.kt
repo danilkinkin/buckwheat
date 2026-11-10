@@ -23,6 +23,7 @@ fun MinimalTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     containerColor: Color? = null,
+    fillWidth: Boolean = true,
 ) {
     // Data entry should carry the palette, not read as a grey box.
     val container = containerColor ?: MaterialTheme.colorScheme.primaryContainer
@@ -43,7 +44,7 @@ fun MinimalTextField(
         shape = RoundedCornerShape(20.dp),
         textStyle = textStyle,
         keyboardOptions = keyboardOptions,
-        modifier = modifier.fillMaxWidth(),
+        modifier = if (fillWidth) modifier.fillMaxWidth() else modifier,
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = focusedContainer,
             unfocusedContainerColor = unfocusedContainer,

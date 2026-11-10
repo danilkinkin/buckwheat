@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.data
 
 import com.danilkinkin.buckwheat.data.entities.SubscriptionPeriod
 import java.time.LocalDate
+import java.time.YearMonth
 
 /**
  * Next occurrence of a subscription, always after [from].
@@ -11,15 +12,21 @@ import java.time.LocalDate
  */
 fun nextSubscriptionDate(
     period: SubscriptionPeriod,
+    intervalCount: Int,
     anchorDay: Int,
     from: LocalDate,
-): LocalDate = when (period) {
-    SubscriptionPeriod.WEEKLY -> from.plusWeeks(1)
+): LocalDate {
+    val count = intervalCount.coerceAtLeast(1).toLong()
 
-    SubscriptionPeriod.MONTHLY -> {
-        val nextMonth = from.plusMonths(1)
-        nextMonth.withDayOfMonth(anchorDay.coerceIn(1, nextMonth.lengthOfMonth()))
+    return when (period) {
+        SubscriptionPeriod.DAYS -> from.plusDays(count)
+        SubscriptionPeriod.WEEKS -> from.plusWeeks(count)
+
+        SubscriptionPeriod.MONTHS -> {
+            val target = YearMonth.from(from).plusMonths(count)
+            target.atDay(anchorDay.coerceIn(1, target.lengthOfMonth()))
+        }
+
+        SubscriptionPeriod.YEARS -> from.plusYears(count)
     }
-
-    SubscriptionPeriod.YEARLY -> from.plusYears(1)
 }

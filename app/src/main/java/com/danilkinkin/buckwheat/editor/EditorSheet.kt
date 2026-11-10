@@ -240,11 +240,12 @@ fun EditorSheet(
             SubscriptionForm(
                 initial = null,
                 categories = categories,
-                onSave = { name, amount, period, nextDue, categoryId, serviceId ->
+                onSave = { name, amount, period, intervalCount, nextDue, categoryId, serviceId ->
                     subscriptionsViewModel.add(
                         name,
                         amount,
                         period,
+                        intervalCount,
                         nextDue,
                         categoryId,
                         serviceId,

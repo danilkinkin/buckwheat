@@ -71,6 +71,7 @@ class SpendsRepository @Inject constructor(
         name: String,
         amount: BigDecimal,
         period: SubscriptionPeriod,
+        intervalCount: Int,
         nextDue: Date,
         categoryId: Int?,
         serviceId: String?,
@@ -80,6 +81,7 @@ class SpendsRepository @Inject constructor(
                 name = name.trim(),
                 amount = amount,
                 period = period.name,
+                intervalCount = intervalCount,
                 anchorDay = nextDue.toLocalDate().dayOfMonth,
                 nextDue = nextDue,
                 categoryId = categoryId,
@@ -124,6 +126,7 @@ class SpendsRepository @Inject constructor(
 
             val next = nextSubscriptionDate(
                 period = subscription.period.toSubscriptionPeriod(),
+                intervalCount = subscription.intervalCount,
                 anchorDay = subscription.anchorDay,
                 from = dueDate.toLocalDate(),
             )
