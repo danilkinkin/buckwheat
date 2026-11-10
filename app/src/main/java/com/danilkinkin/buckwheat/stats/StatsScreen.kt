@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -223,7 +224,10 @@ fun StatsScreen(
                 }
 
                 item("categories") {
-                    SectionTitle(stringResource(R.string.by_category))
+                    SectionTitle(
+                        title = stringResource(R.string.by_category),
+                        icon = painterResource(R.drawable.ic_label),
+                    )
                     SectionCard {
                         Column(
                             modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
@@ -242,6 +246,7 @@ fun StatsScreen(
                 item("days") {
                     SectionTitle(
                         title = stringResource(R.string.by_day),
+                        icon = painterResource(R.drawable.ic_calendar),
                         caption = peakDay
                             ?.takeIf { it.second > BigDecimal.ZERO }
                             ?.let { peak ->
@@ -464,6 +469,7 @@ private fun SummaryCard(
 @Composable
 private fun SectionTitle(
     title: String,
+    icon: Painter? = null,
     caption: String? = null,
 ) {
     Row(
@@ -472,6 +478,15 @@ private fun SectionTitle(
             .padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (icon != null) {
+            Icon(
+                painter = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+        }
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,

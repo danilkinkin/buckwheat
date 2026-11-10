@@ -56,6 +56,8 @@ import com.danilkinkin.buckwheat.history.SwipeActionsConfig
 import com.danilkinkin.buckwheat.util.numberFormat
 import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toLocalDate
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -125,6 +127,9 @@ fun SubscriptionsScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     items(subscriptions, key = { it.id }) { subscription ->
+                        val service = ServiceCatalog.find(subscription.serviceId)
+                        val category = subscription.categoryId?.let { categoriesById[it] }
+
                         SwipeActions(
                             modifier = Modifier.clip(RoundedCornerShape(24.dp)),
                             startActionsConfig = SwipeActionsConfig(
@@ -157,11 +162,14 @@ fun SubscriptionsScreen(
                                 },
                             ),
                         ) {
-                            ListCard {
+                            ListCard(
+                                accent = service?.let { Color(it.brandColor) }
+                                    ?: category?.let { Color(it.color) },
+                            ) {
                                 SubscriptionRow(
                                     subscription = subscription,
-                                    service = ServiceCatalog.find(subscription.serviceId),
-                                    category = subscription.categoryId?.let { categoriesById[it] },
+                                    service = service,
+                                    category = category,
                                     currency = currency,
                                     onClick = { onEditSubscription(subscription.id) },
                                 )
@@ -177,6 +185,8 @@ fun SubscriptionsScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_add),
@@ -203,6 +213,10 @@ private fun SubscriptionRow(
         period = subscription.period.toSubscriptionPeriod(),
     )
     val dueLabel = prettyDate(subscription.nextDue, pattern = "d MMM", simplifyIfToday = true)
+    val daysUntilDue = ChronoUnit.DAYS.between(
+        LocalDate.now(),
+        subscription.nextDue.toLocalDate(),
+    )
 
     Row(
         modifier = Modifier
@@ -212,10 +226,10 @@ private fun SubscriptionRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (service != null) {
-            ServiceBadge(service = service, size = 44.dp)
+            ServiceBadge(service = service, size = 48.dp)
         } else if (!category?.emoji.isNullOrEmpty()) {
             Surface(
-                modifier = Modifier.size(44.dp),
+                modifier = Modifier.size(48.dp),
                 shape = CircleShape,
                 color = Color(category.color).copy(alpha = 0.22f),
                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -228,7 +242,7 @@ private fun SubscriptionRow(
                 }
             }
         } else {
-            ServiceBadge(service = null, size = 44.dp)
+            ServiceBadge(service = null, size = 48.dp)
         }
         Spacer(Modifier.width(14.dp))
 
@@ -239,16 +253,22 @@ private fun SubscriptionRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Text(
-                text = "$periodLabel · $dueLabel",
-                style = MaterialTheme.typography.labelSmall,
-                color = if (isDue) {
-                    MaterialTheme.colorScheme.error
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                },
-                maxLines = 1,
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "$periodLabel · $dueLabel",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (isDue) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    },
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false),
+                )
+                Spacer(Modifier.width(6.dp))
+                DueStatusChip(daysUntilDue = daysUntilDue)
+            }
         }
 
         Spacer(Modifier.width(12.dp))

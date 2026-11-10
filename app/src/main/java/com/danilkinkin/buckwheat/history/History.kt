@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -280,46 +281,55 @@ fun History(
                                 // Day totals now live in the divider; old rows are no longer emitted.
                                 RowEntityType.DayTotal -> Unit
 
-                                RowEntityType.Spent -> SwipeActions(
-                                    modifier = Modifier.clip(RoundedCornerShape(24.dp)),
-                                    startActionsConfig = SwipeActionsConfig(
-                                        threshold = 0.4f,
-                                        background = MaterialTheme.colorScheme.tertiaryContainer,
-                                        backgroundActive = MaterialTheme.colorScheme.tertiary,
-                                        iconTint = MaterialTheme.colorScheme.onTertiary,
-                                        icon = painterResource(R.drawable.ic_edit),
-                                        stayDismissed = false,
-                                        onDismiss = {
-                                            editorViewModel.startEditingSpent(row.transaction!!)
-                                            onClose()
-                                        }
-                                    ),
-                                    endActionsConfig = SwipeActionsConfig(
-                                        threshold = 0.4f,
-                                        background = MaterialTheme.colorScheme.errorContainer,
-                                        backgroundActive = MaterialTheme.colorScheme.error,
-                                        iconTint = MaterialTheme.colorScheme.onError,
-                                        icon = painterResource(R.drawable.ic_delete_forever),
-                                        stayDismissed = true,
-                                        onDismiss = {
-                                            spendsViewModel.removeSpent(row.transaction!!)
-                                        }
-                                    ),
-                                ) {
-                                    ListCard(
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(24.dp))
-                                            .clickable {
-                                                editorViewModel.startEditingSpent(row.transaction!!)
+                                RowEntityType.Spent -> {
+                                    val transaction = row.transaction!!
+                                    val service = ServiceCatalog.find(transaction.serviceId)
+                                    val category = transaction.categoryId?.let { categoriesById[it] }
+                                    val accent = service?.let { Color(it.brandColor) }
+                                        ?: category?.let { Color(it.color) }
+
+                                    SwipeActions(
+                                        modifier = Modifier.clip(RoundedCornerShape(24.dp)),
+                                        startActionsConfig = SwipeActionsConfig(
+                                            threshold = 0.4f,
+                                            background = MaterialTheme.colorScheme.tertiaryContainer,
+                                            backgroundActive = MaterialTheme.colorScheme.tertiary,
+                                            iconTint = MaterialTheme.colorScheme.onTertiary,
+                                            icon = painterResource(R.drawable.ic_edit),
+                                            stayDismissed = false,
+                                            onDismiss = {
+                                                editorViewModel.startEditingSpent(transaction)
                                                 onClose()
-                                            },
+                                            }
+                                        ),
+                                        endActionsConfig = SwipeActionsConfig(
+                                            threshold = 0.4f,
+                                            background = MaterialTheme.colorScheme.errorContainer,
+                                            backgroundActive = MaterialTheme.colorScheme.error,
+                                            iconTint = MaterialTheme.colorScheme.onError,
+                                            icon = painterResource(R.drawable.ic_delete_forever),
+                                            stayDismissed = true,
+                                            onDismiss = {
+                                                spendsViewModel.removeSpent(transaction)
+                                            }
+                                        ),
                                     ) {
-                                        SpentItem(
-                                            transaction = row.transaction!!,
-                                            currency = currency.value,
-                                            category = row.transaction!!.categoryId?.let { categoriesById[it] },
-                                            service = ServiceCatalog.find(row.transaction!!.serviceId),
-                                        )
+                                        ListCard(
+                                            accent = accent,
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(24.dp))
+                                                .clickable {
+                                                    editorViewModel.startEditingSpent(transaction)
+                                                    onClose()
+                                                },
+                                        ) {
+                                            SpentItem(
+                                                transaction = transaction,
+                                                currency = currency.value,
+                                                category = category,
+                                                service = service,
+                                            )
+                                        }
                                     }
                                 }
                             }

@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -219,7 +220,10 @@ fun SubscriptionInsightsScreen(
             }
 
             item("top") {
-                InsightSectionTitle(stringResource(R.string.top_services_month))
+                InsightSectionTitle(
+                    title = stringResource(R.string.top_services_month),
+                    icon = painterResource(R.drawable.ic_analytics),
+                )
                 InsightCard {
                     Column(
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
@@ -240,7 +244,10 @@ fun SubscriptionInsightsScreen(
             }
 
             item("renewals") {
-                InsightSectionTitle(stringResource(R.string.upcoming_renewals))
+                InsightSectionTitle(
+                    title = stringResource(R.string.upcoming_renewals),
+                    icon = painterResource(R.drawable.ic_calendar),
+                )
                 InsightCard {
                     Column(
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
@@ -257,7 +264,10 @@ fun SubscriptionInsightsScreen(
             }
 
             item("categories") {
-                InsightSectionTitle(stringResource(R.string.by_category))
+                InsightSectionTitle(
+                    title = stringResource(R.string.by_category),
+                    icon = painterResource(R.drawable.ic_label),
+                )
                 InsightCard {
                     Column(
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
@@ -275,7 +285,10 @@ fun SubscriptionInsightsScreen(
             }
 
             item("trend") {
-                InsightSectionTitle(stringResource(R.string.actual_subscription_spend))
+                InsightSectionTitle(
+                    title = stringResource(R.string.actual_subscription_spend),
+                    icon = painterResource(R.drawable.ic_analytics),
+                )
                 InsightCard {
                     TrendBars(
                         values = lastSixMonths,
@@ -392,13 +405,31 @@ private fun InsightStatCard(
 }
 
 @Composable
-private fun InsightSectionTitle(title: String) {
-    Text(
-        text = title,
-        style = MaterialTheme.typography.titleLarge,
-        color = colorOnEditor,
-        modifier = Modifier.padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 8.dp),
-    )
+private fun InsightSectionTitle(
+    title: String,
+    icon: Painter? = null,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp, top = 20.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (icon != null) {
+            Icon(
+                painter = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+        }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            color = colorOnEditor,
+        )
+    }
 }
 
 @Composable
@@ -435,7 +466,7 @@ private fun TopServiceRow(
 
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            ServiceBadge(service = service, size = 36.dp)
+            ServiceBadge(service = service, size = 40.dp)
             Spacer(Modifier.width(12.dp))
             Text(
                 text = subscription.name,
@@ -494,7 +525,7 @@ private fun RenewalRow(
             .padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        ServiceBadge(service = service, size = 36.dp)
+        ServiceBadge(service = service, size = 40.dp)
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(

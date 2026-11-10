@@ -81,14 +81,14 @@ fun SpentItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (service != null) {
-            ServiceBadge(service = service, size = 44.dp)
+            ServiceBadge(service = service, size = 48.dp)
         } else {
             val badgeColor = category?.let {
                 Color(it.color).copy(alpha = 0.22f)
             } ?: MaterialTheme.colorScheme.surfaceContainerHighest
 
             Surface(
-                modifier = Modifier.size(44.dp),
+                modifier = Modifier.size(48.dp),
                 shape = CircleShape,
                 color = badgeColor,
                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -104,7 +104,7 @@ fun SpentItem(
                         Icon(
                             painter = painterResource(R.drawable.ic_label),
                             contentDescription = null,
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(22.dp),
                         )
                     }
                 }

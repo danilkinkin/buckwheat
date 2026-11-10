@@ -30,6 +30,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -48,6 +50,7 @@ import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.history.SpentItem
+import com.danilkinkin.buckwheat.subscriptions.DueStatusChip
 import com.danilkinkin.buckwheat.subscriptions.ServiceBadge
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.isSameDay
@@ -57,6 +60,7 @@ import com.danilkinkin.buckwheat.util.toLocalDate
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.temporal.ChronoUnit
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
@@ -168,6 +172,7 @@ fun HomeScreen(
                 SectionTitle(
                     title = stringResource(R.string.upcoming),
                     count = upcoming.size,
+                    icon = painterResource(R.drawable.ic_calendar),
                     action = onOpenSubscriptions,
                 )
                 Column(
@@ -180,11 +185,17 @@ fun HomeScreen(
                         }
                     } else {
                         upcoming.forEach { subscription ->
-                            ListCard {
+                            val service = ServiceCatalog.find(subscription.serviceId)
+                            val category = subscription.categoryId?.let { categoriesById[it] }
+
+                            ListCard(
+                                accent = service?.let { Color(it.brandColor) }
+                                    ?: category?.let { Color(it.color) },
+                            ) {
                                 UpcomingSubscriptionRow(
                                     subscription = subscription,
-                                    service = ServiceCatalog.find(subscription.serviceId),
-                                    category = subscription.categoryId?.let { categoriesById[it] },
+                                    service = service,
+                                    category = category,
                                     currency = currency,
                                     onClick = onOpenSubscriptions,
                                 )
@@ -198,6 +209,7 @@ fun HomeScreen(
                 SectionTitle(
                     title = stringResource(R.string.recent),
                     count = recent.size,
+                    icon = painterResource(R.drawable.ic_clock),
                     action = onOpenHistory,
                 )
                 Column(
@@ -210,12 +222,18 @@ fun HomeScreen(
                         }
                     } else {
                         recent.forEach { spend ->
-                            ListCard {
+                            val service = ServiceCatalog.find(spend.serviceId)
+                            val category = spend.categoryId?.let { categoriesById[it] }
+
+                            ListCard(
+                                accent = service?.let { Color(it.brandColor) }
+                                    ?: category?.let { Color(it.color) },
+                            ) {
                                 SpentItem(
                                     transaction = spend,
                                     currency = currency,
-                                    category = spend.categoryId?.let { categoriesById[it] },
-                                    service = ServiceCatalog.find(spend.serviceId),
+                                    category = category,
+                                    service = service,
                                     showDate = true,
                                 )
                             }
@@ -230,6 +248,8 @@ fun HomeScreen(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(24.dp),
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
         ) {
             Icon(
                 painter = painterResource(R.drawable.ic_add),
@@ -278,6 +298,7 @@ private fun HeroCard(
 private fun SectionTitle(
     title: String,
     count: Int,
+    icon: Painter? = null,
     action: () -> Unit,
 ) {
     Row(
@@ -286,6 +307,15 @@ private fun SectionTitle(
             .padding(start = 16.dp, end = 8.dp, top = 20.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (icon != null) {
+            Icon(
+                painter = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+        }
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
@@ -295,8 +325,8 @@ private fun SectionTitle(
             Spacer(Modifier.width(8.dp))
             Surface(
                 shape = CircleShape,
-                color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ) {
                 Text(
                     text = count.toString(),
@@ -333,6 +363,10 @@ private fun UpcomingSubscriptionRow(
     val context = LocalContext.current
     val isDue = subscription.nextDue.time <= System.currentTimeMillis()
     val dueLabel = prettyDate(subscription.nextDue, pattern = "d MMM", simplifyIfToday = true)
+    val daysUntilDue = ChronoUnit.DAYS.between(
+        LocalDate.now(),
+        subscription.nextDue.toLocalDate(),
+    )
 
     Row(
         modifier = Modifier
@@ -342,15 +376,15 @@ private fun UpcomingSubscriptionRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (service != null) {
-            ServiceBadge(service = service, size = 40.dp)
+            ServiceBadge(service = service, size = 48.dp)
         } else if (!category?.emoji.isNullOrEmpty()) {
             Text(
                 text = category.emoji,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.width(40.dp),
+                modifier = Modifier.width(48.dp),
             )
         } else {
-            Spacer(Modifier.width(40.dp))
+            Spacer(Modifier.width(48.dp))
         }
 
         Spacer(Modifier.width(12.dp))
@@ -377,12 +411,18 @@ private fun UpcomingSubscriptionRow(
 
         Spacer(Modifier.width(12.dp))
 
-        Text(
-            text = numberFormat(context, subscription.amount, currency),
-            style = MaterialTheme.typography.titleMedium,
-            color = colorOnEditor,
-            maxLines = 1,
-        )
+        Column(horizontalAlignment = Alignment.End) {
+            Text(
+                text = numberFormat(context, subscription.amount, currency),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontFeatureSettings = "tnum",
+                ),
+                color = colorOnEditor,
+                maxLines = 1,
+            )
+            Spacer(Modifier.height(2.dp))
+            DueStatusChip(daysUntilDue = daysUntilDue)
+        }
     }
 }
 

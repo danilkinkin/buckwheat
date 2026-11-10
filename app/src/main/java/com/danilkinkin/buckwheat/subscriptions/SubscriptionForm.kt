@@ -23,6 +23,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
@@ -372,7 +373,13 @@ fun SubscriptionForm(
 
         if (onMarkPaid != null) {
             Spacer(Modifier.height(8.dp))
-            TextButton(onClick = onMarkPaid) {
+            FilledTonalButton(
+                onClick = onMarkPaid,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(24.dp),
+            ) {
                 Text(stringResource(R.string.mark_as_paid))
             }
         }

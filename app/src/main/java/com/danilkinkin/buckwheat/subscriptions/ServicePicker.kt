@@ -222,7 +222,7 @@ private fun ServicePickerRow(
             .padding(horizontal = 20.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        ServiceBadge(service = service, size = 40.dp)
+        ServiceBadge(service = service, size = 44.dp)
         Spacer(Modifier.width(12.dp))
         Text(
             text = label,
