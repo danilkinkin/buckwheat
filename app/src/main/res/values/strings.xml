@@ -64,7 +64,7 @@
   <string name="categories_title">Categories</string>
   <string name="add_category">Add category</string>
   <string name="category_name">Name</string>
-  <string name="category_emoji">Emoji</string>
+  <string name="category_icon">Icon</string>
   <string name="no_categories">No categories yet</string>
   <string name="add">Add</string>
   <string name="all_categories">All</string>
@@ -88,7 +88,6 @@
   <string name="home">Home</string>
   <string name="history">History</string>
   <string name="this_month">This month</string>
-  <string name="this_week">This week</string>
   <string name="stats_title">Statistics</string>
   <string name="total_spent">Total spent</string>
   <string name="daily_average">Daily average</string>

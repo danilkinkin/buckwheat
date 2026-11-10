@@ -55,6 +55,7 @@ import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
 import com.danilkinkin.buckwheat.data.monthlyEquivalent
 import com.danilkinkin.buckwheat.data.nextSubscriptionDate
+import com.danilkinkin.buckwheat.base.CategoryIcon
 import com.danilkinkin.buckwheat.base.DonutChart
 import com.danilkinkin.buckwheat.base.DonutSegment
 import com.danilkinkin.buckwheat.base.EmptyState
@@ -124,7 +125,7 @@ fun SubscriptionInsightsScreen(
                 val category = categoryId?.let { byId[it] }
                 CategoryShare(
                     name = category?.name,
-                    emoji = category?.emoji,
+                    icon = category?.icon,
                     color = category?.let { Color(it.color) } ?: fallbackCategoryColor,
                     amount = amount,
                 )
@@ -336,7 +337,7 @@ fun SubscriptionInsightsScreen(
 
 private data class CategoryShare(
     val name: String?,
-    val emoji: String?,
+    val icon: String?,
     val color: Color,
     val amount: BigDecimal,
 )
@@ -613,10 +614,12 @@ private fun CategoryShareRow(
                     .background(share.color),
             )
             Spacer(Modifier.width(8.dp))
-            if (!share.emoji.isNullOrEmpty()) {
-                Text(share.emoji, style = MaterialTheme.typography.bodyMedium)
-                Spacer(Modifier.width(6.dp))
-            }
+            CategoryIcon(
+                iconKey = share.icon,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(Modifier.width(6.dp))
             Text(
                 text = share.name ?: stringResource(R.string.no_category),
                 style = MaterialTheme.typography.bodyLarge,

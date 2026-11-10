@@ -630,7 +630,7 @@ private fun FiltersDialog(
                         categories.forEach { category ->
                             CategoryChip(
                                 text = category.name,
-                                emoji = category.emoji,
+                                iconKey = category.icon,
                                 selected = category.id in localCategories,
                                 onClick = {
                                     localCategories = if (category.id in localCategories) {

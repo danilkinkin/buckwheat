@@ -56,9 +56,9 @@ class SpendsViewModel @Inject constructor(
 
     // Categories
 
-    fun addCategory(name: String, emoji: String, color: Long) {
+    fun addCategory(name: String, icon: String, color: Long) {
         viewModelScope.launch {
-            spendsRepository.addCategory(name, emoji, color)
+            spendsRepository.addCategory(name, icon, color)
         }
     }
 

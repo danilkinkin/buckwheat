@@ -273,16 +273,51 @@ val AutoMigration10to11: Migration = object : Migration(10, 11) {
     }
 }
 
+/** Icons for the seeded categories; custom categories keep a null icon and fall back to Other. */
+private val defaultCategoryIcons = mapOf(
+    "Food & Dining" to "food",
+    "Groceries" to "groceries",
+    "Transport" to "transport",
+    "Home & Bills" to "home",
+    "Mobile & Internet" to "mobile",
+    "Streaming" to "streaming",
+    "Music" to "music",
+    "Digital & AI" to "digital",
+    "Shopping" to "shopping",
+    "Entertainment" to "entertainment",
+    "Health & Fitness" to "health",
+    "Travel" to "travel",
+    "Other" to "other",
+)
+
+private fun assignDefaultCategoryIcons(database: SupportSQLiteDatabase) {
+    defaultCategoryIcons.forEach { (name, icon) ->
+        database.execSQL(
+            "UPDATE `categories` SET `icon` = ? WHERE `name` = ? AND `icon` IS NULL",
+            arrayOf<Any>(icon, name),
+        )
+    }
+}
+
+/** Adds the vector icon key to categories and fills it for the seeded set. */
+val AutoMigration11to12: Migration = object : Migration(11, 12) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE `categories` ADD COLUMN `icon` TEXT")
+        assignDefaultCategoryIcons(database)
+    }
+}
+
 /** Fresh installs skip migrations, so the same seed runs after Room creates the tables. */
 val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
         seedDefaultCategories(db)
+        assignDefaultCategoryIcons(db)
     }
 }
 
 @Database(
     entities = [Transaction::class, Category::class, Subscription::class],
-    version = 11,
+    version = 12,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -308,6 +343,7 @@ abstract class DatabaseModule : RoomDatabase() {
             AutoMigration8to9,
             AutoMigration9to10,
             AutoMigration10to11,
+            AutoMigration11to12,
         )
     }
 }

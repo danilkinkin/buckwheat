@@ -64,8 +64,12 @@ fun CategoryPicker(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (!selected?.emoji.isNullOrEmpty()) {
-                    Text(selected.emoji, style = MaterialTheme.typography.bodyMedium)
+                if (selected != null) {
+                    CategoryIcon(
+                        category = selected,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(18.dp),
+                    )
                     Spacer(Modifier.width(6.dp))
                 }
                 Text(
@@ -118,7 +122,7 @@ fun CategoryPicker(
                         categories.forEach { category ->
                             CategoryChip(
                                 text = category.name,
-                                emoji = category.emoji,
+                                iconKey = category.icon,
                                 selected = category.id == selectedCategoryId,
                                 onClick = {
                                     onSelect(category.id)

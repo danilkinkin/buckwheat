@@ -48,6 +48,7 @@ import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.billCategoryNames
+import com.danilkinkin.buckwheat.base.CategoryIcon
 import com.danilkinkin.buckwheat.base.DonutChart
 import com.danilkinkin.buckwheat.base.DonutSegment
 import com.danilkinkin.buckwheat.base.GradientCard
@@ -589,13 +590,12 @@ private fun CategoryShareRow(
                     .background(color),
             )
             Spacer(Modifier.width(8.dp))
-            if (!categoryTotal.category?.emoji.isNullOrEmpty()) {
-                Text(
-                    text = categoryTotal.category.emoji,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Spacer(Modifier.width(6.dp))
-            }
+            CategoryIcon(
+                category = categoryTotal.category,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(18.dp),
+            )
+            Spacer(Modifier.width(6.dp))
             Text(
                 text = name,
                 style = MaterialTheme.typography.bodyLarge,

@@ -48,11 +48,12 @@ class SpendsRepository @Inject constructor(
     fun getAllCategories(): LiveData<List<Category>> =
         categoryDao.getAll().map { it.sortedForDisplay() }
 
-    suspend fun addCategory(name: String, emoji: String, color: Long): Long {
+    suspend fun addCategory(name: String, icon: String, color: Long): Long {
         return categoryDao.insert(
             Category(
                 name = name.trim(),
-                emoji = emoji.trim(),
+                emoji = "",
+                icon = icon,
                 color = color,
             )
         )

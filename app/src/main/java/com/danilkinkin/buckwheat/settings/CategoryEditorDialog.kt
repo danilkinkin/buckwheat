@@ -1,16 +1,25 @@
 package com.danilkinkin.buckwheat.settings
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -21,11 +30,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.categoryIconKeys
+import com.danilkinkin.buckwheat.base.categoryIconRes
 
 private val categoryPalette = listOf(
     0xFFFF8A65, // deep orange
@@ -42,14 +56,15 @@ private val categoryPalette = listOf(
 fun nextCategoryColor(categoryCount: Int): Long =
     categoryPalette[categoryCount % categoryPalette.size]
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AddCategoryDialog(
     nextColor: Long,
-    onAdd: (name: String, emoji: String, color: Long) -> Unit,
+    onAdd: (name: String, icon: String, color: Long) -> Unit,
     onClose: () -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
-    var emoji by remember { mutableStateOf("") }
+    var icon by remember { mutableStateOf("other") }
 
     Dialog(onDismissRequest = onClose) {
         Surface(
@@ -62,7 +77,9 @@ fun AddCategoryDialog(
                     text = stringResource(R.string.add_category),
                     style = MaterialTheme.typography.titleLarge,
                 )
+
                 Spacer(Modifier.height(16.dp))
+
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -70,18 +87,65 @@ fun AddCategoryDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
-                Spacer(Modifier.height(12.dp))
-                OutlinedTextField(
-                    value = emoji,
-                    onValueChange = { value ->
-                        // Keep one grapheme-ish: most emoji are one or two UTF-16 units.
-                        emoji = value.take(2)
-                    },
-                    label = { Text(stringResource(R.string.category_emoji)) },
-                    singleLine = true,
-                    modifier = Modifier.width(120.dp),
+
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    text = stringResource(R.string.category_icon),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+
+                Spacer(Modifier.height(8.dp))
+
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    categoryIconKeys.forEach { key ->
+                        val selected = key == icon
+
+                        Surface(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .then(
+                                    if (selected) {
+                                        Modifier.border(
+                                            width = 2.dp,
+                                            color = MaterialTheme.colorScheme.primary,
+                                            shape = CircleShape,
+                                        )
+                                    } else {
+                                        Modifier
+                                    }
+                                )
+                                .clickable { icon = key },
+                            shape = CircleShape,
+                            color = if (selected) {
+                                MaterialTheme.colorScheme.primaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.surfaceContainerHighest
+                            },
+                            contentColor = if (selected) {
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
+                        ) {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Icon(
+                                    painter = painterResource(categoryIconRes(key)!!),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(22.dp),
+                                )
+                            }
+                        }
+                    }
+                }
+
                 Spacer(Modifier.height(20.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
@@ -94,7 +158,7 @@ fun AddCategoryDialog(
                     }
                     Spacer(Modifier.width(8.dp))
                     Button(
-                        onClick = { onAdd(name, emoji, nextColor) },
+                        onClick = { onAdd(name, icon, nextColor) },
                         enabled = name.isNotBlank(),
                     ) {
                         Text(stringResource(R.string.add))

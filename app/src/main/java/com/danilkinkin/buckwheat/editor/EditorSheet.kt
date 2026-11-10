@@ -349,8 +349,8 @@ fun EditorSheet(
     if (showAddCategory) {
         AddCategoryDialog(
             nextColor = nextCategoryColor(categories.size),
-            onAdd = { name, emoji, color ->
-                spendsViewModel.addCategory(name, emoji, color)
+            onAdd = { name, icon, color ->
+                spendsViewModel.addCategory(name, icon, color)
                 showAddCategory = false
             },
             onClose = { showAddCategory = false },

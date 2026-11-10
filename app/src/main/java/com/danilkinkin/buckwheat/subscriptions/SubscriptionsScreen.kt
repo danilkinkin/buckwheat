@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.draw.clip
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.CategoryIcon
 import com.danilkinkin.buckwheat.base.EmptyState
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.data.AppViewModel
@@ -221,7 +222,7 @@ private fun SubscriptionRow(
     ) {
         if (service != null) {
             ServiceBadge(service = service, size = 48.dp)
-        } else if (!category?.emoji.isNullOrEmpty()) {
+        } else if (category != null) {
             Surface(
                 modifier = Modifier.size(48.dp),
                 shape = CircleShape,
@@ -229,9 +230,10 @@ private fun SubscriptionRow(
                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = category.emoji,
-                        style = MaterialTheme.typography.titleMedium,
+                    CategoryIcon(
+                        category = category,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(22.dp),
                     )
                 }
             }

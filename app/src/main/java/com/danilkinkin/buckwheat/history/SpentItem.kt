@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.ExtendCurrency
+import com.danilkinkin.buckwheat.base.CategoryIcon
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.data.entities.Transaction
@@ -94,19 +95,10 @@ fun SpentItem(
                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             ) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    if (!category?.emoji.isNullOrEmpty()) {
-                        Text(
-                            text = category.emoji,
-                            style = MaterialTheme.typography.titleMedium,
-                            textAlign = TextAlign.Center,
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_label),
-                            contentDescription = null,
-                            modifier = Modifier.size(22.dp),
-                        )
-                    }
+                    CategoryIcon(
+                        category = category,
+                        modifier = Modifier.size(22.dp),
+                    )
                 }
             }
         }

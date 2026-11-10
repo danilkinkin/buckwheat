@@ -51,6 +51,7 @@ import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.Transaction
+import com.danilkinkin.buckwheat.base.CategoryIcon
 import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.history.SpentItem
@@ -111,18 +112,6 @@ fun HomeScreen(
         .sortedBy { it.nextDue.time }
         .take(UPCOMING_COUNT)
     val recent = spends.takeLast(RECENT_COUNT).asReversed()
-    val weekDays = remember(spends) {
-        val today = LocalDate.now()
-        (6 downTo 0).map { offset ->
-            val day = today.minusDays(offset.toLong())
-            day to spends
-                .filter { it.date.toLocalDate() == day }
-                .fold(BigDecimal.ZERO) { total, spend -> total + spend.value }
-        }
-    }
-    val weekTotal = remember(weekDays) {
-        weekDays.fold(BigDecimal.ZERO) { total, (_, amount) -> total + amount }
-    }
 
     Box(Modifier.fillMaxSize().statusBarsPadding()) {
         // A soft accent glow behind the fixed header and heroes.
@@ -206,15 +195,6 @@ fun HomeScreen(
                     .weight(1f),
                 contentPadding = PaddingValues(bottom = 104.dp),
             ) {
-                item("week") {
-                    WeekSpendCard(
-                        days = weekDays,
-                        total = weekTotal,
-                        currency = currency,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                    )
-                }
-
                 item("upcoming") {
                     SectionTitle(
                         title = stringResource(R.string.upcoming),
@@ -350,98 +330,6 @@ private fun HeroCard(
 }
 
 @Composable
-private fun WeekSpendCard(
-    days: List<Pair<LocalDate, BigDecimal>>,
-    total: BigDecimal,
-    currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    val locale = LocalConfiguration.current.locales[0]
-    val dayFormatter = remember(locale) { DateTimeFormatter.ofPattern("EEEEE", locale) }
-    val max = days.maxOfOrNull { it.second } ?: BigDecimal.ZERO
-    val today = LocalDate.now()
-    val primary = MaterialTheme.colorScheme.primary
-
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-    ) {
-        Column(Modifier.padding(18.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.this_week),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        text = numberFormat(context, total, currency),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontFeatureSettings = "tnum",
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.Bottom,
-            ) {
-                days.forEach { (day, amount) ->
-                    val fraction = if (max > BigDecimal.ZERO) {
-                        amount.toFloat() / max.toFloat()
-                    } else {
-                        0f
-                    }
-                    val isToday = day == today
-
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .height((40.dp * fraction).coerceAtLeast(3.dp))
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(
-                                    if (isToday) {
-                                        primary
-                                    } else {
-                                        primary.copy(alpha = 0.35f)
-                                    }
-                                ),
-                        )
-                        Spacer(Modifier.height(6.dp))
-                        Text(
-                            text = day.format(dayFormatter),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = if (isToday) {
-                                primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                            },
-                            maxLines = 1,
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
 private fun SectionTitle(
     title: String,
     count: Int,
@@ -520,12 +408,20 @@ private fun UpcomingSubscriptionRow(
     ) {
         if (service != null) {
             ServiceBadge(service = service, size = 48.dp)
-        } else if (!category?.emoji.isNullOrEmpty()) {
-            Text(
-                text = category.emoji,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.width(48.dp),
-            )
+        } else if (category != null) {
+            Surface(
+                modifier = Modifier.size(48.dp),
+                shape = RoundedCornerShape(24.dp),
+                color = Color(category.color).copy(alpha = 0.22f),
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CategoryIcon(
+                        category = category,
+                        modifier = Modifier.size(22.dp),
+                    )
+                }
+            }
         } else {
             Spacer(Modifier.width(48.dp))
         }

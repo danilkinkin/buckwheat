@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -42,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
+import com.danilkinkin.buckwheat.base.CategoryIcon
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
@@ -132,8 +134,8 @@ fun CategoriesSheet(
     if (showAddDialog) {
         AddCategoryDialog(
             nextColor = nextCategoryColor(categories.size),
-            onAdd = { name, emoji, color ->
-                spendsViewModel.addCategory(name, emoji, color)
+            onAdd = { name, icon, color ->
+                spendsViewModel.addCategory(name, icon, color)
                 showAddDialog = false
             },
             onClose = { showAddDialog = false },
@@ -152,9 +154,10 @@ private fun CategoryRow(
             .padding(start = 24.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = category.emoji,
-            style = MaterialTheme.typography.titleMedium,
+        CategoryIcon(
+            category = category,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(22.dp),
         )
         Spacer(Modifier.width(12.dp))
         Text(
