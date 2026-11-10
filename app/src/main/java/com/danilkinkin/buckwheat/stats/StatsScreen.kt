@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.stats
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,6 +47,7 @@ import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.billCategoryNames
+import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.data.monthlyEquivalent
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
@@ -390,10 +392,8 @@ private fun TotalCard(
 ) {
     val context = LocalContext.current
 
-    Surface(
+    GradientCard(
         shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
@@ -407,7 +407,9 @@ private fun TotalCard(
             Spacer(Modifier.height(6.dp))
             Text(
                 text = numberFormat(context, total, currency),
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.displaySmall.copy(
+                    fontFeatureSettings = "tnum",
+                ),
                 maxLines = 1,
                 softWrap = false,
                 overflow = TextOverflow.Ellipsis,
@@ -491,13 +493,20 @@ private fun SectionTitle(
 private fun SectionCard(
     content: @Composable () -> Unit,
 ) {
+    val shape = RoundedCornerShape(28.dp)
+
     Surface(
-        shape = RoundedCornerShape(28.dp),
+        shape = shape,
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         contentColor = MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.18f),
+                shape = shape,
+            ),
     ) {
         content()
     }

@@ -64,6 +64,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryChip
+import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.base.MinimalTextField
 import com.danilkinkin.buckwheat.data.ExtendCurrency
@@ -402,13 +403,11 @@ private fun MonthlySummaryCard(
 ) {
     val context = LocalContext.current
 
-    Surface(
+    GradientCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
     ) {
         Column(Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.Top) {
@@ -423,7 +422,9 @@ private fun MonthlySummaryCard(
                     Spacer(Modifier.height(4.dp))
                     Text(
                         text = numberFormat(context, total, currency),
-                        style = MaterialTheme.typography.headlineMedium,
+                        style = MaterialTheme.typography.displaySmall.copy(
+                            fontFeatureSettings = "tnum",
+                        ),
                         maxLines = 1,
                         softWrap = false,
                         overflow = TextOverflow.Ellipsis,

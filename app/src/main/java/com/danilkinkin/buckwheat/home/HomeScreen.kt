@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -44,6 +45,7 @@ import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
+import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.history.SpentItem
 import com.danilkinkin.buckwheat.subscriptions.ServiceBadge
@@ -151,16 +153,12 @@ fun HomeScreen(
                         label = stringResource(R.string.today),
                         amount = todayTotal,
                         currency = currency,
-                        container = MaterialTheme.colorScheme.primaryContainer,
-                        content = MaterialTheme.colorScheme.onPrimaryContainer,
                         modifier = Modifier.weight(1f),
                     )
                     HeroCard(
                         label = stringResource(R.string.this_month),
                         amount = monthTotal,
                         currency = currency,
-                        container = MaterialTheme.colorScheme.secondaryContainer,
-                        content = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -246,29 +244,28 @@ private fun HeroCard(
     label: String,
     amount: BigDecimal,
     currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
-    container: androidx.compose.ui.graphics.Color,
-    content: androidx.compose.ui.graphics.Color,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
-    Surface(
-        modifier = modifier.height(112.dp),
+    GradientCard(
+        modifier = modifier.height(120.dp),
         shape = RoundedCornerShape(28.dp),
-        color = container,
-        contentColor = content,
     ) {
+        val contentColor = LocalContentColor.current
+
         Column(Modifier.padding(18.dp)) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = content.copy(alpha = 0.7f),
+                color = contentColor.copy(alpha = 0.75f),
             )
             Spacer(Modifier.weight(1f))
             Text(
                 text = numberFormat(context, amount, currency),
-                style = MaterialTheme.typography.headlineMedium,
-                color = content,
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontFeatureSettings = "tnum",
+                ),
                 maxLines = 1,
                 softWrap = false,
                 overflow = TextOverflow.Ellipsis,

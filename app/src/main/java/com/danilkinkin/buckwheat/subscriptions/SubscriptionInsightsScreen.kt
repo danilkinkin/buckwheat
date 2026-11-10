@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.subscriptions
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,6 +50,7 @@ import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
 import com.danilkinkin.buckwheat.data.monthlyEquivalent
 import com.danilkinkin.buckwheat.data.nextSubscriptionDate
+import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.numberFormat
@@ -303,13 +305,11 @@ private fun RecurringHero(
 ) {
     val context = LocalContext.current
 
-    Surface(
+    GradientCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(28.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
     ) {
         Column(Modifier.padding(20.dp)) {
             Text(
@@ -320,7 +320,9 @@ private fun RecurringHero(
             Spacer(Modifier.height(4.dp))
             Text(
                 text = numberFormat(context, monthlyTotal, currency),
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.displaySmall.copy(
+                    fontFeatureSettings = "tnum",
+                ),
                 maxLines = 1,
                 softWrap = false,
             )
@@ -401,11 +403,18 @@ private fun InsightSectionTitle(title: String) {
 
 @Composable
 private fun InsightCard(content: @Composable () -> Unit) {
+    val shape = RoundedCornerShape(28.dp)
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        shape = RoundedCornerShape(28.dp),
+            .padding(horizontal = 16.dp)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.18f),
+                shape = shape,
+            ),
+        shape = shape,
         color = MaterialTheme.colorScheme.surfaceContainerHigh,
         contentColor = MaterialTheme.colorScheme.onSurface,
     ) {

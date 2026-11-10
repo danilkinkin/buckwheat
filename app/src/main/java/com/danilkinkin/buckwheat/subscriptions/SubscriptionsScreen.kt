@@ -255,7 +255,7 @@ private fun SubscriptionRow(
 
         Text(
             text = numberFormat(context, subscription.amount, currency),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
             maxLines = 1,
         )
     }

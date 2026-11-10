@@ -135,7 +135,7 @@ fun SpentItem(
 
         Text(
             text = numberFormat(context = context, transaction.value, currency = currency),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium.copy(fontFeatureSettings = "tnum"),
             color = colorOnEditor,
             maxLines = 1,
             softWrap = false,
