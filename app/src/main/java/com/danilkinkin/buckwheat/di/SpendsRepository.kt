@@ -105,6 +105,13 @@ class SpendsRepository @Inject constructor(
         }
     }
 
+    /** Puts a deleted subscription back, including its original id, for the Undo action. */
+    suspend fun restoreSubscription(subscription: Subscription) {
+        withContext(Dispatchers.IO) {
+            subscriptionDao.insert(subscription)
+        }
+    }
+
     /**
      * Posts the due occurrence as a normal SPENT transaction dated to the due day, then advances
      * the subscription. The transaction check keeps a double tap from posting twice.

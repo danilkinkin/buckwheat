@@ -60,6 +60,8 @@ fun MainScreen(
     spendsViewModel: SpendsViewModel = viewModel(),
 ) {
     var screen by rememberSaveable { mutableStateOf(AppScreen.HOME) }
+    // Subscriptions is reachable from Home, Stats and Settings; return to the right place.
+    var subscriptionsReturn by rememberSaveable { mutableStateOf(AppScreen.HOME) }
     val nightMode = remember { mutableStateOf(false) }
 
     nightMode.value = isNightMode()
@@ -90,7 +92,11 @@ fun MainScreen(
     )
 
     BackHandler(enabled = screen != AppScreen.HOME) {
-        screen = AppScreen.HOME
+        screen = if (screen == AppScreen.SUBSCRIPTIONS) {
+            subscriptionsReturn
+        } else {
+            AppScreen.HOME
+        }
     }
 
     Surface(
@@ -105,7 +111,10 @@ fun MainScreen(
                         editorViewModel.resetEditingSpent()
                         appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "expense")))
                     },
-                    onOpenSubscriptions = { screen = AppScreen.SUBSCRIPTIONS },
+                    onOpenSubscriptions = {
+                        subscriptionsReturn = AppScreen.HOME
+                        screen = AppScreen.SUBSCRIPTIONS
+                    },
                     onOpenHistory = { screen = AppScreen.HISTORY },
                     onOpenStats = { screen = AppScreen.STATS },
                     onOpenSettings = { screen = AppScreen.SETTINGS },
@@ -119,13 +128,27 @@ fun MainScreen(
                 )
 
                 AppScreen.SUBSCRIPTIONS -> SubscriptionsScreen(
-                    onBack = { screen = AppScreen.HOME },
+                    onBack = { screen = subscriptionsReturn },
                     onAddSubscription = {
                         appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "subscription")))
                     },
+                    onEditSubscription = { id ->
+                        appViewModel.openSheet(
+                            PathState(
+                                EDITOR_SHEET,
+                                mapOf("tab" to "subscription", "id" to id),
+                            )
+                        )
+                    },
                 )
 
-                AppScreen.STATS -> StatsScreen(onBack = { screen = AppScreen.HOME })
+                AppScreen.STATS -> StatsScreen(
+                    onBack = { screen = AppScreen.HOME },
+                    onOpenSubscriptions = {
+                        subscriptionsReturn = AppScreen.STATS
+                        screen = AppScreen.SUBSCRIPTIONS
+                    },
+                )
 
                 AppScreen.SETTINGS -> Column(
                     Modifier
@@ -153,7 +176,10 @@ fun MainScreen(
                         onOpenCategories = {
                             appViewModel.openSheet(PathState(CATEGORIES_SHEET))
                         },
-                        onOpenSubscriptions = { screen = AppScreen.SUBSCRIPTIONS },
+                        onOpenSubscriptions = {
+                            subscriptionsReturn = AppScreen.SETTINGS
+                            screen = AppScreen.SUBSCRIPTIONS
+                        },
                         activityResultRegistryOwner = activityResultRegistryOwner,
                     )
                 }

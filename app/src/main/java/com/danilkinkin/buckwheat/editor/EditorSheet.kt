@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.editor
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +46,7 @@ import com.danilkinkin.buckwheat.settings.AddCategoryDialog
 import com.danilkinkin.buckwheat.settings.nextCategoryColor
 import com.danilkinkin.buckwheat.subscriptions.SubscriptionForm
 import com.danilkinkin.buckwheat.ui.colorOnEditor
+import com.danilkinkin.buckwheat.util.toLocalDate
 
 const val EDITOR_SHEET = "editor"
 
@@ -57,6 +60,7 @@ private enum class AddTab { EXPENSE, SUBSCRIPTION }
 @Composable
 fun EditorSheet(
     initialTab: String = "expense",
+    subscriptionId: Int? = null,
     onClose: () -> Unit,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
@@ -64,18 +68,29 @@ fun EditorSheet(
 ) {
     val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
     val categories by spendsViewModel.categories.observeAsState(emptyList())
+    val subscriptions by subscriptionsViewModel.subscriptions.observeAsState(emptyList())
+    val editingSubscription = subscriptionId?.let { id ->
+        subscriptions.firstOrNull { it.id == id }
+    }
+    val isEditingSubscription = subscriptionId != null
     val selectedCategoryId by editorViewModel.currentCategoryId.observeAsState(null)
     val comment by editorViewModel.currentComment.observeAsState("")
 
     var tab by remember {
         mutableStateOf(
-            if (initialTab == "subscription") AddTab.SUBSCRIPTION else AddTab.EXPENSE
+            if (initialTab == "subscription" || subscriptionId != null) {
+                AddTab.SUBSCRIPTION
+            } else {
+                AddTab.EXPENSE
+            }
         )
     }
     // Delay the first focus only while the sheet itself is entering. Any later tab switch moves
     // focus straight to the new field, so the keyboard never has to close and re-open.
     var nameFocusDelay by remember {
-        mutableStateOf(if (initialTab == "subscription") 220L else 0L)
+        mutableStateOf(
+            if (initialTab == "subscription" && subscriptionId == null) 220L else 0L
+        )
     }
     var showAddCategory by remember { mutableStateOf(false) }
     val focusController = remember { FocusController() }
@@ -164,10 +179,21 @@ fun EditorSheet(
                 )
             }
 
-            if (tab == AddTab.EXPENSE && mode == EditMode.EDIT) {
+            val canDelete = (tab == AddTab.EXPENSE && mode == EditMode.EDIT) ||
+                    (tab == AddTab.SUBSCRIPTION && editingSubscription != null)
+
+            if (canDelete) {
                 IconButton(
                     onClick = {
-                        editorViewModel.editedTransaction?.let { spendsViewModel.removeSpent(it) }
+                        if (tab == AddTab.EXPENSE) {
+                            editorViewModel.editedTransaction?.let {
+                                spendsViewModel.removeSpent(it)
+                            }
+                        } else {
+                            editingSubscription?.let {
+                                subscriptionsViewModel.delete(it.id)
+                            }
+                        }
                         cancel()
                     },
                 ) {
@@ -242,26 +268,62 @@ fun EditorSheet(
                 Text(stringResource(R.string.save))
             }
         } else {
-            SubscriptionForm(
-                initial = null,
-                categories = categories,
-                onSave = { name, amount, period, intervalCount, nextDue, categoryId, serviceId ->
-                    subscriptionsViewModel.add(
-                        name,
-                        amount,
-                        period,
-                        intervalCount,
-                        nextDue,
-                        categoryId,
-                        serviceId,
-                    )
-                    onClose()
-                },
-                modifier = Modifier.padding(horizontal = 24.dp),
-                onAddCategory = { showAddCategory = true },
-                autoFocusName = true,
-                autoFocusDelayMillis = nameFocusDelay,
-            )
+            if (isEditingSubscription && editingSubscription == null) {
+                // The subscription list is still loading; do not initialise the form with an
+                // empty draft and then swap to the real one.
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(160.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                SubscriptionForm(
+                    initial = editingSubscription,
+                    categories = categories,
+                    onSave = { name, amount, period, intervalCount, nextDue, categoryId, serviceId ->
+                        if (editingSubscription != null) {
+                            subscriptionsViewModel.update(
+                                editingSubscription.copy(
+                                    name = name.trim(),
+                                    amount = amount,
+                                    period = period.name,
+                                    intervalCount = intervalCount,
+                                    anchorDay = nextDue.toLocalDate().dayOfMonth,
+                                    nextDue = nextDue,
+                                    categoryId = categoryId,
+                                    serviceId = serviceId,
+                                )
+                            )
+                        } else {
+                            subscriptionsViewModel.add(
+                                name,
+                                amount,
+                                period,
+                                intervalCount,
+                                nextDue,
+                                categoryId,
+                                serviceId,
+                            )
+                        }
+                        onClose()
+                    },
+                    modifier = Modifier.padding(horizontal = 24.dp),
+                    onAddCategory = { showAddCategory = true },
+                    onMarkPaid = editingSubscription
+                        ?.takeIf { it.nextDue.time <= System.currentTimeMillis() }
+                        ?.let { due ->
+                            {
+                                subscriptionsViewModel.markPaid(due)
+                                onClose()
+                            }
+                        },
+                    autoFocusName = !isEditingSubscription,
+                    autoFocusDelayMillis = if (isEditingSubscription) 0L else nameFocusDelay,
+                )
+            }
         }
     }
 

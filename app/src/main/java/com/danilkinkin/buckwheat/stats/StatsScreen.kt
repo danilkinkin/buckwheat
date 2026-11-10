@@ -1,6 +1,7 @@
 package com.danilkinkin.buckwheat.stats
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,8 +44,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
+import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
+import com.danilkinkin.buckwheat.data.entities.Subscription
+import com.danilkinkin.buckwheat.data.entities.SubscriptionPeriod
 import com.danilkinkin.buckwheat.data.entities.Transaction
+import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.numberFormat
 import com.danilkinkin.buckwheat.util.prettyDate
@@ -64,11 +69,15 @@ import java.time.YearMonth
 @Composable
 fun StatsScreen(
     onBack: () -> Unit,
+    onOpenSubscriptions: () -> Unit = {},
     spendsViewModel: SpendsViewModel = hiltViewModel(),
+    subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
 ) {
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val categories by spendsViewModel.categories.observeAsState(emptyList())
+    val subscriptions by subscriptionsViewModel.subscriptions.observeAsState(emptyList())
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+    val categoriesById = remember(categories) { categories.associateBy { it.id } }
 
     val today = LocalDate.now()
     val currentMonth = YearMonth.from(today)
@@ -95,6 +104,22 @@ fun StatsScreen(
     }
     val peakDay = remember(dailyTotals) {
         dailyTotals.maxByOrNull { it.second }
+    }
+
+    val activeSubscriptions = remember(subscriptions) { subscriptions.filter { it.active } }
+    val monthlyRecurring = remember(activeSubscriptions) {
+        activeSubscriptions.fold(BigDecimal.ZERO) { sum, subscription ->
+            sum + monthlyEquivalent(subscription)
+        }
+    }
+    val monthlyBills = remember(activeSubscriptions, categoriesById) {
+        activeSubscriptions
+            .filter { subscription ->
+                categoriesById[subscription.categoryId]?.name in billCategoryNames
+            }
+            .fold(BigDecimal.ZERO) { sum, subscription ->
+                sum + monthlyEquivalent(subscription)
+            }
     }
 
     Column(
@@ -153,6 +178,19 @@ fun StatsScreen(
                     count = monthSpends.size,
                     currency = currency,
                 )
+            }
+
+            if (activeSubscriptions.isNotEmpty()) {
+                item("recurring") {
+                    RecurringCard(
+                        monthlyTotal = monthlyRecurring,
+                        monthlyServices = monthlyRecurring - monthlyBills,
+                        monthlyBills = monthlyBills,
+                        activeCount = activeSubscriptions.size,
+                        currency = currency,
+                        onClick = onOpenSubscriptions,
+                    )
+                }
             }
 
             if (monthSpends.isNotEmpty()) {
@@ -274,6 +312,97 @@ private fun composeDailyTotals(
     return (1..month.lengthOfMonth()).map { day ->
         day to (byDay[day]?.fold(BigDecimal.ZERO) { sum, spend -> sum + spend.value }
             ?: BigDecimal.ZERO)
+    }
+}
+
+/** Bill-like categories; everything else counts as a service subscription. */
+private val billCategoryNames = setOf("Home & Bills", "Mobile & Internet")
+
+/** The monthly share of one subscription, normalised so mixed intervals can be summed. */
+private fun monthlyEquivalent(subscription: Subscription): BigDecimal {
+    val count = subscription.intervalCount.coerceAtLeast(1).toBigDecimal()
+
+    return when (subscription.period.toSubscriptionPeriod()) {
+        SubscriptionPeriod.DAYS -> subscription.amount
+            .multiply(BigDecimal("30.4375"))
+            .divide(count, 2, RoundingMode.HALF_UP)
+
+        SubscriptionPeriod.WEEKS -> subscription.amount
+            .multiply(BigDecimal("4.345"))
+            .divide(count, 2, RoundingMode.HALF_UP)
+
+        SubscriptionPeriod.MONTHS -> subscription.amount
+            .divide(count, 2, RoundingMode.HALF_UP)
+
+        SubscriptionPeriod.YEARS -> subscription.amount
+            .divide(count.multiply(BigDecimal(12)), 2, RoundingMode.HALF_UP)
+    }
+}
+
+@Composable
+private fun RecurringCard(
+    monthlyTotal: BigDecimal,
+    monthlyServices: BigDecimal,
+    monthlyBills: BigDecimal,
+    activeCount: Int,
+    currency: ExtendCurrency,
+    onClick: () -> Unit,
+) {
+    val context = LocalContext.current
+
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    ) {
+        Column(Modifier.padding(20.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.recurring_per_month),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = pluralStringResource(
+                        R.plurals.active_subscriptions,
+                        activeCount,
+                        activeCount,
+                    ),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                )
+            }
+
+            Spacer(Modifier.height(6.dp))
+
+            Text(
+                text = numberFormat(context, monthlyTotal, currency),
+                style = MaterialTheme.typography.headlineSmall,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Ellipsis,
+            )
+
+            Spacer(Modifier.height(4.dp))
+
+            Text(
+                text = stringResource(
+                    R.string.services_bills_split,
+                    numberFormat(context, monthlyServices, currency),
+                    numberFormat(context, monthlyBills, currency),
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }
 

@@ -86,6 +86,7 @@ fun SubscriptionForm(
     modifier: Modifier = Modifier,
     onCancel: (() -> Unit)? = null,
     onAddCategory: (() -> Unit)? = null,
+    onMarkPaid: (() -> Unit)? = null,
     autoFocusName: Boolean = false,
     /**
      * Only used when the form appears together with the sheet opening. A non-zero delay lets the
@@ -368,6 +369,13 @@ fun SubscriptionForm(
             },
             onAddCategory = onAddCategory,
         )
+
+        if (onMarkPaid != null) {
+            Spacer(Modifier.height(8.dp))
+            TextButton(onClick = onMarkPaid) {
+                Text(stringResource(R.string.mark_as_paid))
+            }
+        }
 
         Spacer(Modifier.height(20.dp))
 

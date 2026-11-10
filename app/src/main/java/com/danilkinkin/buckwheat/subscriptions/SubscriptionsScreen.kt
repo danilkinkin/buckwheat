@@ -19,19 +19,19 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -39,10 +39,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.draw.clip
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ListCard
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ServiceCatalog
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
@@ -50,16 +51,21 @@ import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
+import com.danilkinkin.buckwheat.history.SwipeActions
+import com.danilkinkin.buckwheat.history.SwipeActionsConfig
 import com.danilkinkin.buckwheat.util.numberFormat
 import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toLocalDate
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SubscriptionsScreen(
     onBack: () -> Unit = {},
     onAddSubscription: () -> Unit = {},
+    onEditSubscription: (Int) -> Unit = {},
     subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val subscriptions by subscriptionsViewModel.subscriptions.observeAsState(emptyList())
     val categories by spendsViewModel.categories.observeAsState(emptyList())
@@ -67,8 +73,9 @@ fun SubscriptionsScreen(
         com.danilkinkin.buckwheat.data.ExtendCurrency.none()
     )
 
-    var editing by remember { mutableStateOf<Subscription?>(null) }
     val categoriesById = remember(categories) { categories.associateBy { it.id } }
+    val removedMessage = stringResource(R.string.remove_subscription)
+    val undoLabel = stringResource(R.string.remove_spent_undo)
 
     Box(Modifier.fillMaxSize().statusBarsPadding()) {
         Column(Modifier.fillMaxSize()) {
@@ -110,14 +117,47 @@ fun SubscriptionsScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     items(subscriptions, key = { it.id }) { subscription ->
-                        ListCard {
-                            SubscriptionRow(
-                                subscription = subscription,
-                                service = ServiceCatalog.find(subscription.serviceId),
-                                category = subscription.categoryId?.let { categoriesById[it] },
-                                currency = currency,
-                                onClick = { editing = subscription },
-                            )
+                        SwipeActions(
+                            modifier = Modifier.clip(RoundedCornerShape(24.dp)),
+                            startActionsConfig = SwipeActionsConfig(
+                                threshold = 0.4f,
+                                background = MaterialTheme.colorScheme.tertiaryContainer,
+                                backgroundActive = MaterialTheme.colorScheme.tertiary,
+                                iconTint = MaterialTheme.colorScheme.onTertiary,
+                                icon = painterResource(R.drawable.ic_edit),
+                                stayDismissed = false,
+                                onDismiss = { onEditSubscription(subscription.id) },
+                            ),
+                            endActionsConfig = SwipeActionsConfig(
+                                threshold = 0.4f,
+                                background = MaterialTheme.colorScheme.errorContainer,
+                                backgroundActive = MaterialTheme.colorScheme.error,
+                                iconTint = MaterialTheme.colorScheme.onError,
+                                icon = painterResource(R.drawable.ic_delete_forever),
+                                stayDismissed = true,
+                                onDismiss = {
+                                    subscriptionsViewModel.delete(subscription.id)
+                                    appViewModel.showSnackbar(
+                                        message = removedMessage,
+                                        actionLabel = undoLabel,
+                                        duration = SnackbarDuration.Long,
+                                    ) { result ->
+                                        if (result == SnackbarResult.ActionPerformed) {
+                                            subscriptionsViewModel.restore(subscription)
+                                        }
+                                    }
+                                },
+                            ),
+                        ) {
+                            ListCard {
+                                SubscriptionRow(
+                                    subscription = subscription,
+                                    service = ServiceCatalog.find(subscription.serviceId),
+                                    category = subscription.categoryId?.let { categoriesById[it] },
+                                    currency = currency,
+                                    onClick = { onEditSubscription(subscription.id) },
+                                )
+                            }
                         }
                     }
                 }
@@ -137,74 +177,7 @@ fun SubscriptionsScreen(
         }
     }
 
-    val subscriptionBeingEdited = editing
-    if (subscriptionBeingEdited != null) {
-        Dialog(onDismissRequest = { editing = null }) {
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-            ) {
-                Column(Modifier.padding(24.dp)) {
-                    Text(
-                        text = stringResource(R.string.edit_subscription),
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        TextButton(
-                            onClick = {
-                                subscriptionsViewModel.delete(subscriptionBeingEdited.id)
-                                editing = null
-                            },
-                        ) {
-                            Text(
-                                text = stringResource(R.string.delete),
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
-                        Spacer(Modifier.weight(1f))
-                        if (subscriptionBeingEdited.nextDue.time <= System.currentTimeMillis()) {
-                            TextButton(
-                                onClick = {
-                                    subscriptionsViewModel.markPaid(subscriptionBeingEdited)
-                                    editing = null
-                                },
-                            ) {
-                                Text(stringResource(R.string.mark_as_paid))
-                            }
-                        }
-                    }
-                    Spacer(Modifier.height(16.dp))
-                    SubscriptionForm(
-                        initial = subscriptionBeingEdited,
-                        categories = categories,
-                        onSave = { name, amount, period, intervalCount, nextDue, categoryId, serviceId ->
-                            subscriptionsViewModel.update(
-                                subscriptionBeingEdited.copy(
-                                    name = name.trim(),
-                                    amount = amount,
-                                    period = period.name,
-                                    intervalCount = intervalCount,
-                                    anchorDay = nextDue.toLocalDate().dayOfMonth,
-                                    nextDue = nextDue,
-                                    categoryId = categoryId,
-                                    serviceId = serviceId,
-                                )
-                            )
-                            editing = null
-                        },
-                        onCancel = { editing = null },
-                    )
 
-
-                }
-            }
-        }
-    }
 }
 
 @Composable

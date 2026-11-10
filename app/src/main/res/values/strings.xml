@@ -96,6 +96,13 @@
   <string name="add_expense">Add expense</string>
   <string name="expense">Expense</string>
   <string name="subscriptions_title">Subscriptions</string>
+  <string name="remove_subscription">Subscription removed</string>
+  <string name="recurring_per_month">Recurring / month</string>
+  <string name="services_bills_split">Services %1$s · Bills &amp; rent %2$s</string>
+  <plurals name="active_subscriptions">
+    <item quantity="one">%1$d active</item>
+    <item quantity="other">%1$d active</item>
+  </plurals>
   <string name="no_subscriptions">No subscriptions yet</string>
   <string name="add_subscription">Add subscription</string>
   <string name="edit_subscription">Edit subscription</string>

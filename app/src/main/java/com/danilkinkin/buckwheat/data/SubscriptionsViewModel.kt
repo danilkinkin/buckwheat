@@ -51,6 +51,12 @@ class SubscriptionsViewModel @Inject constructor(
         }
     }
 
+    fun restore(subscription: Subscription) {
+        viewModelScope.launch {
+            spendsRepository.restoreSubscription(subscription)
+        }
+    }
+
     fun markPaid(subscription: Subscription) {
         viewModelScope.launch {
             spendsRepository.markSubscriptionPaid(subscription)
