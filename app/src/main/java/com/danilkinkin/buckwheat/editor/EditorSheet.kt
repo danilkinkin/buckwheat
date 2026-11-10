@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryPicker
+import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.base.MinimalTextField
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
@@ -109,6 +110,10 @@ fun EditorSheet(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            // The sheet can grow past the top of the screen when the keyboard is open. The
+            // wrapper reports the status-bar overlap; without this the tab row sits under the
+            // clock and system icons.
+            .padding(top = LocalBottomSheetScrollState.current.topPadding)
             .imePadding()
             .padding(bottom = 16.dp),
     ) {

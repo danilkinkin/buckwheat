@@ -308,9 +308,13 @@ fun SubscriptionForm(
                             inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                             inactiveContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         ),
+                        // Four segments plus the default check icon leaves no room for
+                        // "Months"; the label is the selection indicator here.
+                        icon = {},
                         label = {
                             Text(
                                 text = option.unitLabel(),
+                                style = MaterialTheme.typography.labelMedium,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                             )
