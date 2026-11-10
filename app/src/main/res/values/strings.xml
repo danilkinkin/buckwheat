@@ -76,6 +76,8 @@
   <string name="max_amount">Max</string>
   <string name="clear_filters">Clear filters</string>
   <string name="no_matches">No expenses match these filters</string>
+  <string name="no_spends_description">Tap + to add your first expense.</string>
+  <string name="no_subscriptions_description">Add a recurring payment to track it here.</string>
   <string name="filtered_total">Filtered total</string>
   <string name="details">Details</string>
   <string name="category">Category</string>

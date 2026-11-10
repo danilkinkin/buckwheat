@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.draw.clip
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.base.EmptyState
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.ServiceCatalog
@@ -108,13 +109,12 @@ fun SubscriptionsScreen(
             }
 
             if (subscriptions.isEmpty()) {
-                Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = stringResource(R.string.no_subscriptions),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    )
-                }
+                EmptyState(
+                    icon = painterResource(R.drawable.ic_balance_wallet),
+                    title = stringResource(R.string.no_subscriptions),
+                    description = stringResource(R.string.no_subscriptions_description),
+                    modifier = Modifier.weight(1f),
+                )
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),

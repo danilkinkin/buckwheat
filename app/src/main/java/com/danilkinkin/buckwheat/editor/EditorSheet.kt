@@ -31,6 +31,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -94,6 +96,7 @@ fun EditorSheet(
     }
     var showAddCategory by remember { mutableStateOf(false) }
     val focusController = remember { FocusController() }
+    val haptic = LocalHapticFeedback.current
 
     var defaultCategoryApplied by remember { mutableStateOf(false) }
     LaunchedEffect(categories) {
@@ -316,6 +319,7 @@ fun EditorSheet(
                         ?.takeIf { it.nextDue.time <= System.currentTimeMillis() }
                         ?.let { due ->
                             {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 subscriptionsViewModel.markPaid(due)
                                 onClose()
                             }

@@ -65,6 +65,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryChip
+import com.danilkinkin.buckwheat.base.EmptyState
 import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.base.MinimalTextField
@@ -250,9 +251,12 @@ fun History(
                 when {
                     monthSpends.isEmpty() -> NoSpends(Modifier.fillMaxSize())
 
-                    historyList.isEmpty() -> NoMatches(
+                    historyList.isEmpty() -> EmptyState(
+                        icon = painterResource(R.drawable.ic_filter),
+                        title = stringResource(R.string.no_matches),
+                        actionLabel = stringResource(R.string.clear_filters),
+                        onAction = { clearAllFilters() },
                         modifier = Modifier.fillMaxSize(),
-                        onClear = { clearAllFilters() },
                     )
 
                     else -> LazyColumn(
@@ -530,35 +534,6 @@ private fun SearchField(
                     contentDescription = null,
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun NoMatches(
-    modifier: Modifier = Modifier,
-    onClear: () -> Unit,
-) {
-    Column(
-        modifier = modifier.padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_filter),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-            modifier = Modifier.size(40.dp),
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = stringResource(R.string.no_matches),
-            style = MaterialTheme.typography.bodyMedium,
-            color = colorOnEditor.copy(alpha = 0.7f),
-        )
-        Spacer(Modifier.height(8.dp))
-        TextButton(onClick = onClear) {
-            Text(stringResource(R.string.clear_filters))
         }
     }
 }

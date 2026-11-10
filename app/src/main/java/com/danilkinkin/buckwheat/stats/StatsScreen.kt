@@ -48,6 +48,8 @@ import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.billCategoryNames
+import com.danilkinkin.buckwheat.base.DonutChart
+import com.danilkinkin.buckwheat.base.DonutSegment
 import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.data.monthlyEquivalent
 import com.danilkinkin.buckwheat.data.entities.Category
@@ -229,15 +231,52 @@ fun StatsScreen(
                         icon = painterResource(R.drawable.ic_label),
                     )
                     SectionCard {
+                        val context = LocalContext.current
+                        val segments = categoryTotals.map { categoryTotal ->
+                            DonutSegment(
+                                value = categoryTotal.amount.toFloat(),
+                                color = categoryTotal.category
+                                    ?.let { Color(it.color) }
+                                    ?: MaterialTheme.colorScheme.primary,
+                            )
+                        }
+
                         Column(
                             modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
-                            verticalArrangement = Arrangement.spacedBy(14.dp),
                         ) {
-                            categoryTotals.forEach { categoryTotal ->
-                                CategoryShareRow(
-                                    categoryTotal = categoryTotal,
-                                    currency = currency,
-                                )
+                            DonutChart(
+                                segments = segments,
+                                modifier = Modifier
+                                    .align(Alignment.CenterHorizontally)
+                                    .size(150.dp),
+                                center = {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text(
+                                            text = stringResource(R.string.total_spent),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                        Text(
+                                            text = numberFormat(context, total, currency),
+                                            style = MaterialTheme.typography.titleMedium.copy(
+                                                fontFeatureSettings = "tnum",
+                                            ),
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            maxLines = 1,
+                                        )
+                                    }
+                                },
+                            )
+
+                            Spacer(Modifier.height(16.dp))
+
+                            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                                categoryTotals.forEach { categoryTotal ->
+                                    CategoryShareRow(
+                                        categoryTotal = categoryTotal,
+                                        currency = currency,
+                                    )
+                                }
                             }
                         }
                     }

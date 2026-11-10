@@ -1,5 +1,8 @@
 package com.danilkinkin.buckwheat.subscriptions
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
@@ -51,6 +55,9 @@ import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
 import com.danilkinkin.buckwheat.data.monthlyEquivalent
 import com.danilkinkin.buckwheat.data.nextSubscriptionDate
+import com.danilkinkin.buckwheat.base.DonutChart
+import com.danilkinkin.buckwheat.base.DonutSegment
+import com.danilkinkin.buckwheat.base.EmptyState
 import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.ui.colorOnEditor
@@ -73,6 +80,7 @@ fun SubscriptionInsightsScreen(
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val categories by spendsViewModel.categories.observeAsState(emptyList())
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
+    val context = LocalContext.current
 
     val active = remember(subscriptions) { subscriptions.filter { it.active } }
     val monthlyBySubscription = remember(active) {
@@ -163,19 +171,12 @@ fun SubscriptionInsightsScreen(
         }
 
         if (active.isEmpty()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(
-                    text = stringResource(R.string.no_subscriptions),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorOnEditor.copy(alpha = 0.7f),
-                )
-            }
+            EmptyState(
+                icon = painterResource(R.drawable.ic_analytics),
+                title = stringResource(R.string.no_subscriptions),
+                description = stringResource(R.string.no_subscriptions_description),
+                modifier = Modifier.weight(1f),
+            )
             return@Column
         }
 
@@ -271,14 +272,46 @@ fun SubscriptionInsightsScreen(
                 InsightCard {
                     Column(
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(14.dp),
                     ) {
-                        categoryShares.forEach { share ->
-                            CategoryShareRow(
-                                share = share,
-                                total = monthlyTotal,
-                                currency = currency,
-                            )
+                        DonutChart(
+                            segments = categoryShares.map { share ->
+                                DonutSegment(
+                                    value = share.amount.toFloat(),
+                                    color = share.color,
+                                )
+                            },
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .size(150.dp),
+                            center = {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text(
+                                        text = stringResource(R.string.recurring_per_month),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                    Text(
+                                        text = numberFormat(context, monthlyTotal, currency),
+                                        style = MaterialTheme.typography.titleMedium.copy(
+                                            fontFeatureSettings = "tnum",
+                                        ),
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                        maxLines = 1,
+                                    )
+                                }
+                            },
+                        )
+
+                        Spacer(Modifier.height(16.dp))
+
+                        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                            categoryShares.forEach { share ->
+                                CategoryShareRow(
+                                    share = share,
+                                    total = monthlyTotal,
+                                    currency = currency,
+                                )
+                            }
                         }
                     }
                 }
@@ -644,11 +677,30 @@ private fun TrendBars(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.Bottom,
     ) {
+        val currentMonth = YearMonth.now()
+        val primary = MaterialTheme.colorScheme.primary
+
         values.forEach { (month, amount) ->
             val fraction = if (max > BigDecimal.ZERO) {
                 amount.toFloat() / max.toFloat()
             } else {
                 0f
+            }
+            val isCurrent = month == currentMonth
+            val animatedFraction by animateFloatAsState(
+                targetValue = fraction.coerceIn(0f, 1f),
+                animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+                label = "trendBar",
+            )
+            val brush = if (amount > BigDecimal.ZERO) {
+                Brush.verticalGradient(
+                    colors = listOf(
+                        primary.copy(alpha = if (isCurrent) 1f else 0.72f),
+                        primary.copy(alpha = if (isCurrent) 0.5f else 0.26f),
+                    ),
+                )
+            } else {
+                null
             }
 
             Column(
@@ -658,13 +710,13 @@ private fun TrendBars(
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .height((78.dp * fraction).coerceAtLeast(3.dp))
+                        .height((78.dp * animatedFraction).coerceAtLeast(3.dp))
                         .clip(RoundedCornerShape(6.dp))
-                        .background(
-                            if (amount > BigDecimal.ZERO) {
-                                MaterialTheme.colorScheme.primary
+                        .then(
+                            if (brush != null) {
+                                Modifier.background(brush)
                             } else {
-                                MaterialTheme.colorScheme.surfaceContainerHighest
+                                Modifier.background(MaterialTheme.colorScheme.surfaceContainerHighest)
                             }
                         ),
                 )
@@ -672,13 +724,21 @@ private fun TrendBars(
                 Text(
                     text = month.format(formatter),
                     style = MaterialTheme.typography.labelSmall,
-                    color = colorOnEditor.copy(alpha = 0.6f),
+                    color = if (isCurrent) {
+                        primary
+                    } else {
+                        colorOnEditor.copy(alpha = 0.6f)
+                    },
                     maxLines = 1,
                 )
                 Text(
                     text = numberFormat(context, amount, currency),
                     style = MaterialTheme.typography.labelSmall,
-                    color = colorOnEditor.copy(alpha = 0.45f),
+                    color = if (isCurrent) {
+                        colorOnEditor.copy(alpha = 0.75f)
+                    } else {
+                        colorOnEditor.copy(alpha = 0.45f)
+                    },
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
