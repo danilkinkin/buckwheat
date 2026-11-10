@@ -119,6 +119,10 @@ fun MainScreen(
                     },
                     onOpenHistory = { screen = AppScreen.HISTORY },
                     onOpenStats = { screen = AppScreen.STATS },
+                    onEditExpense = { transaction ->
+                        editorViewModel.startEditingSpent(transaction)
+                        appViewModel.openSheet(PathState(EDITOR_SHEET))
+                    },
                     onOpenSettings = { screen = AppScreen.SETTINGS },
                 )
 

@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -47,6 +48,7 @@ import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
+import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.history.SpentItem
@@ -73,6 +75,7 @@ fun HomeScreen(
     onOpenSubscriptions: () -> Unit,
     onOpenHistory: () -> Unit,
     onOpenStats: () -> Unit,
+    onEditExpense: (Transaction) -> Unit,
     onOpenSettings: () -> Unit,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
@@ -110,132 +113,138 @@ fun HomeScreen(
     val recent = spends.takeLast(RECENT_COUNT).asReversed()
 
     Box(Modifier.fillMaxSize().statusBarsPadding()) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(top = 8.dp, bottom = 104.dp),
-        ) {
-            item("header") {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 24.dp, end = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = dateText,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = colorOnEditor,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
-                    )
-                    IconButton(onClick = onOpenStats) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_analytics),
-                            contentDescription = stringResource(R.string.stats_title),
-                            tint = colorOnEditor,
-                        )
-                    }
-                    IconButton(onClick = onOpenSettings) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_settings),
-                            contentDescription = null,
-                            tint = colorOnEditor,
-                        )
-                    }
-                }
-            }
-
-            item("heroes") {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    HeroCard(
-                        label = stringResource(R.string.today),
-                        amount = todayTotal,
-                        currency = currency,
-                        modifier = Modifier.weight(1f),
-                    )
-                    HeroCard(
-                        label = stringResource(R.string.this_month),
-                        amount = monthTotal,
-                        currency = currency,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-            }
-
-            item("upcoming") {
-                SectionTitle(
-                    title = stringResource(R.string.upcoming),
-                    count = upcoming.size,
-                    icon = painterResource(R.drawable.ic_calendar),
-                    action = onOpenSubscriptions,
+        Column(Modifier.fillMaxSize()) {
+            // The date and the two totals stay put; only the sections below scroll.
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 8.dp, top = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = dateText,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = colorOnEditor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
                 )
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
+                IconButton(onClick = onOpenStats) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_analytics),
+                        contentDescription = stringResource(R.string.stats_title),
+                        tint = colorOnEditor,
+                    )
+                }
+                IconButton(onClick = onOpenSettings) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_settings),
+                        contentDescription = null,
+                        tint = colorOnEditor,
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                HeroCard(
+                    label = stringResource(R.string.today),
+                    amount = todayTotal,
+                    currency = currency,
+                    modifier = Modifier.weight(1f),
+                )
+                HeroCard(
+                    label = stringResource(R.string.this_month),
+                    amount = monthTotal,
+                    currency = currency,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentPadding = PaddingValues(bottom = 104.dp),
+            ) {
+                item("upcoming") {
+                    SectionTitle(
+                        title = stringResource(R.string.upcoming),
+                        count = upcoming.size,
+                        icon = painterResource(R.drawable.ic_calendar),
+                        action = onOpenSubscriptions,
+                    )
+
                     if (upcoming.isEmpty()) {
-                        ListCard {
+                        ListCard(modifier = Modifier.padding(horizontal = 16.dp)) {
                             SectionEmpty(stringResource(R.string.no_subscriptions))
                         }
                     } else {
-                        upcoming.forEach { subscription ->
-                            val service = ServiceCatalog.find(subscription.serviceId)
-                            val category = subscription.categoryId?.let { categoriesById[it] }
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp),
+                            shape = RoundedCornerShape(24.dp),
+                            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            contentColor = MaterialTheme.colorScheme.onSurface,
+                        ) {
+                            Column {
+                                upcoming.forEach { subscription ->
+                                    val service = ServiceCatalog.find(subscription.serviceId)
+                                    val category = subscription.categoryId?.let { categoriesById[it] }
 
-                            ListCard(
-                                accent = service?.let { Color(it.brandColor) }
-                                    ?: category?.let { Color(it.color) },
-                            ) {
-                                UpcomingSubscriptionRow(
-                                    subscription = subscription,
-                                    service = service,
-                                    category = category,
-                                    currency = currency,
-                                    onClick = onOpenSubscriptions,
-                                )
+                                    UpcomingSubscriptionRow(
+                                        subscription = subscription,
+                                        service = service,
+                                        category = category,
+                                        currency = currency,
+                                        onClick = onOpenSubscriptions,
+                                    )
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            item("recent") {
-                SectionTitle(
-                    title = stringResource(R.string.recent),
-                    count = recent.size,
-                    icon = painterResource(R.drawable.ic_clock),
-                    action = onOpenHistory,
-                )
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    if (recent.isEmpty()) {
-                        ListCard {
-                            SectionEmpty(stringResource(R.string.no_spends))
-                        }
-                    } else {
-                        recent.forEach { spend ->
-                            val service = ServiceCatalog.find(spend.serviceId)
-                            val category = spend.categoryId?.let { categoriesById[it] }
+                item("recent") {
+                    SectionTitle(
+                        title = stringResource(R.string.recent),
+                        count = recent.size,
+                        icon = painterResource(R.drawable.ic_clock),
+                        action = onOpenHistory,
+                    )
+                    Column(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        if (recent.isEmpty()) {
+                            ListCard {
+                                SectionEmpty(stringResource(R.string.no_spends))
+                            }
+                        } else {
+                            recent.forEach { spend ->
+                                val service = ServiceCatalog.find(spend.serviceId)
+                                val category = spend.categoryId?.let { categoriesById[it] }
 
-                            ListCard(
-                                accent = service?.let { Color(it.brandColor) }
-                                    ?: category?.let { Color(it.color) },
-                            ) {
-                                SpentItem(
-                                    transaction = spend,
-                                    currency = currency,
-                                    category = category,
-                                    service = service,
-                                    showDate = true,
-                                )
+                                ListCard(
+                                    accent = service?.let { Color(it.brandColor) }
+                                        ?: category?.let { Color(it.color) },
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(24.dp))
+                                        .clickable { onEditExpense(spend) },
+                                ) {
+                                    SpentItem(
+                                        transaction = spend,
+                                        currency = currency,
+                                        category = category,
+                                        service = service,
+                                        showDate = true,
+                                    )
+                                }
                             }
                         }
                     }
