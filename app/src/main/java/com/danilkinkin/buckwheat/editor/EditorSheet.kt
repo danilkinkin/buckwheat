@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -41,6 +43,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryPicker
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
 import com.danilkinkin.buckwheat.base.MinimalTextField
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateTimeEditPill
@@ -67,6 +70,7 @@ fun EditorSheet(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
 ) {
     val mode by editorViewModel.mode.observeAsState(EditMode.ADD)
     val categories by spendsViewModel.categories.observeAsState(emptyList())
@@ -97,6 +101,8 @@ fun EditorSheet(
     var showAddCategory by remember { mutableStateOf(false) }
     val focusController = remember { FocusController() }
     val haptic = LocalHapticFeedback.current
+    val removedSubscriptionMessage = stringResource(R.string.remove_subscription)
+    val undoLabel = stringResource(R.string.remove_spent_undo)
 
     var defaultCategoryApplied by remember { mutableStateOf(false) }
     LaunchedEffect(categories) {
@@ -193,8 +199,17 @@ fun EditorSheet(
                                 spendsViewModel.removeSpent(it)
                             }
                         } else {
-                            editingSubscription?.let {
-                                subscriptionsViewModel.delete(it.id)
+                            editingSubscription?.let { subscription ->
+                                subscriptionsViewModel.delete(subscription.id)
+                                appViewModel.showSnackbar(
+                                    message = removedSubscriptionMessage,
+                                    actionLabel = undoLabel,
+                                    duration = SnackbarDuration.Long,
+                                ) { result ->
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        subscriptionsViewModel.restore(subscription)
+                                    }
+                                }
                             }
                         }
                         cancel()

@@ -88,6 +88,7 @@
   <string name="home">Home</string>
   <string name="history">History</string>
   <string name="this_month">This month</string>
+  <string name="this_week">This week</string>
   <string name="stats_title">Statistics</string>
   <string name="total_spent">Total spent</string>
   <string name="daily_average">Daily average</string>
@@ -108,6 +109,7 @@
   <string name="expense">Expense</string>
   <string name="subscriptions_title">Subscriptions</string>
   <string name="remove_subscription">Subscription removed</string>
+  <string name="remove_category">Category removed</string>
   <string name="recurring_per_month">Recurring / month</string>
   <string name="subscription_insights">Subscription insights</string>
   <string name="projected_month">Projected</string>

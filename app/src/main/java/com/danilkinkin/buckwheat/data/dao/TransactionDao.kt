@@ -34,6 +34,12 @@ interface TransactionDao {
     @Query("UPDATE transactions SET categoryId = NULL WHERE categoryId = :categoryId")
     suspend fun clearCategory(categoryId: Int)
 
+    @Query("SELECT uid FROM transactions WHERE categoryId = :categoryId")
+    suspend fun getIdsByCategory(categoryId: Int): List<Int>
+
+    @Query("UPDATE transactions SET categoryId = :categoryId WHERE uid IN (:uids)")
+    suspend fun assignCategory(uids: List<Int>, categoryId: Int)
+
     /** Used by subscriptions to avoid posting the same due occurrence twice. */
     @Query(
         "SELECT COUNT(*) FROM transactions WHERE type = 'SPENT' " +

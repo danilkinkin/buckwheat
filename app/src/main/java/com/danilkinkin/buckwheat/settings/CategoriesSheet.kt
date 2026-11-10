@@ -20,6 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +43,7 @@ import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ButtonRow
 import com.danilkinkin.buckwheat.base.LocalBottomSheetScrollState
+import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 
@@ -49,11 +52,14 @@ const val CATEGORIES_SHEET = "categories"
 @Composable
 fun CategoriesSheet(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
+    appViewModel: AppViewModel = hiltViewModel(),
     onClose: () -> Unit = {},
 ) {
     val categories by spendsViewModel.categories.observeAsState(emptyList())
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
     var showAddDialog by remember { mutableStateOf(false) }
+    val removedMessage = stringResource(R.string.remove_category)
+    val undoLabel = stringResource(R.string.remove_spent_undo)
 
     val navigationBarHeight = androidx.compose.ui.unit.max(
         LocalWindowInsets.current.calculateBottomPadding(),
@@ -95,7 +101,19 @@ fun CategoriesSheet(
                     items(categories, key = { it.id }) { category ->
                         CategoryRow(
                             category = category,
-                            onDelete = { spendsViewModel.deleteCategory(category.id) },
+                            onDelete = {
+                                spendsViewModel.deleteCategory(category) { affected ->
+                                    appViewModel.showSnackbar(
+                                        message = removedMessage,
+                                        actionLabel = undoLabel,
+                                        duration = SnackbarDuration.Long,
+                                    ) { result ->
+                                        if (result == SnackbarResult.ActionPerformed) {
+                                            spendsViewModel.restoreCategory(category, affected)
+                                        }
+                                    }
+                                }
+                            },
                         )
                     }
                 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.di.SpendsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -61,9 +62,16 @@ class SpendsViewModel @Inject constructor(
         }
     }
 
-    fun deleteCategory(categoryId: Int) {
+    fun deleteCategory(category: Category, onDeleted: (List<Int>) -> Unit) {
         viewModelScope.launch {
-            spendsRepository.deleteCategory(categoryId)
+            val affected = spendsRepository.deleteCategory(category.id)
+            onDeleted(affected)
+        }
+    }
+
+    fun restoreCategory(category: Category, transactionIds: List<Int>) {
+        viewModelScope.launch {
+            spendsRepository.restoreCategory(category, transactionIds)
         }
     }
 

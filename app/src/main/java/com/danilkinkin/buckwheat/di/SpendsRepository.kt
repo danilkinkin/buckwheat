@@ -58,11 +58,24 @@ class SpendsRepository @Inject constructor(
         )
     }
 
-    suspend fun deleteCategory(categoryId: Int) {
+    /** Returns the ids of expenses that were in the category, so delete can be undone. */
+    suspend fun deleteCategory(categoryId: Int): List<Int> = withContext(Dispatchers.IO) {
+        val affected = transactionDao.getIdsByCategory(categoryId)
+
+        // Expenses outlive the category: they become Uncategorised instead of disappearing.
+        transactionDao.clearCategory(categoryId)
+        categoryDao.deleteById(categoryId)
+
+        affected
+    }
+
+    suspend fun restoreCategory(category: Category, transactionIds: List<Int>) {
         withContext(Dispatchers.IO) {
-            // Expenses outlive the category: they become Uncategorised instead of disappearing.
-            transactionDao.clearCategory(categoryId)
-            categoryDao.deleteById(categoryId)
+            categoryDao.insert(category)
+
+            if (transactionIds.isNotEmpty()) {
+                transactionDao.assignCategory(transactionIds, category.id)
+            }
         }
     }
 
