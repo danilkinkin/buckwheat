@@ -19,6 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
 
+    # Signing material is never committed. The keystore travels as base64 in
+    # RELEASE_KEYSTORE_BASE64; the other values are read from the same property
+    # names app/build.gradle.kts looks up.
+    env:
+      RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+      RELEASE_STORE_FILE: keystore/buckwheat_track.jks
+      RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+      RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+      RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+
     steps:
       - name: Check out
         uses: actions/checkout@v4
@@ -34,11 +44,35 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Restore release keystore
+        if: env.RELEASE_KEYSTORE_BASE64 != ''
+        run: |
+          mkdir -p "$(dirname "$RELEASE_STORE_FILE")"
+          printf '%s' "$RELEASE_KEYSTORE_BASE64" | base64 --decode > "$RELEASE_STORE_FILE"
+          test -s "$RELEASE_STORE_FILE"
+
       # One invocation so the configuration cache is reused across all tasks.
       # assembleRelease is included on purpose: R8, resource shrinking and the keep rules are
       # only exercised by the release variant, so a debug-only CI would miss those failures.
       - name: Verify
         run: ./gradlew spotlessCheck lintDebug testDebugUnitTest assembleDebug assembleRelease --stacktrace
+
+      - name: Check APK signature
+        if: env.RELEASE_KEYSTORE_BASE64 != ''
+        run: |
+          APK=$(ls app/build/outputs/apk/release/*.apk | head -1)
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -1)
+          "$APKSIGNER" verify --print-certs "$APK"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: eva-apk
+          path: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/release/output-metadata.json
+          retention-days: 14
+          if-no-files-found: error
 
       - name: Upload reports
         if: failure()
