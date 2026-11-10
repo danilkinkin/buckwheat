@@ -57,8 +57,6 @@ import com.danilkinkin.buckwheat.history.SwipeActionsConfig
 import com.danilkinkin.buckwheat.util.numberFormat
 import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.toLocalDate
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -213,10 +211,6 @@ private fun SubscriptionRow(
         period = subscription.period.toSubscriptionPeriod(),
     )
     val dueLabel = prettyDate(subscription.nextDue, pattern = "d MMM", simplifyIfToday = true)
-    val daysUntilDue = ChronoUnit.DAYS.between(
-        LocalDate.now(),
-        subscription.nextDue.toLocalDate(),
-    )
 
     Row(
         modifier = Modifier
@@ -253,22 +247,17 @@ private fun SubscriptionRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "$periodLabel · $dueLabel",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = if (isDue) {
-                        MaterialTheme.colorScheme.error
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                    },
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false),
-                )
-                Spacer(Modifier.width(6.dp))
-                DueStatusChip(daysUntilDue = daysUntilDue)
-            }
+            Text(
+                text = "$periodLabel · $dueLabel",
+                style = MaterialTheme.typography.labelSmall,
+                color = if (isDue) {
+                    MaterialTheme.colorScheme.error
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         }
 
         Spacer(Modifier.width(12.dp))

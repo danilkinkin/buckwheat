@@ -52,7 +52,6 @@ import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.history.SpentItem
-import com.danilkinkin.buckwheat.subscriptions.DueStatusChip
 import com.danilkinkin.buckwheat.subscriptions.ServiceBadge
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.isSameDay
@@ -62,7 +61,6 @@ import com.danilkinkin.buckwheat.util.toLocalDate
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.temporal.ChronoUnit
 import java.time.format.DateTimeFormatter
 import java.util.Date
 
@@ -372,10 +370,6 @@ private fun UpcomingSubscriptionRow(
     val context = LocalContext.current
     val isDue = subscription.nextDue.time <= System.currentTimeMillis()
     val dueLabel = prettyDate(subscription.nextDue, pattern = "d MMM", simplifyIfToday = true)
-    val daysUntilDue = ChronoUnit.DAYS.between(
-        LocalDate.now(),
-        subscription.nextDue.toLocalDate(),
-    )
 
     Row(
         modifier = Modifier
@@ -420,18 +414,14 @@ private fun UpcomingSubscriptionRow(
 
         Spacer(Modifier.width(12.dp))
 
-        Column(horizontalAlignment = Alignment.End) {
-            Text(
-                text = numberFormat(context, subscription.amount, currency),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontFeatureSettings = "tnum",
-                ),
-                color = colorOnEditor,
-                maxLines = 1,
-            )
-            Spacer(Modifier.height(2.dp))
-            DueStatusChip(daysUntilDue = daysUntilDue)
-        }
+        Text(
+            text = numberFormat(context, subscription.amount, currency),
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontFeatureSettings = "tnum",
+            ),
+            color = colorOnEditor,
+            maxLines = 1,
+        )
     }
 }
 

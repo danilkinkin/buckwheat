@@ -116,8 +116,6 @@
   <string name="upcoming_renewals">Upcoming renewals</string>
   <string name="actual_subscription_spend">Actual subscription spend</string>
   <string name="due_next_30_days">Next 30 days · %1$s</string>
-  <string name="due_now">Due</string>
-  <string name="due_in_days">%1$dd</string>
   <string name="services_bills_split">Services %1$s · Bills &amp; rent %2$s</string>
   <plurals name="active_subscriptions">
     <item quantity="one">%1$d active</item>

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,6 +24,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -219,21 +222,6 @@ fun History(
                 )
             }
 
-            if (categories.isNotEmpty()) {
-                CategoryFilterRow(
-                    categories = categories,
-                    selectedCategoryIds = selectedCategoryIds,
-                    onToggle = { categoryId ->
-                        selectedCategoryIds = if (categoryId in selectedCategoryIds) {
-                            selectedCategoryIds - categoryId
-                        } else {
-                            selectedCategoryIds + categoryId
-                        }
-                    },
-                    onClear = { selectedCategoryIds = emptySet() },
-                )
-            }
-
             if (filtersActive || query.isNotBlank()) {
                 Row(
                     modifier = Modifier
@@ -373,11 +361,14 @@ fun History(
 
     if (showFilters) {
         FiltersDialog(
+            categories = categories,
+            selectedCategoryIds = selectedCategoryIds,
             onlySubscriptions = onlySubscriptions,
             minAmount = minAmount,
             maxAmount = maxAmount,
             onDismiss = { showFilters = false },
-            onApply = { only, min, max ->
+            onApply = { selectedCategories, only, min, max ->
+                selectedCategoryIds = selectedCategories
                 onlySubscriptions = only
                 minAmount = min
                 maxAmount = max
@@ -538,14 +529,18 @@ private fun SearchField(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FiltersDialog(
+    categories: List<Category>,
+    selectedCategoryIds: Set<Int>,
     onlySubscriptions: Boolean,
     minAmount: String,
     maxAmount: String,
     onDismiss: () -> Unit,
-    onApply: (Boolean, String, String) -> Unit,
+    onApply: (Set<Int>, Boolean, String, String) -> Unit,
 ) {
+    var localCategories by remember { mutableStateOf(selectedCategoryIds) }
     var localOnly by remember { mutableStateOf(onlySubscriptions) }
     var localMin by remember { mutableStateOf(minAmount) }
     var localMax by remember { mutableStateOf(maxAmount) }
@@ -556,7 +551,12 @@ private fun FiltersDialog(
             color = MaterialTheme.colorScheme.surfaceContainerHigh,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ) {
-            Column(Modifier.padding(24.dp)) {
+            Column(
+                Modifier
+                    .heightIn(max = 560.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(24.dp),
+            ) {
                 Text(
                     text = stringResource(R.string.filters),
                     style = MaterialTheme.typography.titleLarge,
@@ -607,6 +607,43 @@ private fun FiltersDialog(
                     )
                 }
 
+                if (categories.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
+
+                    Text(
+                        text = stringResource(R.string.categories_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        CategoryChip(
+                            text = stringResource(R.string.all_categories),
+                            selected = localCategories.isEmpty(),
+                            onClick = { localCategories = emptySet() },
+                        )
+                        categories.forEach { category ->
+                            CategoryChip(
+                                text = category.name,
+                                emoji = category.emoji,
+                                selected = category.id in localCategories,
+                                onClick = {
+                                    localCategories = if (category.id in localCategories) {
+                                        localCategories - category.id
+                                    } else {
+                                        localCategories + category.id
+                                    }
+                                },
+                            )
+                        }
+                    }
+                }
+
                 Spacer(Modifier.height(24.dp))
 
                 Row(
@@ -615,6 +652,7 @@ private fun FiltersDialog(
                 ) {
                     TextButton(
                         onClick = {
+                            localCategories = emptySet()
                             localOnly = false
                             localMin = ""
                             localMax = ""
@@ -623,42 +661,11 @@ private fun FiltersDialog(
                         Text(stringResource(R.string.clear_filters))
                     }
                     Spacer(Modifier.width(8.dp))
-                    Button(onClick = { onApply(localOnly, localMin, localMax) }) {
+                    Button(onClick = { onApply(localCategories, localOnly, localMin, localMax) }) {
                         Text(stringResource(R.string.apply))
                     }
                 }
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun CategoryFilterRow(
-    categories: List<Category>,
-    selectedCategoryIds: Set<Int>,
-    onToggle: (Int) -> Unit,
-    onClear: () -> Unit,
-) {
-    FlowRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        CategoryChip(
-            text = stringResource(R.string.all_categories),
-            selected = selectedCategoryIds.isEmpty(),
-            onClick = onClear,
-        )
-        categories.forEach { category ->
-            CategoryChip(
-                text = category.name,
-                emoji = category.emoji,
-                selected = category.id in selectedCategoryIds,
-                onClick = { onToggle(category.id) },
-            )
         }
     }
 }
