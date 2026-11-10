@@ -17,4 +17,5 @@ data class RowEntity(
     val day: LocalDate,
     val transaction: Transaction?,
     val dayTotal: BigDecimal?,
+    val dayCount: Int? = null,
 )

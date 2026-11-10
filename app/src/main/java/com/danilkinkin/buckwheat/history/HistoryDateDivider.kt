@@ -1,9 +1,13 @@
 package com.danilkinkin.buckwheat.history
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +30,7 @@ fun HistoryDateDivider(
     date: java.time.LocalDate,
     dayTotal: BigDecimal,
     currency: ExtendCurrency,
+    dayCount: Int = 0,
 ) {
     val context = LocalContext.current
 
@@ -46,6 +51,20 @@ fun HistoryDateDivider(
             style = MaterialTheme.typography.labelMedium,
             color = colorOnEditor.copy(alpha = 0.6f),
         )
+        if (dayCount > 0) {
+            Spacer(Modifier.width(6.dp))
+            Surface(
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ) {
+                Text(
+                    text = dayCount.toString(),
+                    style = MaterialTheme.typography.labelSmall,
+                    modifier = Modifier.padding(horizontal = 7.dp, vertical = 1.dp),
+                )
+            }
+        }
     }
 }
 
@@ -57,6 +76,7 @@ private fun PreviewDefault() {
             date = Date().toLocalDate(),
             dayTotal = BigDecimal(12340),
             currency = ExtendCurrency.none(),
+            dayCount = 4,
         )
     }
 }

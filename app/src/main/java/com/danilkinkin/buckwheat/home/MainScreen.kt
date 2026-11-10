@@ -43,6 +43,7 @@ import com.danilkinkin.buckwheat.history.History
 import com.danilkinkin.buckwheat.settings.CATEGORIES_SHEET
 import com.danilkinkin.buckwheat.settings.Settings
 import com.danilkinkin.buckwheat.stats.StatsScreen
+import com.danilkinkin.buckwheat.subscriptions.SubscriptionInsightsScreen
 import com.danilkinkin.buckwheat.subscriptions.SubscriptionsScreen
 import com.danilkinkin.buckwheat.ui.colorBackground
 import com.danilkinkin.buckwheat.ui.isNightMode
@@ -50,7 +51,7 @@ import com.danilkinkin.buckwheat.util.observeLiveData
 import com.danilkinkin.buckwheat.util.setSystemStyle
 import com.danilkinkin.buckwheat.wallet.CURRENCY_EDITOR
 
-private enum class AppScreen { HOME, HISTORY, SUBSCRIPTIONS, STATS, SETTINGS }
+private enum class AppScreen { HOME, HISTORY, SUBSCRIPTIONS, SUBSCRIPTION_INSIGHTS, STATS, SETTINGS }
 
 @Composable
 fun MainScreen(
@@ -62,6 +63,7 @@ fun MainScreen(
     var screen by rememberSaveable { mutableStateOf(AppScreen.HOME) }
     // Subscriptions is reachable from Home, Stats and Settings; return to the right place.
     var subscriptionsReturn by rememberSaveable { mutableStateOf(AppScreen.HOME) }
+    var insightsReturn by rememberSaveable { mutableStateOf(AppScreen.SUBSCRIPTIONS) }
     val nightMode = remember { mutableStateOf(false) }
 
     nightMode.value = isNightMode()
@@ -92,10 +94,10 @@ fun MainScreen(
     )
 
     BackHandler(enabled = screen != AppScreen.HOME) {
-        screen = if (screen == AppScreen.SUBSCRIPTIONS) {
-            subscriptionsReturn
-        } else {
-            AppScreen.HOME
+        screen = when (screen) {
+            AppScreen.SUBSCRIPTIONS -> subscriptionsReturn
+            AppScreen.SUBSCRIPTION_INSIGHTS -> insightsReturn
+            else -> AppScreen.HOME
         }
     }
 
@@ -140,13 +142,21 @@ fun MainScreen(
                             )
                         )
                     },
+                    onOpenInsights = {
+                        insightsReturn = AppScreen.SUBSCRIPTIONS
+                        screen = AppScreen.SUBSCRIPTION_INSIGHTS
+                    },
+                )
+
+                AppScreen.SUBSCRIPTION_INSIGHTS -> SubscriptionInsightsScreen(
+                    onBack = { screen = insightsReturn },
                 )
 
                 AppScreen.STATS -> StatsScreen(
                     onBack = { screen = AppScreen.HOME },
-                    onOpenSubscriptions = {
-                        subscriptionsReturn = AppScreen.STATS
-                        screen = AppScreen.SUBSCRIPTIONS
+                    onOpenSubscriptionInsights = {
+                        insightsReturn = AppScreen.STATS
+                        screen = AppScreen.SUBSCRIPTION_INSIGHTS
                     },
                 )
 

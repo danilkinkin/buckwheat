@@ -63,6 +63,7 @@ fun SubscriptionsScreen(
     onBack: () -> Unit = {},
     onAddSubscription: () -> Unit = {},
     onEditSubscription: (Int) -> Unit = {},
+    onOpenInsights: () -> Unit = {},
     subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     appViewModel: AppViewModel = hiltViewModel(),
@@ -95,6 +96,13 @@ fun SubscriptionsScreen(
                     text = stringResource(R.string.subscriptions_title),
                     style = MaterialTheme.typography.titleLarge,
                 )
+                Spacer(Modifier.weight(1f))
+                IconButton(onClick = onOpenInsights) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_analytics),
+                        contentDescription = stringResource(R.string.subscription_insights),
+                    )
+                }
             }
 
             if (subscriptions.isEmpty()) {
