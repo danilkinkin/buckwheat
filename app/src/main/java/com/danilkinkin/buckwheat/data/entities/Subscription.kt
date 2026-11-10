@@ -25,5 +25,7 @@ data class Subscription(
     val anchorDay: Int,
     val nextDue: Date,
     val categoryId: Int? = null,
+    /** Optional entry from [com.danilkinkin.buckwheat.data.ServiceCatalog]. */
+    val serviceId: String? = null,
     val active: Boolean = true,
 )

@@ -52,10 +52,16 @@ fun SpentItem(
     currency: ExtendCurrency,
     modifier: Modifier = Modifier,
     category: Category? = null,
+    showDate: Boolean = false,
 ) {
     val context = LocalContext.current
     val note = transaction.comment.trim()
-    val time = prettyDate(transaction.date, forceHideDate = true)
+    val time = if (showDate) {
+        // Home shows spends from several days; History relies on its day dividers instead.
+        prettyDate(transaction.date, human = true, shortMonth = true)
+    } else {
+        prettyDate(transaction.date, forceHideDate = true)
+    }
 
     val primary = note.ifBlank {
         category?.name ?: stringResource(R.string.no_category)

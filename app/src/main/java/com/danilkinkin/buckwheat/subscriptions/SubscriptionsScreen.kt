@@ -2,6 +2,7 @@ package com.danilkinkin.buckwheat.subscriptions
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,10 +43,12 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.ListCard
+import com.danilkinkin.buckwheat.data.ServiceCatalog
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
+import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.data.entities.SubscriptionPeriod
 import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
 import com.danilkinkin.buckwheat.util.numberFormat
@@ -66,6 +69,7 @@ fun SubscriptionsScreen(
     )
 
     var editing by remember { mutableStateOf<Subscription?>(null) }
+    val categoriesById = remember(categories) { categories.associateBy { it.id } }
 
     Box(Modifier.fillMaxSize().statusBarsPadding()) {
         Column(Modifier.fillMaxSize()) {
@@ -110,6 +114,8 @@ fun SubscriptionsScreen(
                         ListCard {
                             SubscriptionRow(
                                 subscription = subscription,
+                                service = ServiceCatalog.find(subscription.serviceId),
+                                category = subscription.categoryId?.let { categoriesById[it] },
                                 currency = currency,
                                 onClick = { editing = subscription },
                             )
@@ -177,7 +183,7 @@ fun SubscriptionsScreen(
                     SubscriptionForm(
                         initial = subscriptionBeingEdited,
                         categories = categories,
-                        onSave = { name, amount, period, nextDue, categoryId ->
+                        onSave = { name, amount, period, nextDue, categoryId, serviceId ->
                             subscriptionsViewModel.update(
                                 subscriptionBeingEdited.copy(
                                     name = name.trim(),
@@ -186,6 +192,7 @@ fun SubscriptionsScreen(
                                     anchorDay = nextDue.toLocalDate().dayOfMonth,
                                     nextDue = nextDue,
                                     categoryId = categoryId,
+                                    serviceId = serviceId,
                                 )
                             )
                             editing = null
@@ -203,6 +210,8 @@ fun SubscriptionsScreen(
 @Composable
 private fun SubscriptionRow(
     subscription: Subscription,
+    service: SubscriptionService?,
+    category: Category?,
     currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
     onClick: () -> Unit,
 ) {
@@ -218,6 +227,27 @@ private fun SubscriptionRow(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        if (service != null) {
+            ServiceBadge(service = service, size = 44.dp)
+        } else if (!category?.emoji.isNullOrEmpty()) {
+            Surface(
+                modifier = Modifier.size(44.dp),
+                shape = CircleShape,
+                color = Color(category.color).copy(alpha = 0.22f),
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = category.emoji,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
+            }
+        } else {
+            ServiceBadge(service = null, size = 44.dp)
+        }
+        Spacer(Modifier.width(14.dp))
+
         Column(Modifier.weight(1f)) {
             Text(
                 text = subscription.name,

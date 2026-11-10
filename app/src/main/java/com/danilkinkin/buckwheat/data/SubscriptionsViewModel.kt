@@ -23,9 +23,10 @@ class SubscriptionsViewModel @Inject constructor(
         period: SubscriptionPeriod,
         nextDue: Date,
         categoryId: Int?,
+        serviceId: String?,
     ) {
         viewModelScope.launch {
-            spendsRepository.addSubscription(name, amount, period, nextDue, categoryId)
+            spendsRepository.addSubscription(name, amount, period, nextDue, categoryId, serviceId)
         }
     }
 

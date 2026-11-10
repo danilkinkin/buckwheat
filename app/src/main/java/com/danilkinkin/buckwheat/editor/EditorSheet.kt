@@ -240,8 +240,15 @@ fun EditorSheet(
             SubscriptionForm(
                 initial = null,
                 categories = categories,
-                onSave = { name, amount, period, nextDue, categoryId ->
-                    subscriptionsViewModel.add(name, amount, period, nextDue, categoryId)
+                onSave = { name, amount, period, nextDue, categoryId, serviceId ->
+                    subscriptionsViewModel.add(
+                        name,
+                        amount,
+                        period,
+                        nextDue,
+                        categoryId,
+                        serviceId,
+                    )
                     onClose()
                 },
                 modifier = Modifier.padding(horizontal = 24.dp),

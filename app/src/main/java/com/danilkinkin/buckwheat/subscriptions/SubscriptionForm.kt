@@ -51,6 +51,7 @@ import androidx.core.content.ContextCompat
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryPicker
 import com.danilkinkin.buckwheat.base.MinimalTextField
+import com.danilkinkin.buckwheat.data.ServiceCatalog
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.SubscriptionPeriod
@@ -69,7 +70,14 @@ import java.util.Date
 fun SubscriptionForm(
     initial: Subscription?,
     categories: List<Category>,
-    onSave: (name: String, amount: BigDecimal, period: SubscriptionPeriod, nextDue: Date, categoryId: Int?) -> Unit,
+    onSave: (
+        name: String,
+        amount: BigDecimal,
+        period: SubscriptionPeriod,
+        nextDue: Date,
+        categoryId: Int?,
+        serviceId: String?,
+    ) -> Unit,
     modifier: Modifier = Modifier,
     onCancel: (() -> Unit)? = null,
     onAddCategory: (() -> Unit)? = null,
@@ -84,6 +92,8 @@ fun SubscriptionForm(
     val context = LocalContext.current
 
     var name by remember { mutableStateOf(initial?.name ?: "") }
+    var serviceId by remember { mutableStateOf(initial?.serviceId) }
+    val service = ServiceCatalog.find(serviceId)
     var amountText by remember { mutableStateOf(initial?.amount?.toPlainString() ?: "") }
     var period by remember {
         mutableStateOf(initial?.period?.toSubscriptionPeriod() ?: SubscriptionPeriod.MONTHLY)
@@ -139,6 +149,22 @@ fun SubscriptionForm(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
     ) {
+        ServicePicker(
+            selectedId = serviceId,
+            onSelect = { picked ->
+                val previousName = service?.name
+                serviceId = picked?.id
+
+                // Keep a custom label, but follow the service name while the field still has
+                // the previous (or no) service name in it.
+                if (picked != null && (name.isBlank() || name == previousName)) {
+                    name = picked.name
+                }
+            },
+        )
+
+        Spacer(Modifier.height(10.dp))
+
         MinimalTextField(
             value = name,
             onValueChange = { name = it },
@@ -247,7 +273,7 @@ fun SubscriptionForm(
             Button(
                 onClick = {
                     val value = amount ?: return@Button
-                    onSave(name, value, period, nextDue, categoryId)
+                    onSave(name, value, period, nextDue, categoryId, serviceId)
                 },
                 enabled = name.isNotBlank() && amount != null && amount > BigDecimal.ZERO,
                 modifier = Modifier

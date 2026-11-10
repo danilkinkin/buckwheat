@@ -38,12 +38,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.danilkinkin.buckwheat.R
+import com.danilkinkin.buckwheat.data.ServiceCatalog
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
+import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.base.ListCard
 import com.danilkinkin.buckwheat.history.SpentItem
+import com.danilkinkin.buckwheat.subscriptions.ServiceBadge
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.isSameDay
 import com.danilkinkin.buckwheat.util.numberFormat
@@ -182,6 +185,7 @@ fun HomeScreen(
                             ListCard {
                                 UpcomingSubscriptionRow(
                                     subscription = subscription,
+                                    service = ServiceCatalog.find(subscription.serviceId),
                                     category = subscription.categoryId?.let { categoriesById[it] },
                                     currency = currency,
                                     onClick = onOpenSubscriptions,
@@ -213,6 +217,7 @@ fun HomeScreen(
                                     transaction = spend,
                                     currency = currency,
                                     category = spend.categoryId?.let { categoriesById[it] },
+                                    showDate = true,
                                 )
                             }
                         }
@@ -322,6 +327,7 @@ private fun SectionEmpty(text: String) {
 @Composable
 private fun UpcomingSubscriptionRow(
     subscription: Subscription,
+    service: SubscriptionService?,
     category: Category?,
     currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
     onClick: () -> Unit,
@@ -337,15 +343,19 @@ private fun UpcomingSubscriptionRow(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        if (!category?.emoji.isNullOrEmpty()) {
+        if (service != null) {
+            ServiceBadge(service = service, size = 40.dp)
+        } else if (!category?.emoji.isNullOrEmpty()) {
             Text(
                 text = category.emoji,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.width(32.dp),
+                modifier = Modifier.width(40.dp),
             )
         } else {
-            Spacer(Modifier.width(32.dp))
+            Spacer(Modifier.width(40.dp))
         }
+
+        Spacer(Modifier.width(12.dp))
 
         Column(Modifier.weight(1f)) {
             Text(

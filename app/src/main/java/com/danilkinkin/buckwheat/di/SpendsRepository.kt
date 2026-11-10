@@ -73,6 +73,7 @@ class SpendsRepository @Inject constructor(
         period: SubscriptionPeriod,
         nextDue: Date,
         categoryId: Int?,
+        serviceId: String?,
     ): Long {
         return subscriptionDao.insert(
             Subscription(
@@ -82,6 +83,7 @@ class SpendsRepository @Inject constructor(
                 anchorDay = nextDue.toLocalDate().dayOfMonth,
                 nextDue = nextDue,
                 categoryId = categoryId,
+                serviceId = serviceId,
             )
         )
     }

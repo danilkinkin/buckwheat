@@ -101,6 +101,14 @@
   <string name="edit_subscription">Edit subscription</string>
   <string name="delete">Delete</string>
   <string name="subscription_name">Name</string>
+  <string name="service">Service</string>
+  <string name="choose_service">Choose service</string>
+  <string name="custom_service">Custom</string>
+  <string name="service_group_bundles">Bundles</string>
+  <string name="service_group_streaming">Streaming</string>
+  <string name="service_group_music">Music</string>
+  <string name="service_group_cloud_ai">Cloud &amp; AI</string>
+  <string name="service_group_other">Other</string>
   <string name="amount">Amount</string>
   <string name="period">Period</string>
   <string name="period_weekly">Weekly</string>

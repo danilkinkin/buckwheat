@@ -116,6 +116,13 @@ val AutoMigration6to7: Migration = object : Migration(6, 7) {
     }
 }
 
+/** Optional catalog service/bundle chosen for a subscription. */
+val AutoMigration7to8: Migration = object : Migration(7, 8) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE `subscriptions` ADD COLUMN `serviceId` TEXT")
+    }
+}
+
 /** Fresh installs skip migrations, so the same seed runs after Room creates the tables. */
 val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -125,7 +132,7 @@ val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
 
 @Database(
     entities = [Transaction::class, Category::class, Subscription::class],
-    version = 7,
+    version = 8,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -147,6 +154,7 @@ abstract class DatabaseModule : RoomDatabase() {
             AutoMigration4to5,
             AutoMigration5to6,
             AutoMigration6to7,
+            AutoMigration7to8,
         )
     }
 }
