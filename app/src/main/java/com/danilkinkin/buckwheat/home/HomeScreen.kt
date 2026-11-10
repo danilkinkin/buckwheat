@@ -75,8 +75,10 @@ fun HomeScreen(
     onAdd: () -> Unit,
     onOpenSubscriptions: () -> Unit,
     onOpenHistory: () -> Unit,
+    onOpenToday: () -> Unit,
     onOpenStats: () -> Unit,
     onEditExpense: (Transaction) -> Unit,
+    onEditSubscription: (Int) -> Unit,
     onOpenSettings: () -> Unit,
     spendsViewModel: SpendsViewModel = hiltViewModel(),
     subscriptionsViewModel: SubscriptionsViewModel = hiltViewModel(),
@@ -175,6 +177,7 @@ fun HomeScreen(
                         MaterialTheme.colorScheme.primaryContainer,
                         MaterialTheme.colorScheme.secondaryContainer,
                     ),
+                    onClick = onOpenToday,
                     modifier = Modifier.weight(1f),
                 )
                 HeroCard(
@@ -185,6 +188,7 @@ fun HomeScreen(
                         MaterialTheme.colorScheme.secondaryContainer,
                         MaterialTheme.colorScheme.primaryContainer,
                     ),
+                    onClick = onOpenStats,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -226,7 +230,7 @@ fun HomeScreen(
                                         service = service,
                                         category = category,
                                         currency = currency,
-                                        onClick = onOpenSubscriptions,
+                                        onClick = { onEditSubscription(subscription.id) },
                                     )
                                 }
                             }
@@ -298,12 +302,16 @@ private fun HeroCard(
     amount: BigDecimal,
     currency: com.danilkinkin.buckwheat.data.ExtendCurrency,
     colors: List<Color>,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
     GradientCard(
-        modifier = modifier.height(120.dp),
+        modifier = modifier
+            .height(120.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(28.dp),
         colors = colors,
     ) {

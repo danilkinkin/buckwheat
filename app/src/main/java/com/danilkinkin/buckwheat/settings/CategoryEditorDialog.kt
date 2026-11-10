@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +28,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,6 +43,7 @@ import androidx.compose.ui.window.Dialog
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.categoryIconKeys
 import com.danilkinkin.buckwheat.base.categoryIconRes
+import com.danilkinkin.buckwheat.data.entities.Category
 
 private val categoryPalette = listOf(
     0xFFFF8A65, // deep orange
@@ -58,13 +62,16 @@ fun nextCategoryColor(categoryCount: Int): Long =
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun AddCategoryDialog(
+fun CategoryEditorDialog(
     nextColor: Long,
-    onAdd: (name: String, icon: String, color: Long) -> Unit,
+    onSave: (name: String, icon: String, color: Long) -> Unit,
     onClose: () -> Unit,
+    initial: Category? = null,
 ) {
-    var name by remember { mutableStateOf("") }
-    var icon by remember { mutableStateOf("other") }
+    var name by remember { mutableStateOf(initial?.name ?: "") }
+    var icon by remember { mutableStateOf(initial?.icon ?: "other") }
+    var color by remember { mutableLongStateOf(initial?.color ?: nextColor) }
+    val editing = initial != null
 
     Dialog(onDismissRequest = onClose) {
         Surface(
@@ -74,7 +81,9 @@ fun AddCategoryDialog(
         ) {
             Column(Modifier.padding(24.dp)) {
                 Text(
-                    text = stringResource(R.string.add_category),
+                    text = stringResource(
+                        if (editing) R.string.edit_category else R.string.add_category
+                    ),
                     style = MaterialTheme.typography.titleLarge,
                 )
 
@@ -144,6 +153,44 @@ fun AddCategoryDialog(
                     }
                 }
 
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    text = stringResource(R.string.category_color),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    categoryPalette.forEach { swatch ->
+                        val selected = swatch == color
+
+                        Box(
+                            modifier = Modifier
+                                .size(34.dp)
+                                .clip(CircleShape)
+                                .background(Color(swatch))
+                                .then(
+                                    if (selected) {
+                                        Modifier.border(
+                                            width = 2.dp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            shape = CircleShape,
+                                        )
+                                    } else {
+                                        Modifier
+                                    }
+                                )
+                                .clickable { color = swatch },
+                        )
+                    }
+                }
+
                 Spacer(Modifier.height(20.dp))
 
                 Row(
@@ -158,10 +205,10 @@ fun AddCategoryDialog(
                     }
                     Spacer(Modifier.width(8.dp))
                     Button(
-                        onClick = { onAdd(name, icon, nextColor) },
+                        onClick = { onSave(name, icon, color) },
                         enabled = name.isNotBlank(),
                     ) {
-                        Text(stringResource(R.string.add))
+                        Text(stringResource(if (editing) R.string.save else R.string.add))
                     }
                 }
             }

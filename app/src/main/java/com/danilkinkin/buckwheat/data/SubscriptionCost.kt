@@ -9,6 +9,17 @@ import java.math.RoundingMode
 /** Categories treated as bills/rent rather than service subscriptions in insights. */
 val billCategoryNames = setOf("Home & Bills", "Mobile & Internet")
 
+/** Percentage change, or null when there is no previous amount to compare with. */
+fun percentDelta(current: BigDecimal, previous: BigDecimal): Int? {
+    if (previous <= BigDecimal.ZERO) return null
+
+    return current
+        .subtract(previous)
+        .multiply(BigDecimal(100))
+        .divide(previous, 0, RoundingMode.HALF_UP)
+        .toInt()
+}
+
 /** The monthly share of one subscription, normalised so mixed intervals can be summed. */
 fun monthlyEquivalent(subscription: Subscription): BigDecimal {
     val count = subscription.intervalCount.coerceAtLeast(1).toBigDecimal()

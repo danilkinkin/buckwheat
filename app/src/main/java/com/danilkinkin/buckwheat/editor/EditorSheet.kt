@@ -47,7 +47,7 @@ import com.danilkinkin.buckwheat.data.AppViewModel
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.editor.dateTimeEdit.DateTimeEditPill
-import com.danilkinkin.buckwheat.settings.AddCategoryDialog
+import com.danilkinkin.buckwheat.settings.CategoryEditorDialog
 import com.danilkinkin.buckwheat.settings.nextCategoryColor
 import com.danilkinkin.buckwheat.subscriptions.SubscriptionForm
 import com.danilkinkin.buckwheat.ui.colorOnEditor
@@ -301,7 +301,7 @@ fun EditorSheet(
                 SubscriptionForm(
                     initial = editingSubscription,
                     categories = categories,
-                    onSave = { name, amount, period, intervalCount, nextDue, categoryId, serviceId ->
+                    onSave = { name, amount, period, intervalCount, nextDue, categoryId, serviceId, active ->
                         if (editingSubscription != null) {
                             subscriptionsViewModel.update(
                                 editingSubscription.copy(
@@ -313,6 +313,7 @@ fun EditorSheet(
                                     nextDue = nextDue,
                                     categoryId = categoryId,
                                     serviceId = serviceId,
+                                    active = active,
                                 )
                             )
                         } else {
@@ -331,11 +332,21 @@ fun EditorSheet(
                     modifier = Modifier.padding(horizontal = 24.dp),
                     onAddCategory = { showAddCategory = true },
                     onMarkPaid = editingSubscription
-                        ?.takeIf { it.nextDue.time <= System.currentTimeMillis() }
+                        ?.takeIf {
+                            it.active && it.nextDue.time <= System.currentTimeMillis()
+                        }
                         ?.let { due ->
                             {
                                 haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                                 subscriptionsViewModel.markPaid(due)
+                                onClose()
+                            }
+                        },
+                    onSkipCycle = editingSubscription
+                        ?.takeIf { it.active }
+                        ?.let { subscription ->
+                            {
+                                subscriptionsViewModel.skipCycle(subscription)
                                 onClose()
                             }
                         },
@@ -347,9 +358,9 @@ fun EditorSheet(
     }
 
     if (showAddCategory) {
-        AddCategoryDialog(
+        CategoryEditorDialog(
             nextColor = nextCategoryColor(categories.size),
-            onAdd = { name, icon, color ->
+            onSave = { name, icon, color ->
                 spendsViewModel.addCategory(name, icon, color)
                 showAddCategory = false
             },

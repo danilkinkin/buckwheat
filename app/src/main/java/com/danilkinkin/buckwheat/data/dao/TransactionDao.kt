@@ -18,6 +18,12 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE uid = :uid")
     fun getById(uid: Int): Transaction?
 
+    @Query("SELECT * FROM transactions ORDER BY uid ASC")
+    suspend fun getAllOnce(): List<Transaction>
+
+    @Insert
+    suspend fun insertAll(transactions: List<Transaction>)
+
     @Insert
     fun insert(vararg transaction: Transaction)
 

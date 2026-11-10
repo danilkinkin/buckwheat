@@ -41,4 +41,8 @@ object AppModule {
     @Singleton
     @Provides
     fun provideSubscriptionDao(db: DatabaseModule) = db.subscriptionDao()
+
+    @Singleton
+    @Provides
+    fun provideSubscriptionPriceChangeDao(db: DatabaseModule) = db.subscriptionPriceChangeDao()
 }

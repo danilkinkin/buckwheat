@@ -41,6 +41,9 @@ import com.danilkinkin.buckwheat.widget.LocalAccentColor
 import com.danilkinkin.buckwheat.widget.LocalContentColor
 import com.danilkinkin.buckwheat.widget.WidgetReceiver
 import java.math.BigDecimal
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**
  * The big widget: today's spending as the headline, this month underneath when there is room.
@@ -52,14 +55,30 @@ fun ExtendWidgetContent() {
     val size = LocalSize.current
     val context = LocalContext.current
     val intent = Intent(context, MainActivity::class.java)
+    val addIntent = Intent(context, MainActivity::class.java).apply {
+        putExtra(MainActivity.EXTRA_OPEN_ADD, true)
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
 
     val prefs = currentState<Preferences>()
     val todaySpent = BigDecimal(prefs[WidgetReceiver.todaySpentPreferenceKey] ?: "0")
     val monthSpent = BigDecimal(prefs[WidgetReceiver.monthSpentPreferenceKey] ?: "0")
     val currency = ExtendCurrency.getInstance(prefs[WidgetReceiver.currencyPreferenceKey])
+    val nextName = prefs[WidgetReceiver.nextNamePreferenceKey]?.takeIf { it.isNotBlank() }
+    val nextDate = prefs[WidgetReceiver.nextDatePreferenceKey]?.let { millis ->
+        Instant.ofEpochMilli(millis)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
+            .format(DateTimeFormatter.ofPattern("d MMM"))
+    }
+    val nextAmount = prefs[WidgetReceiver.nextAmountPreferenceKey]
+        ?.toBigDecimalOrNull()
 
     val isTiny = size == ExtendWidget.tinyMode || size == ExtendWidget.smallMode
-    val showMonth = !isTiny
+    val showCompactMonth = size == ExtendWidget.mediumMode
+    val showMonth = size == ExtendWidget.largeMode ||
+            size == ExtendWidget.hugeMode ||
+            size == ExtendWidget.superHugeMode
 
     CompositionLocalProvider(
         LocalContentColor provides GlanceTheme.colors.onSurface,
@@ -89,6 +108,7 @@ fun ExtendWidgetContent() {
                         top = when (size) {
                             ExtendWidget.tinyMode -> 16.dp
                             ExtendWidget.smallMode -> 18.dp
+                            ExtendWidget.mediumMode -> 18.dp
                             else -> 24.dp
                         },
                         end = 24.dp,
@@ -121,7 +141,7 @@ fun ExtendWidgetContent() {
                             ExtendWidget.superHugeMode -> 56.sp
                             ExtendWidget.hugeMode -> 52.sp
                             ExtendWidget.largeMode -> 48.sp
-                            ExtendWidget.mediumMode -> 40.sp
+                            ExtendWidget.mediumMode -> 34.sp
                             ExtendWidget.smallMode -> 34.sp
                             else -> 30.sp
                         },
@@ -129,7 +149,35 @@ fun ExtendWidgetContent() {
                     noTint = true,
                 )
 
-                if (showMonth) {
+                if (showCompactMonth) {
+                    Spacer(GlanceModifier.height(8.dp))
+
+                    CanvasText(
+                        text = context.resources.getString(R.string.this_month) + "  " +
+                                numberFormat(context, monthSpent, currency),
+                        style = TextStyle(
+                            color = contentColor,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 13.sp,
+                        ),
+                        noTint = true,
+                    )
+
+                    if (nextName != null) {
+                        Spacer(GlanceModifier.height(5.dp))
+
+                        CanvasText(
+                            text = "Next · $nextName" +
+                                    (nextDate?.let { " · $it" } ?: ""),
+                            style = TextStyle(
+                                color = contentColor,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 11.sp,
+                            ),
+                            noTint = true,
+                        )
+                    }
+                } else if (showMonth) {
                     Spacer(GlanceModifier.height(20.dp))
 
                     CanvasText(
@@ -156,6 +204,30 @@ fun ExtendWidgetContent() {
                         ),
                         noTint = true,
                     )
+
+                    if (nextName != null) {
+                        Spacer(GlanceModifier.height(10.dp))
+
+                        val nextLine = buildString {
+                            append("Next · ")
+                            append(nextName)
+                            nextDate?.let { append(" · ").append(it) }
+                            nextAmount?.let {
+                                append(" · ")
+                                append(numberFormat(context, it, currency))
+                            }
+                        }
+
+                        CanvasText(
+                            text = nextLine,
+                            style = TextStyle(
+                                color = contentColor,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp,
+                            ),
+                            noTint = true,
+                        )
+                    }
                 }
             }
 
@@ -173,15 +245,17 @@ fun ExtendWidgetContent() {
                 )!!
 
                 Image(
-                    modifier = GlanceModifier.size(
-                        when (size) {
-                            ExtendWidget.superHugeMode,
-                            ExtendWidget.hugeMode,
-                            ExtendWidget.largeMode -> 32.dp
+                    modifier = GlanceModifier
+                        .size(
+                            when (size) {
+                                ExtendWidget.superHugeMode,
+                                ExtendWidget.hugeMode,
+                                ExtendWidget.largeMode -> 32.dp
 
-                            else -> 24.dp
-                        }
-                    ),
+                                else -> 24.dp
+                            }
+                        )
+                        .clickable(actionStartActivity(addIntent)),
                     provider = ImageProvider(drawable.toBitmap()),
                     colorFilter = ColorFilter.tint(accentColor),
                     contentDescription = null,

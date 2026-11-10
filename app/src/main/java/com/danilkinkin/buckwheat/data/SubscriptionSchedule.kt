@@ -27,6 +27,9 @@ fun nextSubscriptionDate(
             target.atDay(anchorDay.coerceIn(1, target.lengthOfMonth()))
         }
 
-        SubscriptionPeriod.YEARS -> from.plusYears(count)
+        SubscriptionPeriod.YEARS -> {
+            val target = YearMonth.from(from).plusYears(count)
+            target.atDay(anchorDay.coerceIn(1, target.lengthOfMonth()))
+        }
     }
 }

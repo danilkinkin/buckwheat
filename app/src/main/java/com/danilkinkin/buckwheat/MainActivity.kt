@@ -3,6 +3,7 @@ package com.danilkinkin.buckwheat
 import OverrideLocalize
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivityResultRegistryOwner
@@ -45,9 +46,14 @@ val LocalWindowInsets = compositionLocalOf { PaddingValues(0.dp) }
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    companion object {
+        const val EXTRA_OPEN_ADD = "com.varashines.eva.OPEN_ADD"
+    }
+
     // Broke tests. Set to true for tests
     private val isDone: MutableState<Boolean> = mutableStateOf(false)
     private val isReady: MutableState<Boolean> = mutableStateOf(false)
+    private val addRequested = mutableStateOf(false)
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,6 +68,11 @@ class MainActivity : ComponentActivity() {
         }
 
         super.onCreate(savedInstanceState)
+
+        if (intent?.getBooleanExtra(EXTRA_OPEN_ADD, false) == true) {
+            addRequested.value = true
+            intent.removeExtra(EXTRA_OPEN_ADD)
+        }
 
         setContent {
             val localContext = LocalContext.current
@@ -94,7 +105,11 @@ class MainActivity : ComponentActivity() {
                             LocalWindowSize provides widthSizeClass,
                             LocalWindowInsets provides windowInsets,
                         ) {
-                            MainScreen(activityResultRegistryOwner)
+                            MainScreen(
+                                activityResultRegistryOwner = activityResultRegistryOwner,
+                                openAddRequest = addRequested.value,
+                                onAddRequestHandled = { addRequested.value = false },
+                            )
 
                             LaunchedEffect(Unit) {
                                 // App rendered and splash screen can be hidden
@@ -104,6 +119,16 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+
+        if (intent.getBooleanExtra(EXTRA_OPEN_ADD, false)) {
+            addRequested.value = true
+            intent.removeExtra(EXTRA_OPEN_ADD)
         }
     }
 }

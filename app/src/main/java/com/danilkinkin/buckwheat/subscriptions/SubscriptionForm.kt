@@ -30,6 +30,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -83,11 +84,13 @@ fun SubscriptionForm(
         nextDue: Date,
         categoryId: Int?,
         serviceId: String?,
+        active: Boolean,
     ) -> Unit,
     modifier: Modifier = Modifier,
     onCancel: (() -> Unit)? = null,
     onAddCategory: (() -> Unit)? = null,
     onMarkPaid: (() -> Unit)? = null,
+    onSkipCycle: (() -> Unit)? = null,
     autoFocusName: Boolean = false,
     /**
      * Only used when the form appears together with the sheet opening. A non-zero delay lets the
@@ -123,6 +126,7 @@ fun SubscriptionForm(
     var categoryId by remember { mutableStateOf(initial?.categoryId) }
     var categoryTouched by remember { mutableStateOf(initial != null) }
     var showDatePicker by remember { mutableStateOf(false) }
+    var active by remember { mutableStateOf(initial?.active ?: true) }
 
     val nameFocusRequester = remember { FocusRequester() }
     val amount = amountText.toBigDecimalOrNull()
@@ -371,6 +375,27 @@ fun SubscriptionForm(
             onAddCategory = onAddCategory,
         )
 
+        if (initial != null) {
+            Spacer(Modifier.height(12.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.paused),
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f),
+                )
+                Switch(
+                    checked = !active,
+                    onCheckedChange = { paused -> active = !paused },
+                )
+            }
+        }
+
+        if (onSkipCycle != null) {
+            TextButton(onClick = onSkipCycle) {
+                Text(stringResource(R.string.skip_renewal))
+            }
+        }
+
         if (onMarkPaid != null) {
             Spacer(Modifier.height(8.dp))
             FilledTonalButton(
@@ -398,7 +423,16 @@ fun SubscriptionForm(
             Button(
                 onClick = {
                     val value = amount ?: return@Button
-                    onSave(name, value, period, intervalCount, nextDue, categoryId, serviceId)
+                    onSave(
+                        name,
+                        value,
+                        period,
+                        intervalCount,
+                        nextDue,
+                        categoryId,
+                        serviceId,
+                        active,
+                    )
                 },
                 enabled = name.isNotBlank() && amount != null && amount > BigDecimal.ZERO,
                 modifier = Modifier

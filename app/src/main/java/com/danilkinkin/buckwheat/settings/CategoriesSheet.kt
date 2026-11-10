@@ -1,5 +1,6 @@
 package com.danilkinkin.buckwheat.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,6 +61,7 @@ fun CategoriesSheet(
     val categories by spendsViewModel.categories.observeAsState(emptyList())
     val localBottomSheetScrollState = LocalBottomSheetScrollState.current
     var showAddDialog by remember { mutableStateOf(false) }
+    var editingCategory by remember { mutableStateOf<Category?>(null) }
     val removedMessage = stringResource(R.string.remove_category)
     val undoLabel = stringResource(R.string.remove_spent_undo)
 
@@ -103,6 +105,7 @@ fun CategoriesSheet(
                     items(categories, key = { it.id }) { category ->
                         CategoryRow(
                             category = category,
+                            onClick = { editingCategory = category },
                             onDelete = {
                                 spendsViewModel.deleteCategory(category) { affected ->
                                     appViewModel.showSnackbar(
@@ -132,13 +135,32 @@ fun CategoriesSheet(
     }
 
     if (showAddDialog) {
-        AddCategoryDialog(
+        CategoryEditorDialog(
             nextColor = nextCategoryColor(categories.size),
-            onAdd = { name, icon, color ->
+            onSave = { name, icon, color ->
                 spendsViewModel.addCategory(name, icon, color)
                 showAddDialog = false
             },
             onClose = { showAddDialog = false },
+        )
+    }
+
+    val categoryBeingEdited = editingCategory
+    if (categoryBeingEdited != null) {
+        CategoryEditorDialog(
+            initial = categoryBeingEdited,
+            nextColor = categoryBeingEdited.color,
+            onSave = { name, icon, color ->
+                spendsViewModel.updateCategory(
+                    categoryBeingEdited.copy(
+                        name = name.trim(),
+                        icon = icon,
+                        color = color,
+                    )
+                )
+                editingCategory = null
+            },
+            onClose = { editingCategory = null },
         )
     }
 }
@@ -146,11 +168,13 @@ fun CategoriesSheet(
 @Composable
 private fun CategoryRow(
     category: Category,
+    onClick: () -> Unit,
     onDelete: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(start = 24.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

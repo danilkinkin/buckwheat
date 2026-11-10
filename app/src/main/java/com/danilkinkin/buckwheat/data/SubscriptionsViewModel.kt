@@ -16,6 +16,7 @@ class SubscriptionsViewModel @Inject constructor(
     private val spendsRepository: SpendsRepository,
 ) : ViewModel() {
     var subscriptions = spendsRepository.getAllSubscriptions()
+    var priceChanges = spendsRepository.getAllPriceChanges()
 
     fun add(
         name: String,
@@ -54,6 +55,12 @@ class SubscriptionsViewModel @Inject constructor(
     fun restore(subscription: Subscription) {
         viewModelScope.launch {
             spendsRepository.restoreSubscription(subscription)
+        }
+    }
+
+    fun skipCycle(subscription: Subscription) {
+        viewModelScope.launch {
+            spendsRepository.skipSubscriptionCycle(subscription)
         }
     }
 

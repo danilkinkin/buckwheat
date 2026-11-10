@@ -52,8 +52,10 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.SubscriptionsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
+import com.danilkinkin.buckwheat.data.entities.SubscriptionPriceChange
 import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
 import com.danilkinkin.buckwheat.data.monthlyEquivalent
+import com.danilkinkin.buckwheat.data.percentDelta
 import com.danilkinkin.buckwheat.data.nextSubscriptionDate
 import com.danilkinkin.buckwheat.base.CategoryIcon
 import com.danilkinkin.buckwheat.base.DonutChart
@@ -69,6 +71,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @Composable
@@ -78,6 +81,7 @@ fun SubscriptionInsightsScreen(
     spendsViewModel: SpendsViewModel = hiltViewModel(),
 ) {
     val subscriptions by subscriptionsViewModel.subscriptions.observeAsState(emptyList())
+    val priceChanges by subscriptionsViewModel.priceChanges.observeAsState(emptyList())
     val spends by spendsViewModel.spends.observeAsState(emptyList())
     val categories by spendsViewModel.categories.observeAsState(emptyList())
     val currency by spendsViewModel.currency.observeAsState(ExtendCurrency.none())
@@ -96,6 +100,13 @@ fun SubscriptionInsightsScreen(
             .filter { it.serviceId != null && YearMonth.from(it.date.toLocalDate()) == month }
             .fold(BigDecimal.ZERO) { sum, spend -> sum + spend.value }
     }
+    val paidLastMonth = remember(spends) {
+        val month = YearMonth.now().minusMonths(1)
+        spends
+            .filter { it.serviceId != null && YearMonth.from(it.date.toLocalDate()) == month }
+            .fold(BigDecimal.ZERO) { sum, spend -> sum + spend.value }
+    }
+    val paidDelta = percentDelta(paidThisMonth, paidLastMonth)
     val dueIn30Days = remember(active) {
         active.fold(BigDecimal.ZERO) { sum, subscription ->
             sum + amountDueWithin(subscription, 30)
@@ -213,6 +224,7 @@ fun SubscriptionInsightsScreen(
                     InsightStatCard(
                         label = stringResource(R.string.paid_this_month),
                         amount = paidThisMonth,
+                        delta = paidDelta,
                         currency = currency,
                         container = MaterialTheme.colorScheme.surfaceContainerHigh,
                         content = MaterialTheme.colorScheme.onSurface,
@@ -318,6 +330,30 @@ fun SubscriptionInsightsScreen(
                 }
             }
 
+            if (priceChanges.isNotEmpty()) {
+                item("price_changes") {
+                    InsightSectionTitle(
+                        title = stringResource(R.string.price_changes),
+                        icon = painterResource(R.drawable.ic_label),
+                    )
+                    InsightCard {
+                        Column(Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+                            priceChanges.take(6).forEach { change ->
+                                PriceChangeRow(
+                                    change = change,
+                                    service = ServiceCatalog.find(
+                                        subscriptions
+                                            .firstOrNull { it.id == change.subscriptionId }
+                                            ?.serviceId
+                                    ),
+                                    currency = currency,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
             item("trend") {
                 InsightSectionTitle(
                     title = stringResource(R.string.actual_subscription_spend),
@@ -408,6 +444,7 @@ private fun InsightStatCard(
     currency: ExtendCurrency,
     container: Color,
     content: Color,
+    delta: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -429,11 +466,24 @@ private fun InsightStatCard(
             Spacer(Modifier.weight(1f))
             Text(
                 text = numberFormat(context, amount, currency),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontFeatureSettings = "tnum",
+                ),
                 maxLines = 1,
                 softWrap = false,
                 overflow = TextOverflow.Ellipsis,
             )
+            if (delta != null) {
+                Text(
+                    text = "${if (delta >= 0) "↑" else "↓"}${abs(delta)}%",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (delta > 0) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    },
+                )
+            }
         }
     }
 }
@@ -659,6 +709,53 @@ private fun CategoryShareRow(
                 modifier = Modifier.width(40.dp),
             )
         }
+    }
+}
+
+@Composable
+private fun PriceChangeRow(
+    change: SubscriptionPriceChange,
+    service: SubscriptionService?,
+    currency: ExtendCurrency,
+) {
+    val context = LocalContext.current
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        ServiceBadge(service = service, size = 36.dp)
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                text = change.name,
+                style = MaterialTheme.typography.bodyLarge,
+                color = colorOnEditor,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = prettyDate(change.changedAt, pattern = "d MMM yyyy"),
+                style = MaterialTheme.typography.labelSmall,
+                color = colorOnEditor.copy(alpha = 0.55f),
+                maxLines = 1,
+            )
+        }
+        Text(
+            text = "${numberFormat(context, change.oldAmount, currency)} → " +
+                    numberFormat(context, change.newAmount, currency),
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontFeatureSettings = "tnum",
+            ),
+            color = if (change.newAmount > change.oldAmount) {
+                MaterialTheme.colorScheme.error
+            } else {
+                MaterialTheme.colorScheme.primary
+            },
+            maxLines = 1,
+        )
     }
 }
 

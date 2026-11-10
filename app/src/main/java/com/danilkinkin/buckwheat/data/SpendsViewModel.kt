@@ -62,6 +62,12 @@ class SpendsViewModel @Inject constructor(
         }
     }
 
+    fun updateCategory(category: Category) {
+        viewModelScope.launch {
+            spendsRepository.updateCategory(category)
+        }
+    }
+
     fun deleteCategory(category: Category, onDeleted: (List<Int>) -> Unit) {
         viewModelScope.launch {
             val affected = spendsRepository.deleteCategory(category.id)
@@ -72,6 +78,20 @@ class SpendsViewModel @Inject constructor(
     fun restoreCategory(category: Category, transactionIds: List<Int>) {
         viewModelScope.launch {
             spendsRepository.restoreCategory(category, transactionIds)
+        }
+    }
+
+    // Backup
+
+    fun exportBackup(onReady: (String) -> Unit) {
+        viewModelScope.launch {
+            onReady(spendsRepository.exportBackup())
+        }
+    }
+
+    fun restoreBackup(json: String, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            onResult(runCatching { spendsRepository.restoreBackup(json) }.isSuccess)
         }
     }
 

@@ -40,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryIcon
@@ -206,16 +207,20 @@ private fun SubscriptionRow(
     onClick: () -> Unit,
 ) {
     val context = LocalContext.current
-    val isDue = subscription.nextDue.time <= System.currentTimeMillis()
+    val isDue = subscription.active &&
+            subscription.nextDue.time <= System.currentTimeMillis()
     val periodLabel = subscriptionIntervalLabel(
         count = subscription.intervalCount,
         period = subscription.period.toSubscriptionPeriod(),
     )
     val dueLabel = prettyDate(subscription.nextDue, pattern = "d MMM", simplifyIfToday = true)
+    val subtitle = if (subscription.active) "$periodLabel · $dueLabel"
+    else stringResource(R.string.paused)
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .alpha(if (subscription.active) 1f else 0.62f)
             .clickable(onClick = onClick)
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -250,7 +255,7 @@ private fun SubscriptionRow(
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = "$periodLabel · $dueLabel",
+                text = subtitle,
                 style = MaterialTheme.typography.labelSmall,
                 color = if (isDue) {
                     MaterialTheme.colorScheme.error

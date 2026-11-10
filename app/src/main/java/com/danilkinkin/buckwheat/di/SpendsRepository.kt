@@ -5,15 +5,19 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import androidx.room.withTransaction
 import com.danilkinkin.buckwheat.budgetDataStore
+import com.danilkinkin.buckwheat.data.BackupCodec
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.sortedForDisplay
 import com.danilkinkin.buckwheat.data.dao.CategoryDao
 import com.danilkinkin.buckwheat.data.dao.SubscriptionDao
+import com.danilkinkin.buckwheat.data.dao.SubscriptionPriceChangeDao
 import com.danilkinkin.buckwheat.data.dao.TransactionDao
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.SubscriptionPeriod
+import com.danilkinkin.buckwheat.data.entities.SubscriptionPriceChange
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.data.entities.TransactionType
 import com.danilkinkin.buckwheat.data.entities.toSubscriptionPeriod
@@ -42,6 +46,8 @@ class SpendsRepository @Inject constructor(
     private val transactionDao: TransactionDao,
     private val categoryDao: CategoryDao,
     private val subscriptionDao: SubscriptionDao,
+    private val priceChangeDao: SubscriptionPriceChangeDao,
+    private val database: DatabaseModule,
 ) {
     fun getAllSpends(): LiveData<List<Transaction>> = transactionDao.getAll(TransactionType.SPENT)
 
@@ -57,6 +63,12 @@ class SpendsRepository @Inject constructor(
                 color = color,
             )
         )
+    }
+
+    suspend fun updateCategory(category: Category) {
+        withContext(Dispatchers.IO) {
+            categoryDao.update(category)
+        }
     }
 
     /** Returns the ids of expenses that were in the category, so delete can be undone. */
@@ -109,13 +121,31 @@ class SpendsRepository @Inject constructor(
 
     suspend fun updateSubscription(subscription: Subscription) {
         withContext(Dispatchers.IO) {
+            val previous = subscriptionDao.getById(subscription.id)
+
+            if (previous != null && previous.amount.compareTo(subscription.amount) != 0) {
+                priceChangeDao.insert(
+                    SubscriptionPriceChange(
+                        subscriptionId = subscription.id,
+                        name = subscription.name,
+                        oldAmount = previous.amount,
+                        newAmount = subscription.amount,
+                        changedAt = Date(),
+                    )
+                )
+            }
+
             subscriptionDao.update(subscription)
         }
     }
 
+    fun getAllPriceChanges(): LiveData<List<SubscriptionPriceChange>> =
+        priceChangeDao.getAll()
+
     suspend fun deleteSubscription(subscriptionId: Int) {
         withContext(Dispatchers.IO) {
             subscriptionDao.deleteById(subscriptionId)
+            priceChangeDao.deleteForSubscription(subscriptionId)
         }
     }
 
@@ -160,6 +190,20 @@ class SpendsRepository @Inject constructor(
         }
     }
 
+    /** Advances one cycle without posting an expense. */
+    suspend fun skipSubscriptionCycle(subscription: Subscription) {
+        withContext(Dispatchers.IO) {
+            val next = nextSubscriptionDate(
+                period = subscription.period.toSubscriptionPeriod(),
+                intervalCount = subscription.intervalCount,
+                anchorDay = subscription.anchorDay,
+                from = subscription.nextDue.toLocalDate(),
+            )
+
+            subscriptionDao.update(subscription.copy(nextDue = next.toDate()))
+        }
+    }
+
     // Currency
 
     fun getCurrency() = context.budgetDataStore.data.map {
@@ -171,6 +215,37 @@ class SpendsRepository @Inject constructor(
     suspend fun changeDisplayCurrency(currency: ExtendCurrency) {
         context.budgetDataStore.edit {
             it[currencyStoreKey] = currency.value ?: ""
+        }
+    }
+
+    // Backup
+
+    suspend fun exportBackup(): String = withContext(Dispatchers.IO) {
+        BackupCodec.encode(
+            BackupCodec.Backup(
+                categories = categoryDao.getAllOnce(),
+                subscriptions = subscriptionDao.getAllOnce(),
+                transactions = transactionDao.getAllOnce(),
+                priceChanges = priceChangeDao.getAllOnce(),
+            )
+        )
+    }
+
+    suspend fun restoreBackup(json: String) {
+        val backup = BackupCodec.decode(json)
+
+        withContext(Dispatchers.IO) {
+            database.withTransaction {
+                transactionDao.deleteAll()
+                priceChangeDao.deleteAll()
+                subscriptionDao.deleteAll()
+                categoryDao.deleteAll()
+
+                categoryDao.insertAll(backup.categories)
+                subscriptionDao.insertAll(backup.subscriptions)
+                transactionDao.insertAll(backup.transactions)
+                priceChangeDao.insertAll(backup.priceChanges)
+            }
         }
     }
 

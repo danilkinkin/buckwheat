@@ -6,9 +6,11 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.danilkinkin.buckwheat.data.dao.CategoryDao
 import com.danilkinkin.buckwheat.data.dao.SubscriptionDao
+import com.danilkinkin.buckwheat.data.dao.SubscriptionPriceChangeDao
 import com.danilkinkin.buckwheat.data.dao.TransactionDao
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
+import com.danilkinkin.buckwheat.data.entities.SubscriptionPriceChange
 import com.danilkinkin.buckwheat.data.entities.Transaction
 
 
@@ -307,6 +309,21 @@ val AutoMigration11to12: Migration = object : Migration(11, 12) {
     }
 }
 
+/** Amount-change history for the subscription price insight. */
+val AutoMigration12to13: Migration = object : Migration(12, 13) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "CREATE TABLE IF NOT EXISTS `subscription_price_changes` (" +
+                    "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`subscriptionId` INTEGER NOT NULL, " +
+                    "`name` TEXT NOT NULL, " +
+                    "`oldAmount` TEXT NOT NULL, " +
+                    "`newAmount` TEXT NOT NULL, " +
+                    "`changedAt` INTEGER NOT NULL)"
+        )
+    }
+}
+
 /** Fresh installs skip migrations, so the same seed runs after Room creates the tables. */
 val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -316,8 +333,13 @@ val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
 }
 
 @Database(
-    entities = [Transaction::class, Category::class, Subscription::class],
-    version = 12,
+    entities = [
+        Transaction::class,
+        Category::class,
+        Subscription::class,
+        SubscriptionPriceChange::class,
+    ],
+    version = 13,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -334,6 +356,8 @@ abstract class DatabaseModule : RoomDatabase() {
 
     abstract fun subscriptionDao(): SubscriptionDao
 
+    abstract fun subscriptionPriceChangeDao(): SubscriptionPriceChangeDao
+
     companion object {
         val MANUAL_MIGRATIONS = arrayOf<Migration>(
             AutoMigration4to5,
@@ -344,6 +368,7 @@ abstract class DatabaseModule : RoomDatabase() {
             AutoMigration9to10,
             AutoMigration10to11,
             AutoMigration11to12,
+            AutoMigration12to13,
         )
     }
 }

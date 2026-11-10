@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.glance.appwidget.*
 import androidx.glance.appwidget.state.updateAppWidgetState
@@ -47,6 +48,9 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
         val todaySpentPreferenceKey = stringPreferencesKey("today-spent-key")
         val monthSpentPreferenceKey = stringPreferencesKey("month-spent-key")
         val currencyPreferenceKey = stringPreferencesKey("currency-key")
+        val nextNamePreferenceKey = stringPreferencesKey("next-name-key")
+        val nextDatePreferenceKey = longPreferencesKey("next-date-key")
+        val nextAmountPreferenceKey = stringPreferencesKey("next-amount-key")
 
         /**
          * Receivers are short lived but the work they start is not. A scope created per
@@ -96,6 +100,7 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
         val glanceIds = GlanceAppWidgetManager(context).getGlanceIds(glanceAppWidget.javaClass)
 
         val spends = databaseRepository.getAllSpends().asFlow().first()
+        val subscriptions = databaseRepository.getAllSubscriptions().asFlow().first()
         val currency = databaseRepository.getCurrency().first()
 
         val today = Date()
@@ -106,6 +111,9 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
         val monthSpent = spends
             .filter { YearMonth.from(it.date.toLocalDate()) == currentMonth }
             .fold(BigDecimal.ZERO) { sum, spend -> sum + spend.value }
+        val nextSubscription = subscriptions
+            .filter { it.active }
+            .minByOrNull { it.nextDue.time }
 
         glanceIds.forEach { glanceId ->
             updateAppWidgetState(
@@ -118,6 +126,17 @@ abstract class WidgetReceiver : GlanceAppWidgetReceiver() {
                         this[todaySpentPreferenceKey] = todaySpent.toString()
                         this[monthSpentPreferenceKey] = monthSpent.toString()
                         this[currencyPreferenceKey] = currency.value.toString()
+
+                        if (nextSubscription != null) {
+                            this[nextNamePreferenceKey] = nextSubscription.name
+                            this[nextDatePreferenceKey] = nextSubscription.nextDue.time
+                            this[nextAmountPreferenceKey] =
+                                nextSubscription.amount.toString()
+                        } else {
+                            remove(nextNamePreferenceKey)
+                            remove(nextDatePreferenceKey)
+                            remove(nextAmountPreferenceKey)
+                        }
                     }
             }
 

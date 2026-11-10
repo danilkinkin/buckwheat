@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -53,6 +54,7 @@ import com.danilkinkin.buckwheat.base.DonutChart
 import com.danilkinkin.buckwheat.base.DonutSegment
 import com.danilkinkin.buckwheat.base.GradientCard
 import com.danilkinkin.buckwheat.data.monthlyEquivalent
+import com.danilkinkin.buckwheat.data.percentDelta
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.Transaction
@@ -64,9 +66,11 @@ import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.abs
 import kotlin.math.roundToInt
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 /**
  * Ledger statistics: what a month cost, where it went and how it was spread over the days.
@@ -95,6 +99,20 @@ fun StatsScreen(
     val total = remember(monthSpends) {
         monthSpends.fold(BigDecimal.ZERO) { sum, spend -> sum + spend.value }
     }
+    val previousMonth = month.minusMonths(1)
+    val previousSpends = remember(spends, previousMonth) {
+        spends.filter { YearMonth.from(it.date.toLocalDate()) == previousMonth }
+    }
+    val previousTotal = remember(previousSpends) {
+        previousSpends.fold(BigDecimal.ZERO) { sum, spend -> sum + spend.value }
+    }
+    val previousCategoryTotals = remember(previousSpends) {
+        previousSpends
+            .groupBy { it.categoryId }
+            .mapValues { (_, group) ->
+                group.fold(BigDecimal.ZERO) { sum, spend -> sum + spend.value }
+            }
+    }
     val daysElapsed = if (month == currentMonth) today.dayOfMonth else month.lengthOfMonth()
     val average = remember(total, daysElapsed) {
         if (daysElapsed <= 0) BigDecimal.ZERO
@@ -110,6 +128,22 @@ fun StatsScreen(
     }
     val peakDay = remember(dailyTotals) {
         dailyTotals.maxByOrNull { it.second }
+    }
+    val yearTotals = remember(spends, month) {
+        (1..12).map { monthNumber ->
+            val yearMonth = YearMonth.of(month.year, monthNumber)
+            val total = spends
+                .filter { YearMonth.from(it.date.toLocalDate()) == yearMonth }
+                .fold(BigDecimal.ZERO) { sum, spend -> sum + spend.value }
+            yearMonth to total
+        }
+    }
+    val yearHasData = remember(yearTotals) { yearTotals.any { it.second > BigDecimal.ZERO } }
+    val bestMonth = remember(yearTotals) {
+        yearTotals.filter { it.second > BigDecimal.ZERO }.maxByOrNull { it.second }
+    }
+    val lowestMonth = remember(yearTotals) {
+        yearTotals.filter { it.second > BigDecimal.ZERO }.minByOrNull { it.second }
     }
 
     val activeSubscriptions = remember(subscriptions) { subscriptions.filter { it.active } }
@@ -181,6 +215,8 @@ fun StatsScreen(
             item("total") {
                 TotalCard(
                     total = total,
+                    previousTotal = previousTotal,
+                    previousLabel = prettyYearMonth(previousMonth),
                     count = monthSpends.size,
                     currency = currency,
                 )
@@ -275,6 +311,9 @@ fun StatsScreen(
                                 categoryTotals.forEach { categoryTotal ->
                                     CategoryShareRow(
                                         categoryTotal = categoryTotal,
+                                        previousAmount = previousCategoryTotals[
+                                            categoryTotal.category?.id
+                                        ] ?: BigDecimal.ZERO,
                                         currency = currency,
                                     )
                                 }
@@ -314,6 +353,25 @@ fun StatsScreen(
                         color = colorOnEditor.copy(alpha = 0.6f),
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 24.dp),
                     )
+                }
+            }
+
+            if (yearHasData) {
+                item("year") {
+                    SectionTitle(
+                        title = stringResource(R.string.year_overview),
+                        icon = painterResource(R.drawable.ic_analytics),
+                    )
+                    SectionCard {
+                        YearOverview(
+                            values = yearTotals,
+                            selectedMonth = month,
+                            bestMonth = bestMonth,
+                            lowestMonth = lowestMonth,
+                            currency = currency,
+                            modifier = Modifier.padding(20.dp),
+                        )
+                    }
                 }
             }
         }
@@ -432,6 +490,8 @@ private fun RecurringCard(
 @Composable
 private fun TotalCard(
     total: BigDecimal,
+    previousTotal: BigDecimal,
+    previousLabel: String,
     count: Int,
     currency: ExtendCurrency,
 ) {
@@ -459,6 +519,21 @@ private fun TotalCard(
                 softWrap = false,
                 overflow = TextOverflow.Ellipsis,
             )
+            val delta = percentDelta(total, previousTotal)
+            if (delta != null) {
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = "${if (delta >= 0) "↑" else "↓"} ${abs(delta)}% " +
+                            stringResource(R.string.vs_previous, previousLabel),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (delta > 0) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.primary
+                    },
+                )
+            }
+
             Spacer(Modifier.height(6.dp))
             Text(
                 text = pluralStringResource(R.plurals.expenses_count, count, count),
@@ -570,6 +645,7 @@ private fun SectionCard(
 @Composable
 private fun CategoryShareRow(
     categoryTotal: CategoryTotal,
+    previousAmount: BigDecimal,
     currency: ExtendCurrency,
 ) {
     val context = LocalContext.current
@@ -633,12 +709,135 @@ private fun CategoryShareRow(
                 )
             }
             Spacer(Modifier.width(10.dp))
+            val delta = percentDelta(categoryTotal.amount, previousAmount)
+
+            Column(
+                modifier = Modifier.width(52.dp),
+                horizontalAlignment = Alignment.End,
+            ) {
+                Text(
+                    text = stringResource(R.string.share_percent, percent),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = colorOnEditor.copy(alpha = 0.6f),
+                    textAlign = TextAlign.End,
+                    maxLines = 1,
+                )
+                if (delta != null) {
+                    Text(
+                        text = "${if (delta >= 0) "↑" else "↓"}${abs(delta)}%",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (delta > 0) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.primary
+                        },
+                        textAlign = TextAlign.End,
+                        maxLines = 1,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun YearOverview(
+    values: List<Pair<YearMonth, BigDecimal>>,
+    selectedMonth: YearMonth,
+    bestMonth: Pair<YearMonth, BigDecimal>?,
+    lowestMonth: Pair<YearMonth, BigDecimal>?,
+    currency: ExtendCurrency,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val locale = LocalConfiguration.current.locales[0]
+    val monthFormatter = remember(locale) { DateTimeFormatter.ofPattern("MMMMM", locale) }
+    val max = values.maxOfOrNull { it.second } ?: BigDecimal.ZERO
+    val primary = MaterialTheme.colorScheme.primary
+
+    Column(modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(96.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            values.forEach { (yearMonth, amount) ->
+                val fraction = if (max > BigDecimal.ZERO) {
+                    amount.toFloat() / max.toFloat()
+                } else {
+                    0f
+                }
+                val isSelected = yearMonth == selectedMonth
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height((68.dp * fraction).coerceAtLeast(3.dp))
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(
+                                when {
+                                    amount <= BigDecimal.ZERO -> {
+                                        MaterialTheme.colorScheme.surfaceContainerHighest
+                                    }
+
+                                    isSelected -> primary
+
+                                    else -> primary.copy(alpha = 0.42f)
+                                }
+                            ),
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = yearMonth.format(monthFormatter),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (isSelected) {
+                            primary
+                        } else {
+                            colorOnEditor.copy(alpha = 0.55f)
+                        },
+                        maxLines = 1,
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+        val caption = buildList {
+            bestMonth?.let {
+                add(
+                    stringResource(
+                        R.string.best_month,
+                        it.first.format(DateTimeFormatter.ofPattern("MMM", locale)),
+                        numberFormat(context, it.second, currency),
+                    )
+                )
+            }
+            lowestMonth?.let {
+                if (it.first != bestMonth?.first) {
+                    add(
+                        stringResource(
+                            R.string.lowest_month,
+                            it.first.format(DateTimeFormatter.ofPattern("MMM", locale)),
+                            numberFormat(context, it.second, currency),
+                        )
+                    )
+                }
+            }
+        }.joinToString(" · ")
+
+        if (caption.isNotBlank()) {
             Text(
-                text = stringResource(R.string.share_percent, percent),
+                text = caption,
                 style = MaterialTheme.typography.labelSmall,
                 color = colorOnEditor.copy(alpha = 0.6f),
-                textAlign = TextAlign.End,
-                modifier = Modifier.width(40.dp),
+                maxLines = 2,
             )
         }
     }

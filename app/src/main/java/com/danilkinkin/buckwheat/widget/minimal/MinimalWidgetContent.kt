@@ -50,7 +50,13 @@ import java.math.BigDecimal
 fun MinimalWidgetContent() {
     val size = LocalSize.current
     val context = LocalContext.current
-    val intent = Intent(context, MainActivity::class.java)
+    val intent = Intent(context, MainActivity::class.java).apply {
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
+    val addIntent = Intent(context, MainActivity::class.java).apply {
+        putExtra(MainActivity.EXTRA_OPEN_ADD, true)
+        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
 
     val prefs = currentState<Preferences>()
     val todaySpent = BigDecimal(prefs[WidgetReceiver.todaySpentPreferenceKey] ?: "0")
@@ -69,7 +75,7 @@ fun MinimalWidgetContent() {
                 .cornerRadius(48.dp)
                 .fillMaxSize()
                 .background(ImageProvider(R.drawable.minimal_widget_preview_background))
-                .clickable(actionStartActivity(intent)),
+                .clickable(actionStartActivity(addIntent)),
             contentAlignment = Alignment.Center,
         ) {
             Row(

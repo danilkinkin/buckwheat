@@ -39,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -78,21 +79,26 @@ import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.editor.EditorViewModel
+import com.danilkinkin.buckwheat.editor.dateTimeEdit.DatePickerDialog
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.numberFormat
+import com.danilkinkin.buckwheat.util.prettyDate
 import com.danilkinkin.buckwheat.util.prettyYearMonth
+import com.danilkinkin.buckwheat.util.toDate
 import com.danilkinkin.buckwheat.util.toLocalDate
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun History(
     modifier: Modifier = Modifier,
+    initialDay: LocalDate? = null,
     spendsViewModel: SpendsViewModel = viewModel(),
     editorViewModel: EditorViewModel = viewModel(),
     onBack: (() -> Unit)? = null,
@@ -109,15 +115,22 @@ fun History(
     var onlySubscriptions by remember { mutableStateOf(false) }
     var minAmount by remember { mutableStateOf("") }
     var maxAmount by remember { mutableStateOf("") }
+    var fromDate by remember { mutableStateOf<LocalDate?>(null) }
+    var toDate by remember { mutableStateOf<LocalDate?>(null) }
     var query by remember { mutableStateOf("") }
+    var searchAllMonths by remember { mutableStateOf(false) }
     var showSearch by remember { mutableStateOf(false) }
     var showFilters by remember { mutableStateOf(false) }
-    var selectedMonth by remember { mutableStateOf(YearMonth.now()) }
+    var selectedMonth by remember {
+        mutableStateOf(YearMonth.from(initialDay ?: LocalDate.now()))
+    }
+    var dayFilter by remember { mutableStateOf(initialDay) }
 
     val categoriesById = remember(categories) { categories.associateBy { it.id } }
     val monthSpends = remember(spends, selectedMonth) {
         spends.filter { YearMonth.from(it.date.toLocalDate()) == selectedMonth }
     }
+    val sourceSpends = if (searchAllMonths) spends else monthSpends
 
     LaunchedEffect(categories) {
         val validIds = categories.mapTo(mutableSetOf()) { it.id }
@@ -125,25 +138,38 @@ fun History(
     }
 
     val filteredSpends = remember(
-        monthSpends,
+        sourceSpends,
         selectedCategoryIds,
         onlySubscriptions,
         minAmount,
         maxAmount,
+        fromDate,
+        toDate,
         query,
         categoriesById,
+        dayFilter,
     ) {
         val min = minAmount.toBigDecimalOrNull()
         val max = maxAmount.toBigDecimalOrNull()
         val needle = query.trim().lowercase()
 
-        monthSpends.filter { transaction ->
+        sourceSpends.filter { transaction ->
             val categoryId = transaction.categoryId
             (selectedCategoryIds.isEmpty() || categoryId in selectedCategoryIds) &&
                     (!onlySubscriptions || transaction.serviceId != null) &&
                     (min == null || transaction.value >= min) &&
                     (max == null || transaction.value <= max) &&
-                    (needle.isEmpty() || matchesQuery(transaction, needle, categoriesById))
+                    (fromDate == null || !transaction.date.toLocalDate().isBefore(fromDate)) &&
+                    (toDate == null || !transaction.date.toLocalDate().isAfter(toDate)) &&
+                    (dayFilter == null || transaction.date.toLocalDate() == dayFilter) &&
+                    transactionMatchesQuery(
+                        transaction = transaction,
+                        query = needle,
+                        categoryName = transaction.categoryId
+                            ?.let { categoriesById[it] }
+                            ?.name,
+                        serviceName = ServiceCatalog.find(transaction.serviceId)?.name,
+                    )
         }
     }
 
@@ -157,7 +183,9 @@ fun History(
                 ?: BigDecimal.ZERO
         }
     }
-    val daysElapsed = if (selectedMonth == YearMonth.now()) {
+    val daysElapsed = if (searchAllMonths) {
+        0
+    } else if (selectedMonth == YearMonth.now()) {
         LocalDate.now().dayOfMonth
     } else {
         selectedMonth.lengthOfMonth()
@@ -171,14 +199,21 @@ fun History(
     val filtersActive = selectedCategoryIds.isNotEmpty() ||
             onlySubscriptions ||
             minAmount.isNotBlank() ||
-            maxAmount.isNotBlank()
+            maxAmount.isNotBlank() ||
+            fromDate != null ||
+            toDate != null ||
+            dayFilter != null
 
     fun clearAllFilters() {
         selectedCategoryIds = emptySet()
         onlySubscriptions = false
         minAmount = ""
         maxAmount = ""
+        fromDate = null
+        toDate = null
         query = ""
+        dayFilter = null
+        searchAllMonths = false
     }
 
     val showJump by remember { derivedStateOf { scrollState.firstVisibleItemIndex > 0 } }
@@ -198,6 +233,7 @@ fun History(
                 searchActive = showSearch,
                 onFilters = { showFilters = true },
                 filtersActive = filtersActive,
+                allMonths = searchAllMonths,
                 onPrevious = { selectedMonth = selectedMonth.minusMonths(1) },
                 onNext = {
                     if (selectedMonth < YearMonth.now()) {
@@ -212,17 +248,60 @@ fun History(
                 dailyAverage = dailyAverage,
                 dailyTotals = dailyTotals,
                 currency = currency.value,
-                filtered = filtersActive || query.isNotBlank(),
+                filtered = filtersActive || query.isNotBlank() || searchAllMonths,
+                showDailyStats = !searchAllMonths,
             )
 
             if (showSearch) {
                 SearchField(
                     value = query,
                     onValueChange = { query = it },
+                    allMonths = searchAllMonths,
+                    onToggleAllMonths = { searchAllMonths = !searchAllMonths },
                 )
             }
 
-            if (filtersActive || query.isNotBlank()) {
+            if (dayFilter != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    horizontalArrangement = Arrangement.Start,
+                ) {
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(start = 12.dp, end = 4.dp),
+                        ) {
+                            Text(
+                                text = prettyDate(
+                                    dayFilter!!.toDate(),
+                                    forceShowDate = true,
+                                    showTime = false,
+                                    human = true,
+                                ),
+                                style = MaterialTheme.typography.labelLarge,
+                            )
+                            IconButton(
+                                onClick = { dayFilter = null },
+                                modifier = Modifier.size(28.dp),
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.ic_close),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (filtersActive || query.isNotBlank() || searchAllMonths) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -366,35 +445,20 @@ fun History(
             onlySubscriptions = onlySubscriptions,
             minAmount = minAmount,
             maxAmount = maxAmount,
+            fromDate = fromDate,
+            toDate = toDate,
             onDismiss = { showFilters = false },
-            onApply = { selectedCategories, only, min, max ->
+            onApply = { selectedCategories, only, min, max, from, to ->
                 selectedCategoryIds = selectedCategories
                 onlySubscriptions = only
                 minAmount = min
                 maxAmount = max
+                fromDate = from
+                toDate = to
                 showFilters = false
             },
         )
     }
-}
-
-private fun matchesQuery(
-    transaction: Transaction,
-    query: String,
-    categoriesById: Map<Int, Category>,
-): Boolean {
-    val category = transaction.categoryId
-        ?.let { categoriesById[it] }
-        ?.name
-        ?.lowercase()
-        .orEmpty()
-    val service = ServiceCatalog.find(transaction.serviceId)?.name?.lowercase().orEmpty()
-    val amount = transaction.value.toPlainString()
-
-    return transaction.comment.lowercase().contains(query) ||
-            category.contains(query) ||
-            service.contains(query) ||
-            amount.contains(query)
 }
 
 @Composable
@@ -405,6 +469,7 @@ private fun MonthlySummaryCard(
     dailyTotals: List<BigDecimal>,
     currency: ExtendCurrency,
     filtered: Boolean,
+    showDailyStats: Boolean = true,
 ) {
     val context = LocalContext.current
 
@@ -449,18 +514,20 @@ private fun MonthlySummaryCard(
                 }
             }
 
-            Spacer(Modifier.height(14.dp))
+            if (showDailyStats) {
+                Spacer(Modifier.height(14.dp))
 
-            Sparkline(dailyTotals)
+                Sparkline(dailyTotals)
 
-            Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(8.dp))
 
-            Text(
-                text = "${stringResource(R.string.daily_average)} " +
-                        numberFormat(context, dailyAverage, currency),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
-            )
+                Text(
+                    text = "${stringResource(R.string.daily_average)} " +
+                            numberFormat(context, dailyAverage, currency),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                )
+            }
         }
     }
 }
@@ -504,32 +571,89 @@ private fun Sparkline(dailyTotals: List<BigDecimal>) {
 private fun SearchField(
     value: String,
     onValueChange: (String) -> Unit,
+    allMonths: Boolean,
+    onToggleAllMonths: () -> Unit,
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(Modifier.weight(1f)) {
-            MinimalTextField(
-                value = value,
-                onValueChange = onValueChange,
-                placeholder = stringResource(R.string.search_expenses),
-            )
-        }
-        if (value.isNotEmpty()) {
-            IconButton(onClick = { onValueChange("") }) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_close),
-                    contentDescription = null,
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(Modifier.weight(1f)) {
+                MinimalTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    placeholder = stringResource(R.string.search_expenses),
                 )
             }
+            if (value.isNotEmpty()) {
+                IconButton(onClick = { onValueChange("") }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_close),
+                        contentDescription = null,
+                    )
+                }
+            }
+        }
+
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+        ) {
+            CategoryChip(
+                text = stringResource(R.string.all_months),
+                selected = allMonths,
+                onClick = onToggleAllMonths,
+            )
         }
     }
 }
 
 @OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun DatePill(
+    label: String,
+    date: LocalDate?,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        modifier = modifier
+            .clip(CircleShape)
+            .clickable(onClick = onClick),
+        shape = CircleShape,
+        color = if (date != null) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        },
+        contentColor = if (date != null) {
+            MaterialTheme.colorScheme.onPrimaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        },
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = LocalContentColor.current.copy(alpha = 0.7f),
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = date?.format(DateTimeFormatter.ofPattern("d MMM"))
+                    ?: stringResource(R.string.any_date),
+                style = MaterialTheme.typography.labelLarge,
+                maxLines = 1,
+            )
+        }
+    }
+}
+
 @Composable
 private fun FiltersDialog(
     categories: List<Category>,
@@ -537,13 +661,19 @@ private fun FiltersDialog(
     onlySubscriptions: Boolean,
     minAmount: String,
     maxAmount: String,
+    fromDate: LocalDate?,
+    toDate: LocalDate?,
     onDismiss: () -> Unit,
-    onApply: (Set<Int>, Boolean, String, String) -> Unit,
+    onApply: (Set<Int>, Boolean, String, String, LocalDate?, LocalDate?) -> Unit,
 ) {
     var localCategories by remember { mutableStateOf(selectedCategoryIds) }
     var localOnly by remember { mutableStateOf(onlySubscriptions) }
     var localMin by remember { mutableStateOf(minAmount) }
     var localMax by remember { mutableStateOf(maxAmount) }
+    var localFrom by remember { mutableStateOf(fromDate) }
+    var localTo by remember { mutableStateOf(toDate) }
+    var showFromPicker by remember { mutableStateOf(false) }
+    var showToPicker by remember { mutableStateOf(false) }
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -607,6 +737,31 @@ private fun FiltersDialog(
                     )
                 }
 
+                Spacer(Modifier.height(16.dp))
+
+                Text(
+                    text = stringResource(R.string.date_range),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    DatePill(
+                        label = stringResource(R.string.from_date),
+                        date = localFrom,
+                        onClick = { showFromPicker = true },
+                        modifier = Modifier.weight(1f),
+                    )
+                    DatePill(
+                        label = stringResource(R.string.to_date),
+                        date = localTo,
+                        onClick = { showToPicker = true },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+
                 if (categories.isNotEmpty()) {
                     Spacer(Modifier.height(16.dp))
 
@@ -656,17 +811,54 @@ private fun FiltersDialog(
                             localOnly = false
                             localMin = ""
                             localMax = ""
+                            localFrom = null
+                            localTo = null
                         },
                     ) {
                         Text(stringResource(R.string.clear_filters))
                     }
                     Spacer(Modifier.width(8.dp))
-                    Button(onClick = { onApply(localCategories, localOnly, localMin, localMax) }) {
+                    Button(
+                        onClick = {
+                            onApply(
+                                localCategories,
+                                localOnly,
+                                localMin,
+                                localMax,
+                                localFrom,
+                                localTo,
+                            )
+                        },
+                    ) {
                         Text(stringResource(R.string.apply))
                     }
                 }
             }
         }
+    }
+
+    if (showFromPicker) {
+        DatePickerDialog(
+            initDate = localFrom ?: LocalDate.now(),
+            disableAfterDate = localTo,
+            onSelect = {
+                localFrom = it
+                showFromPicker = false
+            },
+            onClose = { showFromPicker = false },
+        )
+    }
+
+    if (showToPicker) {
+        DatePickerDialog(
+            initDate = localTo ?: LocalDate.now(),
+            disableBeforeDate = localFrom,
+            onSelect = {
+                localTo = it
+                showToPicker = false
+            },
+            onClose = { showToPicker = false },
+        )
     }
 }
 
@@ -713,6 +905,7 @@ private fun MonthHeader(
     searchActive: Boolean,
     onFilters: () -> Unit,
     filtersActive: Boolean,
+    allMonths: Boolean,
     onPrevious: () -> Unit,
     onNext: () -> Unit,
 ) {
@@ -731,7 +924,11 @@ private fun MonthHeader(
             }
         }
         Text(
-            text = prettyYearMonth(month),
+            text = if (allMonths) {
+                stringResource(R.string.search_results)
+            } else {
+                prettyYearMonth(month)
+            },
             style = MaterialTheme.typography.titleLarge,
             color = colorOnEditor,
             maxLines = 1,
@@ -761,17 +958,19 @@ private fun MonthHeader(
                 },
             )
         }
-        IconButton(onClick = onPrevious) {
-            Icon(
-                painter = painterResource(R.drawable.ic_chevron_left),
-                contentDescription = null,
-            )
-        }
-        IconButton(onClick = onNext, enabled = canGoNext) {
-            Icon(
-                painter = painterResource(R.drawable.ic_chevron_right),
-                contentDescription = null,
-            )
+        if (!allMonths) {
+            IconButton(onClick = onPrevious) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_chevron_left),
+                    contentDescription = null,
+                )
+            }
+            IconButton(onClick = onNext, enabled = canGoNext) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_chevron_right),
+                    contentDescription = null,
+                )
+            }
         }
     }
 }

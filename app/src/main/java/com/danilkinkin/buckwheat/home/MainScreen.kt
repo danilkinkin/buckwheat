@@ -19,10 +19,12 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import java.time.LocalDate
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +58,8 @@ private enum class AppScreen { HOME, HISTORY, SUBSCRIPTIONS, SUBSCRIPTION_INSIGH
 @Composable
 fun MainScreen(
     activityResultRegistryOwner: ActivityResultRegistryOwner?,
+    openAddRequest: Boolean = false,
+    onAddRequestHandled: () -> Unit = {},
     appViewModel: AppViewModel = viewModel(),
     editorViewModel: EditorViewModel = hiltViewModel(),
     spendsViewModel: SpendsViewModel = viewModel(),
@@ -64,6 +68,7 @@ fun MainScreen(
     // Subscriptions is reachable from Home, Stats and Settings; return to the right place.
     var subscriptionsReturn by rememberSaveable { mutableStateOf(AppScreen.HOME) }
     var insightsReturn by rememberSaveable { mutableStateOf(AppScreen.SUBSCRIPTIONS) }
+    var historyDay by rememberSaveable { mutableStateOf<LocalDate?>(null) }
     val nightMode = remember { mutableStateOf(false) }
 
     nightMode.value = isNightMode()
@@ -93,6 +98,15 @@ fun MainScreen(
         key = nightMode.value,
     )
 
+    LaunchedEffect(openAddRequest) {
+        if (openAddRequest) {
+            editorViewModel.resetEditingSpent()
+            appViewModel.openSheet(PathState(EDITOR_SHEET, mapOf("tab" to "expense")))
+            screen = AppScreen.HOME
+            onAddRequestHandled()
+        }
+    }
+
     BackHandler(enabled = screen != AppScreen.HOME) {
         screen = when (screen) {
             AppScreen.SUBSCRIPTIONS -> subscriptionsReturn
@@ -117,16 +131,32 @@ fun MainScreen(
                         subscriptionsReturn = AppScreen.HOME
                         screen = AppScreen.SUBSCRIPTIONS
                     },
-                    onOpenHistory = { screen = AppScreen.HISTORY },
+                    onOpenHistory = {
+                        historyDay = null
+                        screen = AppScreen.HISTORY
+                    },
+                    onOpenToday = {
+                        historyDay = LocalDate.now()
+                        screen = AppScreen.HISTORY
+                    },
                     onOpenStats = { screen = AppScreen.STATS },
                     onEditExpense = { transaction ->
                         editorViewModel.startEditingSpent(transaction)
                         appViewModel.openSheet(PathState(EDITOR_SHEET))
                     },
+                    onEditSubscription = { id ->
+                        appViewModel.openSheet(
+                            PathState(
+                                EDITOR_SHEET,
+                                mapOf("tab" to "subscription", "id" to id),
+                            )
+                        )
+                    },
                     onOpenSettings = { screen = AppScreen.SETTINGS },
                 )
 
                 AppScreen.HISTORY -> History(
+                    initialDay = historyDay,
                     onBack = { screen = AppScreen.HOME },
                     onClose = {
                         appViewModel.openSheet(PathState(EDITOR_SHEET))
