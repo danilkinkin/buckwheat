@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import com.danilkinkin.buckwheat.budgetDataStore
 import com.danilkinkin.buckwheat.data.ExtendCurrency
+import com.danilkinkin.buckwheat.data.sortedForDisplay
 import com.danilkinkin.buckwheat.data.dao.CategoryDao
 import com.danilkinkin.buckwheat.data.dao.SubscriptionDao
 import com.danilkinkin.buckwheat.data.dao.TransactionDao
@@ -43,7 +45,8 @@ class SpendsRepository @Inject constructor(
 ) {
     fun getAllSpends(): LiveData<List<Transaction>> = transactionDao.getAll(TransactionType.SPENT)
 
-    fun getAllCategories(): LiveData<List<Category>> = categoryDao.getAll()
+    fun getAllCategories(): LiveData<List<Category>> =
+        categoryDao.getAll().map { it.sortedForDisplay() }
 
     suspend fun addCategory(name: String, emoji: String, color: Long): Long {
         return categoryDao.insert(

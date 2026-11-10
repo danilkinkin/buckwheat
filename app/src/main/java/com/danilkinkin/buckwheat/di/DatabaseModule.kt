@@ -49,13 +49,20 @@ val AutoMigration4to5: Migration = object : Migration(4, 5) {
     }
 }
 
-/** name, emoji, ARGB colour. */
+/** name, emoji, ARGB colour. Order matters: it is also the display order. */
 private val defaultCategories: List<Triple<String, String, Long>> = listOf(
-    Triple("Food", "🍜", 0xFFFF8A65),
+    Triple("Food & Dining", "🍜", 0xFFFF8A65),
+    Triple("Groceries", "🛒", 0xFF9CCC65),
     Triple("Transport", "🚌", 0xFF4FC3F7),
-    Triple("Home", "🏠", 0xFF81C784),
-    Triple("Fun", "🎮", 0xFFBA68C8),
-    Triple("Health", "💊", 0xFFE57373),
+    Triple("Home & Bills", "🏠", 0xFF81C784),
+    Triple("Mobile & Internet", "📶", 0xFF4DD0E1),
+    Triple("Streaming", "📺", 0xFFBA68C8),
+    Triple("Music", "🎧", 0xFFF06292),
+    Triple("Digital & AI", "☁️", 0xFF7986CB),
+    Triple("Shopping", "🛍️", 0xFFFFB74D),
+    Triple("Entertainment", "🎬", 0xFF9575CD),
+    Triple("Health & Fitness", "🏋️", 0xFFE57373),
+    Triple("Travel", "✈️", 0xFF4DB6AC),
     Triple("Other", "📦", 0xFF90A4AE),
 )
 
@@ -66,6 +73,54 @@ private fun seedDefaultCategories(database: SupportSQLiteDatabase) {
             arrayOf<Any>(name, emoji, color),
         )
     }
+}
+
+private fun renameCategory(
+    database: SupportSQLiteDatabase,
+    oldName: String,
+    oldEmoji: String,
+    newName: String,
+    newEmoji: String,
+    color: Long,
+) {
+    database.execSQL(
+        "UPDATE `categories` SET `name` = ?, `emoji` = ?, `color` = ? " +
+                "WHERE `name` = ? AND `emoji` = ?",
+        arrayOf<Any>(newName, newEmoji, color, oldName, oldEmoji),
+    )
+}
+
+private fun ensureCategory(
+    database: SupportSQLiteDatabase,
+    name: String,
+    emoji: String,
+    color: Long,
+) {
+    database.execSQL(
+        "INSERT INTO `categories` (`name`, `emoji`, `color`) " +
+                "SELECT ?, ?, ? WHERE NOT EXISTS " +
+                "(SELECT 1 FROM `categories` WHERE `name` = ?)",
+        arrayOf<Any>(name, emoji, color, name),
+    )
+}
+
+/** Retroactively categorise subscriptions that already carry a service but still sit in Other. */
+private fun assignServiceCategory(
+    database: SupportSQLiteDatabase,
+    categoryName: String,
+    serviceIds: List<String>,
+) {
+    if (serviceIds.isEmpty()) return
+
+    val placeholders = serviceIds.joinToString(", ") { "?" }
+    database.execSQL(
+        "UPDATE `subscriptions` SET `categoryId` = " +
+                "(SELECT `id` FROM `categories` WHERE `name` = ? LIMIT 1) " +
+                "WHERE `serviceId` IN ($placeholders) AND " +
+                "(`categoryId` IS NULL OR `categoryId` = " +
+                "(SELECT `id` FROM `categories` WHERE `name` = 'Other' LIMIT 1))",
+        arrayOf<Any>(categoryName, *serviceIds.toTypedArray()),
+    )
 }
 
 /**
@@ -142,6 +197,61 @@ val AutoMigration8to9: Migration = object : Migration(8, 9) {
     }
 }
 
+/**
+ * Refines the category set for subscriptions: renames the four seeded categories that are too
+ * vague, adds the missing purpose categories and keeps every existing transaction attached by
+ * updating rows in place instead of replacing them.
+ */
+val AutoMigration9to10: Migration = object : Migration(9, 10) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        renameCategory(database, "Food", "🍜", "Food & Dining", "🍜", 0xFFFF8A65)
+        renameCategory(database, "Home", "🏠", "Home & Bills", "🏠", 0xFF81C784)
+        renameCategory(database, "Fun", "🎮", "Entertainment", "🎬", 0xFF9575CD)
+        renameCategory(database, "Health", "💊", "Health & Fitness", "🏋️", 0xFFE57373)
+
+        defaultCategories.forEach { (name, emoji, color) ->
+            ensureCategory(database, name, emoji, color)
+        }
+
+        assignServiceCategory(
+            database,
+            "Mobile & Internet",
+            listOf("jio", "airtel"),
+        )
+        assignServiceCategory(
+            database,
+            "Food & Dining",
+            listOf("swiggy_one", "zomato_one"),
+        )
+        assignServiceCategory(
+            database,
+            "Music",
+            listOf("apple_music_family", "spotify", "youtube_premium"),
+        )
+        assignServiceCategory(
+            database,
+            "Health & Fitness",
+            listOf("cult_fit"),
+        )
+        assignServiceCategory(
+            database,
+            "Digital & AI",
+            listOf(
+                "icloud_plus", "google_one", "opencode", "chatgpt", "claude", "gemini",
+                "perplexity", "github_copilot", "microsoft_365", "canva", "notion",
+            ),
+        )
+        assignServiceCategory(
+            database,
+            "Streaming",
+            listOf(
+                "jiohotstar", "netflix", "prime_video", "apple_tv", "zee5", "sonyliv",
+                "aha", "sun_nxt", "apple_one_family", "amazon_prime",
+            ),
+        )
+    }
+}
+
 /** Fresh installs skip migrations, so the same seed runs after Room creates the tables. */
 val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -151,7 +261,7 @@ val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
 
 @Database(
     entities = [Transaction::class, Category::class, Subscription::class],
-    version = 9,
+    version = 10,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -175,6 +285,7 @@ abstract class DatabaseModule : RoomDatabase() {
             AutoMigration6to7,
             AutoMigration7to8,
             AutoMigration8to9,
+            AutoMigration9to10,
         )
     }
 }

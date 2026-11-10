@@ -142,3 +142,28 @@ object ServiceCatalog {
 
     fun find(id: String?): SubscriptionService? = id?.let(byId::get)
 }
+
+/**
+ * Category used when a service is selected and the user has not chosen one manually.
+ * Resolved by name so it survives category edits and old installs.
+ */
+val SubscriptionService.defaultCategoryName: String
+    get() = when (id) {
+        "jio", "airtel" -> "Mobile & Internet"
+
+        "swiggy_one", "zomato_one" -> "Food & Dining"
+
+        "apple_music_family", "spotify", "youtube_premium" -> "Music"
+
+        "cult_fit" -> "Health & Fitness"
+
+        "icloud_plus", "google_one", "opencode", "chatgpt", "claude", "gemini",
+        "perplexity", "github_copilot", "microsoft_365", "canva", "notion",
+        -> "Digital & AI"
+
+        "jiohotstar", "netflix", "prime_video", "apple_tv", "zee5", "sonyliv",
+        "aha", "sun_nxt", "apple_one_family", "amazon_prime",
+        -> "Streaming"
+
+        else -> "Other"
+    }

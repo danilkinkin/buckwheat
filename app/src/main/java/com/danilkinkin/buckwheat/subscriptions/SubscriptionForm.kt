@@ -55,6 +55,7 @@ import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryPicker
 import com.danilkinkin.buckwheat.base.MinimalTextField
 import com.danilkinkin.buckwheat.data.ServiceCatalog
+import com.danilkinkin.buckwheat.data.defaultCategoryName
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Subscription
 import com.danilkinkin.buckwheat.data.entities.SubscriptionPeriod
@@ -175,6 +176,17 @@ fun SubscriptionForm(
                 // the previous (or no) service name in it.
                 if (picked != null && (name.isBlank() || name == previousName)) {
                     name = picked.name
+                }
+
+                // Follow the service's purpose while the category is still untouched or just
+                // the generic Other. A deliberately chosen category always wins.
+                val currentCategoryIsOther =
+                    categories.firstOrNull { it.id == categoryId }?.name == "Other"
+
+                if (picked != null && (!categoryTouched || currentCategoryIsOther)) {
+                    categories
+                        .firstOrNull { it.name == picked.defaultCategoryName }
+                        ?.let { categoryId = it.id }
                 }
             },
         )
