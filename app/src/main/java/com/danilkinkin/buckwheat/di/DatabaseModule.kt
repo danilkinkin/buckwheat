@@ -252,6 +252,27 @@ val AutoMigration9to10: Migration = object : Migration(9, 10) {
     }
 }
 
+/**
+ * Subscription-posted transactions remember which service paid for them, so the ledger can show
+ * the service logo instead of the category emoji. Existing rows are backfilled by matching the
+ * subscription name that was used as the comment.
+ */
+val AutoMigration10to11: Migration = object : Migration(10, 11) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE `transactions` ADD COLUMN `serviceId` TEXT")
+        database.execSQL(
+            "UPDATE `transactions` SET `serviceId` = (" +
+                    "SELECT `s`.`serviceId` FROM `subscriptions` `s` " +
+                    "WHERE `s`.`serviceId` IS NOT NULL AND `s`.`name` = `transactions`.`comment` " +
+                    "LIMIT 1) " +
+                    "WHERE `transactions`.`type` = 'SPENT' " +
+                    "AND `transactions`.`serviceId` IS NULL " +
+                    "AND EXISTS (SELECT 1 FROM `subscriptions` `s` " +
+                    "WHERE `s`.`serviceId` IS NOT NULL AND `s`.`name` = `transactions`.`comment`)"
+        )
+    }
+}
+
 /** Fresh installs skip migrations, so the same seed runs after Room creates the tables. */
 val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -261,7 +282,7 @@ val SeedDefaultCategoriesCallback = object : RoomDatabase.Callback() {
 
 @Database(
     entities = [Transaction::class, Category::class, Subscription::class],
-    version = 10,
+    version = 11,
     autoMigrations = [
         AutoMigration(from = 1, to = 2, spec = AutoMigration1to2::class),
         AutoMigration(from = 2, to = 3, spec = AutoMigration2to3::class),
@@ -286,6 +307,7 @@ abstract class DatabaseModule : RoomDatabase() {
             AutoMigration7to8,
             AutoMigration8to9,
             AutoMigration9to10,
+            AutoMigration10to11,
         )
     }
 }

@@ -27,6 +27,7 @@ import com.danilkinkin.buckwheat.LocalWindowInsets
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.base.CategoryChip
 import com.danilkinkin.buckwheat.base.ListCard
+import com.danilkinkin.buckwheat.data.ServiceCatalog
 import com.danilkinkin.buckwheat.data.SpendsViewModel
 import com.danilkinkin.buckwheat.data.entities.Category
 import com.danilkinkin.buckwheat.data.entities.Transaction
@@ -171,6 +172,7 @@ fun History(
                                             transaction = row.transaction!!,
                                             currency = currency.value,
                                             category = row.transaction!!.categoryId?.let { categoriesById[it] },
+                                            service = ServiceCatalog.find(row.transaction!!.serviceId),
                                         )
                                     }
                                 }

@@ -30,8 +30,10 @@ import androidx.compose.ui.unit.dp
 import com.danilkinkin.buckwheat.R
 import com.danilkinkin.buckwheat.data.ExtendCurrency
 import com.danilkinkin.buckwheat.data.entities.Category
+import com.danilkinkin.buckwheat.data.SubscriptionService
 import com.danilkinkin.buckwheat.data.entities.Transaction
 import com.danilkinkin.buckwheat.data.entities.TransactionType
+import com.danilkinkin.buckwheat.subscriptions.ServiceBadge
 import com.danilkinkin.buckwheat.ui.BuckwheatTheme
 import com.danilkinkin.buckwheat.ui.colorOnEditor
 import com.danilkinkin.buckwheat.util.numberFormat
@@ -52,6 +54,7 @@ fun SpentItem(
     currency: ExtendCurrency,
     modifier: Modifier = Modifier,
     category: Category? = null,
+    service: SubscriptionService? = null,
     showDate: Boolean = false,
 ) {
     val context = LocalContext.current
@@ -77,29 +80,33 @@ fun SpentItem(
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val badgeColor = category?.let {
-            Color(it.color).copy(alpha = 0.22f)
-        } ?: MaterialTheme.colorScheme.surfaceContainerHighest
+        if (service != null) {
+            ServiceBadge(service = service, size = 44.dp)
+        } else {
+            val badgeColor = category?.let {
+                Color(it.color).copy(alpha = 0.22f)
+            } ?: MaterialTheme.colorScheme.surfaceContainerHighest
 
-        Surface(
-            modifier = Modifier.size(44.dp),
-            shape = CircleShape,
-            color = badgeColor,
-            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-        ) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                if (!category?.emoji.isNullOrEmpty()) {
-                    Text(
-                        text = category.emoji,
-                        style = MaterialTheme.typography.titleMedium,
-                        textAlign = TextAlign.Center,
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_label),
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp),
-                    )
+            Surface(
+                modifier = Modifier.size(44.dp),
+                shape = CircleShape,
+                color = badgeColor,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            ) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    if (!category?.emoji.isNullOrEmpty()) {
+                        Text(
+                            text = category.emoji,
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center,
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_label),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
                 }
             }
         }

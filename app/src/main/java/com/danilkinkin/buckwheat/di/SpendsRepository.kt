@@ -130,6 +130,7 @@ class SpendsRepository @Inject constructor(
                         dueDate,
                         subscription.name,
                         subscription.categoryId,
+                        subscription.serviceId,
                     )
                 )
             }

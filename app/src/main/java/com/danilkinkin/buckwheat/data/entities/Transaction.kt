@@ -30,6 +30,10 @@ data class Transaction(
     // ("Uncategorised"), and it is what every pre-v6 row becomes.
     @ColumnInfo(name = "categoryId", index = true)
     val categoryId: Int? = null,
+
+    /** Set when the row was posted by a subscription, so the list can show its brand mark. */
+    @ColumnInfo(name = "serviceId")
+    val serviceId: String? = null,
 ) {
     @PrimaryKey(autoGenerate = true) var uid: Int = 0
 }

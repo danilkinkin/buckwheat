@@ -217,6 +217,7 @@ fun HomeScreen(
                                     transaction = spend,
                                     currency = currency,
                                     category = spend.categoryId?.let { categoriesById[it] },
+                                    service = ServiceCatalog.find(spend.serviceId),
                                     showDate = true,
                                 )
                             }

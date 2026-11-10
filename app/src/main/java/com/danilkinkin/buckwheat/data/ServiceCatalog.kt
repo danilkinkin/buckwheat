@@ -99,7 +99,7 @@ object ServiceCatalog {
             R.drawable.ic_service_google,
         ),
         SubscriptionService(
-            "opencode", "OpenCode", ServiceGroup.CLOUD_AI, 0xFF000000,
+            "opencode", "OpenCode Go", ServiceGroup.CLOUD_AI, 0xFF000000,
             R.drawable.ic_service_opencode,
         ),
         SubscriptionService(
