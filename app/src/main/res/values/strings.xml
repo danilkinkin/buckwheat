@@ -202,6 +202,13 @@
   <string name="report_bug">Report a bug</string>
   <string name="contribute">Contribute</string>
   <string name="developer">Development &amp; design:</string>
+  <string name="about_tagline">A personal expense tracker. Note each spend, watch the month add up, and let subscriptions remind you instead of posting for you.</string>
+  <string name="about_built_by">Built by</string>
+  <string name="about_credit_me">Vara</string>
+  <string name="about_on_top_of">on top of</string>
+  <string name="about_original_by">originally by</string>
+  <string name="about_source_code">Source code</string>
+  <string name="about_original_project">Original project</string>
   <string name="report_bug_title">Report a bug</string>
   <string name="report_via_github">Via GitHub issue</string>
   <string name="report_via_email">Via email</string>

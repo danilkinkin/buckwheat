@@ -211,6 +211,10 @@ fun MainScreen(
                                 contentDescription = null,
                             )
                         }
+                        Text(
+                            text = stringResource(R.string.settings_title),
+                            style = MaterialTheme.typography.titleLarge,
+                        )
                     }
                     Settings(
                         onTriedWidget = {},
