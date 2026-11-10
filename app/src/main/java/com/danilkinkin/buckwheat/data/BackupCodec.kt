@@ -100,7 +100,7 @@ object BackupCodec {
     fun decode(json: String): Backup {
         val root = JSONObject(json)
 
-        require(root.optString("format") == FORMAT) { "Not an Eva backup" }
+        require(root.optString("format") == FORMAT) { "Not a Khata backup" }
 
         val version = root.optInt("version", 0)
         require(version in 1..VERSION) { "Unsupported backup version: $version" }

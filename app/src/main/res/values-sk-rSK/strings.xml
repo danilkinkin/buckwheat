@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="app_name">Eva</string>
+  <string name="app_name">Khata</string>
   <string name="app_widget_extend_name">Buckwheat rozšírené</string>
   <string name="app_widget_minimal_name">Buckwheat krátky</string>
   <string name="rest_budget_for_today">Na dnes</string>
